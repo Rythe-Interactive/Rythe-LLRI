@@ -5,7 +5,7 @@
 [![License-MIT](https://img.shields.io/github/license/Legion-Engine/Legion-Engine)](https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE)
 [![Discord](https://img.shields.io/discord/682321168610623707.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/unVNRbd)
 # Legion-LLRI
-Some summary.
+Legion Low Level Rendering Interface, a middle layer between the graphics APIs and the Legion rendering code. Aimed to allow Legion rendering code to remain graphics api agnostic. With api agnostic graphics code it is easier for Legion to support multiple platforms, and to remain independent from graphics APIs.
 
 ## Features (Planned)
 ### Supported APIs
