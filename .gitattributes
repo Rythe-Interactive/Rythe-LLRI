@@ -15,3 +15,5 @@
 *.c text=auto eol=LF
 *.cpp text=auto eol=LF
 *.cpp text=auto eol=LF
+**/OptickCore.pdb filter=lfs diff=lfs merge=lfs -text
+**legion-core*.lib filter=lfs diff=lfs merge=lfs -text
