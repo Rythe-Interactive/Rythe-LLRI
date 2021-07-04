@@ -22,7 +22,8 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Authors
 
-* **Leon Brands** - *LLRI, Graphics* - [[Website](https://leonbrands.software)] [[Github](https://github.com/LeonBrands)] [[LinkedIn](https://www.linkedin.com/in/leonbrands/)]
+* **Leon Brands** - *LLRI, API design, VK, DX* - [[Website](https://leonbrands.software)] [[Github](https://github.com/LeonBrands)] [[LinkedIn](https://www.linkedin.com/in/leonbrands/)]
+* **Glyn Leine** - *Technical director, setup* - [[Website](https://glynleine.com)] [[Github](https://github.com/GlynLeine)] [[LinkedIn](https://www.linkedin.com/in/glyn-leine-7140a8167/)]
 
 See also the list of [contributors](AUTHORS.md) who participated in this project.
 
