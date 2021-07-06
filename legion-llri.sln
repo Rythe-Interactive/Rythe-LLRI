@@ -1,0 +1,82 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sandbox", "applications\sandbox\sandbox.vcxproj", "{E68FB1F8-9201-483E-BCAF-ABC2011637A8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "llri", "legion\engine\llri\llri.vcxproj", "{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{2CA2E0A7-EEDC-47C0-A219-E7467B8F795C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "applications", "applications", "{52177F63-88EB-48FF-ABA6-2D2555ECE993}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unit_tests", "applications\unit_tests\unit_tests.vcxproj", "{14E2D6B4-4219-4134-8458-7F66762C3156}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "llri-vk", "legion\engine\llri-vk\llri-vk.vcxproj", "{A6EB97C9-59EF-4134-B60F-2B370457252D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "llri-dx", "legion\engine\llri-dx\llri-dx.vcxproj", "{58EA0354-C28E-4849-86DC-428BDD1C2843}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug-VK|x64 = Debug-VK|x64
+		Debug-DX|x64 = Debug-DX|x64
+		Release-VK|x64 = Release-VK|x64
+		Release-DX|x64 = Release-DX|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Debug-VK|x64.ActiveCfg = Debug-VK|x64
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Debug-VK|x64.Build.0 = Debug-VK|x64
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Debug-DX|x64.ActiveCfg = Debug-DX|x64
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Debug-DX|x64.Build.0 = Debug-DX|x64
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Release-VK|x64.ActiveCfg = Release-VK|x64
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Release-VK|x64.Build.0 = Release-VK|x64
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Release-DX|x64.ActiveCfg = Release-DX|x64
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8}.Release-DX|x64.Build.0 = Release-DX|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Debug-VK|x64.ActiveCfg = Debug|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Debug-VK|x64.Build.0 = Debug|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Debug-DX|x64.ActiveCfg = Debug|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Debug-DX|x64.Build.0 = Debug|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Release-VK|x64.ActiveCfg = Release|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Release-VK|x64.Build.0 = Release|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Release-DX|x64.ActiveCfg = Release|x64
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1}.Release-DX|x64.Build.0 = Release|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Debug-VK|x64.ActiveCfg = Debug-VK|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Debug-VK|x64.Build.0 = Debug-VK|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Debug-DX|x64.ActiveCfg = Debug-VK|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Debug-DX|x64.Build.0 = Debug-VK|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Release-VK|x64.ActiveCfg = Release-VK|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Release-VK|x64.Build.0 = Release-VK|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Release-DX|x64.ActiveCfg = Release-DX|x64
+		{14E2D6B4-4219-4134-8458-7F66762C3156}.Release-DX|x64.Build.0 = Release-DX|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Debug-VK|x64.ActiveCfg = Debug|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Debug-VK|x64.Build.0 = Debug|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Debug-DX|x64.ActiveCfg = Debug|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Debug-DX|x64.Build.0 = Debug|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Release-VK|x64.ActiveCfg = Release|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Release-VK|x64.Build.0 = Release|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Release-DX|x64.ActiveCfg = Release|x64
+		{A6EB97C9-59EF-4134-B60F-2B370457252D}.Release-DX|x64.Build.0 = Release|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Debug-VK|x64.ActiveCfg = Debug|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Debug-VK|x64.Build.0 = Debug|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Debug-DX|x64.ActiveCfg = Debug|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Debug-DX|x64.Build.0 = Debug|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Release-VK|x64.ActiveCfg = Release|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Release-VK|x64.Build.0 = Release|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Release-DX|x64.ActiveCfg = Release|x64
+		{58EA0354-C28E-4849-86DC-428BDD1C2843}.Release-DX|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E68FB1F8-9201-483E-BCAF-ABC2011637A8} = {52177F63-88EB-48FF-ABA6-2D2555ECE993}
+		{1EF2B7C4-8B06-4AC1-8F0C-A1B7D88CE8D1} = {2CA2E0A7-EEDC-47C0-A219-E7467B8F795C}
+		{14E2D6B4-4219-4134-8458-7F66762C3156} = {52177F63-88EB-48FF-ABA6-2D2555ECE993}
+		{A6EB97C9-59EF-4134-B60F-2B370457252D} = {2CA2E0A7-EEDC-47C0-A219-E7467B8F795C}
+		{58EA0354-C28E-4849-86DC-428BDD1C2843} = {2CA2E0A7-EEDC-47C0-A219-E7467B8F795C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1049385-DB16-4E68-990F-472CD88D51C4}
+	EndGlobalSection
+EndGlobal
