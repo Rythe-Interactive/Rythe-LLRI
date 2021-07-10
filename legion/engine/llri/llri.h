@@ -1,9 +1,8 @@
 #pragma once
-#include <core/core.hpp>
 
 namespace legion::graphics::llri
 {
-    enum struct some_strategy_type : id_type
+    enum struct some_strategy_type : unsigned
     {
         naive,
         smart,
@@ -13,8 +12,8 @@ namespace legion::graphics::llri
     class Context
     {
     public:
-        static size_type someImplementationAgnosticValue;
+        static unsigned someImplementationAgnosticValue;
 
-        static id_type createSomeId(some_strategy_type creationStrategy) noexcept;
+        static unsigned createSomeId(some_strategy_type creationStrategy) noexcept;
     };
 }

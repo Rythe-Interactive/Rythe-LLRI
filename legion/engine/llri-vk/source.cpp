@@ -4,12 +4,11 @@ namespace legion::graphics::llri
 {
     namespace detail
     {
-        static constexpr id_type VKStaticId = 42;
+        static constexpr unsigned VKStaticId = 42;
     }
 
-    id_type llri::Context::createSomeId(some_strategy_type creationStrategy) noexcept
+    unsigned llri::Context::createSomeId(some_strategy_type creationStrategy) noexcept
     {
-        log::info("This is the VK implementation!");
-        return detail::VKStaticId + static_cast<id_type>(creationStrategy);
+        return detail::VKStaticId + static_cast<unsigned>(creationStrategy);
     }
 }
