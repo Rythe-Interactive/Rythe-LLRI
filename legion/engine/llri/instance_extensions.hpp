@@ -11,7 +11,13 @@ namespace legion::graphics::llri
     */
     enum class InstanceExtensionType
     {
+        /**
+         * @brief Validate API calls, their parameters, and context.
+         */
         APIValidation,
+        /**
+         * @brief Validate shader operations such as buffer reads/writes.
+        */
         GPUValidation
     };
 
@@ -44,19 +50,27 @@ namespace legion::graphics::llri
      */
     [[nodiscard]] bool queryInstanceExtensionSupport(const InstanceExtensionType& type);
 
+    /**
+     * @brief Enable or disable API-side validation.
+     * API validation checks for parameters and context validity and sends the appropriate messages back if the usage is invalid or otherwise concerning.
+    */
     struct APIValidationEXT
     {
         bool enable : 1;
 
         APIValidationEXT() = default;
-        explicit APIValidationEXT(bool enable) : enable(enable) { }
+        explicit APIValidationEXT(const bool& enable) : enable(enable) { }
     };
 
+    /**
+     * @brief Enable or disable GPU-side validation.
+     * GPU validation validates shader operations such as buffer read/writes. Enabling this can be useful for debugging but is often associated with a significant cost.
+    */
     struct GPUValidationEXT
     {
         bool enable : 1;
 
         GPUValidationEXT() = default;
-        explicit GPUValidationEXT(bool enable) : enable(enable) { }
+        explicit GPUValidationEXT(const bool& enable) : enable(enable) { }
     };
 }
