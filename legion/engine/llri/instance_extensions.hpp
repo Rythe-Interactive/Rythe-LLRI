@@ -22,6 +22,22 @@ namespace legion::graphics::llri
     };
 
     /**
+     * @brief Converts an InstanceExtensionType to a string to aid in debug logging.
+    */
+    constexpr const char* to_string(const InstanceExtensionType& result)
+    {
+        switch (result)
+        {
+            case InstanceExtensionType::APIValidation:
+                return "APIValidation";
+            case InstanceExtensionType::GPUValidation:
+                return "GPUValidation";
+        }
+
+        return "Invalid Result value";
+    }
+
+    /**
      * @brief Describes an instance extension with its type. <br>
      * InstanceExtensions aren't guaranteed to be available (hence their name Extension), and thus before enabling any InstanceExtension, you should first query its support with llri::queryInstanceExtensionSupport().
     */
