@@ -17,5 +17,8 @@
     <ClInclude Include="instance_extensions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="adapter_extensions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

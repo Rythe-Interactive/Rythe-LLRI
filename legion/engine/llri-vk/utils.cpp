@@ -54,6 +54,9 @@ namespace legion::graphics::llri
             return availableExtensions;
         }
 
+        /**
+         * @brief Helper function that converts vk::Result to llri::Result
+        */
         Result mapVkResult(const vk::Result& result)
         {
             switch (result)
