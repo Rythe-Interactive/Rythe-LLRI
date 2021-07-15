@@ -25,7 +25,7 @@ namespace legion::graphics::llri
                 break;
         }
 
-        return "Invalid AdapterType value";
+        return "Invalid AdapterExtensionType value";
     }
 
     /**

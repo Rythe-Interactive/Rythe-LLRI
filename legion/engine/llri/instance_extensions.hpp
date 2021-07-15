@@ -33,7 +33,7 @@ namespace legion::graphics::llri
                 return "GPUValidation";
         }
 
-        return "Invalid Result value";
+        return "Invalid InstanceExtensionType value";
     }
 
     /**
