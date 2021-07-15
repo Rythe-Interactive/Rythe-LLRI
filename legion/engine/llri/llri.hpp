@@ -229,7 +229,7 @@ namespace legion::graphics::llri
     };
 
     /**
-     * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it may correlate with the availability of various features.
+     * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it may correlate with performance or the availability of various features.
     */
     enum class AdapterType
     {
@@ -332,7 +332,7 @@ namespace legion::graphics::llri
          * @brief Get the support of a given adapter extension.
          * @return true if the extension is supported, and false if it isn't.
          */
-        bool queryExtensionSupport(const AdapterExtensionType& type) const;
+        [[nodiscard]] bool queryExtensionSupport(const AdapterExtensionType& type) const;
     private:
         void* m_ptr = nullptr;
     };
