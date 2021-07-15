@@ -2,5 +2,5 @@
 
 namespace legion::graphics::llri
 {
-    size_type Context::someImplementationAgnosticValue = 323278u;
+    unsigned Context::someImplementationAgnosticValue = 323278u;
 }
