@@ -1,4 +1,5 @@
 #include <llri/llri.hpp>
+#include <llri-vk/utils.hpp>
 
 #include <vector>
 #include <map>
@@ -6,13 +7,6 @@
 
 namespace legion::graphics::llri
 {
-    namespace internal
-    {
-        std::map<std::string, vk::LayerProperties>& queryAvailableLayers();
-        std::map<std::string, vk::ExtensionProperties>& queryAvailableExtensions();
-        result mapVkResult(const vk::Result& result);
-    }
-
     result createInstance(const instance_desc& desc, Instance* instance)
     {
         if (instance == nullptr)

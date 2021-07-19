@@ -78,12 +78,8 @@
       <Command>xcopy "$(OutDir)$(TargetName).lib" "$(SolutionDir)lib\" /y /i /r</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>del /q "$(SolutionDir)include\$(ProjectName)"
-copy /Y "$(SolutionDir)xcopyexclude" ".\"
-
-xcopy "$(ProjectDir)..\$(ProjectName)" "$(SolutionDir)include\$(ProjectName)\" /i /s /r /exclude:xcopyexclude /y &gt; nul
-
-del /q ".\xcopyexclude"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -112,18 +108,17 @@ copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"</Command>
     </PostBuildEvent>
     <Lib />
     <PreBuildEvent>
-      <Command>del /q "$(SolutionDir)include\$(ProjectName)"
-copy /Y "$(SolutionDir)xcopyexclude" ".\"
-
-xcopy "$(ProjectDir)..\$(ProjectName)" "$(SolutionDir)include\$(ProjectName)\" /i /s /r /exclude:xcopyexclude /y &gt; nul
-
-del /q ".\xcopyexclude"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="instance_extensions.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

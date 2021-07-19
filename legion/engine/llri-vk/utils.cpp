@@ -1,8 +1,5 @@
 #include <llri/llri.hpp>
-#include <vulkan/vulkan.hpp>
-#include <map>
-#include <string>
-#include <vector>
+#include <llri-vk/utils.hpp>
 
 namespace legion::graphics::llri
 {
@@ -11,36 +8,30 @@ namespace legion::graphics::llri
         /**
          * @brief Helper function that maps layers to their names
         */
-        std::map<std::string, vk::LayerProperties> preprocessLayerProperties()
+        layer_map preprocessLayerProperties()
         {
-            std::map<std::string, vk::LayerProperties> result;
+            layer_map result;
 
             std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
             for (auto layer : availableLayers)
-                result[layer.layerName.data()] = layer;
+                result[nameHash(layer.layerName.data())] = layer;
 
             return result;
         }
 
-        /**
-         * @brief Helps prevent loading in layers multiple times by loading them in as a static variable in this function
-        */
-        std::map<std::string, vk::LayerProperties>& queryAvailableLayers()
+        const layer_map& queryAvailableLayers()
         {
-            static std::map<std::string, vk::LayerProperties> availableLayers = preprocessLayerProperties();
+            static layer_map availableLayers = preprocessLayerProperties();
             return availableLayers;
         }
 
-        /**
-         * @brief Helper function that maps extensions to their names
-        */
-        std::map<std::string, vk::ExtensionProperties> preprocessExtensionProperties()
+        extension_map preprocessExtensionProperties()
         {
-            std::map<std::string, vk::ExtensionProperties> result;
+            extension_map result;
 
             std::vector<vk::ExtensionProperties> availableExtensions = vk::enumerateInstanceExtensionProperties();
             for (auto extension : availableExtensions)
-                result[extension.extensionName] = extension;
+                result[nameHash(extension.extensionName.data())] = extension;
 
             return result;
         }
@@ -48,9 +39,9 @@ namespace legion::graphics::llri
         /**
          * @brief Helps prevent loading in extensions multiple times by loading them in as a static variable in this function
         */
-        std::map<std::string, vk::ExtensionProperties>& queryAvailableExtensions()
+        const extension_map& queryAvailableExtensions()
         {
-            static std::map<std::string, vk::ExtensionProperties> availableExtensions = preprocessExtensionProperties();
+            static extension_map availableExtensions = preprocessExtensionProperties();
             return availableExtensions;
         }
 
@@ -114,6 +105,21 @@ namespace legion::graphics::llri
             }
 
             return result::ErrorUnknown;
+        }
+
+        /**
+         * @brief Utility function for hashing strings for layer/extension names
+        */
+        unsigned long long nameHash(std::string name)
+        {
+            static std::hash<std::string> hasher{};
+            if (!name.empty() && name[name.size() - 1] == '\0')
+            {
+                std::string temp = name;
+                temp.resize(name.size() - 1);
+                return hasher(temp);
+            }
+            return hasher(name);
         }
     }
 }

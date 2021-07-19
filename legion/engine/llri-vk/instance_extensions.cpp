@@ -1,17 +1,8 @@
 #include <llri/llri.hpp>
-#include <vulkan/vulkan.hpp>
-
-#include <map>
-#include <string>
+#include <llri-vk/utils.hpp>
 
 namespace legion::graphics::llri
 {
-    namespace internal
-    {
-        std::map<std::string, vk::LayerProperties>& queryAvailableLayers();
-        std::map<std::string, vk::ExtensionProperties>& queryAvailableExtensions();
-    }
-
     bool queryInstanceExtensionSupport(const instance_extension_type& type)
     {
         auto layers = internal::queryAvailableLayers();
@@ -20,7 +11,7 @@ namespace legion::graphics::llri
         {
             case instance_extension_type::APIValidation:
             {
-                return layers.find("VK_LAYER_KHRONOS_validation") != layers.end();
+                return layers.find(internal::nameHash("VK_LAYER_KHRONOS_validation")) != layers.end();
             }
             case instance_extension_type::GPUValidation:
             {
