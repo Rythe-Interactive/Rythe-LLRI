@@ -3,16 +3,16 @@
 
 namespace legion::graphics::llri
 {
-    bool queryInstanceExtensionSupport(const InstanceExtensionType& type)
+    bool queryInstanceExtensionSupport(const instance_extension_type& type)
     {
         switch (type)
         {
-            case InstanceExtensionType::APIValidation:
+            case instance_extension_type::APIValidation:
             {
                 ID3D12Debug* temp = nullptr;
                 return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
             }
-            case InstanceExtensionType::GPUValidation:
+            case instance_extension_type::GPUValidation:
             {
                 ID3D12Debug1* temp = nullptr;
                 return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
@@ -26,9 +26,9 @@ namespace legion::graphics::llri
     {
         /**
          * @brief Enables D3D12 API validation layers where requested.
-         * @return If the needed debug interface is not found/supported, the function returns Result::ErrorExtensionNotSupported.
+         * @return If the needed debug interface is not found/supported, the function returns result::ErrorExtensionNotSupported.
         */
-        Result createAPIValidationEXT(const APIValidationEXT& ext, void** output)
+        result createAPIValidationEXT(const APIValidationEXT& ext, void** output)
         {
             if (ext.enable)
             {
@@ -39,16 +39,16 @@ namespace legion::graphics::llri
                     *output = debugAPI;
                 }
                 else
-                    return Result::ErrorExtensionNotSupported;
+                    return result::ErrorExtensionNotSupported;
             }
-            return Result::Success;
+            return result::Success;
         }
 
         /**
          * @brief Enables D3D12 GPU validation layers where requested.
-         * @return If the needed debug interface is not found/supported, the function returns Result::ErrorExtensionNotSupported.
+         * @return If the needed debug interface is not found/supported, the function returns result::ErrorExtensionNotSupported.
         */
-        Result createGPUValidationEXT(const GPUValidationEXT& ext, void** output)
+        result createGPUValidationEXT(const GPUValidationEXT& ext, void** output)
         {
             if (ext.enable)
             {
@@ -61,11 +61,11 @@ namespace legion::graphics::llri
                 }
                 else
                 {
-                    return Result::ErrorExtensionNotSupported;
+                    return result::ErrorExtensionNotSupported;
                 }
             }
 
-            return Result::Success;
+            return result::Success;
         }
     }
 }

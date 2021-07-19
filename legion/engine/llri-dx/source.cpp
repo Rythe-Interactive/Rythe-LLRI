@@ -6,50 +6,50 @@ namespace legion::graphics::llri
 {
     namespace internal
     {
-        Result createAPIValidationEXT(const APIValidationEXT& ext, void** output);
-        Result createGPUValidationEXT(const GPUValidationEXT& ext, void** output);
-        Result mapHRESULT(const HRESULT& value);
+        result createAPIValidationEXT(const APIValidationEXT& ext, void** output);
+        result createGPUValidationEXT(const GPUValidationEXT& ext, void** output);
+        result mapHRESULT(const HRESULT& value);
     }
 
-    Result createInstance(const InstanceDesc& desc, Instance* instance)
+    result createInstance(const InstanceDesc& desc, Instance* instance)
     {
         if (instance == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
-        auto* result = new InstanceT();
+        auto* output = new InstanceT();
         UINT factoryFlags = 0;
 
         for (uint32_t i = 0; i < desc.numExtensions; i++)
         {
             auto& extension = desc.extensions[i];
-            Result extensionCreateResult;
+            result extensionCreateResult;
 
             switch (extension.type)
             {
-                case InstanceExtensionType::APIValidation:
+                case instance_extension_type::APIValidation:
                 {
-                    extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &result->m_debugAPI);
-                    if (extensionCreateResult == Result::Success)
+                    extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
+                    if (extensionCreateResult == result::Success)
                         factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
                     break;
                 }
-                case InstanceExtensionType::GPUValidation:
+                case instance_extension_type::GPUValidation:
                 {
-                    extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &result->m_debugGPU);
+                    extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
                     break;
                 }
                 default:
                 {
-                    extensionCreateResult = Result::ErrorExtensionNotSupported;
+                    extensionCreateResult = result::ErrorExtensionNotSupported;
                     break;
                 }
             }
 
-            if (extensionCreateResult != Result::Success)
+            if (extensionCreateResult != result::Success)
             {
-                destroyInstance(result);
+                destroyInstance(output);
                 return extensionCreateResult;
             }
         }
@@ -59,14 +59,14 @@ namespace legion::graphics::llri
         const HRESULT factoryCreateResult = CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
         if (FAILED(factoryCreateResult))
         {
-            destroyInstance(result);
+            destroyInstance(output);
             return internal::mapHRESULT(factoryCreateResult);
         }
 
         //Store factory and return result
-        result->m_ptr = factory;
-        *instance = result;
-        return Result::Success;
+        output->m_ptr = factory;
+        *instance = output;
+        return result::Success;
     }
 
     void destroyInstance(Instance instance)
@@ -86,10 +86,10 @@ namespace legion::graphics::llri
         delete instance;
     }
 
-    Result InstanceT::enumerateAdapters(std::vector<Adapter>* adapters)
+    result InstanceT::enumerateAdapters(std::vector<Adapter>* adapters)
     {
         if (adapters == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         adapters->clear();
 
@@ -134,19 +134,19 @@ namespace legion::graphics::llri
             i++;
         }
 
-        return Result::Success;
+        return result::Success;
     }
 
-    Result InstanceT::createDevice(const DeviceDesc& desc, Device* device)
+    result InstanceT::createDevice(const DeviceDesc& desc, Device* device)
     {
         if (m_ptr == nullptr || device == nullptr || desc.adapter == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (desc.adapter->m_ptr == nullptr)
-            return Result::ErrorDeviceLost;
+            return result::ErrorDeviceLost;
 
         Device result = new DeviceT();
 
@@ -162,7 +162,7 @@ namespace legion::graphics::llri
 
         result->m_ptr = dx12Device;
         *device = result;
-        return Result::Success;
+        return result::Success;
     }
 
     void InstanceT::destroyDevice(Device device)
@@ -176,13 +176,13 @@ namespace legion::graphics::llri
         delete device;
     }
 
-    Result AdapterT::queryInfo(AdapterInfo* info) const
+    result AdapterT::queryInfo(AdapterInfo* info) const
     {
         if (info == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (m_ptr == nullptr)
-            return Result::ErrorDeviceRemoved;
+            return result::ErrorDeviceRemoved;
 
         DXGI_ADAPTER_DESC1 desc;
         static_cast<IDXGIAdapter1*>(m_ptr)->GetDesc1(&desc);
@@ -194,27 +194,27 @@ namespace legion::graphics::llri
         result.adapterName = description.substr(0, description.find_last_not_of(' '));
 
         if (desc.Flags == DXGI_ADAPTER_FLAG_REMOTE)
-            result.adapterType = AdapterType::Virtual;
+            result.adapterType = adapter_type::Virtual;
         else if (desc.DedicatedVideoMemory > 0)
-            result.adapterType = AdapterType::Discrete;
+            result.adapterType = adapter_type::Discrete;
         else // video memory == 0 
-            result.adapterType = AdapterType::Integrated;
+            result.adapterType = adapter_type::Integrated;
 
         *info = result;
-        return Result::Success;
+        return result::Success;
     }
 
-    Result AdapterT::queryFeatures(AdapterFeatures* features) const
+    result AdapterT::queryFeatures(AdapterFeatures* features) const
     {
         if (features == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (m_ptr == nullptr)
-            return Result::ErrorDeviceRemoved;
+            return result::ErrorDeviceRemoved;
 
         HRESULT level12_0 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
         if (level12_0 == E_FAIL)
-            return Result::ErrorIncompatibleDriver;
+            return result::ErrorIncompatibleDriver;
         else if (FAILED(level12_0)) //no matter what reason, LEVEL_12_0 should always be supported for DX12
             return internal::mapHRESULT(level12_0);
 
@@ -227,10 +227,10 @@ namespace legion::graphics::llri
         //Set all the information in a structured way here
 
         *features = result;
-        return Result::Success;
+        return result::Success;
     }
 
-    bool AdapterT::queryExtensionSupport(const AdapterExtensionType& type) const
+    bool AdapterT::queryExtensionSupport(const adapter_extension_type& type) const
     {
         switch (type)
         {

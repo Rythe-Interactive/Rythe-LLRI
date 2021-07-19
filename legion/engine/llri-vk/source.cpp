@@ -10,15 +10,15 @@ namespace legion::graphics::llri
     {
         std::map<std::string, vk::LayerProperties>& queryAvailableLayers();
         std::map<std::string, vk::ExtensionProperties>& queryAvailableExtensions();
-        Result mapVkResult(const vk::Result& result);
+        result mapVkResult(const vk::Result& result);
     }
 
-    Result createInstance(const InstanceDesc& desc, Instance* instance)
+    result createInstance(const InstanceDesc& desc, Instance* instance)
     {
         if (instance == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         auto* result = new InstanceT();
 
@@ -39,13 +39,13 @@ namespace legion::graphics::llri
             auto& extension = desc.extensions[i];
             switch(extension.type)
             {
-                case InstanceExtensionType::APIValidation:
+                case instance_extension_type::APIValidation:
                 {
                     if (extension.apiValidation.enable)
                         layers.push_back("VK_LAYER_KHRONOS_validation");
                     break;
                 }
-                case InstanceExtensionType::GPUValidation:
+                case instance_extension_type::GPUValidation:
                 {
                     if (extension.gpuValidation.enable)
                     {
@@ -62,7 +62,7 @@ namespace legion::graphics::llri
                 default:
                 {
                     llri::destroyInstance(result);
-                    return Result::ErrorExtensionNotSupported;
+                    return result::ErrorExtensionNotSupported;
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace legion::graphics::llri
 
         result->m_ptr = vulkanInstance;
         *instance = result;
-        return Result::Success;
+        return result::Success;
     }
 
     void destroyInstance(Instance instance)
@@ -98,10 +98,10 @@ namespace legion::graphics::llri
         delete instance;
     }
 
-    Result InstanceT::enumerateAdapters(std::vector<Adapter>* adapters)
+    result InstanceT::enumerateAdapters(std::vector<Adapter>* adapters)
     {
         if (adapters == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         //Clear internal pointers, lost adapters will have a nullptr internally
         for (auto& [ptr, adapter] : m_cachedAdapters)
@@ -140,19 +140,19 @@ namespace legion::graphics::llri
             }
         }
 
-        return Result::Success;
+        return result::Success;
     }
 
-    Result InstanceT::createDevice(const DeviceDesc& desc, Device* device)
+    result InstanceT::createDevice(const DeviceDesc& desc, Device* device)
     {
         if (m_ptr == nullptr || device == nullptr || desc.adapter == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (desc.adapter->m_ptr == nullptr)
-            return Result::ErrorDeviceLost;
+            return result::ErrorDeviceLost;
 
         Device result = new DeviceT();
 
@@ -183,7 +183,7 @@ namespace legion::graphics::llri
         result->m_ptr = vkDevice;
 
         *device = result;
-        return Result::Success;
+        return result::Success;
     }
 
     void InstanceT::destroyDevice(Device device)
@@ -194,32 +194,32 @@ namespace legion::graphics::llri
         delete device;
     }
 
-    constexpr AdapterType mapPhysicalDeviceType(const VkPhysicalDeviceType& type)
+    constexpr adapter_type mapPhysicalDeviceType(const VkPhysicalDeviceType& type)
     {
         switch(type)
         {
             case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-                return AdapterType::Other;
+                return adapter_type::Other;
             case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-                return AdapterType::Integrated;
+                return adapter_type::Integrated;
             case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-                return AdapterType::Discrete;
+                return adapter_type::Discrete;
             case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-                return AdapterType::Virtual;
+                return adapter_type::Virtual;
             default:
                 break;
         }
 
-        return AdapterType::Other;
+        return adapter_type::Other;
     }
 
-    Result AdapterT::queryInfo(AdapterInfo* info) const
+    result AdapterT::queryInfo(AdapterInfo* info) const
     {
         if (info == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (m_ptr == nullptr)
-            return Result::ErrorDeviceRemoved;
+            return result::ErrorDeviceRemoved;
 
         VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(static_cast<VkPhysicalDevice>(m_ptr), &properties);
@@ -230,16 +230,16 @@ namespace legion::graphics::llri
         result.adapterName = properties.deviceName;
         result.adapterType = mapPhysicalDeviceType(properties.deviceType);
         *info = result;
-        return Result::Success;
+        return result::Success;
     }
 
-    Result AdapterT::queryFeatures(AdapterFeatures* features) const
+    result AdapterT::queryFeatures(AdapterFeatures* features) const
     {
         if (features == nullptr)
-            return Result::ErrorInvalidUsage;
+            return result::ErrorInvalidUsage;
 
         if (m_ptr == nullptr)
-            return Result::ErrorDeviceRemoved;
+            return result::ErrorDeviceRemoved;
 
         VkPhysicalDeviceFeatures physicalFeatures;
         vkGetPhysicalDeviceFeatures(static_cast<VkPhysicalDevice>(m_ptr), &physicalFeatures);
@@ -249,10 +249,10 @@ namespace legion::graphics::llri
         //Set all the information in a structured way here
 
         *features = result;
-        return Result::Success;
+        return result::Success;
     }
 
-    bool AdapterT::queryExtensionSupport(const AdapterExtensionType& type) const
+    bool AdapterT::queryExtensionSupport(const adapter_extension_type& type) const
     {
         switch(type)
         {

@@ -8,7 +8,7 @@ namespace legion::graphics::llri
      * <br>
      * Instance Extensions aren't guaranteed to be available so use this enum with llri::queryInstanceExtensionSupport() to find out if your desired extension is available prior to adding the extension to your instance desc extension array.
     */
-    enum class InstanceExtensionType
+    enum struct instance_extension_type
     {
         /**
          * @brief Validate API calls, their parameters, and context.
@@ -21,19 +21,19 @@ namespace legion::graphics::llri
     };
 
     /**
-     * @brief Converts an InstanceExtensionType to a string to aid in debug logging.
+     * @brief Converts an instance_extension_type to a string to aid in debug logging.
     */
-    constexpr const char* to_string(const InstanceExtensionType& result)
+    constexpr const char* to_string(const instance_extension_type& result)
     {
         switch (result)
         {
-            case InstanceExtensionType::APIValidation:
+            case instance_extension_type::APIValidation:
                 return "APIValidation";
-            case InstanceExtensionType::GPUValidation:
+            case instance_extension_type::GPUValidation:
                 return "GPUValidation";
         }
 
-        return "Invalid InstanceExtensionType value";
+        return "Invalid instance_extension_type value";
     }
 
     /**
@@ -70,12 +70,12 @@ namespace legion::graphics::llri
          * @brief The type of instance extension. <br>
          * This value is used to select the correct union member.
         */
-        InstanceExtensionType type;
+        instance_extension_type type;
         /**
          * @brief The instance extension's information. <br>
          * One of the values in this union must be set, and that value must be the same value as the given type. <br>
          * Passing a different structure than expected causes undefined behaviour and may result in unexplainable result values or internal API errors. <br>
-         * All instance extensions are named after their enum entry, followed with EXT (e.g. InstanceExtensionType::APIValidation is represented by APIValidationEXT).
+         * All instance extensions are named after their enum entry, followed with EXT (e.g. instance_extension_type::APIValidation is represented by APIValidationEXT).
         */
         union
         {
@@ -84,13 +84,13 @@ namespace legion::graphics::llri
         };
 
         InstanceExtension() = default;
-        explicit InstanceExtension(const InstanceExtensionType& type, const APIValidationEXT& ext) : type(type), apiValidation(ext) { }
-        explicit InstanceExtension(const InstanceExtensionType& type, const GPUValidationEXT& ext) : type(type), gpuValidation(ext) { }
+        explicit InstanceExtension(const instance_extension_type& type, const APIValidationEXT& ext) : type(type), apiValidation(ext) { }
+        explicit InstanceExtension(const instance_extension_type& type, const GPUValidationEXT& ext) : type(type), gpuValidation(ext) { }
     };
 
     /**
      * @brief Queries the support of the given extension.
      * @return true if the extension is supported, and false if it isn't.
      */
-    [[nodiscard]] bool queryInstanceExtensionSupport(const InstanceExtensionType& type);
+    [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type);
 }

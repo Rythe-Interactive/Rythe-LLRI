@@ -6,47 +6,47 @@ namespace legion::graphics::llri
     namespace internal
     {
         /**
-         * @brief Function that maps an HRESULT to an llri::Result.
+         * @brief Function that maps an HRESULT to an llri::result.
         */
-        Result mapHRESULT(const HRESULT& value)
+        result mapHRESULT(const HRESULT& value)
         {
             switch (HRESULT_CODE(value))
             {
                 case S_OK :
-                    return Result::Success;
+                    return result::Success;
                 case DXGI_ERROR_WAIT_TIMEOUT :
-                    return Result::Timeout;
+                    return result::Timeout;
                 case DXGI_ERROR_DEVICE_HUNG :
-                    return Result::ErrorDeviceHung;
+                    return result::ErrorDeviceHung;
                 case DXGI_ERROR_DEVICE_REMOVED :
-                    return Result::ErrorDeviceRemoved;
+                    return result::ErrorDeviceRemoved;
                 case DXGI_ERROR_DEVICE_RESET :
-                    return Result::ErrorDeviceLost;
+                    return result::ErrorDeviceLost;
                 case DXGI_ERROR_DRIVER_INTERNAL_ERROR :
-                    return Result::ErrorDriverFailure;
+                    return result::ErrorDriverFailure;
                 case DXGI_ERROR_UNSUPPORTED :
-                    return Result::ErrorFeatureNotSupported;
+                    return result::ErrorFeatureNotSupported;
                 case D3D12_ERROR_ADAPTER_NOT_FOUND:
                     break;
                 case D3D12_ERROR_DRIVER_VERSION_MISMATCH:
-                    return Result::ErrorIncompatibleDriver;
+                    return result::ErrorIncompatibleDriver;
                 case DXGI_ERROR_INVALID_CALL:
-                    return Result::ErrorInvalidUsage;
+                    return result::ErrorInvalidUsage;
                 case DXGI_ERROR_WAS_STILL_DRAWING:
                     break;
                 case E_FAIL:
                     break;
                 case E_INVALIDARG:
-                    return Result::ErrorInvalidUsage;
+                    return result::ErrorInvalidUsage;
                 case E_OUTOFMEMORY:
-                    return Result::ErrorOutOfHostMemory;
+                    return result::ErrorOutOfHostMemory;
                 case E_NOTIMPL:
-                    return Result::ErrorFeatureNotSupported;
+                    return result::ErrorFeatureNotSupported;
                 case S_FALSE:
-                    return Result::NotReady;
+                    return result::NotReady;
             }
 
-            return Result::ErrorUnknown;
+            return result::ErrorUnknown;
         }
     }
 }

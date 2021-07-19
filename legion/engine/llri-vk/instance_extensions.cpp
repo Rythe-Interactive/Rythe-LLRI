@@ -12,17 +12,17 @@ namespace legion::graphics::llri
         std::map<std::string, vk::ExtensionProperties>& queryAvailableExtensions();
     }
 
-    bool queryInstanceExtensionSupport(const InstanceExtensionType& type)
+    bool queryInstanceExtensionSupport(const instance_extension_type& type)
     {
         auto layers = internal::queryAvailableLayers();
 
         switch (type)
         {
-            case InstanceExtensionType::APIValidation:
+            case instance_extension_type::APIValidation:
             {
                 return layers.find("VK_LAYER_KHRONOS_validation") != layers.end();
             }
-            case InstanceExtensionType::GPUValidation:
+            case instance_extension_type::GPUValidation:
             {
                 return true;
             }

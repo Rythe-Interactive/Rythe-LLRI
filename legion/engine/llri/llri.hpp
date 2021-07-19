@@ -34,9 +34,9 @@ namespace legion::graphics::llri
     /**
      * @brief Informative result values for llri operations.
      *
-     * Operations that execute properly will return Result::Success, or if they fail they will pick the appropriate failing Result value. Note that some Result values are prefixed with "Error", implying that their Result value was fatal and can not be recovered from. Failures without the "Error" prefix are often soft failures that might for example be caused by user-defined timeouts.
+     * Operations that execute properly will return result::Success, or if they fail they will pick the appropriate failing result value. Note that some result values are prefixed with "Error", implying that their result value was fatal and can not be recovered from. Failures without the "Error" prefix are often soft failures that might for example be caused by user-defined timeouts.
     */
-    enum class Result
+    enum struct result
     {
         /**
          * @brief The function executed properly.
@@ -106,45 +106,45 @@ namespace legion::graphics::llri
     };
 
     /**
-     * @brief Converts a Result to a string to aid in debug logging.
+     * @brief Converts a result to a string to aid in debug logging.
     */
-    constexpr const char* to_string(const Result& result)
+    constexpr const char* to_string(const result& result)
     {
         switch (result)
         {
-            case Result::Success:
+            case result::Success:
                 return "Success";
-            case Result::Timeout:
+            case result::Timeout:
                 return "Timeout";
-            case Result::ErrorUnknown:
+            case result::ErrorUnknown:
                 return "ErrorUnknown";
-            case Result::ErrorInvalidUsage:
+            case result::ErrorInvalidUsage:
                 return "ErrorInvalidUsage";
-            case Result::ErrorFeatureNotSupported:
+            case result::ErrorFeatureNotSupported:
                 return "ErrorFeatureNotSupported";
-            case Result::ErrorExtensionNotSupported:
+            case result::ErrorExtensionNotSupported:
                 return "ErrorExtensionNotSupported";
-            case Result::ErrorDeviceHung:
+            case result::ErrorDeviceHung:
                 return "ErrorDeviceHung";
-            case Result::ErrorDeviceLost:
+            case result::ErrorDeviceLost:
                 return "ErrorDeviceLost";
-            case Result::ErrorDeviceRemoved:
+            case result::ErrorDeviceRemoved:
                 return "ErrorDeviceRemoved";
-            case Result::ErrorDriverFailure:
+            case result::ErrorDriverFailure:
                 return "ErrorDriverFailure";
-            case Result::NotReady:
+            case result::NotReady:
                 return "NotReady";
-            case Result::ErrorOutOfHostMemory:
+            case result::ErrorOutOfHostMemory:
                 return "ErrorOutOfHostMemory";
-            case Result::ErrorOutOfDeviceMemory:
+            case result::ErrorOutOfDeviceMemory:
                 return "ErrorOutOfDeviceMemory";
-            case Result::ErrorInitializationFailed:
+            case result::ErrorInitializationFailed:
                 return "ErrorInitializationFailed";
-            case Result::ErrorIncompatibleDriver:
+            case result::ErrorIncompatibleDriver:
                 return "ErrorIncompatibleDriver";
         }
 
-        return "Invalid Result value";
+        return "Invalid result value";
     }
 
     /**
@@ -182,7 +182,7 @@ namespace legion::graphics::llri
      * @return ErrorExtensionNotSupported if any of the extensions fail to be created.
      * @return Otherwise it may also return: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
     */
-    Result createInstance(const InstanceDesc& desc, Instance* instance);
+    result createInstance(const InstanceDesc& desc, Instance* instance);
 
     /**
      * @brief Destroys the given instance and its directly related internal resources (debug info etc).
@@ -194,7 +194,7 @@ namespace legion::graphics::llri
 
     struct InstanceT
     {
-        friend Result llri::createInstance(const InstanceDesc& desc, Instance* instance);
+        friend result llri::createInstance(const InstanceDesc& desc, Instance* instance);
         friend void llri::destroyInstance(Instance instance);
 
         /**
@@ -205,7 +205,7 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if adapters is nullptr.
          * @return Otherwise it may return: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed.
         */
-        Result enumerateAdapters(std::vector<Adapter>* adapters);
+        result enumerateAdapters(std::vector<Adapter>* adapters);
 
         /**
          * @brief Creates a virtual LLRI device. Device represents one or multiple adapters and enables you to allocate memory, create resources, or send commands to the adapter.
@@ -213,7 +213,7 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
          * @return ErrorDeviceLost if the adapter was lost.
         */
-        Result createDevice(const DeviceDesc& desc, Device* device);
+        result createDevice(const DeviceDesc& desc, Device* device);
 
         /**
          * @brief Destroy the LLRI device. This does not delete the resources allocated through the device, that responsibility remains with the user.
@@ -231,7 +231,7 @@ namespace legion::graphics::llri
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it may correlate with performance or the availability of various features.
     */
-    enum class AdapterType
+    enum struct adapter_type
     {
         /**
          * @brief The device type is not recognized as any of the other available types.
@@ -254,23 +254,23 @@ namespace legion::graphics::llri
     };
 
     /**
-     * @brief Converts an AdapterType to a string to aid in debug logging.
+     * @brief Converts an adapter_type to a string to aid in debug logging.
     */
-    constexpr const char* to_string(const AdapterType& type)
+    constexpr const char* to_string(const adapter_type& type)
     {
         switch (type)
         {
-            case AdapterType::Other:
+            case adapter_type::Other:
                 return "Other";
-            case AdapterType::Integrated:
+            case adapter_type::Integrated:
                 return "Integrated";
-            case AdapterType::Discrete:
+            case adapter_type::Discrete:
                 return "Discrete";
-            case AdapterType::Virtual:
+            case adapter_type::Virtual:
                 return "Virtual";
         }
 
-        return "Invalid AdapterType value";
+        return "Invalid adapter_type value";
     }
 
     /**
@@ -294,7 +294,7 @@ namespace legion::graphics::llri
         /**
          * @brief An informational value describing the type of Adapter. The type does not directly affect how the related adapter operates, but it may correlate with the availability of various features.
         */
-        AdapterType adapterType;
+        adapter_type adapterType;
     };
 
     /**
@@ -317,7 +317,7 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if info is nullptr.
          * @return If the adapter was removed or lost, the operation returns ErrorDeviceRemoved.
         */
-        Result queryInfo(AdapterInfo* info) const;
+        result queryInfo(AdapterInfo* info) const;
 
         /**
          * @brief Get a structure with all supported driver/hardware features.
@@ -326,13 +326,13 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if features is nullptr.
          * @return ErrorIncompatibleDriver if the Adapter doesn't support the backend's requested API (either Vulkan 1.0 or DirectX 12 depending on the build).
         */
-        Result queryFeatures(AdapterFeatures* features) const;
+        result queryFeatures(AdapterFeatures* features) const;
 
         /**
          * @brief Get the support of a given adapter extension.
          * @return true if the extension is supported, and false if it isn't.
          */
-        [[nodiscard]] bool queryExtensionSupport(const AdapterExtensionType& type) const;
+        [[nodiscard]] bool queryExtensionSupport(const adapter_extension_type& type) const;
     private:
         void* m_ptr = nullptr;
     };

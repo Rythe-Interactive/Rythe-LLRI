@@ -55,43 +55,43 @@ namespace legion::graphics::llri
         }
 
         /**
-         * @brief Helper function that converts vk::Result to llri::Result
+         * @brief Helper function that converts vk::Result to llri::result
         */
-        Result mapVkResult(const vk::Result& result)
+        result mapVkResult(const vk::Result& result)
         {
             switch (result)
             {
                 case vk::Result::eSuccess:
-                    return Result::Success;
+                    return result::Success;
                 case vk::Result::eNotReady:
-                    return Result::NotReady;
+                    return result::NotReady;
                 case vk::Result::eTimeout:
-                    return Result::Timeout;
+                    return result::Timeout;
                 case vk::Result::eEventSet: break;
                 case vk::Result::eEventReset: break;
                 case vk::Result::eIncomplete: break;
                 case vk::Result::eErrorOutOfHostMemory:
-                    return Result::ErrorOutOfHostMemory;
+                    return result::ErrorOutOfHostMemory;
                 case vk::Result::eErrorOutOfDeviceMemory:
-                    return Result::ErrorOutOfDeviceMemory;
+                    return result::ErrorOutOfDeviceMemory;
                 case vk::Result::eErrorInitializationFailed:
-                    return Result::ErrorInitializationFailed;
+                    return result::ErrorInitializationFailed;
                 case vk::Result::eErrorDeviceLost:
-                    return Result::ErrorDeviceLost;
+                    return result::ErrorDeviceLost;
                 case vk::Result::eErrorMemoryMapFailed: break;
                 case vk::Result::eErrorLayerNotPresent:
-                    return Result::ErrorExtensionNotSupported;
+                    return result::ErrorExtensionNotSupported;
                 case vk::Result::eErrorExtensionNotPresent:
-                    return Result::ErrorExtensionNotSupported;
+                    return result::ErrorExtensionNotSupported;
                 case vk::Result::eErrorFeatureNotPresent:
-                    return Result::ErrorFeatureNotSupported;
+                    return result::ErrorFeatureNotSupported;
                 case vk::Result::eErrorIncompatibleDriver:
-                    return Result::ErrorIncompatibleDriver;
+                    return result::ErrorIncompatibleDriver;
                 case vk::Result::eErrorTooManyObjects: break;
                 case vk::Result::eErrorFormatNotSupported: break;
                 case vk::Result::eErrorFragmentedPool: break;
                 case vk::Result::eErrorUnknown:
-                    return Result::ErrorUnknown;
+                    return result::ErrorUnknown;
                 case vk::Result::eErrorOutOfPoolMemory: break;
                 case vk::Result::eErrorInvalidExternalHandle: break;
                 case vk::Result::eErrorFragmentation: break;
@@ -113,7 +113,7 @@ namespace legion::graphics::llri
                 default: break;
             }
 
-            return Result::ErrorUnknown;
+            return result::ErrorUnknown;
         }
     }
 }
