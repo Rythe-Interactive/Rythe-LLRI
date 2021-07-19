@@ -78,8 +78,8 @@ namespace legion::graphics::llri
         };
 
         instance_extension() = default;
-        explicit instance_extension(const instance_extension_type& type, const api_validation_ext& ext) : type(type), apiValidation(ext) { }
-        explicit instance_extension(const instance_extension_type& type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
+        instance_extension(const instance_extension_type& type, const api_validation_ext& ext) : type(type), apiValidation(ext) { }
+        instance_extension(const instance_extension_type& type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
     };
 
     /**
