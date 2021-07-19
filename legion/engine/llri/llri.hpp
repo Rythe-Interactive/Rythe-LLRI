@@ -29,7 +29,7 @@ namespace legion::graphics::llri
      * A device is a virtual representation of an adapter and can create/destroy resources for the said adapter.
      */
     typedef DeviceT* Device;
-    struct DeviceDesc;
+    struct device_desc;
 
     /**
      * @brief Informative result values for llri operations.
@@ -150,25 +150,22 @@ namespace legion::graphics::llri
     /**
      * @brief Instance description to be used in llri::createInstance().
     */
-    struct InstanceDesc
+    struct instance_desc
     {
         /**
-         * @brief The number of instance extensions in the InstanceDesc::extensions array.
+         * @brief The number of instance extensions in the instance_desc::extensions array.
         */
         uint32_t numExtensions;
         /**
-         * @brief The instance extensions, if InstanceDesc::numExtensions > 0, then this has to be a valid pointer to an array of InstanceExtension.
+         * @brief The instance extensions, if instance_desc::numExtensions > 0, then this has to be a valid pointer to an array of instance_extension.
          * If numExtensions == 0, then this pointer may be nullptr.
         */
-        InstanceExtension* extensions;
+        instance_extension* extensions;
         /**
          * @brief Sets the name of the application in internal API if applicable.
          * This is not guaranteed but is known to at least apply to Vulkan.
         */
         const char* applicationName;
-
-        InstanceDesc() = default;
-        InstanceDesc(const uint32_t& numExtensions, InstanceExtension* extensions, const char* applicationName) : numExtensions(numExtensions), extensions(extensions), applicationName(applicationName) { }
     };
 
     /**
@@ -182,7 +179,7 @@ namespace legion::graphics::llri
      * @return ErrorExtensionNotSupported if any of the extensions fail to be created.
      * @return Otherwise it may also return: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
     */
-    result createInstance(const InstanceDesc& desc, Instance* instance);
+    result createInstance(const instance_desc& desc, Instance* instance);
 
     /**
      * @brief Destroys the given instance and its directly related internal resources (debug info etc).
@@ -194,7 +191,7 @@ namespace legion::graphics::llri
 
     struct InstanceT
     {
-        friend result llri::createInstance(const InstanceDesc& desc, Instance* instance);
+        friend result llri::createInstance(const instance_desc& desc, Instance* instance);
         friend void llri::destroyInstance(Instance instance);
 
         /**
@@ -213,7 +210,7 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
          * @return ErrorDeviceLost if the adapter was lost.
         */
-        result createDevice(const DeviceDesc& desc, Device* device);
+        result createDevice(const device_desc& desc, Device* device);
 
         /**
          * @brief Destroy the LLRI device. This does not delete the resources allocated through the device, that responsibility remains with the user.
@@ -277,7 +274,7 @@ namespace legion::graphics::llri
      * @brief Basic information about an adapter.
      * This information is for informative purposes only and the results aren't guaranteed to be the same across APIs.
      */
-    struct AdapterInfo
+    struct adapter_info
     {
         /**
          * @brief The unique ID of the hardware vendor (e.g. NVIDIA, Intel or AMD).
@@ -302,7 +299,7 @@ namespace legion::graphics::llri
      * Fill this structure with 0's and enable the features you wish to support, enabling all the supported features could lead to performance loss.
      * Use Adapter::queryFeatures() to get a structure with supported features to test against.
     */
-    struct AdapterFeatures
+    struct adapter_features
     {
 
     };
@@ -317,7 +314,7 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if info is nullptr.
          * @return If the adapter was removed or lost, the operation returns ErrorDeviceRemoved.
         */
-        result queryInfo(AdapterInfo* info) const;
+        result queryInfo(adapter_info* info) const;
 
         /**
          * @brief Get a structure with all supported driver/hardware features.
@@ -326,7 +323,7 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if features is nullptr.
          * @return ErrorIncompatibleDriver if the Adapter doesn't support the backend's requested API (either Vulkan 1.0 or DirectX 12 depending on the build).
         */
-        result queryFeatures(AdapterFeatures* features) const;
+        result queryFeatures(adapter_features* features) const;
 
         /**
          * @brief Get the support of a given adapter extension.
@@ -340,7 +337,7 @@ namespace legion::graphics::llri
     /**
      * @brief Device description to be used in Instance::createDevice().
     */
-    struct DeviceDesc
+    struct device_desc
     {
         /**
          * @brief The adapter to create the instance for.
@@ -350,19 +347,19 @@ namespace legion::graphics::llri
          * @brief The enabled adapter features.
          * You should only enable features that you'll need because enabling features can disable driver optimizations.
         */
-        AdapterFeatures features;
+        adapter_features features;
         /**
-         * @brief The number of device extensions in the DeviceDesc::extensions array.
+         * @brief The number of device extensions in the device_desc::extensions array.
         */
         uint32_t numExtensions;
         /**
-         * @brief The device extensions, if DeviceDesc::numExtensions > 0, then this has to be a valid pointer to an array of DeviceExtension.
+         * @brief The device extensions, if device_desc::numExtensions > 0, then this has to be a valid pointer to an array of DeviceExtension.
          * If numExtensions == 0, then this pointer may be nullptr.
         */
-        AdapterExtension* extensions;
+        adapter_extension* extensions;
 
-        DeviceDesc() = default;
-        explicit DeviceDesc(Adapter adapter, const AdapterFeatures& features, const uint32_t& numExtensions, AdapterExtension* extensions) : adapter(adapter), features(features), numExtensions(numExtensions), extensions(extensions) { }
+        device_desc() = default;
+        explicit device_desc(Adapter adapter, const adapter_features& features, const uint32_t& numExtensions, adapter_extension* extensions) : adapter(adapter), features(features), numExtensions(numExtensions), extensions(extensions) { }
     };
 
     struct DeviceT

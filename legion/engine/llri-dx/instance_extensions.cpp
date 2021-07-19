@@ -28,7 +28,7 @@ namespace legion::graphics::llri
          * @brief Enables D3D12 API validation layers where requested.
          * @return If the needed debug interface is not found/supported, the function returns result::ErrorExtensionNotSupported.
         */
-        result createAPIValidationEXT(const APIValidationEXT& ext, void** output)
+        result createAPIValidationEXT(const api_validation_ext& ext, void** output)
         {
             if (ext.enable)
             {
@@ -48,7 +48,7 @@ namespace legion::graphics::llri
          * @brief Enables D3D12 GPU validation layers where requested.
          * @return If the needed debug interface is not found/supported, the function returns result::ErrorExtensionNotSupported.
         */
-        result createGPUValidationEXT(const GPUValidationEXT& ext, void** output)
+        result createGPUValidationEXT(const gpu_validation_ext& ext, void** output)
         {
             if (ext.enable)
             {

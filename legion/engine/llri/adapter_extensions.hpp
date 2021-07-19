@@ -4,8 +4,8 @@ namespace legion::graphics::llri
 {
     /**
      * @brief Describes the kind of adapter extension. <br>
-     * This value is used in AdapterExtension and is used internally to recognize the extension type and
-     * select the correct value from the AdapterExtension's union. <br>
+     * This value is used in adapter_extension and is used internally to recognize the extension type and
+     * select the correct value from the adapter_extension's union. <br>
      * <br>
      * Adapter Extensions aren't guaranteed to be available so use this enum with Adapter::queryExtensionSupport() to find out if your desired extension is available prior to adding the extension to your desc extension array.
     */
@@ -33,7 +33,7 @@ namespace legion::graphics::llri
      * <br>
      * Adapter Extensions aren't guaranteed to be available so query their availability with Adapter::queryExtensionSupport() to find out if your desired extension is available prior to adding the extension to the desc extension array.
     */
-    struct AdapterExtension
+    struct adapter_extension
     {
         adapter_extension_type type;
 
@@ -42,6 +42,6 @@ namespace legion::graphics::llri
             //Empty until adapter extensions are added
         };
 
-        AdapterExtension() = default;
+        adapter_extension() = default;
     };
 }

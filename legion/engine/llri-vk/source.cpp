@@ -13,7 +13,7 @@ namespace legion::graphics::llri
         result mapVkResult(const vk::Result& result);
     }
 
-    result createInstance(const InstanceDesc& desc, Instance* instance)
+    result createInstance(const instance_desc& desc, Instance* instance)
     {
         if (instance == nullptr)
             return result::ErrorInvalidUsage;
@@ -143,7 +143,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result InstanceT::createDevice(const DeviceDesc& desc, Device* device)
+    result InstanceT::createDevice(const device_desc& desc, Device* device)
     {
         if (m_ptr == nullptr || device == nullptr || desc.adapter == nullptr)
             return result::ErrorInvalidUsage;
@@ -213,7 +213,7 @@ namespace legion::graphics::llri
         return adapter_type::Other;
     }
 
-    result AdapterT::queryInfo(AdapterInfo* info) const
+    result AdapterT::queryInfo(adapter_info* info) const
     {
         if (info == nullptr)
             return result::ErrorInvalidUsage;
@@ -224,7 +224,7 @@ namespace legion::graphics::llri
         VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(static_cast<VkPhysicalDevice>(m_ptr), &properties);
 
-        AdapterInfo result{};
+        adapter_info result{};
         result.vendorId = properties.vendorID;
         result.adapterId = properties.deviceID;
         result.adapterName = properties.deviceName;
@@ -233,7 +233,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result AdapterT::queryFeatures(AdapterFeatures* features) const
+    result AdapterT::queryFeatures(adapter_features* features) const
     {
         if (features == nullptr)
             return result::ErrorInvalidUsage;
@@ -244,7 +244,7 @@ namespace legion::graphics::llri
         VkPhysicalDeviceFeatures physicalFeatures;
         vkGetPhysicalDeviceFeatures(static_cast<VkPhysicalDevice>(m_ptr), &physicalFeatures);
 
-        AdapterFeatures result;
+        adapter_features result;
 
         //Set all the information in a structured way here
 

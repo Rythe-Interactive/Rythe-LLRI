@@ -8,13 +8,13 @@ void TestSystem::setup()
     log::filter(log::severity_debug);
 
     //Select Instance Extensions
-    std::vector<llri::InstanceExtension> instanceExtensions;
+    std::vector<llri::instance_extension> instanceExtensions;
     if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::APIValidation))
-        instanceExtensions.emplace_back(llri::instance_extension_type::APIValidation, llri::APIValidationEXT { true });
+        instanceExtensions.emplace_back(llri::instance_extension_type::APIValidation, llri::api_validation_ext { true });
     if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation))
-        instanceExtensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::GPUValidationEXT { true });
+        instanceExtensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true });
 
-    const llri::InstanceDesc instanceDesc{ instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
+    const llri::instance_desc instanceDesc{ instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
 
     //Create instance
     llri::Instance instance = nullptr;
@@ -28,7 +28,7 @@ void TestSystem::setup()
     for (llri::Adapter adapter : adapters)
     {
         //Log adapter info
-        llri::AdapterInfo info;
+        llri::adapter_info info;
         result = adapter->queryInfo(&info);
         if (result != llri::result::Success)
             log::warn("Couldn't query adapter info because {}", to_string(result));
@@ -39,17 +39,17 @@ void TestSystem::setup()
         log::info("\tAdapter Type: {}", to_string(info.adapterType));
 
         //Query adapter features so we can read the available features to pick the ones we want to actually enable
-        llri::AdapterFeatures selectedFeatures {};
-        llri::AdapterFeatures availableFeatures{};
+        llri::adapter_features selectedFeatures {};
+        llri::adapter_features availableFeatures{};
         result = adapter->queryFeatures(&availableFeatures);
         if (result != llri::result::Success)
             log::warn("Couldn't query adapter features because {}", to_string(result));
 
         //Pick extensions
-        std::vector<llri::AdapterExtension> adapterExtensions;
+        std::vector<llri::adapter_extension> adapterExtensions;
 
         //Create device
-        llri::DeviceDesc deviceDesc{ adapter, selectedFeatures, adapterExtensions.size(), adapterExtensions.data() };
+        llri::device_desc deviceDesc{ adapter, selectedFeatures, adapterExtensions.size(), adapterExtensions.data() };
         llri::Device device = nullptr;
         result = instance->createDevice(deviceDesc, &device);
         if (result != llri::result::Success)
