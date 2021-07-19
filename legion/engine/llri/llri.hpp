@@ -9,26 +9,26 @@
 
 namespace legion::graphics::llri
 {
-    struct InstanceT;
+    class InstanceT;
     /**
      * @brief Handle to the core llri::Instance. Usually only a single instance of Instance exists within an application, but if so desired, multiple Instance instances are supported.
      * Instance is the center of the application and is used to create most other API objects.
     */
-    typedef InstanceT* Instance;
+    using Instance = InstanceT*;
 
-    struct AdapterT;
+    class AdapterT;
     /**
      * @brief Handle to a compatible adapter (GPU, APU, IGPU, etc.).
      * This handle is created and owned by the Instance, the user is not responsible for destroying it.
     */
-    typedef AdapterT* Adapter;
+    using Adapter = AdapterT*;
 
-    struct DeviceT;
+    class DeviceT;
     /**
      * @brief Handle to a virtual LLRI Device.
      * A device is a virtual representation of an adapter and can create/destroy resources for the said adapter.
      */
-    typedef DeviceT* Device;
+    using Device = DeviceT*;
     struct device_desc;
 
     /**
@@ -189,11 +189,12 @@ namespace legion::graphics::llri
     */
     void destroyInstance(Instance instance);
 
-    struct InstanceT
+    class InstanceT
     {
         friend result llri::createInstance(const instance_desc& desc, Instance* instance);
         friend void llri::destroyInstance(Instance instance);
 
+    public:
         /**
          * @brief Get a vector of available adapters.
          * Using this function, you can select one or more adapters for llri::Device creation.
@@ -304,10 +305,11 @@ namespace legion::graphics::llri
 
     };
 
-    struct AdapterT
+    class AdapterT
     {
         friend InstanceT;
 
+    public:
         /**
          * @brief Get basic information about the Adapter. Do note that this information should be for informative purposes only and the results aren't guaranteed to be the same across APIs.
          * @return Success upon correct execution of the operation.
@@ -362,7 +364,7 @@ namespace legion::graphics::llri
         explicit device_desc(Adapter adapter, const adapter_features& features, const uint32_t& numExtensions, adapter_extension* extensions) : adapter(adapter), features(features), numExtensions(numExtensions), extensions(extensions) { }
     };
 
-    struct DeviceT
+    class DeviceT
     {
         friend InstanceT;
 
