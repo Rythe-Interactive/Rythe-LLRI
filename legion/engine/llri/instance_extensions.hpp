@@ -43,9 +43,6 @@ namespace legion::graphics::llri
     struct api_validation_ext
     {
         bool enable : 1;
-
-        api_validation_ext() = default;
-        explicit api_validation_ext(const bool& enable) : enable(enable) { }
     };
 
     /**
@@ -55,9 +52,6 @@ namespace legion::graphics::llri
     struct gpu_validation_ext
     {
         bool enable : 1;
-
-        gpu_validation_ext() = default;
-        explicit gpu_validation_ext(const bool& enable) : enable(enable) { }
     };
 
     /**

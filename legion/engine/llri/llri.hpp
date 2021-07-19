@@ -359,9 +359,6 @@ namespace legion::graphics::llri
          * If numExtensions == 0, then this pointer may be nullptr.
         */
         adapter_extension* extensions;
-
-        device_desc() = default;
-        explicit device_desc(Adapter adapter, const adapter_features& features, const uint32_t& numExtensions, adapter_extension* extensions) : adapter(adapter), features(features), numExtensions(numExtensions), extensions(extensions) { }
     };
 
     class DeviceT
