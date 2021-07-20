@@ -12,8 +12,7 @@ namespace legion::graphics::llri
         {
             layer_map result;
 
-            std::vector<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
-            for (auto layer : availableLayers)
+            for (auto layer : vk::enumerateInstanceLayerProperties())
                 result.emplace(nameHash(layer.layerName.data()), layer);
 
             return result;
@@ -29,8 +28,7 @@ namespace legion::graphics::llri
         {
             extension_map result;
 
-            std::vector<vk::ExtensionProperties> availableExtensions = vk::enumerateInstanceExtensionProperties();
-            for (auto extension : availableExtensions)
+            for (auto extension : vk::enumerateInstanceExtensionProperties())
                 result.emplace(nameHash(extension.extensionName.data()), extension);
 
             return result;
