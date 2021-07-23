@@ -1,6 +1,5 @@
 #pragma once
 #include <core/core.hpp>
-#include <llri/llri.h>
 
 /**
  * @file testsystem.hpp
