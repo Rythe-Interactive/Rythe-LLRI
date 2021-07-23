@@ -17,15 +17,15 @@ void TestSystem::setup()
     const llri::instance_desc instanceDesc{ instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
 
     //Create instance
-    llri::Instance instance = nullptr;
+    llri::Instance* instance = nullptr;
     llri::result result = createInstance(instanceDesc, &instance);
     if (result != llri::result::Success)
         log::warn("Failed to create LLRI instance: {}", to_string(result));
 
     //Iterate over adapters
-    std::vector<llri::Adapter> adapters;
+    std::vector<llri::Adapter*> adapters;
     result = instance->enumerateAdapters(&adapters);
-    for (llri::Adapter adapter : adapters)
+    for (llri::Adapter* adapter : adapters)
     {
         //Log adapter info
         llri::adapter_info info;
@@ -50,7 +50,7 @@ void TestSystem::setup()
 
         //Create device
         llri::device_desc deviceDesc{ adapter, selectedFeatures, adapterExtensions.size(), adapterExtensions.data() };
-        llri::Device device = nullptr;
+        llri::Device* device = nullptr;
         result = instance->createDevice(deviceDesc, &device);
         if (result != llri::result::Success)
             log::warn("Couldn't create device because {}", to_string(result));

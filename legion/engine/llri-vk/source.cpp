@@ -7,14 +7,14 @@
 
 namespace legion::graphics::llri
 {
-    result createInstance(const instance_desc& desc, Instance* instance)
+    result createInstance(const instance_desc& desc, Instance** instance)
     {
         if (instance == nullptr)
             return result::ErrorInvalidUsage;
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
             return result::ErrorInvalidUsage;
 
-        auto* result = new InstanceT();
+        auto* result = new Instance();
 
         std::vector<const char*> layers;
         std::vector<const char*> extensions;
@@ -79,7 +79,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    void destroyInstance(Instance instance)
+    void destroyInstance(Instance* instance)
     {
         if (!instance)
             return;
@@ -92,10 +92,12 @@ namespace legion::graphics::llri
         delete instance;
     }
 
-    result InstanceT::enumerateAdapters(std::vector<Adapter>* adapters)
+    result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
     {
         if (adapters == nullptr)
             return result::ErrorInvalidUsage;
+
+        adapters->clear();
 
         //Clear internal pointers, lost adapters will have a nullptr internally
         for (auto& [ptr, adapter] : m_cachedAdapters)
@@ -126,7 +128,7 @@ namespace legion::graphics::llri
             }
             else
             {
-                Adapter adapter = new AdapterT();
+                Adapter* adapter = new Adapter();
                 adapter->m_ptr = physicalDevice;
 
                 m_cachedAdapters[physicalDevice] = adapter;
@@ -137,7 +139,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result InstanceT::createDevice(const device_desc& desc, Device* device)
+    result Instance::createDevice(const device_desc& desc, Device** device)
     {
         if (m_ptr == nullptr || device == nullptr || desc.adapter == nullptr)
             return result::ErrorInvalidUsage;
@@ -148,7 +150,7 @@ namespace legion::graphics::llri
         if (desc.adapter->m_ptr == nullptr)
             return result::ErrorDeviceLost;
 
-        Device result = new DeviceT();
+        Device* result = new Device();
 
         std::vector<vk::DeviceQueueCreateInfo> queues;
         float queuePriorities = 1.0f;
@@ -180,7 +182,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    void InstanceT::destroyDevice(Device device)
+    void Instance::destroyDevice(Device* device)
     {
         if (device->m_ptr != nullptr)
             vkDestroyDevice(static_cast<VkDevice>(device->m_ptr), nullptr);
@@ -207,7 +209,7 @@ namespace legion::graphics::llri
         return adapter_type::Other;
     }
 
-    result AdapterT::queryInfo(adapter_info* info) const
+    result Adapter::queryInfo(adapter_info* info) const
     {
         if (info == nullptr)
             return result::ErrorInvalidUsage;
@@ -227,7 +229,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result AdapterT::queryFeatures(adapter_features* features) const
+    result Adapter::queryFeatures(adapter_features* features) const
     {
         if (features == nullptr)
             return result::ErrorInvalidUsage;
@@ -246,7 +248,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    bool AdapterT::queryExtensionSupport(const adapter_extension_type& type) const
+    bool Adapter::queryExtensionSupport(const adapter_extension_type& type) const
     {
         switch(type)
         {

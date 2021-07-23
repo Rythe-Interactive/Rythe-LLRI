@@ -9,26 +9,11 @@
 
 namespace legion::graphics::llri
 {
-    class InstanceT;
-    /**
-     * @brief Handle to the core llri::Instance. Usually only a single instance of Instance exists within an application, but if so desired, multiple Instance instances are supported.
-     * Instance is the center of the application and is used to create most other API objects.
-    */
-    using Instance = InstanceT*;
+    class Instance;
+    class Adapter;
+    class Device;
 
-    class AdapterT;
-    /**
-     * @brief Handle to a compatible adapter (GPU, APU, IGPU, etc.).
-     * This handle is created and owned by the Instance, the user is not responsible for destroying it.
-    */
-    using Adapter = AdapterT*;
-
-    class DeviceT;
-    /**
-     * @brief Handle to a virtual LLRI Device.
-     * A device is a virtual representation of an adapter and can create/destroy resources for the said adapter.
-     */
-    using Device = DeviceT*;
+    struct instance_desc;
     struct device_desc;
 
     /**
@@ -179,7 +164,7 @@ namespace legion::graphics::llri
      * @return ErrorExtensionNotSupported if any of the extensions fail to be created.
      * @return Otherwise it may also return: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
     */
-    result createInstance(const instance_desc& desc, Instance* instance);
+    result createInstance(const instance_desc& desc, Instance** instance);
 
     /**
      * @brief Destroys the given instance and its directly related internal resources (debug info etc).
@@ -187,12 +172,16 @@ namespace legion::graphics::llri
      *
      * @param instance The instance to destroy. This value has to be nullptr or a valid instance pointer.
     */
-    void destroyInstance(Instance instance);
+    void destroyInstance(Instance* instance);
 
-    class InstanceT
+    /**
+     * @brief Instance is the center of the application and is used to create most other API objects.
+     * Usually only a single instance of Instance exists within an application, but if so desired, multiple Instance instances are supported.
+    */
+    class Instance
     {
-        friend result llri::createInstance(const instance_desc& desc, Instance* instance);
-        friend void llri::destroyInstance(Instance instance);
+        friend result llri::createInstance(const instance_desc& desc, Instance** instance);
+        friend void llri::destroyInstance(Instance* instance);
 
     public:
         /**
@@ -203,7 +192,7 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if adapters is nullptr.
          * @return Otherwise it may return: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed.
         */
-        result enumerateAdapters(std::vector<Adapter>* adapters);
+        result enumerateAdapters(std::vector<Adapter*>* adapters);
 
         /**
          * @brief Creates a virtual LLRI device. Device represents one or multiple adapters and enables you to allocate memory, create resources, or send commands to the adapter.
@@ -211,19 +200,19 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
          * @return ErrorDeviceLost if the adapter was lost.
         */
-        result createDevice(const device_desc& desc, Device* device);
+        result createDevice(const device_desc& desc, Device** device);
 
         /**
          * @brief Destroy the LLRI device. This does not delete the resources allocated through the device, that responsibility remains with the user.
         */
-        void destroyDevice(Device device);
+        void destroyDevice(Device* device);
 
     private:
         void* m_ptr = nullptr;
         void* m_debugAPI = nullptr;
         void* m_debugGPU = nullptr;
 
-        std::map<void*, Adapter> m_cachedAdapters;
+        std::map<void*, Adapter*> m_cachedAdapters;
     };
 
     /**
@@ -305,9 +294,13 @@ namespace legion::graphics::llri
 
     };
 
-    class AdapterT
+    /**
+     * @brief A compatible adapter (GPU, APU, IGPU, etc.).
+     * This handle is created and owned by the Instance, the user is not responsible for destroying it.
+    */
+    class Adapter
     {
-        friend InstanceT;
+        friend Instance;
 
     public:
         /**
@@ -344,7 +337,7 @@ namespace legion::graphics::llri
         /**
          * @brief The adapter to create the instance for.
         */
-        Adapter adapter;
+        Adapter* adapter;
         /**
          * @brief The enabled adapter features.
          * You should only enable features that you'll need because enabling features can disable driver optimizations.
@@ -361,9 +354,12 @@ namespace legion::graphics::llri
         adapter_extension* extensions;
     };
 
-    class DeviceT
+    /**
+     * @brief A device is a virtual representation of an adapter and can create/destroy resources for the said adapter.
+     */
+    class Device
     {
-        friend InstanceT;
+        friend Instance;
 
     private:
         void* m_ptr = nullptr;

@@ -11,14 +11,14 @@ namespace legion::graphics::llri
         result mapHRESULT(const HRESULT& value);
     }
 
-    result createInstance(const instance_desc& desc, Instance* instance)
+    result createInstance(const instance_desc& desc, Instance** instance)
     {
         if (instance == nullptr)
             return result::ErrorInvalidUsage;
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
             return result::ErrorInvalidUsage;
 
-        auto* output = new InstanceT();
+        auto* output = new Instance();
         UINT factoryFlags = 0;
 
         for (uint32_t i = 0; i < desc.numExtensions; i++)
@@ -69,7 +69,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    void destroyInstance(Instance instance)
+    void destroyInstance(Instance* instance)
     {
         if (!instance)
             return;
@@ -86,7 +86,7 @@ namespace legion::graphics::llri
         delete instance;
     }
 
-    result InstanceT::enumerateAdapters(std::vector<Adapter>* adapters)
+    result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
     {
         if (adapters == nullptr)
             return result::ErrorInvalidUsage;
@@ -124,7 +124,7 @@ namespace legion::graphics::llri
             }
             else
             {
-                Adapter adapter = new AdapterT();
+                Adapter* adapter = new Adapter();
                 adapter->m_ptr = dxgiAdapter;
 
                 m_cachedAdapters[(void*)luid] = adapter;
@@ -137,7 +137,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result InstanceT::createDevice(const device_desc& desc, Device* device)
+    result Instance::createDevice(const device_desc& desc, Device** device)
     {
         if (m_ptr == nullptr || device == nullptr || desc.adapter == nullptr)
             return result::ErrorInvalidUsage;
@@ -148,7 +148,7 @@ namespace legion::graphics::llri
         if (desc.adapter->m_ptr == nullptr)
             return result::ErrorDeviceLost;
 
-        Device result = new DeviceT();
+        Device* result = new Device();
 
         D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
 
@@ -165,7 +165,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    void InstanceT::destroyDevice(Device device)
+    void Instance::destroyDevice(Device* device)
     {
         if (!device)
             return;
@@ -176,7 +176,7 @@ namespace legion::graphics::llri
         delete device;
     }
 
-    result AdapterT::queryInfo(adapter_info* info) const
+    result Adapter::queryInfo(adapter_info* info) const
     {
         if (info == nullptr)
             return result::ErrorInvalidUsage;
@@ -204,7 +204,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result AdapterT::queryFeatures(adapter_features* features) const
+    result Adapter::queryFeatures(adapter_features* features) const
     {
         if (features == nullptr)
             return result::ErrorInvalidUsage;
@@ -230,7 +230,7 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    bool AdapterT::queryExtensionSupport(const adapter_extension_type& type) const
+    bool Adapter::queryExtensionSupport(const adapter_extension_type& type) const
     {
         switch (type)
         {
