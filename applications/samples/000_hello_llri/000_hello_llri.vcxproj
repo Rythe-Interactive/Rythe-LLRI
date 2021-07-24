@@ -24,7 +24,7 @@
     <ProjectGuid>{AFDBF703-8018-4DD2-895D-E9289E927F88}</ProjectGuid>
     <RootNamespace>sandbox</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>001_hello_llri</ProjectName>
+    <ProjectName>000_hello_llri</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VK|x64'" Label="Configuration">
