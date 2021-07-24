@@ -171,7 +171,7 @@ namespace legion::graphics::llri
     /**
      * @brief The debug callback function, this function passes a severity (info, warning, error, etc), a source (LLRI validation or Internal API message), the message, and some userdata that can be set in the validation_callback_desc.
     */
-    using FnValidationCallback = void (
+    using validation_callback = void (
         const validation_callback_severity& severity,
         const validation_callback_source& source,
         const char* message,
@@ -192,7 +192,7 @@ namespace legion::graphics::llri
          * @brief The callback, the function passed must conform to the FnValidationCallback definition.
          * This value CAN be nullptr, in which case no validation messages will be sent.
         */
-        FnValidationCallback* callback;
+        validation_callback* callback;
         /**
          * @brief Optional user data pointer. Not used internally by the API but it's passed around and sent along the callback.
         */
