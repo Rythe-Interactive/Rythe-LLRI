@@ -126,17 +126,17 @@ namespace legion::graphics::llri
 #endif
 
 #if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
-        const auto r =  detail::createInstance(desc, instance, true);
-        detail::pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
+        const auto r =  detail::impl_createInstance(desc, instance, true);
+        detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
         return r;
 #else
-        return detail::createInstance(desc, instance, false);
+        return detail::impl_createInstance(desc, instance, false);
 #endif
     }
 
     inline void destroyInstance(Instance* instance)
     {
-        detail::destroyInstance(instance);
+        detail::impl_destroyInstance(instance);
         //Can't do any polling after the instance is destroyed
     }
 
@@ -152,7 +152,7 @@ namespace legion::graphics::llri
 
 #if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
-        detail::pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
 #else
         return impl_enumerateAdapters(adapters);
@@ -189,7 +189,7 @@ namespace legion::graphics::llri
 
 #if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_createDevice(desc, device);
-        detail::pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
         return r;
 #else
         return impl_createDevice(desc, device);
@@ -202,7 +202,7 @@ namespace legion::graphics::llri
 
 #if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
         //Can't use device messenger here because the device is destroyed
-        detail::pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
 #endif
     }
 
@@ -224,7 +224,7 @@ namespace legion::graphics::llri
 
 #if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_queryInfo(info);
-        detail::pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
 #else
         return impl_queryInfo(info);
@@ -249,7 +249,7 @@ namespace legion::graphics::llri
 
 #if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_queryFeatures(features);
-        detail::pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
 #else
         return impl_queryFeatures(features);
@@ -274,7 +274,7 @@ namespace legion::graphics::llri
 
 #if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_queryExtensionSupport(type, supported);
-        detail::pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
 #else
         return impl_queryExtensionSupport(type, supported);

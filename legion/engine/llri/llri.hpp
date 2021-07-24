@@ -141,6 +141,9 @@ namespace legion::graphics::llri
         Corruption
     };
 
+    /**
+     * @brief Converts a validation_callback_severity to a string to aid in debug logging.
+    */
     constexpr const char* to_string(const validation_callback_severity& severity);
 
     /**
@@ -160,8 +163,14 @@ namespace legion::graphics::llri
         InternalAPI
     };
 
+    /**
+     * @brief Converts a validation_callback_source to a string to aid in debug logging.
+    */
     constexpr const char* to_string(const validation_callback_source& source);
 
+    /**
+     * @brief The debug callback function, this function passes a severity (info, warning, error, etc), a source (LLRI validation or Internal API message), the message, and some userdata that can be set in the validation_callback_desc.
+    */
     typedef void (FnValidationCallback)(
         const validation_callback_severity& severity,
         const validation_callback_source& source,
@@ -173,10 +182,9 @@ namespace legion::graphics::llri
      * @brief The validation callback allows the user to subscribe to validation messages so that they can write the message into their own logging system. 
      *
      * The callback contains contextual information about the message, like for example its severity.
+     * The callback may be used for both LLRI validation and internal API validation. The callback will poll messages from the internal API (e.g. Vulkan's debug utils, and DirectX's info queue)
      *
-     * The callback may be used for both LLRI validation and internal API validation. The callback will be subscribed to the internal API's callback (e.g. Vulkan's debug utils/messenger, and DirectX's info queue)
-     *
-     * If neither API validation nor GPU validation are enabled then the callback will only be called by LLRI.
+     * Internal API messages only occur if api_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some APIs might still output messages (Vulkan tends to print to the console, whereas DirectX tends to print to the "Output" window in Visual Studio).
     */
     struct validation_callback_desc
     {
@@ -230,15 +238,16 @@ namespace legion::graphics::llri
     */
     namespace detail
     {
-        result createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
-        void destroyInstance(Instance* instance);
+        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
+        void impl_destroyInstance(Instance* instance);
 
         /**
          * @brief Polls API messages, called if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING is set to 1.
+         * Used internally only
          * @param validation The validation function / userdata
          * @param messenger This value may differ depending on the function that is calling it, the most relevant messenger will be picked.
         */
-        void pollAPIMessages(const validation_callback_desc& validation, void* messenger);
+        void impl_pollAPIMessages(const validation_callback_desc& validation, void* messenger);
     }
 
     /**
@@ -268,8 +277,8 @@ namespace legion::graphics::llri
     */
     class Instance
     {
-        friend result llri::detail::createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
-        friend void llri::detail::destroyInstance(Instance* instance);
+        friend result detail::impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
+        friend void detail::impl_destroyInstance(Instance* instance);
 
         friend result llri::createInstance(const instance_desc& desc, Instance** instance);
         friend void llri::destroyInstance(Instance* instance);
@@ -388,8 +397,8 @@ namespace legion::graphics::llri
     class Adapter
     {
         friend Instance;
-        friend result detail::createInstance(const instance_desc&, Instance**, const bool&);
-        friend void detail::destroyInstance(Instance*);
+        friend result detail::impl_createInstance(const instance_desc&, Instance**, const bool&);
+        friend void detail::impl_destroyInstance(Instance*);
 
     public:
         /**
@@ -463,6 +472,7 @@ namespace legion::graphics::llri
     class Device
     {
         friend Instance;
+    public:
 
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
@@ -475,4 +485,5 @@ namespace legion::graphics::llri
     };
 }
 
+// ReSharper disable once CppUnusedIncludeDirective
 #include <llri/llri_impl.hpp>

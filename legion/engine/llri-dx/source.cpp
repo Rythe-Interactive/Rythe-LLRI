@@ -35,7 +35,7 @@ namespace legion::graphics::llri
 
     namespace detail
     {
-        result createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
+        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
         {
             auto* output = new Instance();
             UINT factoryFlags = 0;
@@ -104,7 +104,7 @@ namespace legion::graphics::llri
             return result::Success;
         }
 
-        void destroyInstance(Instance* instance)
+        void impl_destroyInstance(Instance* instance)
         {
             if (!instance)
                 return;
@@ -121,7 +121,7 @@ namespace legion::graphics::llri
             delete instance;
         }
 
-        void pollAPIMessages(const validation_callback_desc& validation, void* messenger)
+        void impl_pollAPIMessages(const validation_callback_desc& validation, void* messenger)
         {
             if (messenger != nullptr && messenger != (void*)1)
             {
