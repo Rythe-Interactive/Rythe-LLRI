@@ -125,6 +125,7 @@ del /q ".\xcopyexclude"</Command>
     <ClInclude Include="adapter_extensions.hpp" />
     <ClInclude Include="instance_extensions.hpp" />
     <ClInclude Include="llri.hpp" />
+    <ClInclude Include="llri_impl.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

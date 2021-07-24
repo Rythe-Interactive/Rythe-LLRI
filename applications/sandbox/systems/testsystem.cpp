@@ -1,9 +1,39 @@
 #include "testsystem.hpp"
+
+//#define LLRI_ENABLE_VALIDATION 0 //uncommenting this disables internal validation (see docs)
+//#define LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING 0 //uncommenting this disables internal API message polling
 #include <llri/llri.hpp>
+
+namespace llri = legion::graphics::llri;
+
+void callback(const llri::validation_callback_severity& severity, const llri::validation_callback_source& source, const char* message, void* userData)
+{
+    lgn::log::severity sev = lgn::log::severity_info;
+    switch (severity)
+    {
+        case llri::validation_callback_severity::Verbose:
+            return; //Comment out return and uncomment the following 2 lines to get verbose callbacks
+            //sev = lgn::log::severity_trace;
+            //break;
+        case llri::validation_callback_severity::Info:
+            return; //Comment out return and uncomment the following 2 lines to get info callbacks
+            //sev = lgn::log::severity_info;
+            //break;
+        case llri::validation_callback_severity::Warning:
+            sev = lgn::log::severity_warn;
+            break;
+        case llri::validation_callback_severity::Error:
+            sev = lgn::log::severity_error;
+            break;
+        case llri::validation_callback_severity::Corruption:
+            sev = lgn::log::severity_error;
+    }
+
+    lgn::log::println(sev, "LLRI [{}]: {}", to_string(source), message);
+}
 
 void TestSystem::setup()
 {
-    using namespace legion::graphics;
     using namespace legion;
     log::filter(log::severity_debug);
 
@@ -14,13 +44,21 @@ void TestSystem::setup()
     if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation))
         instanceExtensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true });
 
-    const llri::instance_desc instanceDesc{ instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
+    const llri::instance_desc instanceDesc{
+        instanceExtensions.size(), instanceExtensions.data(),
+        "sandbox",
+        llri::validation_callback_desc { &callback, nullptr }
+    };
 
     //Create instance
     llri::Instance* instance = nullptr;
     llri::result result = createInstance(instanceDesc, &instance);
     if (result != llri::result::Success)
         log::warn("Failed to create LLRI instance: {}", to_string(result));
+
+    //Example of the validation layer catching incorrect parameters
+    //lgn::log::info("The next message will be a warning from the validation layer:");
+    //result = instance->enumerateAdapters(nullptr);
 
     //Iterate over adapters
     std::vector<llri::Adapter*> adapters;

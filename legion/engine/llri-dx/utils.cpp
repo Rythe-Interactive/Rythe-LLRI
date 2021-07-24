@@ -36,6 +36,8 @@ namespace legion::graphics::llri
                     break;
                 case E_FAIL:
                     break;
+                case E_NOINTERFACE:
+                    return result::ErrorExtensionNotSupported;
                 case E_INVALIDARG:
                     return result::ErrorInvalidUsage;
                 case E_OUTOFMEMORY:

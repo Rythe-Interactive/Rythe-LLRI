@@ -23,18 +23,7 @@ namespace legion::graphics::llri
     /**
      * @brief Converts an instance_extension_type to a string to aid in debug logging.
     */
-    constexpr const char* to_string(const instance_extension_type& result)
-    {
-        switch (result)
-        {
-            case instance_extension_type::APIValidation:
-                return "APIValidation";
-            case instance_extension_type::GPUValidation:
-                return "GPUValidation";
-        }
-
-        return "Invalid instance_extension_type value";
-    }
+    constexpr const char* to_string(const instance_extension_type& result);
 
     /**
      * @brief Enable or disable API-side validation.
@@ -81,6 +70,11 @@ namespace legion::graphics::llri
         instance_extension(const instance_extension_type& type, const api_validation_ext& ext) : type(type), apiValidation(ext) { }
         instance_extension(const instance_extension_type& type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
     };
+
+    namespace detail
+    {
+        [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type);
+    }
 
     /**
      * @brief Queries the support of the given extension.

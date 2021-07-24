@@ -7,96 +7,204 @@
 
 namespace legion::graphics::llri
 {
-    result createInstance(const instance_desc& desc, Instance** instance)
+    namespace internal
     {
-        if (instance == nullptr)
-            return result::ErrorInvalidUsage;
-        if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return result::ErrorInvalidUsage;
-
-        auto* result = new Instance();
-
-        std::vector<const char*> layers;
-        std::vector<const char*> extensions;
-
-        auto availableLayers = internal::queryAvailableLayers();
-        auto availableExtensions = internal::queryAvailableExtensions();
-
-        void* pNext = nullptr;
-
-        //Variables that need to be stored outside of scope
-        vk::ValidationFeaturesEXT features; 
-        std::vector<vk::ValidationFeatureEnableEXT> enables;
-
-        for (uint32_t i = 0; i < desc.numExtensions; i++)
+        constexpr adapter_type mapPhysicalDeviceType(const VkPhysicalDeviceType& type)
         {
-            auto& extension = desc.extensions[i];
-            switch(extension.type)
+            switch (type)
             {
-                case instance_extension_type::APIValidation:
+            case VK_PHYSICAL_DEVICE_TYPE_OTHER:
+                return adapter_type::Other;
+            case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+                return adapter_type::Integrated;
+            case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+                return adapter_type::Discrete;
+            case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+                return adapter_type::Virtual;
+            default:
+                break;
+            }
+
+            return adapter_type::Other;
+        }
+
+        validation_callback_severity mapSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT sev)
+        {
+            switch (sev)
+            {
+            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+                return validation_callback_severity::Error;
+            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+                return validation_callback_severity::Warning;
+            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+                return validation_callback_severity::Info;
+            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+                return validation_callback_severity::Verbose;
+            case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
+                break;
+            }
+
+            return validation_callback_severity::Info;
+        }
+
+        VkBool32 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT severity, VkDebugUtilsMessageTypeFlagsEXT type, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
+        {
+            const auto desc = (validation_callback_desc*)userData;
+
+            desc->callback(
+                mapSeverity(severity),
+                validation_callback_source::InternalAPI,
+                callbackData->pMessage,
+                desc->userData
+            );
+
+            return VK_FALSE;
+        }
+    }
+
+    namespace detail
+    {
+        result createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
+        {
+            auto* result = new Instance();
+
+            std::vector<const char*> layers;
+            std::vector<const char*> extensions;
+
+            void* pNext = nullptr;
+
+            //Variables that need to be stored outside of scope
+            vk::ValidationFeaturesEXT features;
+            std::vector<vk::ValidationFeatureEnableEXT> enables;
+
+            for (uint32_t i = 0; i < desc.numExtensions; i++)
+            {
+                auto& extension = desc.extensions[i];
+                switch (extension.type)
                 {
-                    if (extension.apiValidation.enable)
-                        layers.push_back("VK_LAYER_KHRONOS_validation");
-                    break;
-                }
-                case instance_extension_type::GPUValidation:
-                {
-                    if (extension.gpuValidation.enable)
+                    case instance_extension_type::APIValidation:
                     {
-                        enables = {
-                            vk::ValidationFeatureEnableEXT::eGpuAssisted,
-                            vk::ValidationFeatureEnableEXT::eGpuAssistedReserveBindingSlot
-                        };
-                        features = vk::ValidationFeaturesEXT(enables, {});
-                        features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
-                        pNext = &features;
+                        if (extension.apiValidation.enable)
+                            layers.push_back("VK_LAYER_KHRONOS_validation");
+                        break;
                     }
-                    break;
-                }
-                default:
-                {
-                    llri::destroyInstance(result);
-                    return result::ErrorExtensionNotSupported;
+                    case instance_extension_type::GPUValidation:
+                    {
+                        if (extension.gpuValidation.enable)
+                        {
+                            enables = {
+                                vk::ValidationFeatureEnableEXT::eGpuAssisted,
+                                vk::ValidationFeatureEnableEXT::eGpuAssistedReserveBindingSlot
+                            };
+                            features = vk::ValidationFeaturesEXT(enables, {});
+                            features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
+                            pNext = &features;
+                        }
+                        break;
+                    }
+                    default:
+                    {
+                        if (desc.callbackDesc.callback)
+                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+
+                        llri::destroyInstance(result);
+                        return result::ErrorExtensionNotSupported;
+                    }
                 }
             }
+
+            //Add the debug utils extension for the API callback
+            bool shouldConstructValidationMessenger = false;
+            if (enableInternalAPIMessagePolling && desc.callbackDesc.callback)
+            {
+                auto available = internal::queryAvailableExtensions();
+                //Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
+                //so instead the check is implicit, internal API callbacks aren't guaranteed
+                if (available.find(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) != available.end())
+                {
+                    extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+                    shouldConstructValidationMessenger = true;
+                }
+            }
+
+            vk::ApplicationInfo appInfo{ desc.applicationName, VK_MAKE_VERSION(0, 0, 0), "Legion::LLRI", VK_MAKE_VERSION(0, 0, 1), VK_HEADER_VERSION_COMPLETE };
+            vk::InstanceCreateInfo instanceCi{ {}, &appInfo, (uint32_t)layers.size(), layers.data(), (uint32_t)extensions.size(), extensions.data() };
+            instanceCi.pNext = pNext;
+
+            vk::Instance vulkanInstance = nullptr;
+            const vk::Result createResult = vk::createInstance(&instanceCi, nullptr, &vulkanInstance);
+
+            if (createResult != vk::Result::eSuccess)
+            {
+                llri::destroyInstance(result);
+                return internal::mapVkResult(createResult);
+            }
+            result->m_ptr = vulkanInstance;
+
+            //Create debug utils callback
+            if (desc.callbackDesc.callback && shouldConstructValidationMessenger)
+            {
+                result->m_validationCallback = desc.callbackDesc;
+
+                vk::DebugUtilsMessageSeverityFlagsEXT severity = vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo |
+                    vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
+                    vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
+                    vk::DebugUtilsMessageSeverityFlagBitsEXT::eError;
+
+                vk::DebugUtilsMessageTypeFlagsEXT types = vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
+                    vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+                    vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation;
+
+                const vk::DebugUtilsMessengerCreateInfoEXT debugUtilsCi{ {}, severity, types, &internal::debugCallback, &result->m_validationCallback };
+
+                const auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vulkanInstance.getProcAddr("vkCreateDebugUtilsMessengerEXT");
+                if (func)
+                {
+                    auto vkCi = (VkDebugUtilsMessengerCreateInfoEXT)debugUtilsCi;
+                    VkDebugUtilsMessengerEXT messenger;
+                    func((VkInstance)vulkanInstance, &vkCi, nullptr, &messenger);
+
+                    result->m_validationCallbackMessenger = messenger;
+                }
+            }
+
+            *instance = result;
+            return result::Success;
         }
 
-        vk::ApplicationInfo appInfo{ desc.applicationName, VK_MAKE_VERSION(0, 0, 0), "Legion::LLRI", VK_MAKE_VERSION(0, 0, 1), VK_HEADER_VERSION_COMPLETE };
-        vk::InstanceCreateInfo ci{ {}, &appInfo, (uint32_t)layers.size(), layers.data(), (uint32_t)extensions.size(), extensions.data() };
-        ci.pNext = pNext;
-
-        vk::Instance vulkanInstance = nullptr;
-        const vk::Result createResult = vk::createInstance(&ci, nullptr, &vulkanInstance);
-
-        if (createResult != vk::Result::eSuccess)
+        void destroyInstance(Instance* instance)
         {
-            llri::destroyInstance(result);
-            return internal::mapVkResult(createResult);
+            if (!instance)
+                return;
+            const vk::Instance vkInstance = (VkInstance)instance->m_ptr;
+
+            //Destroy debug messenger if possible
+            if (instance->m_validationCallbackMessenger)
+            {
+                const auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkInstance.getProcAddr("vkDestroyDebugUtilsMessengerEXT");
+                if (func != nullptr)
+                    func((VkInstance)vkInstance, (VkDebugUtilsMessengerEXT)instance->m_validationCallbackMessenger, nullptr);
+            }
+
+            for (auto& [ptr, adapter] : instance->m_cachedAdapters)
+                delete adapter;
+
+            //vk validation layers aren't tangible objects and don't need manual destruction
+
+            delete instance;
         }
 
-        result->m_ptr = vulkanInstance;
-        *instance = result;
-        return result::Success;
+        void pollAPIMessages(const validation_callback_desc& validation, void* messenger)
+        {
+            //Empty because vulkan uses a callback system
+            //suppress unused parameter warnings
+            (void)validation;
+            (void)messenger;
+        }
     }
 
-    void destroyInstance(Instance* instance)
+    result Instance::impl_enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-        if (!instance)
-            return;
-
-        for (auto& [ptr, adapter] : instance->m_cachedAdapters)
-            delete adapter;
-
-        //vk validation layers aren't tangible objects and don't need manual destruction
-
-        delete instance;
-    }
-
-    result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
-    {
-        if (adapters == nullptr)
-            return result::ErrorInvalidUsage;
-
         adapters->clear();
 
         //Clear internal pointers, lost adapters will have a nullptr internally
@@ -130,6 +238,7 @@ namespace legion::graphics::llri
             {
                 Adapter* adapter = new Adapter();
                 adapter->m_ptr = physicalDevice;
+                adapter->m_validationCallback = m_validationCallback;
 
                 m_cachedAdapters[physicalDevice] = adapter;
                 adapters->push_back(adapter);
@@ -139,18 +248,10 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result Instance::createDevice(const device_desc& desc, Device** device)
+    result Instance::impl_createDevice(const device_desc& desc, Device** device) const
     {
-        if (m_ptr == nullptr || device == nullptr || desc.adapter == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (desc.adapter->m_ptr == nullptr)
-            return result::ErrorDeviceLost;
-
-        Device* result = new Device();
+        Device* output = new Device();
+        output->m_validationCallback = m_validationCallback;
 
         std::vector<vk::DeviceQueueCreateInfo> queues;
         float queuePriorities = 1.0f;
@@ -173,16 +274,16 @@ namespace legion::graphics::llri
         const vk::Result r = static_cast<vk::PhysicalDevice>(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr)).createDevice(&ci, nullptr, &vkDevice);
         if (r != vk::Result::eSuccess)
         {
-            destroyDevice(result);
+            destroyDevice(output);
             return internal::mapVkResult(r);
         }
-        result->m_ptr = vkDevice;
+        output->m_ptr = vkDevice;
 
-        *device = result;
+        *device = output;
         return result::Success;
     }
 
-    void Instance::destroyDevice(Device* device)
+    void Instance::impl_destroyDevice(Device* device) const
     {
         if (device->m_ptr != nullptr)
             vkDestroyDevice(static_cast<VkDevice>(device->m_ptr), nullptr);
@@ -190,53 +291,22 @@ namespace legion::graphics::llri
         delete device;
     }
 
-    constexpr adapter_type mapPhysicalDeviceType(const VkPhysicalDeviceType& type)
+    result Adapter::impl_queryInfo(adapter_info* info) const
     {
-        switch(type)
-        {
-            case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-                return adapter_type::Other;
-            case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-                return adapter_type::Integrated;
-            case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-                return adapter_type::Discrete;
-            case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-                return adapter_type::Virtual;
-            default:
-                break;
-        }
-
-        return adapter_type::Other;
-    }
-
-    result Adapter::queryInfo(adapter_info* info) const
-    {
-        if (info == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (m_ptr == nullptr)
-            return result::ErrorDeviceRemoved;
-
         VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(static_cast<VkPhysicalDevice>(m_ptr), &properties);
 
-        adapter_info result{};
+        adapter_info result;
         result.vendorId = properties.vendorID;
         result.adapterId = properties.deviceID;
         result.adapterName = properties.deviceName;
-        result.adapterType = mapPhysicalDeviceType(properties.deviceType);
+        result.adapterType = internal::mapPhysicalDeviceType(properties.deviceType);
         *info = result;
         return result::Success;
     }
 
-    result Adapter::queryFeatures(adapter_features* features) const
+    result Adapter::impl_queryFeatures(adapter_features* features) const
     {
-        if (features == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (m_ptr == nullptr)
-            return result::ErrorDeviceRemoved;
-
         VkPhysicalDeviceFeatures physicalFeatures;
         vkGetPhysicalDeviceFeatures(static_cast<VkPhysicalDevice>(m_ptr), &physicalFeatures);
 
@@ -248,14 +318,16 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    bool Adapter::queryExtensionSupport(const adapter_extension_type& type) const
+    result Adapter::impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
     {
-        switch(type)
+        *supported = false;
+
+        switch (type)
         {
-            default:
-                break;
+        default:
+            break;
         }
 
-        return false;
+        return result::Success;
     }
 }
