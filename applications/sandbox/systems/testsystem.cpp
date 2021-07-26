@@ -1,7 +1,7 @@
 #include "testsystem.hpp"
 
-//#define LLRI_ENABLE_VALIDATION 0 //uncommenting this disables internal validation (see docs)
-//#define LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING 0 //uncommenting this disables internal API message polling
+//#define LLRI_DISABLE_VALIDATION //uncommenting this disables internal validation (see docs)
+//#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING //uncommenting this disables internal API message polling
 #include <llri/llri.hpp>
 
 namespace llri = legion::graphics::llri;

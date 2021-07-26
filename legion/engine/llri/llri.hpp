@@ -7,23 +7,23 @@
 #include <llri/instance_extensions.hpp>
 #include <llri/adapter_extensions.hpp>
 
-#ifndef LLRI_ENABLE_VALIDATION
+#if defined(DOXY_EXCLUDE)
 /**
- * @brief Before including LLRI, define LLRI_ENABLE_VALIDATION as 0 to disable all LLRI validation.
+ * @def LLRI_DISABLE_VALIDATION
+ * @brief Before including LLRI, define LLRI_DISABLE_VALIDATION to disable all LLRI validation.
  * This applies to all validation done by LLRI (not internal API validation), such as nullptr checks on parameters.
  * Disabling LLRI validation may cause API runtime errors if incorrect parameters are passed, but the reduced checks could improve performance.
  *
  * Disabling LLRI validation will also mean that LLRI will not return ErrorInvalidUsage and ErrorDeviceLost where it normally would if incorrect parameters are passed, but the internal API may still return these codes if it fails to operate.
  */
-#define LLRI_ENABLE_VALIDATION 1
-#endif
+#define LLRI_DISABLE_VALIDATION
 
-#ifndef LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
  /**
-  * @brief Before including LLRI, define LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING as 0 to disable internal API message polling.
+  * @def LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+  * @brief Before including LLRI, define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING to disable internal API message polling.
   * Internal API message polling can be costly and disabling it can help improve performance, but internal API messages might not be forwarded.
   */
-#define LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING 1
+#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
 #endif
 
 namespace legion::graphics::llri
@@ -226,7 +226,7 @@ namespace legion::graphics::llri
         /**
          * @brief Describes the optional validation callback. callbackDesc.callback can be nullptr in which case no callbacks will be sent.
          *
-         * Callbacks may or may not be sent depending on the parameters used. If LLRI_ENABLE_VALIDATION is set to 0, no LLRI validation messages will be sent. If LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING is set to 0, then no internal API messages will be forwarded.
+         * Callbacks may or may not be sent depending on the parameters used. If LLRI_DISABLE_VALIDATION is defined, no LLRI validation messages will be sent. If LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING is defined, then no internal API messages will be forwarded.
          *
          * Furthermore, to enable internal API messages, api_validation_ext and/or gpu_validation_ext should be enabled and part of the extensions array.
         */
@@ -243,7 +243,7 @@ namespace legion::graphics::llri
 
         using messenger_type = void;
         /**
-         * @brief Polls API messages, called if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING is set to 1.
+         * @brief Polls API messages, only called if LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING is not defined.
          * Used internally only
          * @param validation The validation function / userdata
          * @param messenger This value may differ depending on the function that is calling it, the most relevant messenger will be picked.

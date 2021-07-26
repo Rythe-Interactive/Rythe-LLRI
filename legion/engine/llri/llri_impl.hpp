@@ -110,7 +110,7 @@ namespace legion::graphics::llri
 
     inline result createInstance(const instance_desc& desc, Instance** instance)
     {
-#if LLRI_ENABLE_VALIDATION
+#ifndef LLRI_DISABLE_VALIDATION
         if (instance == nullptr)
         {
             if (desc.callbackDesc.callback)
@@ -125,7 +125,7 @@ namespace legion::graphics::llri
         }
 #endif
 
-#if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r =  detail::impl_createInstance(desc, instance, true);
         detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
         return r;
@@ -142,7 +142,7 @@ namespace legion::graphics::llri
 
     inline result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-#if LLRI_ENABLE_VALIDATION
+#ifndef LLRI_DISABLE_VALIDATION
         if (adapters == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::enumerateAdapters() returned ErrorInvalidUsage because the passed adapters parameter was nullptr.");
@@ -150,7 +150,7 @@ namespace legion::graphics::llri
         }
 #endif
 
-#if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -161,7 +161,7 @@ namespace legion::graphics::llri
 
     inline result Instance::createDevice(const device_desc& desc, Device** device) const
     {
-#if LLRI_ENABLE_VALIDATION
+#ifndef LLRI_DISABLE_VALIDATION
         if (device == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because the passed device parameter was nullptr.");
@@ -187,7 +187,7 @@ namespace legion::graphics::llri
         }
 #endif
 
-#if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_createDevice(desc, device);
         detail::impl_pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
         return r;
@@ -200,7 +200,7 @@ namespace legion::graphics::llri
     {
         impl_destroyDevice(device);
 
-#if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         //Can't use device messenger here because the device is destroyed
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
 #endif
@@ -208,7 +208,7 @@ namespace legion::graphics::llri
 
     inline result Adapter::queryInfo(adapter_info* info) const
     {
-#if LLRI_ENABLE_VALIDATION
+#ifndef LLRI_DISABLE_VALIDATION
         if (info == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryInfo() returned ErrorInvalidUsage because the passed info parameter was nullptr.");
@@ -222,7 +222,7 @@ namespace legion::graphics::llri
         }
 #endif
 
-#if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_queryInfo(info);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -233,7 +233,7 @@ namespace legion::graphics::llri
 
     inline result Adapter::queryFeatures(adapter_features* features) const
     {
-#if LLRI_ENABLE_VALIDATION
+#ifndef LLRI_DISABLE_VALIDATION
         if (features == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryFeatures() returned ErrorInvalidUsage because the passed features parameter was nullptr.");
@@ -247,7 +247,7 @@ namespace legion::graphics::llri
         }
 #endif
 
-#if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_queryFeatures(features);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -258,7 +258,7 @@ namespace legion::graphics::llri
 
     inline result Adapter::queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
     {
-#if LLRI_ENABLE_VALIDATION
+#ifndef LLRI_DISABLE_VALIDATION
         if (supported == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryExtensionSupport() returned ErrorInvalidUsage because the passed supported parameter was nullptr.");
@@ -272,7 +272,7 @@ namespace legion::graphics::llri
         }
 #endif
 
-#if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_queryExtensionSupport(type, supported);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
