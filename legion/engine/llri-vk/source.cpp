@@ -157,12 +157,12 @@ namespace legion::graphics::llri
 
                 const vk::DebugUtilsMessengerCreateInfoEXT debugUtilsCi{ {}, severity, types, &internal::debugCallback, &result->m_validationCallback };
 
-                const auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vulkanInstance.getProcAddr("vkCreateDebugUtilsMessengerEXT");
+                const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vulkanInstance.getProcAddr("vkCreateDebugUtilsMessengerEXT"));
                 if (func)
                 {
-                    auto vkCi = (VkDebugUtilsMessengerCreateInfoEXT)debugUtilsCi;
+                    auto vkCi = static_cast<VkDebugUtilsMessengerCreateInfoEXT>(debugUtilsCi);
                     VkDebugUtilsMessengerEXT messenger;
-                    func((VkInstance)vulkanInstance, &vkCi, nullptr, &messenger);
+                    func(static_cast<VkInstance>(vulkanInstance), &vkCi, nullptr, &messenger);
 
                     result->m_validationCallbackMessenger = messenger;
                 }
@@ -176,14 +176,14 @@ namespace legion::graphics::llri
         {
             if (!instance)
                 return;
-            const vk::Instance vkInstance = (VkInstance)instance->m_ptr;
+            const vk::Instance vkInstance = static_cast<VkInstance>(instance->m_ptr);
 
             //Destroy debug messenger if possible
             if (instance->m_validationCallbackMessenger)
             {
-                const auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkInstance.getProcAddr("vkDestroyDebugUtilsMessengerEXT");
+                const auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkInstance.getProcAddr("vkDestroyDebugUtilsMessengerEXT"));
                 if (func != nullptr)
-                    func((VkInstance)vkInstance, (VkDebugUtilsMessengerEXT)instance->m_validationCallbackMessenger, nullptr);
+                    func(static_cast<VkInstance>(vkInstance), static_cast<VkDebugUtilsMessengerEXT>(instance->m_validationCallbackMessenger), nullptr);
             }
 
             for (auto& [ptr, adapter] : instance->m_cachedAdapters)
