@@ -114,7 +114,8 @@ namespace legion::graphics::llri
             }
 
             //Add the debug utils extension for the API callback
-            bool shouldConstructValidationMessenger = false;
+            result->m_shouldConstructValidationCallbackMessenger = false;
+            result->m_validationCallbackMessenger = nullptr;
             if (enableInternalAPIMessagePolling && desc.callbackDesc.callback)
             {
                 auto available = internal::queryAvailableExtensions();
@@ -123,7 +124,7 @@ namespace legion::graphics::llri
                 if (available.find(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) != available.end())
                 {
                     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-                    shouldConstructValidationMessenger = true;
+                    result->m_shouldConstructValidationCallbackMessenger = true;
                 }
             }
 
@@ -142,7 +143,7 @@ namespace legion::graphics::llri
             result->m_ptr = vulkanInstance;
 
             //Create debug utils callback
-            if (desc.callbackDesc.callback && shouldConstructValidationMessenger)
+            if (result->m_shouldConstructValidationCallbackMessenger)
             {
                 result->m_validationCallback = desc.callbackDesc;
 
@@ -194,7 +195,7 @@ namespace legion::graphics::llri
             delete instance;
         }
 
-        void impl_pollAPIMessages(const validation_callback_desc& validation, void* messenger)
+        void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger)
         {
             //Empty because vulkan uses a callback system
             //suppress unused parameter warnings

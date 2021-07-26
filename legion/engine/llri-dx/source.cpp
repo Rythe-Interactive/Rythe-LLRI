@@ -78,15 +78,16 @@ namespace legion::graphics::llri
 
             //Store user defined validation callback
             //DirectX creates validation callbacks upon device creation so we just need to store information about this right now.
-            if (desc.callbackDesc.callback)
+            output->m_validationCallbackMessenger = nullptr;
+            if (enableInternalAPIMessagePolling && desc.callbackDesc.callback)
             {
                 output->m_validationCallback = desc.callbackDesc;
-                output->m_validationCallbackMessenger = (void*)enableInternalAPIMessagePolling; //Use as boolean to indicate that a custom callback was set
+                output->m_shouldConstructValidationCallbackMessenger = true;
             }
             else
             {
                 output->m_validationCallback = { &internal::dummyValidationCallback, nullptr };
-                output->m_validationCallbackMessenger = nullptr;
+                output->m_shouldConstructValidationCallbackMessenger = false;
             }
 
             //Attempt to create factory
@@ -121,9 +122,9 @@ namespace legion::graphics::llri
             delete instance;
         }
 
-        void impl_pollAPIMessages(const validation_callback_desc& validation, void* messenger)
+        void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger)
         {
-            if (messenger != nullptr && messenger != (void*)1)
+            if (messenger != nullptr)
             {
                 ID3D12InfoQueue* iq = static_cast<ID3D12InfoQueue*>(messenger);
                 const auto numMsg = iq->GetNumStoredMessages();
@@ -210,8 +211,8 @@ namespace legion::graphics::llri
             return internal::mapHRESULT(r);
         }
         output->m_ptr = dx12Device;
-
-        if (m_validationCallbackMessenger)
+        
+        if (m_shouldConstructValidationCallbackMessenger)
         {
             ID3D12InfoQueue* iq = nullptr;
             r = dx12Device->QueryInterface(IID_PPV_ARGS(&iq));

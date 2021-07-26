@@ -241,13 +241,14 @@ namespace legion::graphics::llri
         result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
         void impl_destroyInstance(Instance* instance);
 
+        using messenger_type = void;
         /**
          * @brief Polls API messages, called if LLRI_ENABLE_INTERNAL_API_MESSAGE_POLLING is set to 1.
          * Used internally only
          * @param validation The validation function / userdata
          * @param messenger This value may differ depending on the function that is calling it, the most relevant messenger will be picked.
         */
-        void impl_pollAPIMessages(const validation_callback_desc& validation, void* messenger);
+        void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger);
     }
 
     /**
@@ -317,6 +318,7 @@ namespace legion::graphics::llri
         void* m_debugGPU = nullptr;
 
         validation_callback_desc m_validationCallback;
+        bool m_shouldConstructValidationCallbackMessenger;
         void* m_validationCallbackMessenger = nullptr; //Allows API to store their callback messenger if needed
 
         std::map<void*, Adapter*> m_cachedAdapters;
