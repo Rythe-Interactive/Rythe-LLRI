@@ -133,7 +133,7 @@ namespace legion::graphics::llri
                     SIZE_T messageLength = 0;
                     iq->GetMessage(i, NULL, &messageLength);
                     
-                    D3D12_MESSAGE* pMessage = (D3D12_MESSAGE*)malloc(messageLength);
+                    D3D12_MESSAGE* pMessage = reinterpret_cast<D3D12_MESSAGE*>(malloc(messageLength));
                     iq->GetMessage(i, pMessage, &messageLength);
                     validation(internal::mapSeverity(pMessage->Severity), validation_callback_source::InternalAPI, pMessage->pDescription);
                     
