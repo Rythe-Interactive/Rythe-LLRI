@@ -1,3 +1,10 @@
+/**
+ * Sandbox is a testing area for LLRI development.
+ * The code written in sandbox should be up to spec but may not contain the best practices or cleanest examples.
+ *
+ * See the samples for recommended usage and more detailed comments.
+ */
+
 #include "testsystem.hpp"
 
 //#define LLRI_DISABLE_VALIDATION //uncommenting this disables internal validation (see docs)
@@ -54,10 +61,6 @@ void TestSystem::setup()
     llri::result result = createInstance(instanceDesc, &instance);
     if (result != llri::result::Success)
         log::warn("Failed to create LLRI instance: {}", to_string(result));
-
-    //Example of the validation layer catching incorrect parameters
-    //lgn::log::info("The next message will be a warning from the validation layer:");
-    //result = instance->enumerateAdapters(nullptr);
 
     //Iterate over adapters
     std::vector<llri::Adapter*> adapters;
