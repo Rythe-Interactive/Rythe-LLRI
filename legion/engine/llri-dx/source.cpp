@@ -86,7 +86,7 @@ namespace legion::graphics::llri
             else
             {
                 output->m_validationCallback = { &internal::dummyValidationCallback, nullptr };
-                output->m_validationCallbackMessenger = (void*)0;
+                output->m_validationCallbackMessenger = nullptr;
             }
 
             //Attempt to create factory
