@@ -114,8 +114,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)deps\lib\;$(SolutionDir)lib\;$(SolutionDir)applications\deps\lib;$(VULKAN_SDK)\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>legion-core-d.lib;legion-llri-vk-d.lib;vulkan-1.lib;OpenCL.lib;glfw3.lib;Voro++D.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)deps\lib\;$(SolutionDir)lib\;$(SolutionDir)applications\deps\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>legion-core-d.lib;legion-llri-vk-d.lib;OpenCL.lib;glfw3.lib;Voro++D.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"
@@ -171,8 +171,8 @@ copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)deps\lib\;$(SolutionDir)lib\;$(SolutionDir)applications\deps\lib;$(VULKAN_SDK)\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>legion-core.lib;legion-llri-vk.lib;vulkan-1.lib;OpenCL.lib;glfw3.lib;Voro++.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)deps\lib\;$(SolutionDir)lib\;$(SolutionDir)applications\deps\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>legion-core.lib;legion-llri-vk.lib;OpenCL.lib;glfw3.lib;Voro++.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"
