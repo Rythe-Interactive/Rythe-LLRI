@@ -15,6 +15,7 @@ Legion Low Level Rendering Interface, a middle layer between the graphics APIs a
 ## Dependencies
 (All libraries can already be found in the [deps](https://github.com/Legion-Engine/Legion-LLRI/tree/main/deps) folder)
 * [Legion shader preprocessor (lgnspre)](https://github.com/Legion-Engine/LegionShaderPreprocess)
+* [Vulkan SDK (for VK builds)](https://www.lunarg.com/vulkan-sdk/)
 
 ## Contributing
 

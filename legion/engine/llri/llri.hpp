@@ -7,6 +7,25 @@
 #include <llri/instance_extensions.hpp>
 #include <llri/adapter_extensions.hpp>
 
+#if defined(DOXY_EXCLUDE)
+/**
+ * @def LLRI_DISABLE_VALIDATION
+ * @brief Before including LLRI, define LLRI_DISABLE_VALIDATION to disable all LLRI validation.
+ * This applies to all validation done by LLRI (not internal API validation), such as nullptr checks on parameters.
+ * Disabling LLRI validation may cause API runtime errors if incorrect parameters are passed, but the reduced checks could improve performance.
+ *
+ * Disabling LLRI validation will also mean that LLRI will not return ErrorInvalidUsage and ErrorDeviceLost where it normally would if incorrect parameters are passed, but the internal API may still return these codes if it fails to operate.
+ */
+#define LLRI_DISABLE_VALIDATION
+
+ /**
+  * @def LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+  * @brief Before including LLRI, define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING to disable internal API message polling.
+  * Internal API message polling can be costly and disabling it can help improve performance, but internal API messages might not be forwarded.
+  */
+#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#endif
+
 namespace legion::graphics::llri
 {
     class Instance;
@@ -93,44 +112,97 @@ namespace legion::graphics::llri
     /**
      * @brief Converts a result to a string to aid in debug logging.
     */
-    constexpr const char* to_string(const result& result)
-    {
-        switch (result)
-        {
-            case result::Success:
-                return "Success";
-            case result::Timeout:
-                return "Timeout";
-            case result::ErrorUnknown:
-                return "ErrorUnknown";
-            case result::ErrorInvalidUsage:
-                return "ErrorInvalidUsage";
-            case result::ErrorFeatureNotSupported:
-                return "ErrorFeatureNotSupported";
-            case result::ErrorExtensionNotSupported:
-                return "ErrorExtensionNotSupported";
-            case result::ErrorDeviceHung:
-                return "ErrorDeviceHung";
-            case result::ErrorDeviceLost:
-                return "ErrorDeviceLost";
-            case result::ErrorDeviceRemoved:
-                return "ErrorDeviceRemoved";
-            case result::ErrorDriverFailure:
-                return "ErrorDriverFailure";
-            case result::NotReady:
-                return "NotReady";
-            case result::ErrorOutOfHostMemory:
-                return "ErrorOutOfHostMemory";
-            case result::ErrorOutOfDeviceMemory:
-                return "ErrorOutOfDeviceMemory";
-            case result::ErrorInitializationFailed:
-                return "ErrorInitializationFailed";
-            case result::ErrorIncompatibleDriver:
-                return "ErrorIncompatibleDriver";
-        }
+    constexpr const char* to_string(const result& result);
 
-        return "Invalid result value";
-    }
+    /**
+     * @brief Describes the severity of a callback message.
+    */
+    enum struct validation_callback_severity
+    {
+        /**
+         * @brief Provides extra, often excessive information about API calls, diagnostics, support, etc.
+        */
+        Verbose,
+        /**
+         * @brief Provides information about API calls or resource details.
+        */
+        Info,
+        /**
+         * @brief Describes a potential issue in the application. The issue may not be harmful, but could still lead to performance drops or unexpected behaviour.
+        */
+        Warning,
+        /**
+         * @brief Fatal invalid API usage was detected.
+        */
+        Error,
+        /**
+         * @brief Data/memory corruption occurred.
+        */
+        Corruption
+    };
+
+    /**
+     * @brief Converts a validation_callback_severity to a string to aid in debug logging.
+    */
+    constexpr const char* to_string(const validation_callback_severity& severity);
+
+    /**
+     * @brief Describes the source of the validation callback message.
+    */
+    enum struct validation_callback_source
+    {
+        /**
+         * @brief The message came from the LLRI API directly.
+         * LLRI validation does basic parameter checks to make sure that the API doesn't crash internally.
+        */
+        Validation,
+        /**
+         * @brief The message came from the internal API.
+         * Internal API validation needs to be enabled through APIValidationEXT and/or GPUValidationEXT for this kind of message to appear.
+        */
+        InternalAPI
+    };
+
+    /**
+     * @brief Converts a validation_callback_source to a string to aid in debug logging.
+    */
+    constexpr const char* to_string(const validation_callback_source& source);
+
+    /**
+     * @brief The debug callback function, this function passes a severity (info, warning, error, etc), a source (LLRI validation or Internal API message), the message, and some userdata that can be set in the validation_callback_desc.
+    */
+    using validation_callback = void (
+        const validation_callback_severity& severity,
+        const validation_callback_source& source,
+        const char* message,
+        void* userData
+        );
+
+    /**
+     * @brief The validation callback allows the user to subscribe to validation messages so that they can write the message into their own logging system. 
+     *
+     * The callback contains contextual information about the message, like for example its severity.
+     * The callback may be used for both LLRI validation and internal API validation. The callback will poll messages from the internal API (e.g. Vulkan's debug utils, and DirectX's info queue)
+     *
+     * Internal API messages only occur if api_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some APIs might still output messages (Vulkan tends to print to the console, whereas DirectX tends to print to the "Output" window in Visual Studio).
+    */
+    struct validation_callback_desc
+    {
+        /**
+         * @brief The callback, the function passed must conform to the FnValidationCallback definition.
+         * This value CAN be nullptr, in which case no validation messages will be sent.
+        */
+        validation_callback* callback;
+        /**
+         * @brief Optional user data pointer. Not used internally by the API but it's passed around and sent along the callback.
+        */
+        void* userData;
+
+        /**
+         * @brief Convenience operator used internally to call the callback.
+        */
+        void operator ()(const validation_callback_severity& severity, const validation_callback_source& source, const char* message) const { callback(severity, source, message, userData); }
+    };
 
     /**
      * @brief Instance description to be used in llri::createInstance().
@@ -151,7 +223,33 @@ namespace legion::graphics::llri
          * This is not guaranteed but is known to at least apply to Vulkan.
         */
         const char* applicationName;
+        /**
+         * @brief Describes the optional validation callback. callbackDesc.callback can be nullptr in which case no callbacks will be sent.
+         *
+         * Callbacks may or may not be sent depending on the parameters used. If LLRI_DISABLE_VALIDATION is defined, no LLRI validation messages will be sent. If LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING is defined, then no internal API messages will be forwarded.
+         *
+         * Furthermore, to enable internal API messages, api_validation_ext and/or gpu_validation_ext should be enabled and part of the extensions array.
+        */
+        validation_callback_desc callbackDesc;
     };
+
+    /**
+     * @brief Internal functions, don't use outside of the API.
+    */
+    namespace detail
+    {
+        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
+        void impl_destroyInstance(Instance* instance);
+
+        using messenger_type = void;
+        /**
+         * @brief Polls API messages, only called if LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING is not defined.
+         * Used internally only
+         * @param validation The validation function / userdata
+         * @param messenger This value may differ depending on the function that is calling it, the most relevant messenger will be picked.
+        */
+        void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger);
+    }
 
     /**
      * @brief Create an llri Instance.
@@ -180,6 +278,9 @@ namespace legion::graphics::llri
     */
     class Instance
     {
+        friend result detail::impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
+        friend void detail::impl_destroyInstance(Instance* instance);
+
         friend result llri::createInstance(const instance_desc& desc, Instance** instance);
         friend void llri::destroyInstance(Instance* instance);
 
@@ -200,19 +301,31 @@ namespace legion::graphics::llri
          * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
          * @return ErrorDeviceLost if the adapter was lost.
         */
-        result createDevice(const device_desc& desc, Device** device);
+        result createDevice(const device_desc& desc, Device** device) const;
 
         /**
          * @brief Destroy the LLRI device. This does not delete the resources allocated through the device, that responsibility remains with the user.
         */
-        void destroyDevice(Device* device);
+        void destroyDevice(Device* device) const;
 
     private:
+        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        Instance() = default;
+        ~Instance() = default;
+
         void* m_ptr = nullptr;
         void* m_debugAPI = nullptr;
         void* m_debugGPU = nullptr;
 
+        validation_callback_desc m_validationCallback;
+        bool m_shouldConstructValidationCallbackMessenger;
+        void* m_validationCallbackMessenger = nullptr; //Allows API to store their callback messenger if needed
+
         std::map<void*, Adapter*> m_cachedAdapters;
+
+        result impl_enumerateAdapters(std::vector<Adapter*>* adapters);
+        result impl_createDevice(const device_desc& desc, Device** device) const;
+        void impl_destroyDevice(Device* device) const;
     };
 
     /**
@@ -243,22 +356,7 @@ namespace legion::graphics::llri
     /**
      * @brief Converts an adapter_type to a string to aid in debug logging.
     */
-    constexpr const char* to_string(const adapter_type& type)
-    {
-        switch (type)
-        {
-            case adapter_type::Other:
-                return "Other";
-            case adapter_type::Integrated:
-                return "Integrated";
-            case adapter_type::Discrete:
-                return "Discrete";
-            case adapter_type::Virtual:
-                return "Virtual";
-        }
-
-        return "Invalid adapter_type value";
-    }
+    constexpr const char* to_string(const adapter_type& type);
 
     /**
      * @brief Basic information about an adapter.
@@ -301,13 +399,15 @@ namespace legion::graphics::llri
     class Adapter
     {
         friend Instance;
+        friend result detail::impl_createInstance(const instance_desc&, Instance**, const bool&);
+        friend void detail::impl_destroyInstance(Instance*);
 
     public:
         /**
          * @brief Get basic information about the Adapter. Do note that this information should be for informative purposes only and the results aren't guaranteed to be the same across APIs.
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if info is nullptr.
-         * @return If the adapter was removed or lost, the operation returns ErrorDeviceRemoved.
+         * @return ErrorDeviceLost If the adapter was removed or lost.
         */
         result queryInfo(adapter_info* info) const;
 
@@ -317,16 +417,30 @@ namespace legion::graphics::llri
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if features is nullptr.
          * @return ErrorIncompatibleDriver if the Adapter doesn't support the backend's requested API (either Vulkan 1.0 or DirectX 12 depending on the build).
+         * @return ErrorDeviceLost If the adapter was removed or lost.
         */
         result queryFeatures(adapter_features* features) const;
 
         /**
          * @brief Get the support of a given adapter extension.
-         * @return true if the extension is supported, and false if it isn't.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage If supported is nullptr.
+         * @return ErrorDeviceLost If the adapter was removed or lost.
          */
-        [[nodiscard]] bool queryExtensionSupport(const adapter_extension_type& type) const;
+        result queryExtensionSupport(const adapter_extension_type& type, bool* supported) const;
     private:
+        //Force private constructor/deconstructor so that only instance can manage lifetime
+        Adapter() = default;
+        ~Adapter() = default;
+
         void* m_ptr = nullptr;
+        validation_callback_desc m_validationCallback;
+        void* m_validationCallbackMessenger = nullptr;
+
+        result impl_queryInfo(adapter_info* info) const;
+        result impl_queryFeatures(adapter_features* features) const;
+        result impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const;
     };
 
     /**
@@ -360,8 +474,18 @@ namespace legion::graphics::llri
     class Device
     {
         friend Instance;
+    public:
 
     private:
+        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        Device() = default;
+        ~Device() = default;
+
         void* m_ptr = nullptr;
+        validation_callback_desc m_validationCallback;
+        void* m_validationCallbackMessenger = nullptr;
     };
 }
+
+// ReSharper disable once CppUnusedIncludeDirective
+#include <llri/llri_impl.hpp>

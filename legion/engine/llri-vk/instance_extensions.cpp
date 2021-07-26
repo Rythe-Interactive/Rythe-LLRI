@@ -3,12 +3,14 @@
 
 namespace legion::graphics::llri
 {
-    bool queryInstanceExtensionSupport(const instance_extension_type& type)
+    namespace detail
     {
-        auto layers = internal::queryAvailableLayers();
-
-        switch (type)
+        [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type)
         {
+            auto layers = internal::queryAvailableLayers();
+
+            switch (type)
+            {
             case instance_extension_type::APIValidation:
             {
                 return layers.find(internal::nameHash("VK_LAYER_KHRONOS_validation")) != layers.end();
@@ -17,8 +19,9 @@ namespace legion::graphics::llri
             {
                 return true;
             }
-        }
+            }
 
-        return false;
+            return false;
+        }
     }
 }

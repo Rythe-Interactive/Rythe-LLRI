@@ -1,6 +1,7 @@
 #include <llri/llri.hpp>
 #include <graphics/directx/d3d12.h>
 #include <dxgi1_6.h>
+#include <string>
 
 namespace legion::graphics::llri
 {
@@ -9,88 +10,144 @@ namespace legion::graphics::llri
         result createAPIValidationEXT(const api_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
         result mapHRESULT(const HRESULT& value);
+
+        void dummyValidationCallback(const validation_callback_severity&, const validation_callback_source&, const char*, void*) { }
+
+        validation_callback_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
+        {
+            switch (sev)
+            {
+            case D3D12_MESSAGE_SEVERITY_CORRUPTION:
+                return validation_callback_severity::Corruption;
+            case D3D12_MESSAGE_SEVERITY_ERROR:
+                return validation_callback_severity::Error;
+            case D3D12_MESSAGE_SEVERITY_WARNING:
+                return validation_callback_severity::Warning;
+            case D3D12_MESSAGE_SEVERITY_INFO:
+                return validation_callback_severity::Info;
+            case D3D12_MESSAGE_SEVERITY_MESSAGE:
+                return validation_callback_severity::Verbose;
+            }
+
+            return validation_callback_severity::Info;
+        }
     }
 
-    result createInstance(const instance_desc& desc, Instance** instance)
+    namespace detail
     {
-        if (instance == nullptr)
-            return result::ErrorInvalidUsage;
-        if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return result::ErrorInvalidUsage;
-
-        auto* output = new Instance();
-        UINT factoryFlags = 0;
-
-        for (uint32_t i = 0; i < desc.numExtensions; i++)
+        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
         {
-            auto& extension = desc.extensions[i];
-            result extensionCreateResult;
+            auto* output = new Instance();
+            UINT factoryFlags = 0;
 
-            switch (extension.type)
+            for (uint32_t i = 0; i < desc.numExtensions; i++)
             {
-                case instance_extension_type::APIValidation:
+                auto& extension = desc.extensions[i];
+                result extensionCreateResult;
+
+                switch (extension.type)
                 {
-                    extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
-                    if (extensionCreateResult == result::Success)
-                        factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
-                    break;
+                    case instance_extension_type::APIValidation:
+                    {
+                        extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
+                        if (extensionCreateResult == result::Success)
+                            factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
+                        break;
+                    }
+                    case instance_extension_type::GPUValidation:
+                    {
+                        extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
+                        break;
+                    }
+                    default:
+                    {
+                        if (desc.callbackDesc.callback)
+                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+
+                        extensionCreateResult = result::ErrorExtensionNotSupported;
+                        break;
+                    }
                 }
-                case instance_extension_type::GPUValidation:
+
+                if (extensionCreateResult != result::Success)
                 {
-                    extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
-                    break;
-                }
-                default:
-                {
-                    extensionCreateResult = result::ErrorExtensionNotSupported;
-                    break;
+                    llri::destroyInstance(output);
+                    return extensionCreateResult;
                 }
             }
 
-            if (extensionCreateResult != result::Success)
+            //Store user defined validation callback
+            //DirectX creates validation callbacks upon device creation so we just need to store information about this right now.
+            output->m_validationCallbackMessenger = nullptr;
+            if (enableInternalAPIMessagePolling && desc.callbackDesc.callback)
             {
-                destroyInstance(output);
-                return extensionCreateResult;
+                output->m_validationCallback = desc.callbackDesc;
+                output->m_shouldConstructValidationCallbackMessenger = true;
+            }
+            else
+            {
+                output->m_validationCallback = { &internal::dummyValidationCallback, nullptr };
+                output->m_shouldConstructValidationCallbackMessenger = false;
+            }
+
+            //Attempt to create factory
+            IDXGIFactory* factory = nullptr;
+            const HRESULT factoryCreateResult = CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
+            if (FAILED(factoryCreateResult))
+            {
+                llri::destroyInstance(output);
+                return internal::mapHRESULT(factoryCreateResult);
+            }
+
+            //Store factory and return result
+            output->m_ptr = factory;
+            *instance = output;
+            return result::Success;
+        }
+
+        void impl_destroyInstance(Instance* instance)
+        {
+            if (!instance)
+                return;
+
+            for (auto& [ptr, adapter] : instance->m_cachedAdapters)
+                delete adapter;
+
+            if (instance->m_debugAPI)
+                static_cast<ID3D12Debug*>(instance->m_debugAPI)->Release();
+
+            if (instance->m_debugGPU)
+                static_cast<ID3D12Debug1*>(instance->m_debugGPU)->Release();
+
+            delete instance;
+        }
+
+        void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger)
+        {
+            if (messenger != nullptr)
+            {
+                ID3D12InfoQueue* iq = static_cast<ID3D12InfoQueue*>(messenger);
+                const auto numMsg = iq->GetNumStoredMessages();
+                
+                for (UINT64 i = 0; i < numMsg; ++i)
+                {
+                    SIZE_T messageLength = 0;
+                    iq->GetMessage(i, NULL, &messageLength);
+                    
+                    D3D12_MESSAGE* pMessage = reinterpret_cast<D3D12_MESSAGE*>(malloc(messageLength));
+                    iq->GetMessage(i, pMessage, &messageLength);
+                    validation(internal::mapSeverity(pMessage->Severity), validation_callback_source::InternalAPI, pMessage->pDescription);
+                    
+                    free(pMessage);
+                }
+
+                iq->ClearStoredMessages();
             }
         }
-
-        //Attempt to create factory
-        IDXGIFactory* factory = nullptr;
-        const HRESULT factoryCreateResult = CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
-        if (FAILED(factoryCreateResult))
-        {
-            destroyInstance(output);
-            return internal::mapHRESULT(factoryCreateResult);
-        }
-
-        //Store factory and return result
-        output->m_ptr = factory;
-        *instance = output;
-        return result::Success;
     }
 
-    void destroyInstance(Instance* instance)
+    result Instance::impl_enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-        if (!instance)
-            return;
-
-        for (auto& [ptr, adapter] : instance->m_cachedAdapters)
-            delete adapter;
-
-        if (instance->m_debugAPI)
-            static_cast<ID3D12Debug*>(instance->m_debugAPI)->Release();
-
-        if (instance->m_debugGPU)
-            static_cast<ID3D12Debug1*>(instance->m_debugGPU)->Release();
-
-        delete instance;
-    }
-
-    result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
-    {
-        if (adapters == nullptr)
-            return result::ErrorInvalidUsage;
-
         adapters->clear();
 
         //Clear internal pointers, lost adapters will have a nullptr internally
@@ -126,6 +183,8 @@ namespace legion::graphics::llri
             {
                 Adapter* adapter = new Adapter();
                 adapter->m_ptr = dxgiAdapter;
+                adapter->m_validationCallback = m_validationCallback;
+                adapter->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
                 m_cachedAdapters[(void*)luid] = adapter;
                 adapters->push_back(adapter);
@@ -137,18 +196,10 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result Instance::createDevice(const device_desc& desc, Device** device)
+    result Instance::impl_createDevice(const device_desc& desc, Device** device) const
     {
-        if (m_ptr == nullptr || device == nullptr || desc.adapter == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (desc.numExtensions > 0 && desc.extensions == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (desc.adapter->m_ptr == nullptr)
-            return result::ErrorDeviceLost;
-
-        Device* result = new Device();
+        Device* output = new Device();
+        output->m_validationCallback = m_validationCallback;
 
         D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
 
@@ -156,16 +207,25 @@ namespace legion::graphics::llri
         HRESULT r = D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));
         if (FAILED(r))
         {
-            destroyDevice(result);
+            destroyDevice(output);
             return internal::mapHRESULT(r);
         }
+        output->m_ptr = dx12Device;
+        
+        if (m_shouldConstructValidationCallbackMessenger)
+        {
+            ID3D12InfoQueue* iq = nullptr;
+            r = dx12Device->QueryInterface(IID_PPV_ARGS(&iq));
 
-        result->m_ptr = dx12Device;
-        *device = result;
+            if (SUCCEEDED(r))
+                output->m_validationCallbackMessenger = iq;
+        }
+
+        *device = output;
         return result::Success;
     }
 
-    void Instance::destroyDevice(Device* device)
+    void Instance::impl_destroyDevice(Device* device) const
     {
         if (!device)
             return;
@@ -176,14 +236,8 @@ namespace legion::graphics::llri
         delete device;
     }
 
-    result Adapter::queryInfo(adapter_info* info) const
+    result Adapter::impl_queryInfo(adapter_info* info) const
     {
-        if (info == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (m_ptr == nullptr)
-            return result::ErrorDeviceRemoved;
-
         DXGI_ADAPTER_DESC1 desc;
         static_cast<IDXGIAdapter1*>(m_ptr)->GetDesc1(&desc);
 
@@ -204,14 +258,8 @@ namespace legion::graphics::llri
         return result::Success;
     }
 
-    result Adapter::queryFeatures(adapter_features* features) const
+    result Adapter::impl_queryFeatures(adapter_features* features) const
     {
-        if (features == nullptr)
-            return result::ErrorInvalidUsage;
-
-        if (m_ptr == nullptr)
-            return result::ErrorDeviceRemoved;
-
         HRESULT level12_0 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
         if (level12_0 == E_FAIL)
             return result::ErrorIncompatibleDriver;
@@ -222,22 +270,24 @@ namespace legion::graphics::llri
         HRESULT level12_1 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
         HRESULT level12_2 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
 
-        adapter_features result;
+        adapter_features output;
 
         //Set all the information in a structured way here
 
-        *features = result;
+        *features = output;
         return result::Success;
     }
 
-    bool Adapter::queryExtensionSupport(const adapter_extension_type& type) const
+    result Adapter::impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
     {
+        *supported = false;
+
         switch (type)
         {
-            default:
-                break;
+        default:
+            break;
         }
 
-        return false;
+        return result::Success;
     }
 }

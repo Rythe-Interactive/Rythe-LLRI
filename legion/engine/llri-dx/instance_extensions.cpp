@@ -3,23 +3,26 @@
 
 namespace legion::graphics::llri
 {
-    bool queryInstanceExtensionSupport(const instance_extension_type& type)
+    namespace detail
     {
-        switch (type)
+        bool queryInstanceExtensionSupport(const instance_extension_type& type)
         {
-            case instance_extension_type::APIValidation:
+            switch (type)
             {
-                ID3D12Debug* temp = nullptr;
-                return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                case instance_extension_type::APIValidation:
+                {
+                    ID3D12Debug* temp = nullptr;
+                    return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                }
+                case instance_extension_type::GPUValidation:
+                {
+                    ID3D12Debug1* temp = nullptr;
+                    return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                }
             }
-            case instance_extension_type::GPUValidation:
-            {
-                ID3D12Debug1* temp = nullptr;
-                return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
-            }
-        }
 
-        return false;
+            return false;
+        }
     }
 
     namespace internal
