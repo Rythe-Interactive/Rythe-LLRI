@@ -10,10 +10,17 @@ namespace legion::graphics::llri
         */
         layer_map preprocessLayerProperties()
         {
+            lazyInitializeVolk();
+
             layer_map result;
 
-            for (auto layer : vk::enumerateInstanceLayerProperties())
-                result.emplace(nameHash(layer.layerName.data()), layer);
+            uint32_t layerCount;
+            vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+            std::vector<VkLayerProperties> layers(layerCount);
+            vkEnumerateInstanceLayerProperties(&layerCount, layers.data());
+
+            for (auto layer : layers)
+                result.emplace(nameHash(layer.layerName), layer);
 
             return result;
         }
@@ -26,10 +33,17 @@ namespace legion::graphics::llri
 
         extension_map preprocessExtensionProperties()
         {
+            lazyInitializeVolk();
+
             extension_map result;
 
-            for (auto extension : vk::enumerateInstanceExtensionProperties())
-                result.emplace(nameHash(extension.extensionName.data()), extension);
+            uint32_t extensionCount;
+            vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+            std::vector<VkExtensionProperties> extensions(extensionCount);
+            vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+
+            for (auto extension : extensions)
+                result.emplace(nameHash(extension.extensionName), extension);
 
             return result;
         }
@@ -46,59 +60,59 @@ namespace legion::graphics::llri
         /**
          * @brief Helper function that converts vk::Result to llri::result
         */
-        result mapVkResult(const vk::Result& result)
+        result mapVkResult(const VkResult& result)
         {
             switch (result)
             {
-                case vk::Result::eSuccess:
+                case VK_SUCCESS:
                     return result::Success;
-                case vk::Result::eNotReady:
+                case VK_NOT_READY:
                     return result::NotReady;
-                case vk::Result::eTimeout:
+                case VK_TIMEOUT:
                     return result::Timeout;
-                case vk::Result::eEventSet: break;
-                case vk::Result::eEventReset: break;
-                case vk::Result::eIncomplete: break;
-                case vk::Result::eErrorOutOfHostMemory:
+                case VK_EVENT_SET: break;
+                case VK_EVENT_RESET: break;
+                case VK_INCOMPLETE: break;
+                case VK_ERROR_OUT_OF_HOST_MEMORY:
                     return result::ErrorOutOfHostMemory;
-                case vk::Result::eErrorOutOfDeviceMemory:
+                case VK_ERROR_OUT_OF_DEVICE_MEMORY:
                     return result::ErrorOutOfDeviceMemory;
-                case vk::Result::eErrorInitializationFailed:
+                case VK_ERROR_INITIALIZATION_FAILED:
                     return result::ErrorInitializationFailed;
-                case vk::Result::eErrorDeviceLost:
+                case VK_ERROR_DEVICE_LOST:
                     return result::ErrorDeviceLost;
-                case vk::Result::eErrorMemoryMapFailed: break;
-                case vk::Result::eErrorLayerNotPresent:
+                case VK_ERROR_MEMORY_MAP_FAILED: break;
+                case VK_ERROR_LAYER_NOT_PRESENT:
                     return result::ErrorExtensionNotSupported;
-                case vk::Result::eErrorExtensionNotPresent:
+                case VK_ERROR_EXTENSION_NOT_PRESENT:
                     return result::ErrorExtensionNotSupported;
-                case vk::Result::eErrorFeatureNotPresent:
+                case VK_ERROR_FEATURE_NOT_PRESENT:
                     return result::ErrorFeatureNotSupported;
-                case vk::Result::eErrorIncompatibleDriver:
+                case VK_ERROR_INCOMPATIBLE_DRIVER:
                     return result::ErrorIncompatibleDriver;
-                case vk::Result::eErrorTooManyObjects: break;
-                case vk::Result::eErrorFormatNotSupported: break;
-                case vk::Result::eErrorFragmentedPool: break;
-                case vk::Result::eErrorUnknown:
+                case VK_ERROR_TOO_MANY_OBJECTS: break;
+                case VK_ERROR_FORMAT_NOT_SUPPORTED: break;
+                case VK_ERROR_FRAGMENTED_POOL: break;
+                case VK_ERROR_UNKNOWN:
                     return result::ErrorUnknown;
-                case vk::Result::eErrorOutOfPoolMemory: break;
-                case vk::Result::eErrorInvalidExternalHandle: break;
-                case vk::Result::eErrorFragmentation: break;
-                case vk::Result::eErrorInvalidOpaqueCaptureAddress: break;
-                case vk::Result::eErrorSurfaceLostKHR: break;
-                case vk::Result::eErrorNativeWindowInUseKHR: break;
-                case vk::Result::eSuboptimalKHR: break;
-                case vk::Result::eErrorOutOfDateKHR: break;
-                case vk::Result::eErrorIncompatibleDisplayKHR: break;
-                case vk::Result::eErrorValidationFailedEXT: break;
-                case vk::Result::eErrorInvalidShaderNV: break;
-                case vk::Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: break;
-                case vk::Result::eErrorNotPermittedEXT: break;
-                case vk::Result::eThreadIdleKHR: break;
-                case vk::Result::eThreadDoneKHR: break;
-                case vk::Result::eOperationDeferredKHR: break;
-                case vk::Result::eOperationNotDeferredKHR: break;
-                case vk::Result::ePipelineCompileRequiredEXT: break;
+                case VK_ERROR_OUT_OF_POOL_MEMORY: break;
+                case VK_ERROR_INVALID_EXTERNAL_HANDLE: break;
+                case VK_ERROR_FRAGMENTATION: break;
+                case VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS: break;
+                case VK_ERROR_SURFACE_LOST_KHR: break;
+                case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR: break;
+                case VK_SUBOPTIMAL_KHR: break;
+                case VK_ERROR_OUT_OF_DATE_KHR: break;
+                case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR: break;
+                case VK_ERROR_VALIDATION_FAILED_EXT: break;
+                case VK_ERROR_INVALID_SHADER_NV: break;
+                case VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT: break;
+                case VK_ERROR_NOT_PERMITTED_EXT: break;
+                case VK_THREAD_IDLE_KHR: break;
+                case VK_THREAD_DONE_KHR: break;
+                case VK_OPERATION_DEFERRED_KHR: break;
+                case VK_OPERATION_NOT_DEFERRED_KHR: break;
+                case VK_PIPELINE_COMPILE_REQUIRED_EXT: break;
                 default: break;
             }
 

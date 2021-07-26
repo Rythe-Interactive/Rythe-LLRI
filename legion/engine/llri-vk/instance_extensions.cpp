@@ -7,6 +7,8 @@ namespace legion::graphics::llri
     {
         [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type)
         {
+            internal::lazyInitializeVolk();
+
             auto layers = internal::queryAvailableLayers();
 
             switch (type)

@@ -1,9 +1,11 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
+#define VOLK_IMPLEMENTATION
+#include <graphics/vulkan/volk.h>
+
 #include <vector>
 #include <map>
-#include <vulkan/vulkan.hpp>
 
 namespace legion::graphics::llri
 {
@@ -66,6 +68,8 @@ namespace legion::graphics::llri
     {
         result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
         {
+            internal::lazyInitializeVolk();
+
             auto* result = new Instance();
 
             std::vector<const char*> layers;
@@ -74,8 +78,8 @@ namespace legion::graphics::llri
             void* pNext = nullptr;
 
             //Variables that need to be stored outside of scope
-            vk::ValidationFeaturesEXT features;
-            std::vector<vk::ValidationFeatureEnableEXT> enables;
+            VkValidationFeaturesEXT features;
+            std::vector<VkValidationFeatureEnableEXT> enables;
 
             for (uint32_t i = 0; i < desc.numExtensions; i++)
             {
@@ -92,11 +96,10 @@ namespace legion::graphics::llri
                     {
                         if (extension.gpuValidation.enable)
                         {
-                            enables = {
-                                vk::ValidationFeatureEnableEXT::eGpuAssisted,
-                                vk::ValidationFeatureEnableEXT::eGpuAssistedReserveBindingSlot
-                            };
-                            features = vk::ValidationFeaturesEXT(enables, {});
+                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
+                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
+
+                            features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
                             features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
                             pNext = &features;
                         }
@@ -118,7 +121,7 @@ namespace legion::graphics::llri
             result->m_validationCallbackMessenger = nullptr;
             if (enableInternalAPIMessagePolling && desc.callbackDesc.callback)
             {
-                auto available = internal::queryAvailableExtensions();
+                const auto& available = internal::queryAvailableExtensions();
                 //Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
                 //so instead the check is implicit, internal API callbacks aren't guaranteed
                 if (available.find(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) != available.end())
@@ -128,42 +131,44 @@ namespace legion::graphics::llri
                 }
             }
 
-            vk::ApplicationInfo appInfo{ desc.applicationName, VK_MAKE_VERSION(0, 0, 0), "Legion::LLRI", VK_MAKE_VERSION(0, 0, 1), VK_HEADER_VERSION_COMPLETE };
-            vk::InstanceCreateInfo instanceCi{ {}, &appInfo, (uint32_t)layers.size(), layers.data(), (uint32_t)extensions.size(), extensions.data() };
+            VkApplicationInfo appInfo{ VK_STRUCTURE_TYPE_APPLICATION_INFO, nullptr, desc.applicationName, VK_MAKE_VERSION(0, 0, 0), "Legion::LLRI", VK_MAKE_VERSION(0, 0, 1), VK_HEADER_VERSION_COMPLETE };
+            VkInstanceCreateInfo instanceCi{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, nullptr, {}, &appInfo, (uint32_t)layers.size(), layers.data(), (uint32_t)extensions.size(), extensions.data() };
             instanceCi.pNext = pNext;
 
-            vk::Instance vulkanInstance = nullptr;
-            const vk::Result createResult = vk::createInstance(&instanceCi, nullptr, &vulkanInstance);
+            VkInstance vulkanInstance = nullptr;
+            const VkResult createResult = vkCreateInstance(&instanceCi, nullptr, &vulkanInstance);
 
-            if (createResult != vk::Result::eSuccess)
+            if (createResult != VK_SUCCESS)
             {
                 llri::destroyInstance(result);
                 return internal::mapVkResult(createResult);
             }
             result->m_ptr = vulkanInstance;
 
+            //Load instance functions 
+            volkLoadInstanceOnly(vulkanInstance);
+
             //Create debug utils callback
             if (result->m_shouldConstructValidationCallbackMessenger)
             {
                 result->m_validationCallback = desc.callbackDesc;
 
-                vk::DebugUtilsMessageSeverityFlagsEXT severity = vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo |
-                    vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
-                    vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
-                    vk::DebugUtilsMessageSeverityFlagBitsEXT::eError;
-
-                vk::DebugUtilsMessageTypeFlagsEXT types = vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-                    vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
-                    vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation;
-
-                const vk::DebugUtilsMessengerCreateInfoEXT debugUtilsCi{ {}, severity, types, &internal::debugCallback, &result->m_validationCallback };
-
-                const auto func = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vulkanInstance.getProcAddr("vkCreateDebugUtilsMessengerEXT"));
-                if (func)
+                //Attempt to create the debug utils messenger
+                if (vkCreateDebugUtilsMessengerEXT) //The extension function may not have been loaded successfully
                 {
-                    auto vkCi = static_cast<VkDebugUtilsMessengerCreateInfoEXT>(debugUtilsCi);
+                    const VkDebugUtilsMessageSeverityFlagsEXT severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
+                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+
+                    const VkDebugUtilsMessageTypeFlagsEXT types = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+                        VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
+                    const VkDebugUtilsMessengerCreateInfoEXT debugUtilsCi{ VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT, nullptr, {}, severity, types, &internal::debugCallback, &result->m_validationCallback };
+
                     VkDebugUtilsMessengerEXT messenger;
-                    func(static_cast<VkInstance>(vulkanInstance), &vkCi, nullptr, &messenger);
+                    vkCreateDebugUtilsMessengerEXT(vulkanInstance, &debugUtilsCi, nullptr, &messenger);
 
                     result->m_validationCallbackMessenger = messenger;
                 }
@@ -177,20 +182,21 @@ namespace legion::graphics::llri
         {
             if (!instance)
                 return;
-            const vk::Instance vkInstance = static_cast<VkInstance>(instance->m_ptr);
+            const VkInstance vkInstance = static_cast<VkInstance>(instance->m_ptr);
 
             //Destroy debug messenger if possible
             if (instance->m_validationCallbackMessenger)
             {
-                const auto func = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkInstance.getProcAddr("vkDestroyDebugUtilsMessengerEXT"));
-                if (func != nullptr)
-                    func(static_cast<VkInstance>(vkInstance), static_cast<VkDebugUtilsMessengerEXT>(instance->m_validationCallbackMessenger), nullptr);
+                if (vkDestroyDebugUtilsMessengerEXT)
+                    vkDestroyDebugUtilsMessengerEXT(vkInstance, static_cast<VkDebugUtilsMessengerEXT>(instance->m_validationCallbackMessenger), nullptr);
             }
 
             for (auto& [ptr, adapter] : instance->m_cachedAdapters)
                 delete adapter;
 
             //vk validation layers aren't tangible objects and don't need manual destruction
+
+            vkDestroyInstance(vkInstance, nullptr);
 
             delete instance;
         }
@@ -212,22 +218,22 @@ namespace legion::graphics::llri
         for (auto& [ptr, adapter] : m_cachedAdapters)
             adapter->m_ptr = nullptr;
 
-        std::vector<vk::PhysicalDevice> physicalDevices;
+        std::vector<VkPhysicalDevice> physicalDevices;
 
         //Get count
         //Can't use Vulkan.hpp convenience function because we need it to not throw if it fails
         uint32_t physicalDeviceCount = 0;
-        vk::Result r = static_cast<vk::Instance>(static_cast<VkInstance>(m_ptr)).enumeratePhysicalDevices(&physicalDeviceCount, nullptr);
-        if (r != vk::Result::eSuccess && r != vk::Result::eTimeout)
+        VkResult r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, nullptr);
+        if (r != VK_SUCCESS && r != VK_TIMEOUT)
             return internal::mapVkResult(r);
 
         //Get actual physical devices
         physicalDevices.resize(physicalDeviceCount);
-        r = static_cast<vk::Instance>(static_cast<VkInstance>(m_ptr)).enumeratePhysicalDevices(&physicalDeviceCount, physicalDevices.data());
-        if (r != vk::Result::eSuccess)
+        r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, physicalDevices.data());
+        if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        for (vk::PhysicalDevice physicalDevice : physicalDevices)
+        for (VkPhysicalDevice physicalDevice : physicalDevices)
         {
             if (m_cachedAdapters.find(physicalDevice) != m_cachedAdapters.end())
             {
@@ -254,16 +260,18 @@ namespace legion::graphics::llri
         Device* output = new Device();
         output->m_validationCallback = m_validationCallback;
 
-        std::vector<vk::DeviceQueueCreateInfo> queues;
+        std::vector<VkDeviceQueueCreateInfo> queues;
         float queuePriorities = 1.0f;
         std::vector<const char*> extensions;
-        vk::PhysicalDeviceFeatures features{};
-
+        VkPhysicalDeviceFeatures features{};
+        
         //Assign default queue if no queues were selected by the API user //TODO: return invalid api use code when no queues are selected when the queue system is in place
         if (queues.size() == 0)
-            queues.push_back(vk::DeviceQueueCreateInfo{ {}, 0, 1, &queuePriorities });
+            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {}, 0, 1, &queuePriorities });
 
-        vk::DeviceCreateInfo ci{
+        VkDeviceCreateInfo ci{
+            VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+            nullptr,
             {},
             (uint32_t)queues.size(), queues.data(),
             0, nullptr, //Vulkan device layers are deprecated
@@ -271,14 +279,18 @@ namespace legion::graphics::llri
             &features
         };
 
-        vk::Device vkDevice = nullptr;
-        const vk::Result r = static_cast<vk::PhysicalDevice>(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr)).createDevice(&ci, nullptr, &vkDevice);
-        if (r != vk::Result::eSuccess)
+        VkDevice vkDevice = nullptr;
+        const VkResult r = vkCreateDevice(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr), &ci, nullptr, &vkDevice);
+        if (r != VK_SUCCESS)
         {
             destroyDevice(output);
             return internal::mapVkResult(r);
         }
         output->m_ptr = vkDevice;
+
+        VolkDeviceTable* table = new VolkDeviceTable();
+        volkLoadDeviceTable(table, vkDevice);
+        output->m_functionTable = table;
 
         *device = output;
         return result::Success;
@@ -287,7 +299,9 @@ namespace legion::graphics::llri
     void Instance::impl_destroyDevice(Device* device) const
     {
         if (device->m_ptr != nullptr)
-            vkDestroyDevice(static_cast<VkDevice>(device->m_ptr), nullptr);
+            static_cast<VolkDeviceTable*>(device->m_functionTable)->vkDestroyDevice(static_cast<VkDevice>(device->m_ptr), nullptr);
+
+        delete static_cast<VolkDeviceTable*>(device->m_functionTable);
 
         delete device;
     }
