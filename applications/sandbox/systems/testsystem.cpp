@@ -12,13 +12,12 @@ void callback(const llri::validation_callback_severity& severity, const llri::va
     switch (severity)
     {
         case llri::validation_callback_severity::Verbose:
-            return; //Comment out return and uncomment the following 2 lines to get verbose callbacks
-            //sev = lgn::log::severity_trace;
-            //break;
+            sev = lgn::log::severity_trace;
+            break;
         case llri::validation_callback_severity::Info:
-            return; //Comment out return and uncomment the following 2 lines to get info callbacks
-            //sev = lgn::log::severity_info;
-            //break;
+            //Even though this semantically maps to info, we'd recommend running this on the trace severity to avoid the excessive info logs that some APIs output
+            sev = lgn::log::severity_trace;
+            break;
         case llri::validation_callback_severity::Warning:
             sev = lgn::log::severity_warn;
             break;
