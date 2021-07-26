@@ -117,7 +117,7 @@ namespace legion::graphics::llri
     /**
      * @brief Describes the severity of a callback message.
     */
-    enum class validation_callback_severity
+    enum struct validation_callback_severity
     {
         /**
          * @brief Provides extra, often excessive information about API calls, diagnostics, support, etc.
@@ -149,7 +149,7 @@ namespace legion::graphics::llri
     /**
      * @brief Describes the source of the validation callback message.
     */
-    enum class validation_callback_source
+    enum struct validation_callback_source
     {
         /**
          * @brief The message came from the LLRI API directly.
