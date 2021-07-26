@@ -1,9 +1,12 @@
 #include <llri/llri.hpp>
+using namespace legion::graphics;
+
 #include <iostream>
 
 int main()
 {
-    using namespace legion::graphics;
+    //This example displays basic LLRI instance creation.
+    //Instance is the core class of LLRI, all objects are created or obtained through instance or any of its created objects.
 
     //Describe our instance prior to creating it
     //the simplest case requires no extensions and a simple application name (which may also just be empty)
