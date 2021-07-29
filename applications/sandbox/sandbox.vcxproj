@@ -117,8 +117,8 @@
       <AdditionalDependencies>legion-core-d.lib;legion-llri-vk-d.lib;vulkan-1.lib;OpenCL.lib;glfw3.lib;Voro++D.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"
-copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
+      <Command>xcopy /Y /E /I /R "$(SolutionDir)deps\dll\" "$(OutDir)"
+xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -144,8 +144,8 @@ copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
       <AdditionalDependencies>legion-core-d.lib;legion-llri-dx-d.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;dxcompiler.lib;WinPixEventRuntime.lib;WinPixEventRuntime_UAP.lib;OpenCL.lib;glfw3.lib;Voro++D.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"
-copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
+      <Command>xcopy /Y /E /I /R "$(SolutionDir)deps\dll\" "$(OutDir)"
+xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -174,8 +174,8 @@ copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
       <AdditionalDependencies>legion-core.lib;legion-llri-vk.lib;vulkan-1.lib;OpenCL.lib;glfw3.lib;Voro++.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"
-copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
+      <Command>xcopy /Y /E /I /R "$(SolutionDir)deps\dll\" "$(OutDir)"
+xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
     </PostBuildEvent>
     <Lib />
     <PreBuildEvent>
@@ -205,8 +205,8 @@ copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
       <AdditionalDependencies>legion-core.lib;legion-llri-dx.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;dxcompiler.lib;WinPixEventRuntime.lib;WinPixEventRuntime_UAP.lib;OpenCL.lib;glfw3.lib;Voro++.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"
-copy /Y "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
+      <Command>xcopy /Y /E /I /R "$(SolutionDir)deps\dll\" "$(OutDir)"
+xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
     </PostBuildEvent>
     <Lib />
     <PreBuildEvent>
