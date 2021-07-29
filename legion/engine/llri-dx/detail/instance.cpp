@@ -1,7 +1,6 @@
 #include <llri/llri.hpp>
 #include <graphics/directx/d3d12.h>
 #include <dxgi1_6.h>
-#include <string>
 
 namespace legion::graphics::llri
 {
@@ -9,6 +8,7 @@ namespace legion::graphics::llri
     {
         result createAPIValidationEXT(const api_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
+
         result mapHRESULT(const HRESULT& value);
 
         void dummyValidationCallback(const validation_callback_severity&, const validation_callback_source&, const char*, void*) { }
@@ -47,26 +47,26 @@ namespace legion::graphics::llri
 
                 switch (extension.type)
                 {
-                    case instance_extension_type::APIValidation:
-                    {
-                        extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
-                        if (extensionCreateResult == result::Success)
-                            factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
-                        break;
-                    }
-                    case instance_extension_type::GPUValidation:
-                    {
-                        extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
-                        break;
-                    }
-                    default:
-                    {
-                        if (desc.callbackDesc.callback)
-                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+                case instance_extension_type::APIValidation:
+                {
+                    extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
+                    if (extensionCreateResult == result::Success)
+                        factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
+                    break;
+                }
+                case instance_extension_type::GPUValidation:
+                {
+                    extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
+                    break;
+                }
+                default:
+                {
+                    if (desc.callbackDesc.callback)
+                        desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
 
-                        extensionCreateResult = result::ErrorExtensionNotSupported;
-                        break;
-                    }
+                    extensionCreateResult = result::ErrorExtensionNotSupported;
+                    break;
+                }
                 }
 
                 if (extensionCreateResult != result::Success)
@@ -128,16 +128,16 @@ namespace legion::graphics::llri
             {
                 ID3D12InfoQueue* iq = static_cast<ID3D12InfoQueue*>(messenger);
                 const auto numMsg = iq->GetNumStoredMessages();
-                
+
                 for (UINT64 i = 0; i < numMsg; ++i)
                 {
                     SIZE_T messageLength = 0;
                     iq->GetMessage(i, NULL, &messageLength);
-                    
+
                     D3D12_MESSAGE* pMessage = reinterpret_cast<D3D12_MESSAGE*>(malloc(messageLength));
                     iq->GetMessage(i, pMessage, &messageLength);
                     validation(internal::mapSeverity(pMessage->Severity), validation_callback_source::InternalAPI, pMessage->pDescription);
-                    
+
                     free(pMessage);
                 }
 
@@ -211,7 +211,7 @@ namespace legion::graphics::llri
             return internal::mapHRESULT(r);
         }
         output->m_ptr = dx12Device;
-        
+
         if (m_shouldConstructValidationCallbackMessenger)
         {
             ID3D12InfoQueue* iq = nullptr;
@@ -234,60 +234,5 @@ namespace legion::graphics::llri
             static_cast<ID3D12Device*>(device->m_ptr)->Release();
 
         delete device;
-    }
-
-    result Adapter::impl_queryInfo(adapter_info* info) const
-    {
-        DXGI_ADAPTER_DESC1 desc;
-        static_cast<IDXGIAdapter1*>(m_ptr)->GetDesc1(&desc);
-
-        adapter_info result;
-        result.vendorId = desc.VendorId;
-        result.adapterId = desc.DeviceId;
-        const auto description = std::string(desc.Description, desc.Description + 128);
-        result.adapterName = description.substr(0, description.find_last_not_of(' '));
-
-        if (desc.Flags == DXGI_ADAPTER_FLAG_REMOTE)
-            result.adapterType = adapter_type::Virtual;
-        else if (desc.DedicatedVideoMemory > 0)
-            result.adapterType = adapter_type::Discrete;
-        else // video memory == 0 
-            result.adapterType = adapter_type::Integrated;
-
-        *info = result;
-        return result::Success;
-    }
-
-    result Adapter::impl_queryFeatures(adapter_features* features) const
-    {
-        HRESULT level12_0 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
-        if (level12_0 == E_FAIL)
-            return result::ErrorIncompatibleDriver;
-        else if (FAILED(level12_0)) //no matter what reason, LEVEL_12_0 should always be supported for DX12
-            return internal::mapHRESULT(level12_0);
-
-        //Level 1 and 2 can more easily grant us guarantees about feature support
-        HRESULT level12_1 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
-        HRESULT level12_2 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
-
-        adapter_features output;
-
-        //Set all the information in a structured way here
-
-        *features = output;
-        return result::Success;
-    }
-
-    result Adapter::impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
-    {
-        *supported = false;
-
-        switch (type)
-        {
-        default:
-            break;
-        }
-
-        return result::Success;
     }
 }

@@ -113,8 +113,10 @@ copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="instance_extensions.cpp" />
-    <ClCompile Include="source.cpp" />
+    <ClCompile Include="detail\adapter.cpp" />
+    <ClCompile Include="detail\instance.cpp" />
+    <ClCompile Include="detail\instance_extensions.cpp" />
+    <ClCompile Include="llri.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
