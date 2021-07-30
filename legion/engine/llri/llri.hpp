@@ -482,6 +482,8 @@ namespace legion::graphics::llri
         ~Device() = default;
 
         void* m_ptr = nullptr;
+        void* m_functionTable = nullptr;
+
         validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
     };

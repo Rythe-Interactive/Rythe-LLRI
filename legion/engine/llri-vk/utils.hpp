@@ -1,14 +1,26 @@
 #pragma once
 #include <llri/llri.hpp>
-#include <vulkan/vulkan.hpp>
+#include <graphics/vulkan/volk.h>
+#include <vulkan/vulkan.h>
 #include <unordered_map>
 
 namespace legion::graphics::llri
 {
     namespace internal
     {
-        using layer_map = std::unordered_map<unsigned long long, vk::LayerProperties>;
-        using extension_map = std::unordered_map<unsigned long long, vk::ExtensionProperties>;
+        static bool isVolkInitialized = false;
+
+        inline void lazyInitializeVolk()
+        {
+            if (!isVolkInitialized)
+            {
+                volkInitialize();
+                isVolkInitialized = true;
+            }
+        }
+
+        using layer_map = std::unordered_map<unsigned long long, VkLayerProperties>;
+        using extension_map = std::unordered_map<unsigned long long, VkExtensionProperties>;
 
         /**
          * @brief Helps prevent loading in layers multiple times by loading them in as a static variable in this function
@@ -19,7 +31,7 @@ namespace legion::graphics::llri
         */
         const extension_map& queryAvailableExtensions();
 
-        result mapVkResult(const vk::Result& result);
+        result mapVkResult(const VkResult& result);
 
         unsigned long long nameHash(std::string name);
     }
