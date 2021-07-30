@@ -215,6 +215,8 @@ xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="instance.cpp" />
+    <ClCompile Include="llri.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
