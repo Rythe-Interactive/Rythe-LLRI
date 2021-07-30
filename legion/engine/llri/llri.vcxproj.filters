@@ -5,19 +5,40 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\detail">
+      <UniqueIdentifier>{757ff8a8-4e15-4855-9d32-53032c2b009e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="llri.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="instance_extensions.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="detail\adapter.hpp">
+      <Filter>Header Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="adapter_extensions.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="detail\adapter.inl">
+      <Filter>Header Files\detail</Filter>
     </ClInclude>
-    <ClInclude Include="llri_impl.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="detail\adapter_extensions.hpp">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\device.hpp">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\device.inl">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\instance.hpp">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\instance.inl">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\instance_extensions.hpp">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\llri.inl">
+      <Filter>Header Files\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
