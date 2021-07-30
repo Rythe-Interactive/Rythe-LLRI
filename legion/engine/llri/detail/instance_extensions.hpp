@@ -17,7 +17,11 @@ namespace legion::graphics::llri
         /**
          * @brief Validate shader operations such as buffer reads/writes.
         */
-        GPUValidation
+        GPUValidation,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = GPUValidation
     };
 
     /**

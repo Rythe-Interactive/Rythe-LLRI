@@ -29,7 +29,11 @@ namespace legion::graphics::llri
         /**
          * @brief The adapter is a virtual node in a virtualization environment
         */
-        Virtual
+        Virtual,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = Virtual
     };
 
     /**
