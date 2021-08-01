@@ -11,7 +11,10 @@ namespace legion::graphics::llri
     */
     enum struct adapter_extension_type
     {
-
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = 0
     };
 
     /**

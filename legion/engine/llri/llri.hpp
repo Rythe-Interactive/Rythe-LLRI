@@ -96,7 +96,11 @@ namespace legion::graphics::llri
         /**
          * @brief The requested internal API version (DirectX, Vulkan, etc.) is not supported by the driver.
         */
-        ErrorIncompatibleDriver
+        ErrorIncompatibleDriver,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = ErrorIncompatibleDriver
     };
 
     /**

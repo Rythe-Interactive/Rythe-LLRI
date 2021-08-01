@@ -37,7 +37,11 @@ namespace legion::graphics::llri
         /**
          * @brief Data/memory corruption occurred.
         */
-        Corruption
+        Corruption,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = Corruption
     };
 
     /**
@@ -59,7 +63,11 @@ namespace legion::graphics::llri
          * @brief The message came from the internal API.
          * Internal API validation needs to be enabled through APIValidationEXT and/or GPUValidationEXT for this kind of message to appear.
         */
-        InternalAPI
+        InternalAPI,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = InternalAPI
     };
 
     /**
