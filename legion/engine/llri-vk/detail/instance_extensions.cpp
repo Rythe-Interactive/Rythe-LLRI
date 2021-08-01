@@ -13,14 +13,14 @@ namespace legion::graphics::llri
 
             switch (type)
             {
-            case instance_extension_type::APIValidation:
-            {
-                return layers.find(internal::nameHash("VK_LAYER_KHRONOS_validation")) != layers.end();
-            }
-            case instance_extension_type::GPUValidation:
-            {
-                return true;
-            }
+                case instance_extension_type::APIValidation:
+                {
+                    return layers.find(internal::nameHash("VK_LAYER_KHRONOS_validation")) != layers.end();
+                }
+                case instance_extension_type::GPUValidation:
+                {
+                    return true;
+                }
             }
 
             return false;

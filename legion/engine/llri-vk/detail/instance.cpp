@@ -1,12 +1,6 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-#define VOLK_IMPLEMENTATION
-#include <graphics/vulkan/volk.h>
-
-#include <vector>
-#include <map>
-
 namespace legion::graphics::llri
 {
     namespace internal
@@ -86,33 +80,33 @@ namespace legion::graphics::llri
                 auto& extension = desc.extensions[i];
                 switch (extension.type)
                 {
-                    case instance_extension_type::APIValidation:
+                case instance_extension_type::APIValidation:
+                {
+                    if (extension.apiValidation.enable)
+                        layers.push_back("VK_LAYER_KHRONOS_validation");
+                    break;
+                }
+                case instance_extension_type::GPUValidation:
+                {
+                    if (extension.gpuValidation.enable)
                     {
-                        if (extension.apiValidation.enable)
-                            layers.push_back("VK_LAYER_KHRONOS_validation");
-                        break;
-                    }
-                    case instance_extension_type::GPUValidation:
-                    {
-                        if (extension.gpuValidation.enable)
-                        {
-                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
-                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
+                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
+                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
 
-                            features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
-                            features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
-                            pNext = &features;
-                        }
-                        break;
+                        features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
+                        features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
+                        pNext = &features;
                     }
-                    default:
-                    {
-                        if (desc.callbackDesc.callback)
-                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+                    break;
+                }
+                default:
+                {
+                    if (desc.callbackDesc.callback)
+                        desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
 
-                        llri::destroyInstance(result);
-                        return result::ErrorExtensionNotSupported;
-                    }
+                    llri::destroyInstance(result);
+                    return result::ErrorExtensionNotSupported;
+                }
                 }
             }
 
@@ -264,7 +258,7 @@ namespace legion::graphics::llri
         float queuePriorities = 1.0f;
         std::vector<const char*> extensions;
         VkPhysicalDeviceFeatures features{};
-        
+
         //Assign default queue if no queues were selected by the API user //TODO: return invalid api use code when no queues are selected when the queue system is in place
         if (queues.size() == 0)
             queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {}, 0, 1, &queuePriorities });
@@ -304,45 +298,5 @@ namespace legion::graphics::llri
         delete static_cast<VolkDeviceTable*>(device->m_functionTable);
 
         delete device;
-    }
-
-    result Adapter::impl_queryInfo(adapter_info* info) const
-    {
-        VkPhysicalDeviceProperties properties;
-        vkGetPhysicalDeviceProperties(static_cast<VkPhysicalDevice>(m_ptr), &properties);
-
-        adapter_info result;
-        result.vendorId = properties.vendorID;
-        result.adapterId = properties.deviceID;
-        result.adapterName = properties.deviceName;
-        result.adapterType = internal::mapPhysicalDeviceType(properties.deviceType);
-        *info = result;
-        return result::Success;
-    }
-
-    result Adapter::impl_queryFeatures(adapter_features* features) const
-    {
-        VkPhysicalDeviceFeatures physicalFeatures;
-        vkGetPhysicalDeviceFeatures(static_cast<VkPhysicalDevice>(m_ptr), &physicalFeatures);
-
-        adapter_features result;
-
-        //Set all the information in a structured way here
-
-        *features = result;
-        return result::Success;
-    }
-
-    result Adapter::impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
-    {
-        *supported = false;
-
-        switch (type)
-        {
-        default:
-            break;
-        }
-
-        return result::Success;
     }
 }
