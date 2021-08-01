@@ -72,7 +72,8 @@ namespace legion::graphics::llri
 
 #ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = detail::impl_createInstance(desc, instance, true);
-        detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
+        if (*instance)
+            detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
         return r;
 #else
         return detail::impl_createInstance(desc, instance, false);
@@ -134,7 +135,8 @@ namespace legion::graphics::llri
 
 #ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
         const auto r = impl_createDevice(desc, device);
-        detail::impl_pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
+        if (*device)
+            detail::impl_pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
         return r;
 #else
         return impl_createDevice(desc, device);
