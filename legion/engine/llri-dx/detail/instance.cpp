@@ -92,7 +92,14 @@ namespace legion::graphics::llri
 
             //Attempt to create factory
             IDXGIFactory* factory = nullptr;
-            const HRESULT factoryCreateResult = CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
+            HRESULT factoryCreateResult = CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
+
+            //DXGI_CREATE_FACTORY_DEBUG may not be a supported flag if the graphics tools aren't installed
+            //so if this the previous call fails, use default factory flags
+            if (HRESULT_CODE(factoryCreateResult) == S_FALSE)
+                factoryCreateResult = CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
+
+            //Check for failure
             if (FAILED(factoryCreateResult))
             {
                 llri::destroyInstance(output);
