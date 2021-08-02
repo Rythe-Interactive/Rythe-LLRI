@@ -8,7 +8,7 @@ TEST_SUITE("Device")
     TEST_CASE("Instance::createDevice()")
     {
         llri::Instance* instance;
-        const llri::instance_desc desc{ 0, nullptr, "", {} };
+        const llri::instance_desc desc{};
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
 
         std::vector<llri::Adapter*> adapters;
