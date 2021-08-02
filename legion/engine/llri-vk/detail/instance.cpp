@@ -56,6 +56,8 @@ namespace legion::graphics::llri
 
             return VK_FALSE;
         }
+
+        void dummyValidationCallback(const validation_callback_severity&, const validation_callback_source&, const char*, void*) { }
     }
 
     namespace detail
@@ -166,6 +168,11 @@ namespace legion::graphics::llri
 
                     result->m_validationCallbackMessenger = messenger;
                 }
+            }
+            else
+            {
+                result->m_validationCallback = { &internal::dummyValidationCallback, nullptr };
+                result->m_validationCallbackMessenger = nullptr;
             }
 
             *instance = result;
