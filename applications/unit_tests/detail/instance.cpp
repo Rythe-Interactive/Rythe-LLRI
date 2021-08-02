@@ -98,7 +98,7 @@ TEST_SUITE("Instance")
     TEST_CASE("Instance::enumerateAdapters")
     {
         llri::Instance* instance;
-        const llri::instance_desc desc{ 0, nullptr, "", {} };
+        const llri::instance_desc desc{};
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
 
         SUBCASE("[Incorrect usage] adapters == nullptr")
