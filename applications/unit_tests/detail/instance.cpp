@@ -102,6 +102,32 @@ TEST_SUITE("Instance")
             );
         }
 
+        SUBCASE("[Correct usage] multiple iterations")
+        {
+            std::vector<llri::Adapter*> adapters;
+            llri::result result;
+
+            result = instance->enumerateAdapters(&adapters);
+            auto count = adapters.size();
+            CHECK_UNARY( 
+                result == llri::result::Success ||
+                result == llri::result::ErrorOutOfHostMemory ||
+                result == llri::result::ErrorOutOfDeviceMemory ||
+                result == llri::result::ErrorInitializationFailed
+            );
+
+            result = instance->enumerateAdapters(&adapters);
+            CHECK_UNARY(
+                result == llri::result::Success ||
+                result == llri::result::ErrorOutOfHostMemory ||
+                result == llri::result::ErrorOutOfDeviceMemory ||
+                result == llri::result::ErrorInitializationFailed
+            );
+
+            //Adapter count should stay consistent
+            CHECK_EQ(count, adapters.size());
+        }
+
         llri::destroyInstance(instance);
     }
 }

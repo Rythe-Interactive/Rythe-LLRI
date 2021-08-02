@@ -6,9 +6,9 @@ namespace llri = legion::graphics::llri;
 
 TEST_SUITE("Instance Extensions")
 {
-    TEST_CASE("queryInstanceExtensionSupport")
+    TEST_CASE("queryInstanceExtensionSupport()")
     {
-        SUBCASE("[Correct usage] unsupported extension type")
+        SUBCASE("[Correct usage] invalid extension type")
         {
             CHECK_EQ(llri::queryInstanceExtensionSupport(static_cast<llri::instance_extension_type>(UINT_MAX)), false);
         }

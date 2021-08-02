@@ -4,5 +4,6 @@
     <ClCompile Include="llri.cpp" />
     <ClCompile Include="detail\instance.cpp" />
     <ClCompile Include="detail\instance_extensions.cpp" />
+    <ClCompile Include="detail\adapter.cpp" />
   </ItemGroup>
 </Project>
