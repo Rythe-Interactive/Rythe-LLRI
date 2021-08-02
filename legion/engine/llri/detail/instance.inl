@@ -55,8 +55,6 @@ namespace legion::graphics::llri
 
     inline result createInstance(const instance_desc& desc, Instance** instance)
     {
-        *instance = nullptr;
-
 #ifndef LLRI_DISABLE_VALIDATION
         if (instance == nullptr)
         {
@@ -64,6 +62,12 @@ namespace legion::graphics::llri
                 desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, "createInstance() returned ErrorInvalidUsage because the passed instance parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
+#endif
+
+        //default instance output to nullptr
+        * instance = nullptr;
+
+#ifndef LLRI_DISABLE_VALIDATION
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
         {
             if (desc.callbackDesc.callback)
@@ -109,15 +113,18 @@ namespace legion::graphics::llri
 
     inline result Instance::createDevice(const device_desc& desc, Device** device) const
     {
-        *device = nullptr;
-
 #ifndef LLRI_DISABLE_VALIDATION
         if (device == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because the passed device parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
+#endif
 
+        //default device output to nullptr
+        * device = nullptr;
+
+#ifndef LLRI_DISABLE_VALIDATION
         if (desc.adapter == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because desc.adapter was nullptr.");
