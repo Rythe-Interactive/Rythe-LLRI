@@ -88,7 +88,7 @@ TEST_SUITE("Instance")
         SUBCASE("[Correct usage] instance != nullptr")
         {
             llri::Instance* instance;
-            const llri::instance_desc desc{ 0, nullptr, "", {} };
+            const llri::instance_desc desc{};
             REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
 
             CHECK_NOTHROW(llri::destroyInstance(instance));
