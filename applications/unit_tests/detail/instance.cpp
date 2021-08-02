@@ -3,6 +3,11 @@ namespace llri = legion::graphics::llri;
 
 #include <doctest/doctest.h>
 
+void dummyCallback(const llri::validation_callback_severity& sev, const llri::validation_callback_source& src, const char* message, void* userData)
+{
+    //Empty
+}
+
 TEST_SUITE("Instance")
 {
     TEST_CASE("createInstance()")
@@ -52,9 +57,21 @@ TEST_SUITE("Instance")
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         }
 
+        SUBCASE("[Correct usage] applicationName != nullptr")
+        {
+            desc.applicationName = "Test";
+            CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        }
+
         SUBCASE("[Correct usage] callbackDesc.callback == nullptr")
         {
             desc.callbackDesc.callback = nullptr;
+            CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        }
+
+        SUBCASE("[Correct usage] callbackDesc.callback != nullptr")
+        {
+            desc.callbackDesc.callback = &dummyCallback;
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         }
 

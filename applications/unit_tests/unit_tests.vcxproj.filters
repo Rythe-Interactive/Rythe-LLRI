@@ -5,5 +5,7 @@
     <ClCompile Include="detail\instance.cpp" />
     <ClCompile Include="detail\instance_extensions.cpp" />
     <ClCompile Include="detail\adapter.cpp" />
+    <ClCompile Include="detail\device.cpp" />
+    <ClCompile Include="detail\device_extensions.cpp" />
   </ItemGroup>
 </Project>
