@@ -299,7 +299,10 @@ namespace legion::graphics::llri
 
     void Instance::impl_destroyDevice(Device* device) const
     {
-        if (device->m_ptr != nullptr)
+        if (!device)
+            return;
+
+        if (device->m_ptr)
             static_cast<VolkDeviceTable*>(device->m_functionTable)->vkDestroyDevice(static_cast<VkDevice>(device->m_ptr), nullptr);
 
         delete static_cast<VolkDeviceTable*>(device->m_functionTable);
