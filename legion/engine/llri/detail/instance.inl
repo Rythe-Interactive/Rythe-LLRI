@@ -55,6 +55,8 @@ namespace legion::graphics::llri
 
     inline result createInstance(const instance_desc& desc, Instance** instance)
     {
+        *instance = nullptr;
+
 #ifndef LLRI_DISABLE_VALIDATION
         if (instance == nullptr)
         {
@@ -107,6 +109,8 @@ namespace legion::graphics::llri
 
     inline result Instance::createDevice(const device_desc& desc, Device** device) const
     {
+        *device = nullptr;
+
 #ifndef LLRI_DISABLE_VALIDATION
         if (device == nullptr)
         {
