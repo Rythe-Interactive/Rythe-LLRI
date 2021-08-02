@@ -70,6 +70,7 @@ TEST_CASE("Adapter")
             {
                 bool supported = false;
                 CHECK_EQ(adapter->queryExtensionSupport(static_cast<llri::adapter_extension_type>(UINT_MAX), &supported), llri::result::Success);
+                CHECK_EQ(supported, false);
             }
 
             SUBCASE("[Correct usage] supported != nullptr and extension type is valid")
