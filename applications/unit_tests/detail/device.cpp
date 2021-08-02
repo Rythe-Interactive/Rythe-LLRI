@@ -45,9 +45,6 @@ TEST_SUITE("Device")
                 ddesc.extensions = nullptr;
                 auto r = instance->createDevice(ddesc, &device);
                 CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
-
-                if (r == llri::result::Success)
-                    instance->destroyDevice(device);
             }
 
             SUBCASE("[Correct usage] numExtensions > 0 && extensions != nullptr")
@@ -68,6 +65,8 @@ TEST_SUITE("Device")
             }
 
             INFO("Extension specific tests are done in \"Device Extensions\"");
+
+            instance->destroyDevice(device);
         }
 
         llri::destroyInstance(instance);
@@ -95,7 +94,7 @@ TEST_SUITE("Device")
 
             SUBCASE("[Correct usage] device == nullptr")
             {
-                CHECK_NOTHROW(instance->destroyDevice(device));
+                CHECK_NOTHROW(instance->destroyDevice(nullptr));
             }
         }
     }

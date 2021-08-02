@@ -33,10 +33,7 @@ TEST_SUITE("Instance Extensions")
             SUBCASE("[Correct usage] enabling api_validation_ext")
             {
                 if (supported)
-                {
                     CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-                    llri::destroyInstance(instance);
-                }
                 else
                     CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExtensionNotSupported);
             }
@@ -55,13 +52,12 @@ TEST_SUITE("Instance Extensions")
             SUBCASE("[Correct usage] enabling gpu_validation_ext")
             {
                 if (supported)
-                {
                     CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-                    llri::destroyInstance(instance);
-                }
                 else
                     CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExtensionNotSupported);
             }
         }
+
+        llri::destroyInstance(instance);
     }
 }
