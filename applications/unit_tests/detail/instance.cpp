@@ -15,7 +15,7 @@ TEST_SUITE("Instance")
         CHECK(llri::createInstance({}, nullptr) == llri::result::ErrorInvalidUsage);
 
         llri::Instance* instance = nullptr;
-        llri::instance_desc desc{ };
+        llri::instance_desc desc { 0, nullptr, "", { nullptr, nullptr }};
 
         SUBCASE("[Incorrect usage] numExtensions > 0 && extensions == nullptr")
         {
@@ -27,6 +27,7 @@ TEST_SUITE("Instance")
         {
             desc.numExtensions = 0;
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+            llri::destroyInstance(instance);
         }
 
         SUBCASE("[Correct usage] numExtensions > 0 && extensions != nullptr")
@@ -37,6 +38,8 @@ TEST_SUITE("Instance")
 
             auto result = llri::createInstance(desc, &instance);
             CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorExtensionNotSupported);
+            if (result == llri::result::Success)
+                llri::destroyInstance(instance);
         }
         
         SUBCASE("[Incorrect usage] invalid extension type")
@@ -55,27 +58,29 @@ TEST_SUITE("Instance")
         {
             desc.applicationName = nullptr;
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+            llri::destroyInstance(instance);
         }
 
         SUBCASE("[Correct usage] applicationName != nullptr")
         {
             desc.applicationName = "Test";
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+            llri::destroyInstance(instance);
         }
 
         SUBCASE("[Correct usage] callbackDesc.callback == nullptr")
         {
             desc.callbackDesc.callback = nullptr;
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+            llri::destroyInstance(instance);
         }
 
         SUBCASE("[Correct usage] callbackDesc.callback != nullptr")
         {
             desc.callbackDesc.callback = &dummyCallback;
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+            llri::destroyInstance(instance);
         }
-
-        llri::destroyInstance(instance);
     }
 
     TEST_CASE("destroyInstance()")
