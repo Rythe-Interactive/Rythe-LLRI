@@ -1,5 +1,5 @@
-#include <graphics/directx/d3d12sdklayers.h>
 #include <llri/llri.hpp>
+#include <llri-dx/directx.hpp>
 
 namespace legion::graphics::llri
 {
@@ -7,17 +7,19 @@ namespace legion::graphics::llri
     {
         bool queryInstanceExtensionSupport(const instance_extension_type& type)
         {
+            directx::lazyInitializeDirectX();
+
             switch (type)
             {
                 case instance_extension_type::APIValidation:
                 {
                     ID3D12Debug* temp = nullptr;
-                    return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    return SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
                 }
                 case instance_extension_type::GPUValidation:
                 {
                     ID3D12Debug1* temp = nullptr;
-                    return SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    return SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
                 }
             }
 
@@ -36,7 +38,7 @@ namespace legion::graphics::llri
             if (ext.enable)
             {
                 ID3D12Debug* debugAPI = nullptr;
-                if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugAPI))))
+                if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugAPI))))
                 {
                     debugAPI->EnableDebugLayer();
                     *output = debugAPI;
@@ -56,7 +58,7 @@ namespace legion::graphics::llri
             if (ext.enable)
             {
                 ID3D12Debug1* debugGPU = nullptr;
-                if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
+                if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
                 {
                     debugGPU->SetEnableGPUBasedValidation(true);
                     debugGPU->SetEnableSynchronizedCommandQueueValidation(true);

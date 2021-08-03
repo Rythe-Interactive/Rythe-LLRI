@@ -26,4 +26,7 @@
       <Filter>Source Files\detail</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="directx.hpp" />
+  </ItemGroup>
 </Project>

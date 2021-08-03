@@ -1,6 +1,5 @@
 #include <llri/llri.hpp>
-#include <graphics/directx/d3d12.h>
-#include <dxgi1_6.h>
+#include <llri-dx/directx.hpp>
 
 namespace legion::graphics::llri
 {
@@ -33,15 +32,15 @@ namespace legion::graphics::llri
 
     result Adapter::impl_queryFeatures(adapter_features* features) const
     {
-        HRESULT level12_0 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
+        HRESULT level12_0 = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
         if (level12_0 == E_FAIL)
             return result::ErrorIncompatibleDriver;
         else if (FAILED(level12_0)) //no matter what reason, LEVEL_12_0 should always be supported for DX12
             return internal::mapHRESULT(level12_0);
 
         //Level 1 and 2 can more easily grant us guarantees about feature support
-        HRESULT level12_1 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
-        HRESULT level12_2 = D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
+        HRESULT level12_1 = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
+        HRESULT level12_2 = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
 
         adapter_features output;
 
