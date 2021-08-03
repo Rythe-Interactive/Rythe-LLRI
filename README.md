@@ -22,6 +22,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## Authors
 * **Leon Brands** - *LLRI, API design, VK, DX, Samples, Unit tests* - [[Website](https://leonbrands.software)] [[Github](https://github.com/LeonBrands)] [[LinkedIn](https://www.linkedin.com/in/leonbrands/)]
 * **Glyn Leine** - *Technical director, setup* - [[Website](https://glynleine.com)] [[Github](https://github.com/GlynLeine)] [[LinkedIn](https://www.linkedin.com/in/glyn-leine-7140a8167/)]
+* **Raphael Baier** - *Docs generation, GitHub Actions* - [[Website](https://rbaier.me)] [[Github](https://github.com/Algo-ryth-mix)] [[LinkedIn](https://www.linkedin.com/in/raphael-baier-26800a188/)]
 
 See also the list of [contributors](AUTHORS.md) who participated in this project.
 
