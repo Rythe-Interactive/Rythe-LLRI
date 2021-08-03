@@ -7,15 +7,14 @@
 # Legion-LLRI
 Legion Low Level Rendering Interface, a middle layer between the graphics APIs and the Legion rendering code. Aimed to allow Legion rendering code to remain graphics api agnostic. With api agnostic graphics code it is easier for Legion to support multiple platforms, and to remain independent from graphics APIs.
 
-## Features (Planned)
-### Supported APIs
+## Supported APIs
 - Vulkan
 - DirectX 12 Ultimate
 
 ## Dependencies
-(All libraries can already be found in the [deps](https://github.com/Legion-Engine/Legion-LLRI/tree/main/deps) folder)
-* [Legion shader preprocessor (lgnspre)](https://github.com/Legion-Engine/LegionShaderPreprocess)
-* [Vulkan SDK (for VK builds)](https://www.lunarg.com/vulkan-sdk/)
+LLRI ships all of its build dependencies in the [deps](https://github.com/Legion-Engine/Legion-LLRI/tree/main/deps) folder.
+
+However, to enable debugging extensions on DirectX builds, install "Graphics Tools" in Windows' optional features.
 
 ## Contributing
 
@@ -30,6 +29,3 @@ See also the list of [contributors](AUTHORS.md) who participated in this project
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-
-
