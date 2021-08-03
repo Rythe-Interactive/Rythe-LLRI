@@ -1,7 +1,6 @@
 #pragma once
 #include <llri/llri.hpp>
 #include <graphics/vulkan/volk.h>
-#include <vulkan/vulkan.h>
 #include <unordered_map>
 
 namespace legion::graphics::llri
