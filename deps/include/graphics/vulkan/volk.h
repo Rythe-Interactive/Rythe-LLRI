@@ -26,8 +26,8 @@
 #       ifdef VOLK_VULKAN_H_PATH
 #               include VOLK_VULKAN_H_PATH
 #	elif defined(VK_USE_PLATFORM_WIN32_KHR)
-#		include <vulkan/vk_platform.h>
-#		include <vulkan/vulkan_core.h>
+#		include <graphics/vulkan/vk_platform.h>
+#		include <graphics/vulkan/vulkan_core.h>
 
 		/* When VK_USE_PLATFORM_WIN32_KHR is defined, instead of including vulkan.h directly, we include individual parts of the SDK
 		 * This is necessary to avoid including <windows.h> which is very heavy - it takes 200ms to parse without WIN32_LEAN_AND_MEAN
@@ -41,13 +41,13 @@
 		typedef struct HMONITOR__* HMONITOR;
 		typedef struct _SECURITY_ATTRIBUTES SECURITY_ATTRIBUTES;
 
-#		include <vulkan/vulkan_win32.h>
+#		include <graphics/vulkan/vulkan_win32.h>
 
 #		ifdef VK_ENABLE_BETA_EXTENSIONS
-#			include <vulkan/vulkan_beta.h>
+#			include <graphics/vulkan/vulkan_beta.h>
 #		endif
 #	else
-#		include <vulkan/vulkan.h>
+#		include <graphics/vulkan/vulkan.h>
 #	endif
 #endif
 
