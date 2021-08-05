@@ -141,7 +141,7 @@ xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)deps\lib\;$(SolutionDir)lib\;$(SolutionDir)applications\deps\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>legion-core-d.lib;legion-llri-dx-d.lib;OpenCL.lib;glfw3.lib;Voro++D.lib;OptickCore.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;dxcompiler.lib;WinPixEventRuntime.lib;WinPixEventRuntime_UAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legion-core-d.lib;legion-llri-dx-d.lib;OpenCL.lib;glfw3.lib;Voro++D.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /E /I /R "$(SolutionDir)deps\dll\" "$(OutDir)"
@@ -202,7 +202,7 @@ xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)deps\lib\;$(SolutionDir)lib\;$(SolutionDir)applications\deps\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>legion-core.lib;legion-llri-dx.lib;OpenCL.lib;glfw3.lib;Voro++.lib;OptickCore.lib;d3d12.lib;dxgi.lib;dxguid.lib;d3dcompiler.lib;dxcompiler.lib;WinPixEventRuntime.lib;WinPixEventRuntime_UAP.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legion-core.lib;legion-llri-dx.lib;OpenCL.lib;glfw3.lib;Voro++.lib;OptickCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /E /I /R "$(SolutionDir)deps\dll\" "$(OutDir)"

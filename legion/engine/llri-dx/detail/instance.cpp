@@ -1,6 +1,5 @@
 #include <llri/llri.hpp>
-#include <graphics/directx/d3d12.h>
-#include <dxgi1_6.h>
+#include <llri-dx/directx.hpp>
 
 namespace legion::graphics::llri
 {
@@ -37,6 +36,8 @@ namespace legion::graphics::llri
     {
         result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
         {
+            directx::lazyInitializeDirectX();
+
             auto* output = new Instance();
             UINT factoryFlags = 0;
 
@@ -47,26 +48,26 @@ namespace legion::graphics::llri
 
                 switch (extension.type)
                 {
-                case instance_extension_type::APIValidation:
-                {
-                    extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
-                    if (extensionCreateResult == result::Success)
-                        factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
-                    break;
-                }
-                case instance_extension_type::GPUValidation:
-                {
-                    extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
-                    break;
-                }
-                default:
-                {
-                    if (desc.callbackDesc.callback)
-                        desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+                    case instance_extension_type::APIValidation:
+                    {
+                        extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
+                        if (extensionCreateResult == result::Success)
+                            factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
+                        break;
+                    }
+                    case instance_extension_type::GPUValidation:
+                    {
+                        extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
+                        break;
+                    }
+                    default:
+                    {
+                        if (desc.callbackDesc.callback)
+                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
 
-                    extensionCreateResult = result::ErrorExtensionNotSupported;
-                    break;
-                }
+                        extensionCreateResult = result::ErrorExtensionNotSupported;
+                        break;
+                    }
                 }
 
                 if (extensionCreateResult != result::Success)
@@ -92,12 +93,12 @@ namespace legion::graphics::llri
 
             //Attempt to create factory
             IDXGIFactory* factory = nullptr;
-            HRESULT factoryCreateResult = CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
+            HRESULT factoryCreateResult = directx::CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
 
             //DXGI_CREATE_FACTORY_DEBUG may not be a supported flag if the graphics tools aren't installed
             //so if this the previous call fails, use default factory flags
             if (HRESULT_CODE(factoryCreateResult) == S_FALSE)
-                factoryCreateResult = CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
+                factoryCreateResult = directx::CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
 
             //Check for failure
             if (FAILED(factoryCreateResult))
@@ -211,7 +212,7 @@ namespace legion::graphics::llri
         D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
 
         ID3D12Device* dx12Device = nullptr;
-        HRESULT r = D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));
+        HRESULT r = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));
         if (FAILED(r))
         {
             destroyDevice(output);

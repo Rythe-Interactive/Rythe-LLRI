@@ -1,5 +1,5 @@
 #include <llri/llri.hpp>
-#include <graphics/directx/d3d12.h>
+#include <llri-dx/directx.hpp>
 
 namespace legion::graphics::llri
 {
