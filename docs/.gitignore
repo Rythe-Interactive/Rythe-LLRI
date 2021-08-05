@@ -17,3 +17,9 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/venv
+
+# Ignore local build files
+xml/
+build/
+source/api/
+__pycache__/
