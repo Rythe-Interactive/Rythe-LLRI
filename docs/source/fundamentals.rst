@@ -8,7 +8,7 @@ LLRI objects represent information or pointers needed for rendering. Most object
 
 Acquisition
 ^^^^^^^^^^^
-Some objects can be acquired through API usage. For example, adapters are obtained through :func:`legion::graphics::llri::Instance::enumerateAdapters`.
+Some objects can be acquired through API usage. For example, adapters are obtained through :func:`llri::Instance::enumerateAdapters`.
 
 By convention, all functions prefixed with "enumerate" are acquisition functions, meaning that the resources returned are created/destroyed internally, and the user does not receive any form of ownership over the returned objects. 
 
@@ -16,22 +16,26 @@ Creation
 ^^^^^^^^^
 Most objects are created through create functions. Whenever the user creates an object through a create function, the user obtains the object and the ownership over the object.
 
-By convention, all functions prefixed with "create" are creation functions. Create functions all follow the same format, where the first parameter is a <object>_desc structure (e.g. :struct:`legion::graphics::llri::instance_desc`), and the second parameter is a pointer-pointer to the object (e.g. :class:`legion::graphics::llri::Instance` **).
+By convention, all functions prefixed with "create" are creation functions. Create functions all follow the same format, where the first parameter is a <object>_desc structure (e.g. :struct:`llri::instance_desc`), and the second parameter is a pointer-pointer to the object (e.g. :class:`llri::Instance`\*\*).
+
+All create functions are matched with a destroy function that takes the object as its only parameter. Created objects should always be destroyed through destroy functions, and never through manual deletion.
 
 Lifetime
 ^^^^^^^^
 Objects in LLRI have a parent-child relationship, where any object created or acquired through another object is considered a "child" of the ("parent") object. Child objects **can not** outlive their parents, thus each child object **must** be destroyed prior to the destruction of their parent object.
 
-If an object is acquired through a parent object, the child object pointer remains valid for the lifetime of the parent object. For example, if an :class:`legion::graphics::llri::Adapter` is acquired through an :class:`legion::graphics::llri::Instance`, as soon as :func:`legion::graphics::llri::destroyInstance` is called, the :class:`legion::graphics::llri::Adapter` pointer is no longer valid.
+If an object is acquired through a parent object, the child object pointer remains valid for the lifetime of the parent object. For example, if an :class:`llri::Adapter` is acquired through an :class:`llri::Instance`, as soon as :func:`llri::destroyInstance` is called, the :class:`llri::Adapter` pointer is no longer valid.
 
 
 Extensions
 -----------
 The LLRI API supports various features that may not always be supported by the current environment. These features are available through extensions. LLRI uses extensions extensively to cross the gap between available features for each implementation. Per-extension support is fully **optional**.
 
-Extensions are applied on an :class:`legion::graphics::llri::Instance` and :class:`legion::graphics::llri::Device` level. When they apply to :class:`legion::graphics::llri::Instance`, they usually dependend on machine configuration or implementation featureset, :class:`legion::graphics::llri::Device` **can** be created with :class:`legion::graphics::llri::Adapter` extensions which tend to depend on hardware/feature limits.
+Extensions are inserted upon creation of :class:`llri::Instance` and :class:`llri::Device`. Instance extensions usually contain application-wide changes such as validation callbacks, and as such their availability tends to depend on machine configuration and/or implementation featureset. Device extensions are queried through :class:`llri::Adapter` and tend to depend on hardware/feature limits.
 
-Support for extensions is queried prior to Instance/Device creation, for :class:`legion::graphics::llri::Instance` extensions this function is :func:`legion::graphics::llri::queryInstanceExtensionSupport`, whereas :class:`legion::graphics::llri::Adapter` extensions are queried through :func:`legion::graphics::llri::Adapter::queryExtensionSupport`.
+Support for extensions is queried prior to Instance/Device creation, for :class:`llri::Instance` extensions this function is :func:`llri::queryInstanceExtensionSupport`, whereas :class:`llri::Adapter` extensions are queried through :func:`llri::Adapter::queryExtensionSupport`.
+
+Extensions are passed as an array of extension structures to instance and device description structures. See :struct:`llri::instance_extension` and :struct:`llri::adapter_extension` for more.
 
 Validation
 -----------

@@ -2,6 +2,13 @@ Getting Started
 ==================================
 LLRI stands for "Low Level Rendering Interface" and refers to the LLRI API. The LLRI specification describes the expected behaviour of the LLRI API. 
 
+Platforms
+------------
+LLRI is built with C++17, and currently only builds for Windows. It supports the following graphics APIs:
+
+* Vulkan
+* DirectX 12
+
 Prerequisites
 -------------
 LLRI is built using Visual Studio 19 using the Clang++ compiler and C++17. For linux we currently don’t provide any default IDE support.
