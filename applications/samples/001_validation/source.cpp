@@ -7,9 +7,6 @@
 #define LLRI_DISABLE_VALIDATION
 #endif
 #include <llri/llri.hpp>
-using namespace legion::graphics;
-
-#include <cassert>
 #include <iostream>
 
 void callback(const llri::validation_callback_severity& severity, const llri::validation_callback_source& source, const char* message, void* userData)

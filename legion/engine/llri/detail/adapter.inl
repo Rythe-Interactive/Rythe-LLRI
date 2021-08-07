@@ -1,7 +1,7 @@
 #pragma once
 #include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     constexpr inline const char* to_string(const adapter_type& type)
     {

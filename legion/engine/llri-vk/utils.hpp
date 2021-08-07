@@ -3,7 +3,7 @@
 #include <graphics/vulkan/volk.h>
 #include <unordered_map>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     namespace internal
     {

@@ -1,7 +1,7 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     namespace detail
     {

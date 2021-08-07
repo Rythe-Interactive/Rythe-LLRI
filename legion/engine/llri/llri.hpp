@@ -7,7 +7,7 @@
 #if defined(DOXY_EXCLUDE)
 /**
  * @def LLRI_DISABLE_VALIDATION
- * @brief Before including LLRI, define LLRI_DISABLE_VALIDATION to disable all LLRI validation.
+ * @brief Defining LLRI_DISABLE_VALIDATION disables all LLRI validation.
  * This applies to all validation done by LLRI (not internal API validation), such as nullptr checks on parameters.
  * Disabling LLRI validation may cause API runtime errors if incorrect parameters are passed, but the reduced checks could improve performance.
  *
@@ -17,13 +17,26 @@
 
  /**
   * @def LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
-  * @brief Before including LLRI, define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING to disable internal API message polling.
-  * Internal API message polling can be costly and disabling it can help improve performance, but internal API messages might not be forwarded.
+  * @brief Defining LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING disables all internal API message polling.
+  * Internal API message polling can be costly and disabling it can help improve performance, but internal API messages will not be forwarded.
   */
 #define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+
+/**
+ * @def LLRI_ENABLE_LEGION_NAMESPACING
+ * @brief Defining LLRI_ENABLE_LEGION_NAMESPACING changes LLRI's namespace from llri:: to legion::graphics::llri.
+ */
+#define LLRI_ENABLE_LEGION_NAMESPACING
+#undef LLRI_ENABLE_LEGION_NAMESPACING //only defined for the doxygen comments
 #endif
 
-namespace legion::graphics::llri
+#if defined(LLRI_ENABLE_LEGION_NAMESPACING)
+#define LLRI_NAMESPACE legion::graphics::llri
+#else
+#define LLRI_NAMESPACE llri
+#endif
+
+namespace LLRI_NAMESPACE
 {
     /**
      * @brief Informative result values for llri operations.

@@ -2,7 +2,7 @@
 #include <llri-vk/utils.hpp>
 #include <graphics/vulkan/volk.h>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     namespace internal
     {

@@ -1,6 +1,4 @@
 #include <llri/llri.hpp>
-using namespace legion::graphics;
-
 #include <iostream>
 
 int main()

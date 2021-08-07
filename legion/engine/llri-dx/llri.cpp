@@ -1,6 +1,6 @@
 #include <llri/llri.hpp>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     //reserved for future use
 }

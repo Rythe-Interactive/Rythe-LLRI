@@ -2,7 +2,7 @@
 #include <graphics/directx/d3d12.h>
 #include <dxgi1_6.h>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     namespace directx
     {

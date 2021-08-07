@@ -1,6 +1,6 @@
 #pragma once
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     /**
      * @brief Describes the kind of adapter extension. <br>

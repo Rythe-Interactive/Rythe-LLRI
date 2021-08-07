@@ -1,6 +1,4 @@
 #include <llri/llri.hpp>
-namespace llri = legion::graphics::llri;
-
 #include <string>
 #include <doctest/doctest.h>
 

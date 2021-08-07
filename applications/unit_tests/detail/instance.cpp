@@ -1,6 +1,4 @@
 #include <llri/llri.hpp>
-namespace llri = legion::graphics::llri;
-
 #include <doctest/doctest.h>
 
 void dummyCallback(const llri::validation_callback_severity& sev, const llri::validation_callback_source& src, const char* message, void* userData)
