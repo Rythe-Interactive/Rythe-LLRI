@@ -3,7 +3,7 @@
 //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
 #include <llri/detail/instance.hpp>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     enum struct adapter_extension_type;
 

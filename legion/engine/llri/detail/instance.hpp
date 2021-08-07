@@ -3,7 +3,7 @@
 #include <vector>
 #include <map>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     enum struct result;
     struct instance_extension;

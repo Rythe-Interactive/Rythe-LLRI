@@ -3,7 +3,7 @@
 //are allowed as long as dependencies are upwards (e.g. device may include adapter but not vice versa)
 #include <llri/detail/adapter.hpp>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     /**
      * @brief Device description to be used in Instance::createDevice().

@@ -11,8 +11,6 @@
 //#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING //uncommenting this disables internal API message polling
 #include <llri/llri.hpp>
 
-namespace llri = legion::graphics::llri;
-
 void callback(const llri::validation_callback_severity& severity, const llri::validation_callback_source& source, const char* message, void* userData)
 {
     lgn::log::severity sev = lgn::log::severity_info;

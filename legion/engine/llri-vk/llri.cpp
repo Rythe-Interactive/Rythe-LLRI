@@ -3,7 +3,7 @@
 #define VOLK_IMPLEMENTATION
 #include <graphics/vulkan/volk.h>
 
-namespace legion::graphics::llri
+namespace LLRI_NAMESPACE
 {
     //reserved for future use
 }
