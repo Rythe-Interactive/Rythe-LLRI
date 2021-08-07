@@ -27,5 +27,5 @@ Pages
 
     getting-started.rst
     terminology.rst
-    api/library_root.rst
-
+    fundamentals.rst
+    api/library.rst

@@ -52,14 +52,13 @@ exhale_args = {
     "rootFileName": "library_root.rst",
     "rootFileTitle": "LLRI API",
     "doxygenStripFromPath": "..",
-    "createTreeView": True,
+    "createTreeView": False,
+	"fullToctreeMaxDepth": 1,
 }
 
 primary_domain = 'cpp'
 
 highlight_language = 'cpp'
-
-cpp_id_attributes = ["L_NODISCARD"]
 
 breathe_default_project = "Legion-LLRI"
 
