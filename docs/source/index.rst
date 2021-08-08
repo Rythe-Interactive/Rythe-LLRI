@@ -1,6 +1,6 @@
 Legion-LLRI
 ==================================
-Hello! and Welcome to the Legion-LLRI wiki. Legion-LLRI, or "Legion Low Level Rendering Interface" is a low overhead API that aims to provide a graphics API agnostic approach to graphics development.
+Legion-LLRI, or "Legion Low Level Rendering Interface" is a rendering API that aims to provide a graphics API agnostic approach to graphics development.
 
 LLRI is designed as a low overhead API that helps developers write graphics API / platform agnostic code without the typical limitations of higher level abstractions.
 
@@ -13,13 +13,6 @@ LLRI accomplishes its low overhead graphics API agnostic code by providing a sha
 
 A user's implementation of choice may depend on preference or platform requirements. Regardless of the user's choice, implementations of the LLRI specification are obliged to adhere to the API specification. LLRI is designed with modern graphics APIs (Vulkan, DirectX 12) in mind and tries to be as inclusive to these APIs' features as possible, providing maximum feature compatibility with as little overhead as possible. 
 
-Platforms
-------------
-LLRI is built with C++17, and currently only builds for Windows. It supports the following graphics APIs:
-
-* Vulkan
-* DirectX 12
-
 Pages
 ----------------
 .. toctree::
@@ -27,5 +20,5 @@ Pages
 
     getting-started.rst
     terminology.rst
-    api/library_root.rst
-
+    fundamentals.rst
+    api/library.rst

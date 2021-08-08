@@ -29,5 +29,3 @@ should, recommended				There may exist valid reasons in particular circumstances
 should not, not recommended		There may exist valid reasons in particular circumstances when the definition is acceptable or even useful.
 may, optional, optionally		The definition is truly optional. 
 ============================  	==========
-
-Something important to note regarding these keywords; Whenever they're used in a context that is describing the API, they apply to the implementation's behaviour, whereas in a context that addresses developers it expresses requirements to the behaviour of the developer's application.
