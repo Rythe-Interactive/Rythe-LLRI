@@ -39,6 +39,10 @@ Extensions are passed as an array of extension structures to instance and device
 
 Validation
 -----------
+LLRI is an explicit API. The user has immense control over resource allocation and state, which results in low API/driver overhead. However, with this much control, it is also much easier to make mistakes. 
+
+To aid in debugging, LLRI does parameter validation by default (disabled by defining LLRI_DISABLE_API_VALIDATION), and also comes with extensions for internal API validation (internal API message polling is disabled by defining LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING). All validation messages (LLRI validation and internal API validation) are forwarded to the validation_callback passed in :struct:`llri::instance_desc`, making it easy for engines to generate informative logs or debug runtime issues.
 
 Threading
-----------------
+---------------- 
+//TODO Write about CommandLists once they exist
