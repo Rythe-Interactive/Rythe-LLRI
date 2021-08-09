@@ -56,18 +56,18 @@ namespace LLRI_NAMESPACE
     {
         /**
          * @brief The message came from the LLRI API directly.
-         * LLRI validation does basic parameter checks to make sure that the API doesn't crash internally.
+         * API validation does basic parameter checks to make sure that the API doesn't crash.
         */
         Validation,
         /**
-         * @brief The message came from the internal API.
-         * Internal API validation needs to be enabled through APIValidationEXT and/or GPUValidationEXT for this kind of message to appear.
+         * @brief The message came from the implementation.
+         * Implementation validation needs to be enabled through APIValidationEXT and/or GPUValidationEXT for this kind of message to appear.
         */
-        InternalAPI,
+        Implementation,
         /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = InternalAPI
+        MaxEnum = Implementation
     };
 
     /**
@@ -76,7 +76,7 @@ namespace LLRI_NAMESPACE
     constexpr const char* to_string(const validation_callback_source& source);
 
     /**
-     * @brief The debug callback function, this function passes a severity (info, warning, error, etc), a source (LLRI validation or Internal API message), the message, and some userdata that can be set in the validation_callback_desc.
+     * @brief The debug callback function, this function passes a severity (info, warning, error, etc), a source (API validation or implementation message), the message, and some user data that can be set in the validation_callback_desc.
     */
     using validation_callback = void(
         const validation_callback_severity& severity,
@@ -89,9 +89,9 @@ namespace LLRI_NAMESPACE
      * @brief The validation callback allows the user to subscribe to validation messages so that they can write the message into their own logging system.
      *
      * The callback contains contextual information about the message, like for example its severity.
-     * The callback may be used for both LLRI validation and internal API validation. The callback will poll messages from the internal API (e.g. Vulkan's debug utils, and DirectX's info queue)
+     * The callback may be used for both API validation and implementation validation. The callback will poll messages from the implementation (e.g. Vulkan's debug utils, and DirectX's info queue)
      *
-     * Internal API messages only occur if api_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some APIs might still output messages (Vulkan tends to print to the console, whereas DirectX tends to print to the "Output" window in Visual Studio).
+     * Implementation messages only occur if api_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some APIs might still output messages (Vulkan tends to print to the console, whereas DirectX tends to print to the "Output" window in Visual Studio).
     */
     struct validation_callback_desc
     {
@@ -101,7 +101,7 @@ namespace LLRI_NAMESPACE
         */
         validation_callback* callback;
         /**
-         * @brief Optional user data pointer. Not used internally by the API but it's passed around and sent along the callback.
+         * @brief Optional user data pointer. Not used by LLRI but it's passed around and sent along the callback.
         */
         void* userData;
 
@@ -126,16 +126,16 @@ namespace LLRI_NAMESPACE
         */
         instance_extension* extensions;
         /**
-         * @brief Sets the name of the application in internal API if applicable.
-         * This is not guaranteed but is known to at least apply to Vulkan.
+         * @brief Sets the name of the application in the implementation if applicable.
+         * @note This parameter is not guaranteed to be used but is known to at least apply to Vulkan.
         */
         const char* applicationName;
         /**
          * @brief Describes the optional validation callback. callbackDesc.callback can be nullptr in which case no callbacks will be sent.
          *
-         * Callbacks may or may not be sent depending on the parameters used. If LLRI_DISABLE_VALIDATION is defined, no LLRI validation messages will be sent. If LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING is defined, then no internal API messages will be forwarded.
+         * Callbacks may or may not be sent depending on the parameters used. If LLRI_DISABLE_VALIDATION is defined, no LLRI validation messages will be sent. If LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING is defined, then no implementation messages will be forwarded.
          *
-         * Furthermore, to enable internal API messages, api_validation_ext and/or gpu_validation_ext should be enabled and part of the extensions array.
+         * Furthermore, to enable implementation messages, api_validation_ext and/or gpu_validation_ext should be enabled and part of the extensions array.
         */
         validation_callback_desc callbackDesc;
     };
@@ -145,12 +145,12 @@ namespace LLRI_NAMESPACE
     */
     namespace detail
     {
-        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
+        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling);
         void impl_destroyInstance(Instance* instance);
 
         using messenger_type = void;
         /**
-         * @brief Polls API messages, only called if LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING is not defined.
+         * @brief Polls API messages, only called if LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING is not defined.
          * Used internally only
          * @param validation The validation function / userdata
          * @param messenger This value may differ depending on the function that is calling it, the most relevant messenger will be picked.
@@ -185,7 +185,7 @@ namespace LLRI_NAMESPACE
     */
     class Instance
     {
-        friend result detail::impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling);
+        friend result detail::impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling);
         friend void detail::impl_destroyInstance(Instance* instance);
 
         friend result llri::createInstance(const instance_desc& desc, Instance** instance);

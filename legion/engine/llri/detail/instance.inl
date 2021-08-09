@@ -28,8 +28,8 @@ namespace LLRI_NAMESPACE
         {
         case validation_callback_source::Validation:
             return "Validation";
-        case validation_callback_source::InternalAPI:
-            return "InternalAPI";
+        case validation_callback_source::Implementation:
+            return "Implementation";
         }
 
         return "Invalid validation_callback_source value";
@@ -76,7 +76,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = detail::impl_createInstance(desc, instance, true);
         if (*instance)
             detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
@@ -102,7 +102,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -144,7 +144,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_createDevice(desc, device);
         if (*device)
             detail::impl_pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
@@ -158,7 +158,7 @@ namespace LLRI_NAMESPACE
     {
         impl_destroyDevice(device);
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         //Can't use device messenger here because the device is destroyed
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
 #endif

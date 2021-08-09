@@ -34,7 +34,7 @@ namespace LLRI_NAMESPACE
 
     namespace detail
     {
-        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
+        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling)
         {
             directx::lazyInitializeDirectX();
 
@@ -80,7 +80,7 @@ namespace LLRI_NAMESPACE
             //Store user defined validation callback
             //DirectX creates validation callbacks upon device creation so we just need to store information about this right now.
             output->m_validationCallbackMessenger = nullptr;
-            if (enableInternalAPIMessagePolling && desc.callbackDesc.callback)
+            if (enableImplementationMessagePolling && desc.callbackDesc.callback)
             {
                 output->m_validationCallback = desc.callbackDesc;
                 output->m_shouldConstructValidationCallbackMessenger = true;
@@ -134,7 +134,7 @@ namespace LLRI_NAMESPACE
         {
             if (messenger != nullptr)
             {
-                ID3D12InfoQueue* iq = static_cast<ID3D12InfoQueue*>(messenger);
+                auto* iq = static_cast<ID3D12InfoQueue*>(messenger);
                 const auto numMsg = iq->GetNumStoredMessages();
 
                 for (UINT64 i = 0; i < numMsg; ++i)
@@ -142,9 +142,9 @@ namespace LLRI_NAMESPACE
                     SIZE_T messageLength = 0;
                     iq->GetMessage(i, NULL, &messageLength);
 
-                    D3D12_MESSAGE* pMessage = reinterpret_cast<D3D12_MESSAGE*>(malloc(messageLength));
+                    auto* pMessage = static_cast<D3D12_MESSAGE*>(malloc(messageLength));
                     iq->GetMessage(i, pMessage, &messageLength);
-                    validation(internal::mapSeverity(pMessage->Severity), validation_callback_source::InternalAPI, pMessage->pDescription);
+                    validation(internal::mapSeverity(pMessage->Severity), validation_callback_source::Implementation, pMessage->pDescription);
 
                     free(pMessage);
                 }
@@ -158,7 +158,7 @@ namespace LLRI_NAMESPACE
     {
         adapters->clear();
 
-        //Clear internal pointers, lost adapters will have a nullptr internally
+        //Clear internal pointers, lost adapters will have a nullptr m_ptr
         for (auto& [ptr, adapter] : m_cachedAdapters)
             adapter->m_ptr = nullptr;
 

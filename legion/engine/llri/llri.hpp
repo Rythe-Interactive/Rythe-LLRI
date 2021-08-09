@@ -8,19 +8,21 @@
 /**
  * @def LLRI_DISABLE_VALIDATION
  * @brief Defining LLRI_DISABLE_VALIDATION disables all LLRI validation.
- * This applies to all validation done by LLRI (not internal API validation), such as nullptr checks on parameters.
- * Disabling LLRI validation may cause API runtime errors if incorrect parameters are passed, but the reduced checks could improve performance.
+ * This applies to all validation done by the LLRI API (not the implementation), such as nullptr checks on parameters.
  *
- * Disabling LLRI validation will also mean that LLRI will not return ErrorInvalidUsage and ErrorDeviceLost where it normally would if incorrect parameters are passed, but the internal API may still return these codes if it fails to operate.
+ * @note Disabling LLRI validation **may** cause API or implementation runtime errors if incorrect parameters are passed, but the reduced checks could improve performance.
+ * @note Disabling LLRI validation means that LLRI **will not** return result::ErrorInvalidUsage and result::ErrorDeviceLost where it normally would if incorrect parameters are passed, but the implementation **may** still return these codes if it fails to operate.
  */
 #define LLRI_DISABLE_VALIDATION
 
  /**
-  * @def LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
-  * @brief Defining LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING disables all internal API message polling.
-  * Internal API message polling can be costly and disabling it can help improve performance, but internal API messages will not be forwarded.
+  * @def LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+  * @brief Defining LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING disables all implementation message polling.
+  * Implementation message polling can be costly and disabling it could improve performance, but implementation messages aren't forwarded.
+  *
+  * @note Disabling implementation message polling is not guaranteed to prevent implementations from sending messages through other means. Drivers often have their own way of forwarding messages and it's very possible that messages end up in stdout or visual studio's output window.
   */
-#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
 
 /**
  * @def LLRI_ENABLE_LEGION_NAMESPACING
@@ -91,7 +93,7 @@ namespace LLRI_NAMESPACE
         */
         ErrorDeviceRemoved,
         /**
-         * @brief An internal driver error was thrown. After this, the device will be put into the device lost state and will become invalid. See ErrorDeviceLost for more information on device loss.
+         * @brief A driver error occurred. After this, the device will be put into the device lost state and will become invalid. See ErrorDeviceLost for more information on device loss.
         */
         ErrorDriverFailure,
         /**
@@ -103,11 +105,11 @@ namespace LLRI_NAMESPACE
         */
         ErrorOutOfDeviceMemory,
         /**
-         * @brief Initialization of an object failed because of internal or implementation specific reasons.
+         * @brief Initialization of an object failed because of implementation specific reasons.
         */
         ErrorInitializationFailed,
         /**
-         * @brief The requested internal API version (DirectX, Vulkan, etc.) is not supported by the driver.
+         * @brief The implementation (DirectX, Vulkan, etc.) is not supported by the driver.
         */
         ErrorIncompatibleDriver,
         /**

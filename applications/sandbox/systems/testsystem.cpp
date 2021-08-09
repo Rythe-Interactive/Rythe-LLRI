@@ -7,8 +7,8 @@
 
 #include "testsystem.hpp"
 
-//#define LLRI_DISABLE_VALIDATION //uncommenting this disables internal validation (see docs)
-//#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING //uncommenting this disables internal API message polling
+//#define LLRI_DISABLE_VALIDATION //uncommenting this disables API validation (see docs)
+//#define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING //uncommenting this disables implementation message polling
 #include <llri/llri.hpp>
 
 void callback(const llri::validation_callback_severity& severity, const llri::validation_callback_source& source, const char* message, void* userData)

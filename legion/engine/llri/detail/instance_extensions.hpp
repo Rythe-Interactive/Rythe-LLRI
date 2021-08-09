@@ -4,7 +4,7 @@ namespace LLRI_NAMESPACE
 {
     /**
      * @brief Describes the kind of instance extension. <br>
-     * This value is used in instance_extension and is used internally to recognize which value to pick from instance_extension's union. <br>
+     * This value is used in instance_extension and is used in :func:`llri::createInstance()` to recognize which value to pick from instance_extension's union. <br>
      * <br>
      * Instance Extensions aren't guaranteed to be available so use this enum with llri::queryInstanceExtensionSupport() to find out if your desired extension is available prior to adding the extension to your instance desc extension array.
     */
@@ -61,7 +61,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief The instance extension's information. <br>
          * One of the values in this union must be set, and that value must be the same value as the given type. <br>
-         * Passing a different structure than expected causes undefined behaviour and may result in unexplainable result values or internal API errors. <br>
+         * Passing a different structure than expected causes undefined behaviour and may result in unexplainable result values or implementation errors. <br>
          * All instance extensions are named after their enum entry, followed with EXT or _ext (e.g. instance_extension_type::APIValidation is represented by api_validation_ext).
         */
         union

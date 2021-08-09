@@ -36,7 +36,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryInfo(info);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -61,7 +61,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryFeatures(features);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -86,7 +86,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryExtensionSupport(type, supported);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
