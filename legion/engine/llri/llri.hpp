@@ -23,7 +23,7 @@
  /**
   * @def LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
   * @brief Defining LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING disables all implementation message polling.
-  * Implementation message polling can be costly and disabling it could improve performance, but implementation messages aren't forwarded.
+  * Implementation message polling can be costly and disabling it could improve performance, but doing so causes implementation messages to not be forwarded to the validation callback.
   *
   * @note Disabling implementation message polling is not guaranteed to prevent implementations from sending messages through other means. Drivers often have their own way of forwarding messages and it's very possible that messages end up in stdout or visual studio's output window.
   */
@@ -46,32 +46,35 @@
 namespace LLRI_NAMESPACE
 {
     /**
-     * @brief Informative result values for llri operations.
+     * @enum result
+     * @brief Result codes for LLRI operations.
+     * Most LLRI operations return result codes. These result codes provide information about the operation's execution status. Operations that execute properly **can** return result::Success, but they **may** return any of the other non-error result codes. If an operation fails, it **must** return a failing result value, which **may** be result::ErrorUnknown or a more specific appropriate failing result value.
      *
-     * Operations that execute properly will return result::Success, or if they fail they will pick the appropriate failing result value. Note that some result values are prefixed with "Error", implying that their result value was fatal and can not be recovered from. Failures without the "Error" prefix are often soft failures that might for example be caused by user-defined timeouts.
+     * @note Codes prefixed with "Error" imply that the operation failed fatally. This **may** mean that further action to recover the application's state is required by the user.
+     * @note Result codes may not provide satisfactory information, so consider using the validation callback to get additional information.
     */
     enum struct result
     {
         /**
-         * @brief The function executed properly.
+         * @brief The operation executed properly.
         */
         Success = 0,
         /**
-         * @brief The function's execution time exceeded a user-defined timeout.
+         * @brief The operation's execution time exceeded a user-defined timeout.
         */
         Timeout,
         /**
-         * @brief A fence or query has not yet completed.
+         * @brief A fence has not yet completed.
         */
         NotReady,
         /**
-         * @brief This error is caused by improper error mapping by the LLRI implementation, and should under normal circumstances never occur.
-         * If this value is returned, it is likely caused by a bug in the API. Consider contacting the authors for more information.
+         * @brief The operation failed fatally, but no error was specified.
+         * The implementation **may** return this value if it can't map an error code to an LLRI result code.
         */
         ErrorUnknown,
         /**
          * @brief The usage of the operation was invalid.
-         * This is usually due to incorrect API usage.
+         * LLRI validation returns this result code whenever incorrect parameters are passed, but implementations **may** return the code too.
         */
         ErrorInvalidUsage,
         /**
@@ -87,14 +90,14 @@ namespace LLRI_NAMESPACE
         */
         ErrorDeviceHung,
         /**
-         * @brief A device may be lost after invalid API usage causes fatal errors that the device can not recover from.
-         * The device immediately becomes invalid and must be destroyed and recreated.
+         * @brief A device **may** be lost after invalid API usage causes fatal errors that the device can not recover from.
+         * The device becomes invalid and must be destroyed and recreated.
          *
-         * After a device loss, the application must reiterate over available Adapters as the previously used Adapter may have become invalid.
+         * After a device loss, the application **should** reiterate over available Adapters as the previously used Adapter **may** have become invalid.
         */
         ErrorDeviceLost,
         /**
-         * @brief The video card has been physically removed from the system. The device immediately becomes invalid and must be destroyed and recreated. For this, the application must reiterate over available Adapters as the previously used Adapter has become invalid.
+         * @brief The video card has been physically removed from the system. The device becomes invalid and must be destroyed and recreated. For this, the application **should** reiterate over available Adapters as the previously used Adapter **may** have become invalid.
         */
         ErrorDeviceRemoved,
         /**
@@ -114,7 +117,7 @@ namespace LLRI_NAMESPACE
         */
         ErrorInitializationFailed,
         /**
-         * @brief The implementation (DirectX, Vulkan, etc.) is not supported by the driver.
+         * @brief The implementation is not supported by the driver.
         */
         ErrorIncompatibleDriver,
         /**
@@ -124,10 +127,13 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts a result to a string to aid in debug logging.
+     * @brief Converts a result to a string.
+     * @return The enum value as a string, or "Unknown result value" if the result passed was not recognized.
     */
-    constexpr const char* to_string(const result& result);
+    constexpr const char* to_string(const result& r);
 }
+
+// ReSharper disable CppUnusedIncludeDirective
 
 #include <llri/detail/instance.hpp>
 #include <llri/detail/instance_extensions.hpp>
@@ -137,5 +143,4 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/device.hpp>
 
-// ReSharper disable once CppUnusedIncludeDirective
 #include <llri/detail/llri.inl>
