@@ -1,3 +1,8 @@
+/**
+ * Copyright 2021-2021 Leon Brands. All rights served.
+ * License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #ifdef NDEBUG
 //Validation can be an incredibly useful tool, but runtime checks don't come without a performance cost.
 //To prevent validation from causing overhead on builds, you can #define LLRI_DISABLE_VALIDATION.

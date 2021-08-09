@@ -1,4 +1,9 @@
 /**
+ * Copyright 2021-2021 Leon Brands. All rights served.
+ * License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
+/**
  * Sandbox is a testing area for LLRI development.
  * The code written in sandbox should be up to spec but may not contain the best practices or cleanest examples.
  *

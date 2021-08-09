@@ -1,3 +1,8 @@
+/**
+ * Copyright 2021-2021 Leon Brands. All rights served.
+ * License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #pragma once
 //detail includes should be kept to a minimum but
 //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
