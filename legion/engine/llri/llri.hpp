@@ -38,8 +38,16 @@
 #endif
 
 #if defined(LLRI_ENABLE_LEGION_NAMESPACING)
+/**
+ * @def LLRI_NAMESPACE
+ * @brief The LLRI namespace. This is usually set to "llri", but if LLRI_ENABLE_LEGION_NAMESPACING is defined then the namespace is "legion::graphics::llri".
+ */
 #define LLRI_NAMESPACE legion::graphics::llri
 #else
+/**
+ * @def LLRI_NAMESPACE
+ * @brief The LLRI namespace. This is usually set to "llri", but if LLRI_ENABLE_LEGION_NAMESPACING is defined then the namespace is "legion::graphics::llri".
+ */
 #define LLRI_NAMESPACE llri
 #endif
 
