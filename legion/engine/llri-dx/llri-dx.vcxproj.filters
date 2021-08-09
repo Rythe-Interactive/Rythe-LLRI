@@ -8,6 +8,9 @@
     <Filter Include="Source Files\detail">
       <UniqueIdentifier>{d4a9415c-3f9a-4b6d-9e29-ee0054f2ee13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{b3822cb0-b264-4527-93f9-189ffc744eed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="llri.cpp">
@@ -27,6 +30,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="directx.hpp" />
+    <ClInclude Include="directx.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
