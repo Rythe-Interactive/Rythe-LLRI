@@ -32,7 +32,7 @@
 
 /**
  * @def LLRI_ENABLE_LEGION_NAMESPACING
- * @brief Defining LLRI_ENABLE_LEGION_NAMESPACING changes LLRI's namespace from llri:: to legion::graphics::llri.
+ * @brief Defining LLRI_ENABLE_LEGION_NAMESPACING changes LLRI's namespace from llri to legion::graphics::llri.
  */
 #define LLRI_ENABLE_LEGION_NAMESPACING
 #undef LLRI_ENABLE_LEGION_NAMESPACING //only defined for the doxygen comments
@@ -55,12 +55,16 @@
 namespace LLRI_NAMESPACE
 {
     /**
-     * @enum result
      * @brief Result codes for LLRI operations.
-     * Most LLRI operations return result codes. These result codes provide information about the operation's execution status. Operations that execute properly **can** return result::Success, but they **may** return any of the other non-error result codes. If an operation fails, it **must** return a failing result value, which **may** be result::ErrorUnknown or a more specific appropriate failing result value.
-     *
+     * 
+     * 
+     * Most LLRI operations return result codes. These result codes provide information about the operation's execution status.
+     * Operations that execute properly **can** return result::Success, but they **may** return any of the other non-error result codes.
+     * If an operation fails, it **must** return a failing result value, which **may** be result::ErrorUnknown or a more specific appropriate failing result value.
+     * 
      * @note Codes prefixed with "Error" imply that the operation failed fatally. This **may** mean that further action to recover the application's state is required by the user.
-     * @note Result codes may not provide satisfactory information, so consider using the validation callback to get additional information.
+     *
+     * @note Result codes may not provide enough information, so consider using the validation callback to get additional information.
     */
     enum struct result
     {
@@ -83,7 +87,7 @@ namespace LLRI_NAMESPACE
         ErrorUnknown,
         /**
          * @brief The usage of the operation was invalid.
-         * LLRI validation returns this result code whenever incorrect parameters are passed, but implementations **may** return the code too.
+         * LLRI validation returns this result code whenever its validation fails, but implementations **can** return the code too.
         */
         ErrorInvalidUsage,
         /**
@@ -110,7 +114,7 @@ namespace LLRI_NAMESPACE
         */
         ErrorDeviceRemoved,
         /**
-         * @brief A driver error occurred. After this, the device will be put into the device lost state and will become invalid. See ErrorDeviceLost for more information on device loss.
+         * @brief A driver error occurred. After this, the device will be put into the device lost state and will become invalid. See result::ErrorDeviceLost for more information on device loss.
         */
         ErrorDriverFailure,
         /**
@@ -137,7 +141,7 @@ namespace LLRI_NAMESPACE
 
     /**
      * @brief Converts a result to a string.
-     * @return The enum value as a string, or "Unknown result value" if the result passed was not recognized.
+     * @return The enum value as a string, or "Unknown result value" if the value was not recognized as an enum member.
     */
     constexpr const char* to_string(const result& r);
 }
