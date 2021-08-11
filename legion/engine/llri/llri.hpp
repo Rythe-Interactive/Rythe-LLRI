@@ -141,7 +141,7 @@ namespace LLRI_NAMESPACE
 
     /**
      * @brief Converts a result to a string.
-     * @return The enum value as a string, or "Unknown result value" if the value was not recognized as an enum member.
+     * @return The enum value as a string, or "Invalid result value" if the value was not recognized as an enum member.
     */
     constexpr const char* to_string(const result& r);
 }

@@ -14,13 +14,13 @@ namespace LLRI_NAMESPACE
     enum struct adapter_extension_type;
 
     /**
-     * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it may correlate with performance or the availability of various features.
+     * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
     */
     enum struct adapter_type
     {
         /**
          * @brief The device type is not recognized as any of the other available types.
-         * This may for example be an APU, or a different form of Vulkan supported processing unit.
+         * This may for example be an APU, or a different form of supported processing unit.
         */
         Other,
         /**
@@ -29,7 +29,7 @@ namespace LLRI_NAMESPACE
         */
         Integrated,
         /**
-         * @brief Separate GPU, usually connected to the host system through PCIE connectors.
+         * @brief Separate GPU, usually connected to the host system through PCIe connectors.
         */
         Discrete,
         /**
@@ -43,7 +43,8 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts an adapter_type to a string to aid in debug logging.
+     * @brief Converts an adapter_type to a string.
+     * @return The enum value as a string, or "Invalid adapter_type value" if the value was not recognized as an enum member.
     */
     constexpr const char* to_string(const adapter_type& type);
 
