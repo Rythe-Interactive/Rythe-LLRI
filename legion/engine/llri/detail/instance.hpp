@@ -174,7 +174,7 @@ namespace LLRI_NAMESPACE
      * @brief Create an llri Instance.
      * Like with all API objects, the user is responsible for destroying the Instance again using destroyInstance().
      * @param desc The description of the instance.
-     * @param instance Must be a valid pointer to an Instance pointer variable.
+     * @param instance Must be a valid pointer to an Instance pointer variable. Upon successful execution of the operation the pointer is set to the resulting instance object.
      *
      * @return Success upon correct execution of the operation.
      * @return ErrorInvalidUsage if the instance is nullptr, or if desc.numExtensions > 0 and desc.extensions is nullptr.
@@ -210,6 +210,8 @@ namespace LLRI_NAMESPACE
          * Using this function, you can select one or more adapters for Device creation.
          * The adapters returned by this function are individual adapters and are listed separately regardless of SLI/Crossfire/Multi-GPU configuration.
          *
+         * @param adapters The vector to fill with available adapters. The vector is cleared at the start of the operation and is only filled if the operation succeeds.
+         *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if adapters is nullptr.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed.
@@ -218,6 +220,10 @@ namespace LLRI_NAMESPACE
 
         /**
          * @brief Creates a virtual LLRI device. Device represents one or multiple adapters and is used to allocate memory, create resources, or send commands to the adapter.
+         *
+         * @param desc The description of the device.
+         * @param device A pointer to a device pointer variable. The pointer variable will be set to the resulting device upon successful execution.
+         *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
          * @return ErrorDeviceLost if the adapter was lost.
@@ -228,6 +234,8 @@ namespace LLRI_NAMESPACE
          * @brief Destroy the LLRI device.
          *
          * All resources created through the device **must** be destroyed prior to calling this function.
+         *
+         * @param device The device, **must** be a valid device pointer or nullptr.
         */
         void destroyDevice(Device* device) const;
 
