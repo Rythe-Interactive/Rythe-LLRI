@@ -138,7 +138,7 @@ namespace LLRI_NAMESPACE
         uint32_t numExtensions;
         /**
          * @brief The instance extensions, if instance_desc::numExtensions > 0, then this **must** be a valid pointer to an array of instance_extension.
-         * If numExtensions == 0, then this pointer **may** be nullptr.
+         * If instance_desc::numExtensions == 0, then this pointer **may** be nullptr.
         */
         instance_extension* extensions;
         /**
