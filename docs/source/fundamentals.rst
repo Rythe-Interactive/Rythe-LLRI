@@ -31,7 +31,7 @@ Extensions
 -----------
 The LLRI API supports various features that may not always be supported by the current environment. These features are available through extensions. LLRI uses extensions extensively to cross the gap between available features for each implementation. Per-extension support is fully **optional**.
 
-Extensions are inserted upon creation of :class:`llri::Instance` and :class:`llri::Device`. Instance extensions usually contain application-wide changes such as validation callbacks, and as such their availability tends to depend on machine configuration and/or implementation featureset. Device extensions are queried through :class:`llri::Adapter` and tend to depend on hardware/feature limits.
+Extensions are inserted upon creation of :class:`llri::Instance` and :class:`llri::Device`. Instance extensions usually contain application-wide changes such as validation callbacks, and as such their availability tends to depend on machine configuration and/or implementation featureset. Adapter extensions are queried through :class:`llri::Adapter` and tend to depend on hardware/feature limits.
 
 Support for extensions is queried prior to Instance/Device creation, for :class:`llri::Instance` extensions this function is :func:`llri::queryInstanceExtensionSupport`, whereas :class:`llri::Adapter` extensions are queried through :func:`llri::Adapter::queryExtensionSupport`.
 
@@ -41,7 +41,7 @@ Validation
 -----------
 LLRI is an explicit API. The user has immense control over resource allocation and state, which results in low API/driver overhead. However, with this much control, it is also much easier to make mistakes. 
 
-To aid in debugging, LLRI does parameter validation by default (disabled by defining LLRI_DISABLE_API_VALIDATION), and also comes with extensions for internal API validation (internal API message polling is disabled by defining LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING). All validation messages (LLRI validation and internal API validation) are forwarded to the validation_callback passed in :struct:`llri::instance_desc`, making it easy for engines to generate informative logs or debug runtime issues.
+To aid in debugging, LLRI does parameter validation by default (disabled by defining LLRI_DISABLE_API_VALIDATION), and also comes with extensions for implementation validation (implementation message polling is disabled by defining LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING). All validation messages (LLRI validation and implementation validation) are forwarded to the validation_callback passed in :struct:`llri::instance_desc`, making it easy for engines to generate informative logs or debug runtime issues.
 
 Threading
 ---------------- 
