@@ -3,18 +3,16 @@
 [![Discord](https://img.shields.io/discord/682321168610623707.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/unVNRbd)
 
 # Legion-LLRI
-Legion Low Level Rendering Interface, a middle layer between the graphics APIs and the Legion rendering code. Designed to allow Legion rendering code to remain graphics API agnostic with minimal overhead. With API agnostic graphics code it is easier for Legion to support multiple platforms, and to remain independent from graphics APIs.
+Legion-LLRI, or “Legion Low Level Rendering Interface” is a rendering API that aims to provide a graphics API agnostic approach to graphics development.
+
+LLRI is designed as a low overhead API that helps developers write graphics API / platform agnostic code without the typical limitations of higher level abstractions.
 
 ## Supported APIs
 - Vulkan
 - DirectX 12
 
-## Dependencies
-LLRI ships all of its build dependencies in the [deps](https://github.com/Legion-Engine/Legion-LLRI/tree/main/deps) folder, which requires no additional configuration.
-
-After building, you can use LLRI with nothing more than the headers in include/, a library file of choice from lib/, and the dlls in deps/dll/. 
-
-Additional features may require system configuration; to enable debugging extensions on DirectX builds, install "Graphics Tools" in Windows' optional features. To enable validation layers on Vulkan builds, install the Vulkan SDK from the LunarG website.
+## Documentation
+Learn more about how to get started, or about how the API works in-depth through our docs: https://docs.legion-engine.com/llri/.
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
