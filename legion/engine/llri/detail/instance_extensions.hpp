@@ -9,19 +9,18 @@
 namespace LLRI_NAMESPACE
 {
     /**
-     * @brief Describes the kind of instance extension. <br>
-     * This value is used in instance_extension and is used in :func:`llri::createInstance()` to recognize which value to pick from instance_extension's union. <br>
-     * <br>
-     * Instance Extensions aren't guaranteed to be available so use this enum with llri::queryInstanceExtensionSupport() to find out if your desired extension is available prior to adding the extension to your instance desc extension array.
+     * @brief Describes the kind of instance extension. This value is used in instance_extension and is used in createInstance() to recognize which value to pick from instance_extension's union.
+     *
+     * The support for each available instance_extension is fully **optional** (hence their name, extension), so it is **recommended** to use this enum with queryInstanceExtensionSupport() to find out if a desired extension is available prior to adding the extension to the instance_desc's extensions array.
     */
     enum struct instance_extension_type
     {
         /**
-         * @brief Validate API calls, their parameters, and context.
+         * @brief Validate operations on a driver level. Driver validation often does additional parameter and context checks for the implementation's operations.
          */
-        APIValidation,
+        DriverValidation,
         /**
-         * @brief Validate shader operations such as buffer reads/writes.
+         * @brief Validate shader operations such as buffer reads/writes. This kind of validation heavily injects itself into shaders, causing a potentially significant performance impact.
         */
         GPUValidation,
         /**
@@ -31,15 +30,16 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts an instance_extension_type to a string to aid in debug logging.
+     * @brief Converts a instance_extension_type to a string.
+     * @return The enum value as a string, or "Unknown instance_extension_type value" if the value was not recognized as an enum member.
     */
     constexpr const char* to_string(const instance_extension_type& result);
 
     /**
-     * @brief Enable or disable API-side validation.
-     * API validation checks for parameters and context validity and sends the appropriate messages back if the usage is invalid or otherwise concerning.
+     * @brief Enable or disable driver validation.
+     * Driver validation checks for implementation-side parameters and context validity and sends the appropriate messages back if the usage is invalid or otherwise concerning.
     */
-    struct api_validation_ext
+    struct driver_validation_ext
     {
         bool enable : 1;
     };
@@ -67,24 +67,27 @@ namespace LLRI_NAMESPACE
          *
          * As instance extensions must be passed in an array, they need some way of storing varying data contiguously. instance_extensions do so through an unnamed union. When llri::createInstance() attempts to implement the extension, it uses this enum value to determine which union member to pick from.
          *
-         * @note Accessing incorrect union members is UB, so the union member you set **must** match with the instance_extension_type passed.
+         * @note Accessing incorrect union members is UB, so the union member set **must** match with the instance_extension_type passed.
         */
         instance_extension_type type;
 
         /**
-         * @brief The instance extension's information. <br>
-         * One of the values in this union must be set, and that value must be the same value as the given type. <br>
-         * Passing a different structure than expected causes undefined behaviour and may result in unexplainable result values or implementation errors. <br>
-         * All instance extensions are named after their enum entry, followed with EXT or _ext (e.g. instance_extension_type::APIValidation is represented by api_validation_ext).
+         * @brief The instance extension's information.
+         *
+         * One of the values in this union must be set, and that value must be the same value as the given type.
+         *
+         * Passing a different structure than expected causes undefined behaviour and may result in unexplainable result values or implementation errors.
+         *
+         * All instance extensions are named after their enum entry, followed with _ext (e.g. instance_extension_type::DriverValidation is represented by driver_validation_ext).
         */
         union
         {
-            api_validation_ext apiValidation;
+            driver_validation_ext driverValidation;
             gpu_validation_ext gpuValidation;
         };
 
         instance_extension() = default;
-        instance_extension(const instance_extension_type& type, const api_validation_ext& ext) : type(type), apiValidation(ext) { }
+        instance_extension(const instance_extension_type& type, const driver_validation_ext& ext) : type(type), driverValidation(ext) { }
         instance_extension(const instance_extension_type& type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
     };
 

@@ -17,7 +17,7 @@ namespace LLRI_NAMESPACE
 
             switch (type)
             {
-                case instance_extension_type::APIValidation:
+                case instance_extension_type::DriverValidation:
                 {
                     ID3D12Debug* temp = nullptr;
                     return SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
@@ -36,10 +36,10 @@ namespace LLRI_NAMESPACE
     namespace internal
     {
         /**
-         * @brief Enables D3D12 API validation layers where requested.
+         * @brief Enables D3D12 validation layers where requested.
          * @return If the needed debug interface is not found/supported, the function returns result::ErrorExtensionNotSupported.
         */
-        result createAPIValidationEXT(const api_validation_ext& ext, void** output)
+        result createDriverValidationEXT(const driver_validation_ext& ext, void** output)
         {
             if (ext.enable)
             {

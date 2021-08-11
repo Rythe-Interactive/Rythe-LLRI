@@ -11,7 +11,7 @@ namespace LLRI_NAMESPACE
 {
     namespace internal
     {
-        result createAPIValidationEXT(const api_validation_ext& ext, void** output);
+        result createDriverValidationEXT(const driver_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
 
         result mapHRESULT(const HRESULT& value);
@@ -54,9 +54,9 @@ namespace LLRI_NAMESPACE
 
                 switch (extension.type)
                 {
-                    case instance_extension_type::APIValidation:
+                    case instance_extension_type::DriverValidation:
                     {
-                        extensionCreateResult = internal::createAPIValidationEXT(extension.apiValidation, &output->m_debugAPI);
+                        extensionCreateResult = internal::createDriverValidationEXT(extension.driverValidation, &output->m_debugAPI);
                         if (extensionCreateResult == result::Success)
                             factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
                         break;

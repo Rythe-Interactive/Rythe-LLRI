@@ -88,9 +88,9 @@ namespace LLRI_NAMESPACE
                 auto& extension = desc.extensions[i];
                 switch (extension.type)
                 {
-                case instance_extension_type::APIValidation:
+                case instance_extension_type::DriverValidation:
                 {
-                    if (extension.apiValidation.enable)
+                    if (extension.driverValidation.enable)
                         layers.push_back("VK_LAYER_KHRONOS_validation");
                     break;
                 }

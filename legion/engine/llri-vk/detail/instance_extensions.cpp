@@ -19,7 +19,7 @@ namespace LLRI_NAMESPACE
 
             switch (type)
             {
-                case instance_extension_type::APIValidation:
+                case instance_extension_type::DriverValidation:
                 {
                     return layers.find(internal::nameHash("VK_LAYER_KHRONOS_validation")) != layers.end();
                 }

@@ -72,7 +72,7 @@ namespace LLRI_NAMESPACE
         Validation,
         /**
          * @brief The message came from the implementation.
-         * Implementation validation needs to be enabled through api_validation_ext and/or gpu_validation_ext for this kind of message to appear.
+         * Implementation validation needs to be enabled through driver_validation_ext and/or gpu_validation_ext for this kind of message to appear.
          *
          * @note This value never occurs if LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING is defined.
         */
@@ -106,7 +106,7 @@ namespace LLRI_NAMESPACE
      * The callback contains contextual information about the message, like for example its severity.
      * The callback may be used for both API validation and implementation validation, each message's source is indicated through the validation_callback_source enum.
      *
-     * @note Implementation messages only occur if api_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some implementations might still output messages (Vulkan tends to print to stdout, whereas DirectX tends to print to the "Output" window in Visual Studio).
+     * @note Implementation messages only occur if driver_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some implementations might still output messages (Vulkan tends to print to stdout, whereas DirectX tends to print to the "Output" window in Visual Studio).
     */
     struct validation_callback_desc
     {

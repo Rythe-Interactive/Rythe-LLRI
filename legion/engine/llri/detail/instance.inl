@@ -45,8 +45,8 @@ namespace LLRI_NAMESPACE
     {
         switch (result)
         {
-        case instance_extension_type::APIValidation:
-            return "APIValidation";
+        case instance_extension_type::DriverValidation:
+            return "DriverValidation";
         case instance_extension_type::GPUValidation:
             return "GPUValidation";
         }
