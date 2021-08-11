@@ -54,16 +54,23 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Describes an instance extension with its type. <br>
-     * instance_extensions aren't guaranteed to be available (hence their name extension), and thus before enabling any instance_extension, you should first query its support with llri::queryInstanceExtensionSupport().
+     * @brief Describes an instance extension with its type.
+     *
+     * Instance extensions are additional features that are injected into the instance. They **may** activate custom behaviour in the instance, or they **may** enable the user to use functions or structures related to the extension.
+     *
+     * The support for each available instance_extension is fully **optional** (hence their name, extension), and thus before enabling any instance_extension, you should first query its support with queryInstanceExtensionSupport().
     */
     struct instance_extension
     {
         /**
-         * @brief The type of instance extension. <br>
-         * This value is used to select the correct union member.
+         * @brief The type of instance extension.
+         *
+         * As instance extensions must be passed in an array, they need some way of storing varying data contiguously. instance_extensions do so through an unnamed union. When llri::createInstance() attempts to implement the extension, it uses this enum value to determine which union member to pick from.
+         *
+         * @note Accessing incorrect union members is UB, so the union member you set **must** match with the instance_extension_type passed.
         */
         instance_extension_type type;
+
         /**
          * @brief The instance extension's information. <br>
          * One of the values in this union must be set, and that value must be the same value as the given type. <br>

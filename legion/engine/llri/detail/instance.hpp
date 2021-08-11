@@ -149,10 +149,6 @@ namespace LLRI_NAMESPACE
         const char* applicationName;
         /**
          * @brief Describes the optional validation callback. callbackDesc.callback can be nullptr in which case no callbacks will be sent.
-         *
-         * Callbacks may or may not be sent depending on the parameters used. If LLRI_DISABLE_VALIDATION is defined, no LLRI validation messages will be sent. If LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING is defined, then no implementation messages will be forwarded.
-         *
-         * Furthermore, to enable implementation messages, api_validation_ext and/or gpu_validation_ext should be enabled and part of the extensions array.
         */
         validation_callback_desc callbackDesc;
     };
