@@ -138,8 +138,8 @@ namespace LLRI_NAMESPACE
         */
         uint32_t numExtensions;
         /**
-         * @brief The instance extensions, if instance_desc::numExtensions > 0, then this has to be a valid pointer to an array of instance_extension.
-         * If numExtensions == 0, then this pointer may be nullptr.
+         * @brief The instance extensions, if instance_desc::numExtensions > 0, then this **must** be a valid pointer to an array of instance_extension.
+         * If numExtensions == 0, then this pointer **may** be nullptr.
         */
         instance_extension* extensions;
         /**
@@ -148,7 +148,7 @@ namespace LLRI_NAMESPACE
         */
         const char* applicationName;
         /**
-         * @brief Describes the optional validation callback. callbackDesc.callback can be nullptr in which case no callbacks will be sent.
+         * @brief Describes the optional validation callback. callbackDesc.callback **may** be nullptr in which case no callbacks will be sent.
         */
         validation_callback_desc callbackDesc;
     };
@@ -173,28 +173,28 @@ namespace LLRI_NAMESPACE
 
     /**
      * @brief Create an llri Instance.
-     * Like with all API objects, the user is responsible for destroying the instance again using destroyInstance().
+     * Like with all API objects, the user is responsible for destroying the Instance again using destroyInstance().
      * @param desc The description of the instance.
-     * @param instance Must be a valid pointer to an Instance variable.
+     * @param instance Must be a valid pointer to an Instance pointer variable.
      *
      * @return Success upon correct execution of the operation.
      * @return ErrorInvalidUsage if the instance is nullptr, or if desc.numExtensions > 0 and desc.extensions is nullptr.
      * @return ErrorExtensionNotSupported if any of the extensions fail to be created.
-     * @return Otherwise it may also return: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
+     * @return Implementation defined result values: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
     */
     result createInstance(const instance_desc& desc, Instance** instance);
 
     /**
-     * @brief Destroys the given instance and its directly related internal resources (debug info etc).
-     * All resources created through the instance must be destroyed PRIOR to calling this function.
+     * @brief Destroys the given instance and its directly related internal resources.
+     * All resources created through the instance **must** be destroyed prior to calling this function.
      *
-     * @param instance The instance to destroy. This value has to be nullptr or a valid instance pointer.
+     * @param instance The instance to destroy. This value **must** be a valid instance pointer or nullptr.
     */
     void destroyInstance(Instance* instance);
 
     /**
-     * @brief Instance is the center of the application and is used to create most other API objects.
-     * Usually only a single instance of Instance exists within an application, but if so desired, multiple Instance instances are supported.
+     * @brief Instance is the central resource of the application and is used to create most other API objects.
+     * Only a single instance of Instance **may** exist within an application. Creating more instances is not officially supported.
     */
     class Instance
     {
@@ -206,17 +206,19 @@ namespace LLRI_NAMESPACE
 
     public:
         /**
-         * @brief Get a vector of available adapters.
-         * Using this function, you can select one or more adapters for llri::Device creation.
-         * The adapters returned by this function are individual adapters and are listed separately regardless of SLI/Crossfire/Multi-GPU configuration. //TODO: SLI/Crossfire support
+         * @brief Retrieve a vector of adapters available to this application. Adapters usually represent PCIe devices such as GPUs.
+         *
+         * Using this function, you can select one or more adapters for Device creation.
+         * The adapters returned by this function are individual adapters and are listed separately regardless of SLI/Crossfire/Multi-GPU configuration.
+         *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if adapters is nullptr.
-         * @return Otherwise it may return: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed.
         */
         result enumerateAdapters(std::vector<Adapter*>* adapters);
 
         /**
-         * @brief Creates a virtual LLRI device. Device represents one or multiple adapters and enables you to allocate memory, create resources, or send commands to the adapter.
+         * @brief Creates a virtual LLRI device. Device represents one or multiple adapters and is used to allocate memory, create resources, or send commands to the adapter.
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
          * @return ErrorDeviceLost if the adapter was lost.
@@ -224,7 +226,9 @@ namespace LLRI_NAMESPACE
         result createDevice(const device_desc& desc, Device** device) const;
 
         /**
-         * @brief Destroy the LLRI device. This does not delete the resources allocated through the device, that responsibility remains with the user.
+         * @brief Destroy the LLRI device.
+         *
+         * All resources created through the device **must** be destroyed prior to calling this function.
         */
         void destroyDevice(Device* device) const;
 

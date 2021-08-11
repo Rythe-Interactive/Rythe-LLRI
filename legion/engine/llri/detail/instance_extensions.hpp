@@ -97,7 +97,9 @@ namespace LLRI_NAMESPACE
     }
 
     /**
-     * @brief Queries the support of the given extension.
+     * @brief Queries the support of the given extension type.
+     * Support for an extension **may** depend on device configuration, hardware compatibility, or other environment factors. The support for extensions **may** differ between implementations.
+     *
      * @return true if the extension is supported, and false if it isn't.
      */
     [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type);
