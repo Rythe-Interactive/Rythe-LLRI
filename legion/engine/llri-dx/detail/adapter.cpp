@@ -27,7 +27,7 @@ namespace LLRI_NAMESPACE
 
         if (desc.Flags == DXGI_ADAPTER_FLAG_REMOTE)
             result.adapterType = adapter_type::Virtual;
-        else if (desc.DedicatedVideoMemory > 0)
+        else if (desc.DedicatedVideoMemory > 256000000) //safely assume that all GPUS with less than 256MB of VRAM are iGPUs
             result.adapterType = adapter_type::Discrete;
         else // video memory == 0 
             result.adapterType = adapter_type::Integrated;
