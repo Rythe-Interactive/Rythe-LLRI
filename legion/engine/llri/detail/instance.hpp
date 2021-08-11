@@ -21,23 +21,24 @@ namespace LLRI_NAMESPACE
 
     /**
      * @brief Describes the severity of a callback message.
+     * @note validation_callback_severity is meant to be used for message filtering, and has no binding impact on the implementation's behaviour.
     */
     enum struct validation_callback_severity
     {
         /**
-         * @brief Provides extra, often excessive information about API calls, diagnostics, support, etc.
+         * @brief Extra, often excessive information about API calls, diagnostics, support, etc.
         */
         Verbose,
         /**
-         * @brief Provides information about API calls or resource details.
+         * @brief Information about the implementation, operations, or resource details.
         */
         Info,
         /**
-         * @brief Describes a potential issue in the application. The issue may not be harmful, but could still lead to performance drops or unexpected behaviour.
+         * @brief A potential issue in the application. The issue may not be harmful, but could still lead to performance drops or unexpected behaviour.
         */
         Warning,
         /**
-         * @brief Fatal invalid API usage was detected.
+         * @brief Invalid (possibly fatal) API usage was detected.
         */
         Error,
         /**
@@ -51,7 +52,9 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts a validation_callback_severity to a string to aid in debug logging.
+     * @brief Converts a validation_callback_severity to a string.
+     * @return The enum value as a string, or "Unknown validation_callback_severity value" if the value was not recognized as an enum member.
+     *
     */
     constexpr const char* to_string(const validation_callback_severity& severity);
 
@@ -61,13 +64,17 @@ namespace LLRI_NAMESPACE
     enum struct validation_callback_source
     {
         /**
-         * @brief The message came from the LLRI API directly.
+         * @brief The message came from the LLRI API.
          * API validation does basic parameter checks to make sure that the API doesn't crash.
+         *
+         * @note This value never occurs if LLRI_DISABLE_VALIDATION is defined.
         */
         Validation,
         /**
          * @brief The message came from the implementation.
-         * Implementation validation needs to be enabled through APIValidationEXT and/or GPUValidationEXT for this kind of message to appear.
+         * Implementation validation needs to be enabled through api_validation_ext and/or gpu_validation_ext for this kind of message to appear.
+         *
+         * @note This value never occurs if LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING is defined.
         */
         Implementation,
         /**
@@ -77,12 +84,14 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts a validation_callback_source to a string to aid in debug logging.
+     * @brief Converts a validation_callback_source to a string.
+     * @return The enum value as a string, or "Unknown validation_callback_source value" if the value was not recognized as an enum member.
     */
     constexpr const char* to_string(const validation_callback_source& source);
 
     /**
-     * @brief The debug callback function, this function passes a severity (info, warning, error, etc), a source (API validation or implementation message), the message, and some user data that can be set in the validation_callback_desc.
+     * @brief The validation callback function.
+     * The callback passes numerous parameters which help classify the message's severity and source. It also passes the userData pointer that was initially passed in validation_callback_desc.
     */
     using validation_callback = void(
         const validation_callback_severity& severity,
@@ -95,15 +104,15 @@ namespace LLRI_NAMESPACE
      * @brief The validation callback allows the user to subscribe to validation messages so that they can write the message into their own logging system.
      *
      * The callback contains contextual information about the message, like for example its severity.
-     * The callback may be used for both API validation and implementation validation. The callback will poll messages from the implementation (e.g. Vulkan's debug utils, and DirectX's info queue)
+     * The callback may be used for both API validation and implementation validation, each message's source is indicated through the validation_callback_source enum.
      *
-     * Implementation messages only occur if api_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some APIs might still output messages (Vulkan tends to print to the console, whereas DirectX tends to print to the "Output" window in Visual Studio).
+     * @note Implementation messages only occur if api_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some implementations might still output messages (Vulkan tends to print to stdout, whereas DirectX tends to print to the "Output" window in Visual Studio).
     */
     struct validation_callback_desc
     {
         /**
-         * @brief The callback, the function passed must conform to the FnValidationCallback definition.
-         * This value CAN be nullptr, in which case no validation messages will be sent.
+         * @brief The callback, the function passed must conform to the validation_callback definition.
+         * You **may** set this value to nullptr, in which case no validation messages will be sent.
         */
         validation_callback* callback;
         /**
@@ -111,10 +120,12 @@ namespace LLRI_NAMESPACE
         */
         void* userData;
 
+#ifndef DOXY_EXCLUDE
         /**
          * @brief Convenience operator used internally to call the callback.
         */
         void operator ()(const validation_callback_severity& severity, const validation_callback_source& source, const char* message) const { callback(severity, source, message, userData); }
+#endif
     };
 
     /**
