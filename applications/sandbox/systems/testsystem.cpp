@@ -1,4 +1,10 @@
 /**
+ * @file testsystem.cpp
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
+/**
  * Sandbox is a testing area for LLRI development.
  * The code written in sandbox should be up to spec but may not contain the best practices or cleanest examples.
  *
@@ -7,8 +13,8 @@
 
 #include "testsystem.hpp"
 
-//#define LLRI_DISABLE_VALIDATION //uncommenting this disables internal validation (see docs)
-//#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING //uncommenting this disables internal API message polling
+//#define LLRI_DISABLE_VALIDATION //uncommenting this disables API validation (see docs)
+//#define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING //uncommenting this disables implementation message polling
 #include <llri/llri.hpp>
 
 void callback(const llri::validation_callback_severity& severity, const llri::validation_callback_source& source, const char* message, void* userData)
@@ -43,8 +49,8 @@ void TestSystem::setup()
 
     //Select Instance Extensions
     std::vector<llri::instance_extension> instanceExtensions;
-    if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::APIValidation))
-        instanceExtensions.emplace_back(llri::instance_extension_type::APIValidation, llri::api_validation_ext { true });
+    if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::DriverValidation))
+        instanceExtensions.emplace_back(llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { true });
     if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation))
         instanceExtensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true });
 

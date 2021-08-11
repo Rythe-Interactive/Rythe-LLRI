@@ -1,3 +1,9 @@
+/**
+ * @file adapter.inl
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #pragma once
 #include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
 
@@ -36,7 +42,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryInfo(info);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -61,7 +67,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryFeatures(features);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -86,7 +92,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryExtensionSupport(type, supported);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;

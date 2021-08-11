@@ -1,3 +1,9 @@
+/**
+ * @file instance.inl
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #pragma once
 #include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
 
@@ -28,8 +34,8 @@ namespace LLRI_NAMESPACE
         {
         case validation_callback_source::Validation:
             return "Validation";
-        case validation_callback_source::InternalAPI:
-            return "InternalAPI";
+        case validation_callback_source::Implementation:
+            return "Implementation";
         }
 
         return "Invalid validation_callback_source value";
@@ -39,8 +45,8 @@ namespace LLRI_NAMESPACE
     {
         switch (result)
         {
-        case instance_extension_type::APIValidation:
-            return "APIValidation";
+        case instance_extension_type::DriverValidation:
+            return "DriverValidation";
         case instance_extension_type::GPUValidation:
             return "GPUValidation";
         }
@@ -76,7 +82,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = detail::impl_createInstance(desc, instance, true);
         if (*instance)
             detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
@@ -102,7 +108,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
         return r;
@@ -144,7 +150,7 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_createDevice(desc, device);
         if (*device)
             detail::impl_pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
@@ -158,7 +164,7 @@ namespace LLRI_NAMESPACE
     {
         impl_destroyDevice(device);
 
-#ifndef LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         //Can't use device messenger here because the device is destroyed
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
 #endif

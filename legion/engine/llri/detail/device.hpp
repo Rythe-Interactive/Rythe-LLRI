@@ -1,3 +1,9 @@
+/**
+ * @file device.hpp
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #pragma once
 //detail includes should be kept to a minimum but
 //are allowed as long as dependencies are upwards (e.g. device may include adapter but not vice versa)
@@ -16,7 +22,7 @@ namespace LLRI_NAMESPACE
         Adapter* adapter;
         /**
          * @brief The enabled adapter features.
-         * You should only enable features that you'll need because enabling features can disable driver optimizations.
+         * It is **recommended** to only enable features that will be used because unused enabled features might disable driver optimizations.
         */
         adapter_features features;
         /**
@@ -24,14 +30,14 @@ namespace LLRI_NAMESPACE
         */
         uint32_t numExtensions;
         /**
-         * @brief The device extensions, if device_desc::numExtensions > 0, then this has to be a valid pointer to an array of DeviceExtension.
-         * If numExtensions == 0, then this pointer may be nullptr.
+         * @brief The adapter extensions, if device_desc::numExtensions > 0, then this **must** be a valid pointer to an array of adapter_extension.
+         * If device_desc::numExtensions == 0, then this pointer **may** be nullptr.
         */
         adapter_extension* extensions;
     };
 
     /**
-     * @brief A device is a virtual representation of an adapter and can create/destroy resources for the said adapter.
+     * @brief A Device is a virtual representation of an Adapter and can create/destroy/allocate/query resources for the said Adapter.
      */
     class Device
     {

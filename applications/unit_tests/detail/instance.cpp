@@ -1,3 +1,9 @@
+/**
+ * @file instance.cpp
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
 
@@ -29,7 +35,7 @@ TEST_SUITE("Instance")
 
         SUBCASE("[Correct usage] numExtensions > 0 && extensions != nullptr")
         {
-            llri::instance_extension extension{ llri::instance_extension_type::APIValidation, llri::api_validation_ext { false } };
+            llri::instance_extension extension{ llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { false } };
             desc.numExtensions = 1;
             desc.extensions = &extension;
 
@@ -39,7 +45,7 @@ TEST_SUITE("Instance")
         
         SUBCASE("[Incorrect usage] invalid extension type")
         {
-            llri::instance_extension extension{ (llri::instance_extension_type)UINT_MAX, llri::api_validation_ext { false } };
+            llri::instance_extension extension{ (llri::instance_extension_type)UINT_MAX, llri::driver_validation_ext { false } };
 
             desc.numExtensions = 1;
             desc.extensions = &extension;

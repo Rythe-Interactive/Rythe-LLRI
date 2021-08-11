@@ -1,3 +1,9 @@
+/**
+ * @file source.cpp
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #ifdef NDEBUG
 //Validation can be an incredibly useful tool, but runtime checks don't come without a performance cost.
 //To prevent validation from causing overhead on builds, you can #define LLRI_DISABLE_VALIDATION.
@@ -29,7 +35,7 @@ int main()
     };
 
     //We're intentionally misusing the API here to display the validation layer's effects
-    //if LLRI_DISABLE_VALIDATION is defined, this usage will likely crash internally
+    //if LLRI_DISABLE_VALIDATION is defined, this usage will likely cause an internal crash.
     std::cout << "The next LLRI function call will output a validation error because we passed an incorrect parameter\n";
     const llri::result r = llri::createInstance(instanceDesc, nullptr); //passing nullptr to createInstance()
     std::cout << "Instance create result: " << to_string(r) << "\n";

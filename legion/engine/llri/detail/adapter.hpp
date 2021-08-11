@@ -1,3 +1,9 @@
+/**
+ * @file adapter.hpp
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #pragma once
 //detail includes should be kept to a minimum but
 //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
@@ -8,13 +14,13 @@ namespace LLRI_NAMESPACE
     enum struct adapter_extension_type;
 
     /**
-     * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it may correlate with performance or the availability of various features.
+     * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
     */
     enum struct adapter_type
     {
         /**
          * @brief The device type is not recognized as any of the other available types.
-         * This may for example be an APU, or a different form of Vulkan supported processing unit.
+         * This may for example be an APU, or a different form of supported processing unit.
         */
         Other,
         /**
@@ -23,7 +29,7 @@ namespace LLRI_NAMESPACE
         */
         Integrated,
         /**
-         * @brief Separate GPU, usually connected to the host system through PCIE connectors.
+         * @brief Separate GPU, usually connected to the host system through PCIe connectors.
         */
         Discrete,
         /**
@@ -37,22 +43,22 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts an adapter_type to a string to aid in debug logging.
+     * @brief Converts an adapter_type to a string.
+     * @return The enum value as a string, or "Invalid adapter_type value" if the value was not recognized as an enum member.
     */
     constexpr const char* to_string(const adapter_type& type);
 
     /**
      * @brief Basic information about an adapter.
-     * This information is for informative purposes only and the results aren't guaranteed to be the same across APIs.
      */
     struct adapter_info
     {
         /**
-         * @brief The unique ID of the hardware vendor (e.g. NVIDIA, Intel or AMD).
+         * @brief The unique ID of the hardware vendor. This ID is guaranteed to be the same for all adapters from a given vendor.
         */
         uint32_t vendorId;
         /**
-         * @brief The ID of the adapter. This ID refers to the product type/version, meaning that if multiple of the same kind of adapters are present, this ID will be the same among them.
+         * @brief The ID of the adapter. This ID refers to the product type/version, meaning that if multiple of the same kind of adapters were to be present, this ID would be the same among all of them.
         */
         uint32_t adapterId;
         /**
@@ -60,7 +66,7 @@ namespace LLRI_NAMESPACE
         */
         std::string adapterName;
         /**
-         * @brief An informational value describing the type of Adapter. The type does not directly affect how the related adapter operates, but it may correlate with the availability of various features.
+         * @brief An informational value describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with the availability of various features.
         */
         adapter_type adapterType;
     };
@@ -76,7 +82,7 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief A compatible adapter (GPU, APU, IGPU, etc.).
+     * @brief Represents a compatible adapter (GPU, APU, IGPU, etc.).
      * This handle is created and owned by the Instance, the user is not responsible for destroying it.
     */
     class Adapter
@@ -87,25 +93,29 @@ namespace LLRI_NAMESPACE
 
     public:
         /**
-         * @brief Get basic information about the Adapter. Do note that this information should be for informative purposes only and the results aren't guaranteed to be the same across APIs.
-         * @return Success upon correct execution of the operation.
+         * @brief Query basic information about the Adapter.
+         * @param info A pointer to the adapter_info structure that needs to be filled.
+         *
          * @return ErrorInvalidUsage if info is nullptr.
          * @return ErrorDeviceLost If the adapter was removed or lost.
         */
         result queryInfo(adapter_info* info) const;
 
         /**
-         * @brief Get a structure with all supported driver/hardware features.
+         * @brief Query a structure with all supported driver/hardware features.
+         * @param features A pointer to the adapter_features structure that needs to be filled.
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if features is nullptr.
-         * @return ErrorIncompatibleDriver if the Adapter doesn't support the backend's requested API (either Vulkan 1.0 or DirectX 12 depending on the build).
+         * @return ErrorIncompatibleDriver if the Adapter doesn't support the implementation's requested graphics API.
          * @return ErrorDeviceLost If the adapter was removed or lost.
         */
         result queryFeatures(adapter_features* features) const;
 
         /**
-         * @brief Get the support of a given adapter extension.
+         * @brief Query the support of a given adapter extension.
+         * @param type The type of adapter extension to check against.
+         * @param supported A pointer to the boolean that describes if the extension is supported.
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage If supported is nullptr.

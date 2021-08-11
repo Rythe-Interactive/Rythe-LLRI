@@ -1,3 +1,9 @@
+/**
+ * @file instance.cpp
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
@@ -49,7 +55,7 @@ namespace LLRI_NAMESPACE
 
             desc->callback(
                 mapSeverity(severity),
-                validation_callback_source::InternalAPI,
+                validation_callback_source::Implementation,
                 callbackData->pMessage,
                 desc->userData
             );
@@ -62,7 +68,7 @@ namespace LLRI_NAMESPACE
 
     namespace detail
     {
-        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableInternalAPIMessagePolling)
+        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling)
         {
             internal::lazyInitializeVolk();
 
@@ -82,9 +88,9 @@ namespace LLRI_NAMESPACE
                 auto& extension = desc.extensions[i];
                 switch (extension.type)
                 {
-                case instance_extension_type::APIValidation:
+                case instance_extension_type::DriverValidation:
                 {
-                    if (extension.apiValidation.enable)
+                    if (extension.driverValidation.enable)
                         layers.push_back("VK_LAYER_KHRONOS_validation");
                     break;
                 }
@@ -115,11 +121,11 @@ namespace LLRI_NAMESPACE
             //Add the debug utils extension for the API callback
             result->m_shouldConstructValidationCallbackMessenger = false;
             result->m_validationCallbackMessenger = nullptr;
-            if (enableInternalAPIMessagePolling && desc.callbackDesc.callback)
+            if (enableImplementationMessagePolling && desc.callbackDesc.callback)
             {
                 const auto& available = internal::queryAvailableExtensions();
                 //Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
-                //so instead the check is implicit, internal API callbacks aren't guaranteed
+                //so instead the check is implicit, implementation callbacks aren't guaranteed
                 if (available.find(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) != available.end())
                 {
                     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);

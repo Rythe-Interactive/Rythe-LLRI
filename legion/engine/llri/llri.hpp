@@ -1,3 +1,9 @@
+/**
+ * @file llri.hpp
+ * @copyright 2021-2021 Leon Brands. All rights served.
+ * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ */
+
 #pragma once
 #include <cstdint>
 #include <map>
@@ -8,63 +14,80 @@
 /**
  * @def LLRI_DISABLE_VALIDATION
  * @brief Defining LLRI_DISABLE_VALIDATION disables all LLRI validation.
- * This applies to all validation done by LLRI (not internal API validation), such as nullptr checks on parameters.
- * Disabling LLRI validation may cause API runtime errors if incorrect parameters are passed, but the reduced checks could improve performance.
+ * This applies to all validation done by the LLRI API (not the implementation), such as nullptr checks on parameters.
  *
- * Disabling LLRI validation will also mean that LLRI will not return ErrorInvalidUsage and ErrorDeviceLost where it normally would if incorrect parameters are passed, but the internal API may still return these codes if it fails to operate.
+ * @note Disabling LLRI validation **may** cause API or implementation runtime errors if incorrect parameters are passed, but the reduced checks could improve performance.
+ * @note Disabling LLRI validation means that LLRI **will not** return result::ErrorInvalidUsage and result::ErrorDeviceLost where it normally would if incorrect parameters are passed, but the implementation **may** still return these codes if it fails to operate.
  */
 #define LLRI_DISABLE_VALIDATION
 
  /**
-  * @def LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
-  * @brief Defining LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING disables all internal API message polling.
-  * Internal API message polling can be costly and disabling it can help improve performance, but internal API messages will not be forwarded.
+  * @def LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+  * @brief Defining LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING disables all implementation message polling.
+  * Implementation message polling can be costly and disabling it could improve performance, but doing so causes implementation messages to not be forwarded to the validation callback.
+  *
+  * @note Disabling implementation message polling is not guaranteed to prevent implementations from sending messages through other means. Drivers often have their own way of forwarding messages and it's very possible that messages end up in stdout or visual studio's output window.
   */
-#define LLRI_DISABLE_INTERNAL_API_MESSAGE_POLLING
+#define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
 
 /**
  * @def LLRI_ENABLE_LEGION_NAMESPACING
- * @brief Defining LLRI_ENABLE_LEGION_NAMESPACING changes LLRI's namespace from llri:: to legion::graphics::llri.
+ * @brief Defining LLRI_ENABLE_LEGION_NAMESPACING changes LLRI's namespace from llri to legion::graphics::llri.
  */
 #define LLRI_ENABLE_LEGION_NAMESPACING
 #undef LLRI_ENABLE_LEGION_NAMESPACING //only defined for the doxygen comments
 #endif
 
 #if defined(LLRI_ENABLE_LEGION_NAMESPACING)
+/**
+ * @def LLRI_NAMESPACE
+ * @brief The LLRI namespace. This is usually set to "llri", but if LLRI_ENABLE_LEGION_NAMESPACING is defined then the namespace is "legion::graphics::llri".
+ */
 #define LLRI_NAMESPACE legion::graphics::llri
 #else
+/**
+ * @def LLRI_NAMESPACE
+ * @brief The LLRI namespace. This is usually set to "llri", but if LLRI_ENABLE_LEGION_NAMESPACING is defined then the namespace is "legion::graphics::llri".
+ */
 #define LLRI_NAMESPACE llri
 #endif
 
 namespace LLRI_NAMESPACE
 {
     /**
-     * @brief Informative result values for llri operations.
+     * @brief Result codes for LLRI operations.
+     * 
+     * 
+     * Most LLRI operations return result codes. These result codes provide information about the operation's execution status.
+     * Operations that execute properly **can** return result::Success, but they **may** return any of the other non-error result codes.
+     * If an operation fails, it **must** return a failing result value, which **may** be result::ErrorUnknown or a more specific appropriate failing result value.
+     * 
+     * @note Codes prefixed with "Error" imply that the operation failed fatally. This **may** mean that further action to recover the application's state is required by the user.
      *
-     * Operations that execute properly will return result::Success, or if they fail they will pick the appropriate failing result value. Note that some result values are prefixed with "Error", implying that their result value was fatal and can not be recovered from. Failures without the "Error" prefix are often soft failures that might for example be caused by user-defined timeouts.
+     * @note Result codes may not provide enough information, so consider using the validation callback to get additional information.
     */
     enum struct result
     {
         /**
-         * @brief The function executed properly.
+         * @brief The operation executed properly.
         */
         Success = 0,
         /**
-         * @brief The function's execution time exceeded a user-defined timeout.
+         * @brief The operation's execution time exceeded a user-defined timeout.
         */
         Timeout,
         /**
-         * @brief A fence or query has not yet completed.
+         * @brief A fence has not yet completed.
         */
         NotReady,
         /**
-         * @brief This error is caused by improper error mapping by the LLRI implementation, and should under normal circumstances never occur.
-         * If this value is returned, it is likely caused by a bug in the API. Consider contacting the authors for more information.
+         * @brief The operation failed fatally, but no error was specified.
+         * The implementation **may** return this value if it can't map an error code to an LLRI result code.
         */
         ErrorUnknown,
         /**
          * @brief The usage of the operation was invalid.
-         * This is usually due to incorrect API usage.
+         * LLRI validation returns this result code whenever its validation fails, but implementations **can** return the code too.
         */
         ErrorInvalidUsage,
         /**
@@ -80,18 +103,18 @@ namespace LLRI_NAMESPACE
         */
         ErrorDeviceHung,
         /**
-         * @brief A device may be lost after invalid API usage causes fatal errors that the device can not recover from.
-         * The device immediately becomes invalid and must be destroyed and recreated.
+         * @brief A device **may** be lost after invalid API usage causes fatal errors that the device can not recover from.
+         * The device becomes invalid and must be destroyed and recreated.
          *
-         * After a device loss, the application must reiterate over available Adapters as the previously used Adapter may have become invalid.
+         * After a device loss, the application **should** reiterate over available Adapters as the previously used Adapter **may** have become invalid.
         */
         ErrorDeviceLost,
         /**
-         * @brief The video card has been physically removed from the system. The device immediately becomes invalid and must be destroyed and recreated. For this, the application must reiterate over available Adapters as the previously used Adapter has become invalid.
+         * @brief The video card has been physically removed from the system. The device becomes invalid and must be destroyed and recreated. For this, the application **should** reiterate over available Adapters as the previously used Adapter **may** have become invalid.
         */
         ErrorDeviceRemoved,
         /**
-         * @brief An internal driver error was thrown. After this, the device will be put into the device lost state and will become invalid. See ErrorDeviceLost for more information on device loss.
+         * @brief A driver error occurred. After this, the device will be put into the device lost state and will become invalid. See result::ErrorDeviceLost for more information on device loss.
         */
         ErrorDriverFailure,
         /**
@@ -103,11 +126,11 @@ namespace LLRI_NAMESPACE
         */
         ErrorOutOfDeviceMemory,
         /**
-         * @brief Initialization of an object failed because of internal or implementation specific reasons.
+         * @brief Initialization of an object failed because of implementation specific reasons.
         */
         ErrorInitializationFailed,
         /**
-         * @brief The requested internal API version (DirectX, Vulkan, etc.) is not supported by the driver.
+         * @brief The implementation is not supported by the driver.
         */
         ErrorIncompatibleDriver,
         /**
@@ -117,10 +140,13 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts a result to a string to aid in debug logging.
+     * @brief Converts a result to a string.
+     * @return The enum value as a string, or "Invalid result value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(const result& result);
+    constexpr const char* to_string(const result& r);
 }
+
+// ReSharper disable CppUnusedIncludeDirective
 
 #include <llri/detail/instance.hpp>
 #include <llri/detail/instance_extensions.hpp>
@@ -130,5 +156,4 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/device.hpp>
 
-// ReSharper disable once CppUnusedIncludeDirective
 #include <llri/detail/llri.inl>
