@@ -65,7 +65,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief The type of instance extension.
          *
-         * As instance extensions must be passed in an array, they need some way of storing varying data contiguously. instance_extensions do so through an unnamed union. When llri::createInstance() attempts to implement the extension, it uses this enum value to determine which union member to pick from.
+         * As instance extensions must be passed in an array, they need some way of storing varying data contiguously. instance_extensions do so through an unnamed union. When createInstance() attempts to implement the extension, it uses this enum value to determine which union member to pick from.
          *
          * @note Accessing incorrect union members is UB, so the union member set **must** match with the instance_extension_type passed.
         */
