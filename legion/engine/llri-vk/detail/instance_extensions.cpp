@@ -11,7 +11,7 @@ namespace LLRI_NAMESPACE
 {
     namespace detail
     {
-        [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type)
+        [[nodiscard]] bool queryInstanceExtensionSupport(instance_extension_type type)
         {
             internal::lazyInitializeVolk();
 

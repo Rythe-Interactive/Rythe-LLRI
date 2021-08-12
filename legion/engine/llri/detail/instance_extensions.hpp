@@ -5,6 +5,7 @@
  */
 
 #pragma once
+#include <cstdint>
 
 namespace LLRI_NAMESPACE
 {
@@ -13,7 +14,7 @@ namespace LLRI_NAMESPACE
      *
      * The support for each available instance_extension is fully **optional** (hence their name, extension), so it is **recommended** to use this enum with queryInstanceExtensionSupport() to find out if a desired extension is available prior to adding the extension to the instance_desc's extensions array.
     */
-    enum struct instance_extension_type
+    enum struct instance_extension_type : uint8_t
     {
         /**
          * @brief Validate operations on a driver level. Driver validation often does additional parameter and context checks for the implementation's operations.
@@ -33,7 +34,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a instance_extension_type to a string.
      * @return The enum value as a string, or "Invalid instance_extension_type value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(const instance_extension_type& result);
+    constexpr const char* to_string(instance_extension_type type);
 
     /**
      * @brief Enable or disable driver validation.
@@ -87,13 +88,13 @@ namespace LLRI_NAMESPACE
         };
 
         instance_extension() = default;
-        instance_extension(const instance_extension_type& type, const driver_validation_ext& ext) : type(type), driverValidation(ext) { }
-        instance_extension(const instance_extension_type& type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
+        instance_extension(instance_extension_type type, const driver_validation_ext& ext) : type(type), driverValidation(ext) { }
+        instance_extension(instance_extension_type type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
     };
 
     namespace detail
     {
-        [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type);
+        [[nodiscard]] bool queryInstanceExtensionSupport(instance_extension_type type);
     }
 
     /**
@@ -102,5 +103,5 @@ namespace LLRI_NAMESPACE
      *
      * @return true if the extension is supported, and false if it isn't.
      */
-    [[nodiscard]] bool queryInstanceExtensionSupport(const instance_extension_type& type);
+    [[nodiscard]] bool queryInstanceExtensionSupport(instance_extension_type type);
 }

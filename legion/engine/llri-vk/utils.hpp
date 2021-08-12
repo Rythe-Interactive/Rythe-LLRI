@@ -36,7 +36,7 @@ namespace LLRI_NAMESPACE
         */
         const extension_map& queryAvailableExtensions();
 
-        result mapVkResult(const VkResult& result);
+        result mapVkResult(VkResult result);
 
         unsigned long long nameHash(std::string name);
     }

@@ -66,7 +66,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Helper function that converts vk::Result to llri::result
         */
-        result mapVkResult(const VkResult& result)
+        result mapVkResult(VkResult result)
         {
             switch (result)
             {

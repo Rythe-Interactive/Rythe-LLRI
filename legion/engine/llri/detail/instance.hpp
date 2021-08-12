@@ -11,7 +11,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    enum struct result;
+    enum struct result : uint8_t;
     struct instance_extension;
     class Instance;
     class Adapter;
@@ -23,7 +23,7 @@ namespace LLRI_NAMESPACE
      * @brief Describes the severity of a callback message.
      * @note validation_callback_severity is meant to be used for message filtering, and has no binding impact on the implementation's behaviour.
     */
-    enum struct validation_callback_severity
+    enum struct validation_callback_severity : uint8_t
     {
         /**
          * @brief Extra, often excessive information about API calls, diagnostics, support, etc.
@@ -55,12 +55,12 @@ namespace LLRI_NAMESPACE
      * @brief Converts a validation_callback_severity to a string.
      * @return The enum value as a string, or "Invalid validation_callback_severity value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(const validation_callback_severity& severity);
+    constexpr const char* to_string(validation_callback_severity severity);
 
     /**
      * @brief Describes the source of the validation callback message.
     */
-    enum struct validation_callback_source
+    enum struct validation_callback_source : uint8_t
     {
         /**
          * @brief The message came from the LLRI API.
@@ -86,15 +86,15 @@ namespace LLRI_NAMESPACE
      * @brief Converts a validation_callback_source to a string.
      * @return The enum value as a string, or "Invalid validation_callback_source value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(const validation_callback_source& source);
+    constexpr const char* to_string(validation_callback_source source);
 
     /**
      * @brief The validation callback function.
      * The callback passes numerous parameters which help classify the message's severity and source. It also passes the userData pointer that was initially passed in validation_callback_desc.
     */
     using validation_callback = void(
-        const validation_callback_severity& severity,
-        const validation_callback_source& source,
+        validation_callback_severity severity,
+        validation_callback_source source,
         const char* message,
         void* userData
         );
@@ -123,7 +123,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Convenience operator used internally to call the callback.
         */
-        void operator ()(const validation_callback_severity& severity, const validation_callback_source& source, const char* message) const { callback(severity, source, message, userData); }
+        void operator ()(validation_callback_severity severity, validation_callback_source source, const char* message) const { callback(severity, source, message, userData); }
 #endif
     };
 
@@ -157,7 +157,7 @@ namespace LLRI_NAMESPACE
     */
     namespace detail
     {
-        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling);
+        result impl_createInstance(const instance_desc& desc, Instance** instance, bool enableImplementationMessagePolling);
         void impl_destroyInstance(Instance* instance);
 
         using messenger_type = void;
@@ -197,7 +197,7 @@ namespace LLRI_NAMESPACE
     */
     class Instance
     {
-        friend result detail::impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling);
+        friend result detail::impl_createInstance(const instance_desc& desc, Instance** instance, bool enableImplementationMessagePolling);
         friend void detail::impl_destroyInstance(Instance* instance);
 
         friend result llri::createInstance(const instance_desc& desc, Instance** instance);

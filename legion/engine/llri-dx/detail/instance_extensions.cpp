@@ -11,7 +11,7 @@ namespace LLRI_NAMESPACE
 {
     namespace detail
     {
-        bool queryInstanceExtensionSupport(const instance_extension_type& type)
+        bool queryInstanceExtensionSupport(instance_extension_type type)
         {
             directx::lazyInitializeDirectX();
 

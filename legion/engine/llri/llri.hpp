@@ -66,7 +66,7 @@ namespace LLRI_NAMESPACE
      *
      * @note Result codes may not provide enough information, so consider using the validation callback to get additional information.
     */
-    enum struct result
+    enum struct result : uint8_t
     {
         /**
          * @brief The operation executed properly.
@@ -143,7 +143,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a result to a string.
      * @return The enum value as a string, or "Invalid result value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(const result& r);
+    constexpr const char* to_string(result r);
 }
 
 // ReSharper disable CppUnusedIncludeDirective

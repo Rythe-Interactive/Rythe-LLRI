@@ -14,9 +14,9 @@ namespace LLRI_NAMESPACE
         result createDriverValidationEXT(const driver_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
 
-        result mapHRESULT(const HRESULT& value);
+        result mapHRESULT(HRESULT value);
 
-        void dummyValidationCallback(const validation_callback_severity&, const validation_callback_source&, const char*, void*) { }
+        void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
 
         validation_callback_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
         {
@@ -40,7 +40,7 @@ namespace LLRI_NAMESPACE
 
     namespace detail
     {
-        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling)
+        result impl_createInstance(const instance_desc& desc, Instance** instance, bool enableImplementationMessagePolling)
         {
             directx::lazyInitializeDirectX();
 

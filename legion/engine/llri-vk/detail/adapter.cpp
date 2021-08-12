@@ -12,7 +12,7 @@ namespace LLRI_NAMESPACE
 {
     namespace internal
     {
-        constexpr adapter_type mapPhysicalDeviceType(const VkPhysicalDeviceType& type)
+        constexpr adapter_type mapPhysicalDeviceType(VkPhysicalDeviceType type)
         {
             switch (type)
             {
@@ -59,7 +59,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    result Adapter::impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
+    result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
         *supported = false;
 

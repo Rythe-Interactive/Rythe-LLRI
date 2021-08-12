@@ -15,7 +15,7 @@
 #include <llri/llri.hpp>
 #include <iostream>
 
-void callback(const llri::validation_callback_severity& severity, const llri::validation_callback_source& source, const char* message, void* userData)
+void callback(llri::validation_callback_severity severity, llri::validation_callback_source source, const char* message, void* userData)
 {
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
 }

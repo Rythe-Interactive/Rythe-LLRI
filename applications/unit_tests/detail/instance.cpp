@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
 
-void dummyCallback(const llri::validation_callback_severity& sev, const llri::validation_callback_source& src, const char* message, void* userData)
+void dummyCallback(llri::validation_callback_severity sev, llri::validation_callback_source src, const char* message, void* userData)
 {
     //Empty
 }
