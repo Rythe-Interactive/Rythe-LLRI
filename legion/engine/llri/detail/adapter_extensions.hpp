@@ -5,6 +5,7 @@
  */
 
 #pragma once
+#include <cstdint>
 
 namespace LLRI_NAMESPACE
 {
@@ -13,7 +14,7 @@ namespace LLRI_NAMESPACE
      *
      * The support of individual adapter extensions is fully **optional** and often depends on hardware limitations, so this enum **should** be used with Adapter::queryExtensionSupport() to find out if an extension is available prior to adding the extension to the device_desc extension array.
     */
-    enum struct adapter_extension_type
+    enum struct adapter_extension_type : uint8_t
     {
         /**
          * @brief The highest value in this enum.
@@ -25,7 +26,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a adapter_extension_type to a string.
      * @return The enum value as a string, or "Invalid adapter_extension_type value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(const adapter_extension_type& type)
+    constexpr const char* to_string(adapter_extension_type type)
     {
         switch (type)
         {

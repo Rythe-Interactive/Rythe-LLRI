@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr inline const char* to_string(const validation_callback_severity& severity)
+    constexpr inline const char* to_string(validation_callback_severity severity)
     {
         switch (severity)
         {
@@ -28,7 +28,7 @@ namespace LLRI_NAMESPACE
         return "Invalid validation_callback_severity value";
     }
 
-    constexpr inline const char* to_string(const validation_callback_source& source)
+    constexpr inline const char* to_string(validation_callback_source source)
     {
         switch (source)
         {
@@ -41,9 +41,9 @@ namespace LLRI_NAMESPACE
         return "Invalid validation_callback_source value";
     }
 
-    constexpr inline const char* to_string(const instance_extension_type& result)
+    constexpr inline const char* to_string(instance_extension_type type)
     {
-        switch (result)
+        switch (type)
         {
         case instance_extension_type::DriverValidation:
             return "DriverValidation";
@@ -54,7 +54,7 @@ namespace LLRI_NAMESPACE
         return "Invalid instance_extension_type value";
     }
 
-    [[nodiscard]] inline bool queryInstanceExtensionSupport(const instance_extension_type& type)
+    [[nodiscard]] inline bool queryInstanceExtensionSupport(instance_extension_type type)
     {
         return detail::queryInstanceExtensionSupport(type);
     }

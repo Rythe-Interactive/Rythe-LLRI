@@ -14,7 +14,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Function that maps an HRESULT to an llri::result.
         */
-        result mapHRESULT(const HRESULT& value)
+        result mapHRESULT(HRESULT value)
         {
             switch (HRESULT_CODE(value))
             {

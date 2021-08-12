@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr inline const char* to_string(const adapter_type& type)
+    constexpr inline const char* to_string(adapter_type type)
     {
         switch (type)
         {
@@ -76,7 +76,7 @@ namespace LLRI_NAMESPACE
 #endif
     }
 
-    inline result Adapter::queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
+    inline result Adapter::queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
 #ifndef LLRI_DISABLE_VALIDATION
         if (supported == nullptr)
