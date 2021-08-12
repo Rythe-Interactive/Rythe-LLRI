@@ -1,0 +1,17 @@
+### venv ###
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+
+# Ignore local build files
+xml/
+build/
+source/api/
+__pycache__/
