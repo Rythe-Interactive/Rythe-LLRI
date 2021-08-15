@@ -11,6 +11,13 @@
  * @file testsystem.hpp
  */
 
+namespace llri {
+    class Instance;
+    class Adapter;
+    class Device;
+    class Queue;
+}
+
 /**@class TestSystem
  * @brief Custom system.
  */
@@ -24,4 +31,17 @@ public:
     /**@brief Default process marked in setup to run as fast as possible on the "Update" interval.
      */
     void update(lgn::time::span deltaTime);
+
+private:
+    llri::Instance* m_instance = nullptr;
+    llri::Adapter* m_adapter = nullptr;
+    llri::Device* m_device = nullptr;
+
+    llri::Queue* m_graphicsQueue = nullptr;
+    llri::Queue* m_computeQueue = nullptr;
+    llri::Queue* m_transferQueue = nullptr;
+
+    void createInstance();
+    void selectAdapter();
+    void createDevice();
 };

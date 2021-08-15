@@ -154,6 +154,7 @@ namespace LLRI_NAMESPACE
 #include <llri/detail/adapter.hpp>
 #include <llri/detail/adapter_extensions.hpp>
 
+#include <llri/detail/queue.hpp>
 #include <llri/detail/device.hpp>
 
 #include <llri/detail/llri.inl>

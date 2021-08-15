@@ -14,6 +14,7 @@
 namespace LLRI_NAMESPACE
 {
     enum struct adapter_extension_type : uint8_t;
+    enum struct queue_type : uint8_t;
 
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
@@ -124,6 +125,20 @@ namespace LLRI_NAMESPACE
          * @return ErrorDeviceLost If the adapter was removed or lost.
          */
         result queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+
+        /**
+         * @brief Query the maximum number of available queues for a given queue type.
+         * @param type The type of queue.
+         * @param count A pointer to the uint variable describing the number of available queues.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage If count is nullptr.
+         * @return ErrorDeviceLost If the adapter was removed or lost.
+         *
+         * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
+        */
+        result queryQueueCount(queue_type type, uint8_t* count) const;
+
     private:
         //Force private constructor/deconstructor so that only instance can manage lifetime
         Adapter() = default;
@@ -136,5 +151,7 @@ namespace LLRI_NAMESPACE
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
         result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+
+        result impl_queryQueueCount(queue_type type, uint8_t* count) const;
     };
 }

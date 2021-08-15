@@ -64,6 +64,44 @@ namespace LLRI_NAMESPACE
         }
 
         void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
+
+        std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice)
+        {
+            std::map<queue_type, uint32_t> output
+            {
+                { queue_type::Graphics, 0 },
+                { queue_type::Compute, 0 },
+                { queue_type::Transfer, 0 }
+            };
+
+            //Get queue family info
+            uint32_t propertyCount;
+            vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, nullptr);
+            std::vector<VkQueueFamilyProperties> properties(propertyCount);
+            vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, properties.data());
+
+            for (uint32_t i = 0; i < propertyCount; i++)
+            {
+                auto& p = properties[i];
+
+                //Only the graphics queue has the graphics bit set
+                //it usually also has compute & transfer set, because graphics queue tends to be general purpose
+                if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
+                    output[queue_type::Graphics] = i;
+
+                //Dedicated compute family has no graphics bit but does have a compute bit
+                else if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 && (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == VK_QUEUE_COMPUTE_BIT)
+                    output[queue_type::Compute] = i;
+
+                //Dedicated transfer family has no graphics bit, no compute bit, but does have a transfer bit
+                else if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
+                    (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0 &&
+                    (p.queueFlags & VK_QUEUE_TRANSFER_BIT) == VK_QUEUE_TRANSFER_BIT)
+                    output[queue_type::Transfer] = i;
+            }
+
+            return output;
+        }
     }
 
     namespace detail
@@ -264,18 +302,44 @@ namespace LLRI_NAMESPACE
 
     result Instance::impl_createDevice(const device_desc& desc, Device** device) const
     {
-        Device* output = new Device();
+        auto* output = new Device();
         output->m_validationCallback = m_validationCallback;
 
-        std::vector<VkDeviceQueueCreateInfo> queues;
-        float queuePriorities = 1.0f;
+        //Queue creation
+        auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
+
+        std::vector<VkDeviceQueueCreateInfo> queues(desc.numQueues);
+        std::vector<float> priorities(desc.numQueues);
+        for (uint32_t i = 0; i < desc.numQueues; i++)
+        {
+            auto& queueDesc = desc.queues[i];
+
+            VkDeviceQueueCreateInfo ci { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {} };
+
+            switch(queueDesc.priority)
+            {
+                case queue_priority::Normal:
+                    priorities[i] = 0.5f;
+                    break;
+                case queue_priority::High:
+                    priorities[i] = 1.0f;
+                    break;
+            }
+
+            ci.queueCount = 1;
+            ci.pQueuePriorities = &priorities[i];
+            ci.queueFamilyIndex = families[queueDesc.type];
+
+            queues[i] = ci;
+        }
+
+        //Extensions
         std::vector<const char*> extensions;
+
+        //Features
         VkPhysicalDeviceFeatures features{};
 
-        //Assign default queue if no queues were selected by the API user //TODO: return invalid api use code when no queues are selected when the queue system is in place
-        if (queues.size() == 0)
-            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {}, 0, 1, &queuePriorities });
-
+        //Create device
         VkDeviceCreateInfo ci{
             VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
             nullptr,
@@ -295,9 +359,43 @@ namespace LLRI_NAMESPACE
         }
         output->m_ptr = vkDevice;
 
-        VolkDeviceTable* table = new VolkDeviceTable();
+        //Load function table
+        auto* table = new VolkDeviceTable();
         volkLoadDeviceTable(table, vkDevice);
         output->m_functionTable = table;
+
+        //Get created queues
+        std::map<queue_type, uint8_t> queueCounts {
+            { queue_type::Graphics, 0 },
+            { queue_type::Compute, 0 },
+            { queue_type::Transfer, 0 }
+        };
+
+        for (uint32_t i = 0; i < desc.numQueues; i++)
+        {
+            auto& queueDesc = desc.queues[i];
+
+            VkQueue vkQueue;
+            table->vkGetDeviceQueue(vkDevice, families[queueDesc.type], queueCounts[queueDesc.type], &vkQueue);
+
+            auto* queue = new Queue();
+            queue->m_ptr = vkQueue;
+
+            switch(queueDesc.type)
+            {
+                case queue_type::Graphics:
+                    output->m_graphicsQueues.push_back(queue);
+                    break;
+                case queue_type::Compute:
+                    output->m_computeQueues.push_back(queue);
+                    break;
+                case queue_type::Transfer:
+                    output->m_transferQueues.push_back(queue);
+                    break;
+            }
+
+            queueCounts[queueDesc.type]++;
+        }
 
         *device = output;
         return result::Success;
@@ -308,11 +406,24 @@ namespace LLRI_NAMESPACE
         if (!device)
             return;
 
+        //Cleanup queue wrappers
+        for (auto* graphics : device->m_graphicsQueues)
+            delete graphics;
+
+        for (auto* compute : device->m_computeQueues)
+            delete compute;
+        
+        for (auto* transfer : device->m_transferQueues)
+            delete transfer;
+
+        //Delete device
         if (device->m_ptr)
             static_cast<VolkDeviceTable*>(device->m_functionTable)->vkDestroyDevice(static_cast<VkDevice>(device->m_ptr), nullptr);
 
+        //Delete function table
         delete static_cast<VolkDeviceTable*>(device->m_functionTable);
 
+        //Delete device wrapper
         delete device;
     }
 }

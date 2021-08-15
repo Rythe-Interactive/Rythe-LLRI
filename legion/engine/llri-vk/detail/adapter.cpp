@@ -71,4 +71,58 @@ namespace LLRI_NAMESPACE
 
         return result::Success;
     }
+
+    result Adapter::impl_queryQueueCount(queue_type type, uint8_t* count) const
+    {
+        *count = 0;
+
+        //Get queue family info
+        uint32_t propertyCount;
+        vkGetPhysicalDeviceQueueFamilyProperties(static_cast<VkPhysicalDevice>(m_ptr), &propertyCount, nullptr);
+        std::vector<VkQueueFamilyProperties> properties(propertyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(static_cast<VkPhysicalDevice>(m_ptr), &propertyCount, properties.data());
+
+        for (auto p : properties)
+        {
+            switch(type)
+            {
+                case queue_type::Graphics:
+                {
+                    //Only the graphics queue has the graphics bit set
+                    //it usually also has compute & transfer set, because graphics queue tends to be general purpose
+                    if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
+                    {
+                        *count = static_cast<uint8_t>(p.queueCount);
+                        return result::Success;
+                    }
+                    break;
+                }
+                case queue_type::Compute:
+                {
+                    //Dedicated compute family has no graphics bit but does have a compute bit
+                    if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
+                        (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == VK_QUEUE_COMPUTE_BIT)
+                    {
+                        *count = static_cast<uint8_t>(p.queueCount);
+                        return result::Success;
+                    }
+                    break;
+                }
+                case queue_type::Transfer:
+                {
+                    //Dedicated transfer family has no graphics bit, no compute bit, but does have a transfer bit
+                    if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
+                        (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0 &&
+                        (p.queueFlags & VK_QUEUE_TRANSFER_BIT) == VK_QUEUE_TRANSFER_BIT)
+                    {
+                        *count = static_cast<uint8_t>(p.queueCount);
+                        return result::Success;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return result::Success;
+    }
 }

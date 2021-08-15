@@ -40,5 +40,11 @@
     <ClInclude Include="detail\llri.inl">
       <Filter>Header Files\detail</Filter>
     </ClInclude>
+    <ClInclude Include="detail\queue.inl">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\queue.hpp">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

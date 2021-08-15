@@ -128,7 +128,7 @@ namespace LLRI_NAMESPACE
 #endif
 
         //default device output to nullptr
-        * device = nullptr;
+        *device = nullptr;
 
 #ifndef LLRI_DISABLE_VALIDATION
         if (desc.adapter == nullptr)
@@ -147,6 +147,67 @@ namespace LLRI_NAMESPACE
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
+        }
+
+        if (desc.numQueues == 0)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because desc.numQueues is 0 but it must be at least 1.");
+            return result::ErrorInvalidUsage;
+        }
+
+        if (desc.queues == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because desc.queues is nullptr but it must be a valid pointer to an array of queue_desc of size desc.numQueues.");
+            return result::ErrorInvalidUsage;
+        }
+
+        //Get max queues
+        std::map<queue_type, uint8_t> maxQueueCounts {
+            { queue_type::Graphics, 0 },
+            { queue_type::Compute, 0 },
+            { queue_type::Transfer, 0 }
+        };
+        desc.adapter->queryQueueCount(queue_type::Graphics, &maxQueueCounts[queue_type::Graphics]);
+        desc.adapter->queryQueueCount(queue_type::Compute, &maxQueueCounts[queue_type::Compute]);
+        desc.adapter->queryQueueCount(queue_type::Transfer, &maxQueueCounts[queue_type::Transfer]);
+
+        //Validate all queue descs and their relation to max queue counts
+        std::map<queue_type, uint8_t> queueCounts {
+            { queue_type::Graphics, 0 },
+            { queue_type::Compute, 0 },
+            { queue_type::Transfer, 0 }
+        };
+        for (uint32_t i = 0; i < desc.numQueues; i++)
+        {
+            auto& queue = desc.queues[i];
+
+            //Queue type must be valid
+            if (queue.type > queue_type::MaxEnum)
+            {
+                const std::string msg = "Instance::createDevice() returned ErrorInvalidUsage because queue_desc[" + std::to_string(i) + "]::type " + std::to_string((uint8_t)queue.type) + " is not a valid queue type.";
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+                return result::ErrorInvalidUsage;
+            }
+
+            //Make sure that the requested number of queues of this given type aren't more than the max number of queues of that type.
+            queueCounts[queue.type]++;
+            if (queueCounts[queue.type] > maxQueueCounts[queue.type])
+            {
+                const std::string msg = "Instance::createDevice() returned ErrorInvalidUsage because queue_desc " + std::to_string(i) +
+                    " is the " + std::to_string(queueCounts[queue.type]) + "th " +
+                    to_string(queue.type) + " queue, even though the maximum number of queues of this type is " + std::to_string(maxQueueCounts[queue.type]) + ".";
+
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+                return result::ErrorInvalidUsage;
+            }
+
+            //Queue priority must be valid
+            if (queue.priority > queue_priority::MaxEnum)
+            {
+                const std::string msg = "Instance::createDevice() returned ErrorInvalidUsage because queue_desc[" + std::to_string(i) + "]::priority " + std::to_string((uint8_t)queue.priority) + " is not a valid priority value";
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+                return result::ErrorInvalidUsage;
+            }
         }
 #endif
 

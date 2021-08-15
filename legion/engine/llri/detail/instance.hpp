@@ -225,7 +225,14 @@ namespace LLRI_NAMESPACE
          * @param device A pointer to a device pointer variable. The pointer variable will be set to the resulting device upon successful execution.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
+         * @return ErrorInvalidUsage if device is nullptr.
+         * @return ErrorInvalidUsage if desc.adapter is nullptr.
+         * @return ErrorInvalidUsage if desc.numExtensions is more than 0 and desc.extensions is nullptr.
+         * @return ErrorInvalidUsage if desc.numQueues is less than 1.
+         * @return ErrorInvalidUsage if desc.queues is nullptr.
+         * @return ErrorInvalidUsage if more queues of a given type are requested than the maximum number of queues for that given type.
+         * @return ErrorInvalidUsage if any of the queue_desc's types were invalid.
+         * @return ErrorInvalidUsage if any of the queue_desc's priorities were invalid.
          * @return ErrorDeviceLost if the adapter was lost.
         */
         result createDevice(const device_desc& desc, Device** device) const;
