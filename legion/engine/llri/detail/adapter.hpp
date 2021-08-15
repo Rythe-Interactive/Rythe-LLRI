@@ -128,10 +128,11 @@ namespace LLRI_NAMESPACE
 
         /**
          * @brief Query the maximum number of available queues for a given queue type.
-         * @param type The type of queue.
+         * @param type The type of queue. This must be a valid queue_type value.
          * @param count A pointer to the uint variable describing the number of available queues.
          *
          * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage If type is not a valid queue_type value.
          * @return ErrorInvalidUsage If count is nullptr.
          * @return ErrorDeviceLost If the adapter was removed or lost.
          *

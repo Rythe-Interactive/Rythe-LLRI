@@ -110,6 +110,12 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
+        if (type > queue_type::MaxEnum)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrorInvalidUsage because the passed type parameter was not a valid queue_type value");
+            return result::ErrorInvalidUsage;
+        }
+
         if (m_ptr == nullptr)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrordeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");

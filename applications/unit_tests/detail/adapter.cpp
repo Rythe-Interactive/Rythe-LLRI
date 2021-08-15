@@ -82,6 +82,30 @@ TEST_CASE("Adapter")
                 //Reserved for future use
             }
         }
+
+        SUBCASE("Adapter::queryQueueCount()")
+        {
+            SUBCASE("[Incorrect usage] invalid queue_type value")
+            {
+                uint8_t count;
+                CHECK_EQ(adapter->queryQueueCount((llri::queue_type)UINT_MAX, &count), llri::result::ErrorInvalidUsage);
+            }
+
+            SUBCASE("[Incorrect usage] count == nullptr")
+            {
+                CHECK_EQ(adapter->queryQueueCount(llri::queue_type::Graphics, nullptr), llri::result::ErrorInvalidUsage);
+            }
+
+            SUBCASE("[Correct usage] type is a valid queue_type value and count != nullptr")
+            {
+                for (uint8_t type = 0; type < (uint8_t)llri::queue_type::MaxEnum; type++)
+                {
+                    uint8_t count;
+                    auto r = adapter->queryQueueCount((llri::queue_type)type, &count);
+                    CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
+                }
+            }
+        }
     }
 
     llri::destroyInstance(instance);
