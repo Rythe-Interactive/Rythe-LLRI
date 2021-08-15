@@ -44,5 +44,19 @@ LLRI is an explicit API. The user has immense control over resource allocation a
 To aid in debugging, LLRI does parameter validation by default (disabled by defining LLRI_DISABLE_API_VALIDATION), and also comes with extensions for implementation validation (implementation message polling is disabled by defining LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING). All validation messages (LLRI validation and implementation validation) are forwarded to the validation_callback passed in :struct:`llri::instance_desc`, making it easy for engines to generate informative logs or debug runtime issues.
 
 Threading
----------------- 
+----------------
 //TODO Write about CommandLists once they exist
+
+Multi-Adapter
+-------------
+Systems with multiple adapters can be utilized in two different ways in LLRI depending on their hardware configuration.
+
+Separate Adapters
+^^^^^^^^^^^^^^^^^
+When a system has multiple Adapters that do not share the same feature set, they **may** be used simultaneously through LLRI. Such adapters do not have any intrinsic connection, so they're listed separately in the adapter vector retrieved from :func:`llri::Instance::enumerateAdapters()`.
+
+To use separate Adapters simultaneously, a virtual :class:`llri::Device` **may** be created for each one of them, after which LLRI usage continues as normal. Resources allocated for devices **may not** be used interchangeably between devices unless if specified so explicitly (TODO: shared resources). 
+
+Linked Adapters
+^^^^^^^^^^^^^^^^^
+Adapters with very similar feature sets **may** support being physically linked together (NVIDIA SLI, AMD Crossfire). LLRI does not yet support this, and will currently only use the first of the linked adapters.
