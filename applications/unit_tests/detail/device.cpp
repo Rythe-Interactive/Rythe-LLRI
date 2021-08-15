@@ -89,10 +89,70 @@ TEST_SUITE("Device")
                 CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
             }
 
-            SUBCASE("[Correct usage] numQueues > 0 && extensions != nullptr")
+            SUBCASE("[Correct usage] numQueues > 0 && queues != nullptr")
             {
                 ddesc.numQueues = 1;
                 ddesc.queues = &queue;
+                auto r = instance->createDevice(ddesc, &device);
+                CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
+            }
+
+            SUBCASE("[Correct usage] high priority queue")
+            {
+                llri::queue_desc queueDesc { llri::queue_type::Graphics, llri::queue_priority::High };
+
+                ddesc.numQueues = 1;
+                ddesc.queues = &queueDesc;
+                auto r = instance->createDevice(ddesc, &device);
+                CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
+            }
+
+            SUBCASE("[Incorrect usage] invalid queue_type")
+            {
+                llri::queue_desc queueDesc { (llri::queue_type)UINT_MAX, llri::queue_priority::Normal };
+                ddesc.numQueues = 1;
+                ddesc.queues = &queueDesc;
+                CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
+            }
+
+            SUBCASE("[Incorrect usage] invalid queue_priority")
+            {
+                llri::queue_desc queueDesc { llri::queue_type::Graphics, (llri::queue_priority)UINT_MAX };
+                ddesc.numQueues = 1;
+                ddesc.queues = &queueDesc;
+                CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
+            }
+
+            SUBCASE("[Incorrect usage] more queues of a type than supported")
+            {
+                for (uint8_t type = 0; type < static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+                {
+                    //Get max number of queues
+                    uint8_t count;
+                    REQUIRE_EQ(adapter->queryQueueCount((llri::queue_type)type, &count), llri::result::Success);
+
+                    //Create more queues than supported
+                    std::vector<llri::queue_desc> queues(count + 1, llri::queue_desc{ static_cast<llri::queue_type>(type), llri::queue_priority::Normal });
+                    ddesc.numQueues = (uint32_t)queues.size();
+                    ddesc.queues = queues.data();
+
+                    //Should be invalid
+                    CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
+                }
+            }
+
+            SUBCASE("[Correct usage] maximum number of queues")
+            {
+                std::vector<llri::queue_desc> queues;
+
+                for (uint8_t type = 0; type < static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+                {
+                    queues.push_back(llri::queue_desc { static_cast<llri::queue_type>(type), llri::queue_priority::High });
+                }
+
+                ddesc.numQueues = static_cast<uint32_t>(queues.size());
+                ddesc.queues = queues.data();
+
                 auto r = instance->createDevice(ddesc, &device);
                 CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
             }

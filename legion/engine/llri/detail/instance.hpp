@@ -231,8 +231,8 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if desc.numQueues is less than 1.
          * @return ErrorInvalidUsage if desc.queues is nullptr.
          * @return ErrorInvalidUsage if more queues of a given type are requested than the maximum number of queues for that given type.
-         * @return ErrorInvalidUsage if any of the queue_desc's types were invalid.
-         * @return ErrorInvalidUsage if any of the queue_desc's priorities were invalid.
+         * @return ErrorInvalidUsage if any of the queue_desc's types was an invalid queue_type value.
+         * @return ErrorInvalidUsage if any of the queue_desc's priorities was an invalid queue_priority value.
          * @return ErrorDeviceLost if the adapter was lost.
         */
         result createDevice(const device_desc& desc, Device** device) const;
