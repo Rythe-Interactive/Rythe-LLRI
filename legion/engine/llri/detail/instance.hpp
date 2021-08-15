@@ -208,7 +208,7 @@ namespace LLRI_NAMESPACE
          * @brief Retrieve a vector of adapters available to this application. Adapters usually represent PCIe devices such as GPUs.
          *
          * Using this function, you can select one or more adapters for Device creation.
-         * The adapters returned by this function are individual adapters and are listed separately regardless of SLI/Crossfire/Multi-GPU configuration.
+         * The adapters returned by this function **may** represent one or more physical adapters depending on system hardware configuration. Hardware features like SLI/Crossfire cause adapters to be linked together and be listed as a single Adapter.
          *
          * @param adapters The vector to fill with available adapters. The vector is cleared at the start of the operation and is only filled if the operation succeeds.
          *
