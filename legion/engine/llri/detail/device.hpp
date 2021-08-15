@@ -70,9 +70,9 @@ namespace LLRI_NAMESPACE
          * @param queue A pointer to the resulting queue variable.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage If type is not a valid enum value
-         * @return ErrorInvalidUsage If index is more than the number of queues created of the given type
-         * @return ErrorInvalidUsage If queue is nullptr.
+         * @return ErrorInvalidUsage if type is not a valid enum value
+         * @return ErrorInvalidUsage if index is more than the number of queues created of the given type
+         * @return ErrorInvalidUsage if queue is nullptr.
          *
          * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
         */

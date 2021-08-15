@@ -177,7 +177,8 @@ namespace LLRI_NAMESPACE
      * @param instance Must be a valid pointer to an Instance pointer variable. Upon successful execution of the operation the pointer is set to the resulting instance object.
      *
      * @return Success upon correct execution of the operation.
-     * @return ErrorInvalidUsage if the instance is nullptr, or if desc.numExtensions > 0 and desc.extensions is nullptr.
+     * @return ErrorInvalidUsage if the instance is nullptr
+     * @return ErrorInvalidUsage if desc.numExtensions > 0 and desc.extensions is nullptr.
      * @return ErrorExtensionNotSupported if any of the extensions fail to be created.
      * @return Implementation defined result values: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
     */

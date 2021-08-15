@@ -100,7 +100,7 @@ namespace LLRI_NAMESPACE
          * @param info A pointer to the adapter_info structure that needs to be filled.
          *
          * @return ErrorInvalidUsage if info is nullptr.
-         * @return ErrorDeviceLost If the adapter was removed or lost.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
         */
         result queryInfo(adapter_info* info) const;
 
@@ -111,7 +111,7 @@ namespace LLRI_NAMESPACE
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if features is nullptr.
          * @return ErrorIncompatibleDriver if the Adapter doesn't support the implementation's requested graphics API.
-         * @return ErrorDeviceLost If the adapter was removed or lost.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
         */
         result queryFeatures(adapter_features* features) const;
 
@@ -121,8 +121,8 @@ namespace LLRI_NAMESPACE
          * @param supported A pointer to the boolean that describes if the extension is supported.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage If supported is nullptr.
-         * @return ErrorDeviceLost If the adapter was removed or lost.
+         * @return ErrorInvalidUsage if supported is nullptr.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
          */
         result queryExtensionSupport(adapter_extension_type type, bool* supported) const;
 
@@ -132,9 +132,9 @@ namespace LLRI_NAMESPACE
          * @param count A pointer to the uint variable describing the number of available queues.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage If type is not a valid queue_type value.
-         * @return ErrorInvalidUsage If count is nullptr.
-         * @return ErrorDeviceLost If the adapter was removed or lost.
+         * @return ErrorInvalidUsage if type is not a valid queue_type value.
+         * @return ErrorInvalidUsage if count is nullptr.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
          *
          * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
         */
