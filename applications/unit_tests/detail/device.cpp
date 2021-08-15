@@ -34,12 +34,18 @@ TEST_SUITE("Device")
         for (auto* adapter : adapters)
         {
             llri::Device* device = nullptr;
-            llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr };
+            llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 0, nullptr };
+
+            llri::queue_desc queue { llri::queue_type::Graphics, llri::queue_priority::Normal };
 
             SUBCASE("[Incorrect usage] numExtensions > 0 && extensions == nullptr")
             {
                 ddesc.numExtensions = 1;
                 ddesc.extensions = nullptr;
+
+                ddesc.numQueues = 1;
+                ddesc.queues = &queue;
+
                 CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
             }
 
@@ -47,6 +53,10 @@ TEST_SUITE("Device")
             {
                 ddesc.numExtensions = 0;
                 ddesc.extensions = nullptr;
+
+                ddesc.numQueues = 1;
+                ddesc.queues = &queue;
+
                 auto r = instance->createDevice(ddesc, &device);
                 CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
             }
@@ -66,6 +76,25 @@ TEST_SUITE("Device")
                 //ddesc.numExtensions = 1;
                 //ddesc.extensions = &extension;
                 //CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorExtensionNotSupported);
+            }
+
+            SUBCASE("[Incorrect usage] numQueues == 0")
+            {
+                CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
+            }
+
+            SUBCASE("[Incorrect usage] extensions == nullptr")
+            {
+                ddesc.numQueues = 1;
+                CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
+            }
+
+            SUBCASE("[Correct usage] numQueues > 0 && extensions != nullptr")
+            {
+                ddesc.numQueues = 1;
+                ddesc.queues = &queue;
+                auto r = instance->createDevice(ddesc, &device);
+                CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
             }
 
             INFO("Extension specific tests are done in \"Device Extensions\"");
@@ -88,7 +117,8 @@ TEST_SUITE("Device")
         for (auto* adapter : adapters)
         {
             llri::Device* device = nullptr;
-            llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr };
+            llri::queue_desc queue { llri::queue_type::Graphics, llri::queue_priority::Normal }; //at least one graphics queue is practically always available
+            llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 1, &queue};
             REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);
 
             SUBCASE("[Correct usage] device != nullptr")
