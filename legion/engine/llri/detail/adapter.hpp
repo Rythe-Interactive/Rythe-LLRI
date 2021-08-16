@@ -5,18 +5,20 @@
  */
 
 #pragma once
+#include <string>
+
 //detail includes should be kept to a minimum but
 //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
 #include <llri/detail/instance.hpp>
 
 namespace LLRI_NAMESPACE
 {
-    enum struct adapter_extension_type;
+    enum struct adapter_extension_type : uint8_t;
 
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
     */
-    enum struct adapter_type
+    enum struct adapter_type : uint8_t
     {
         /**
          * @brief The device type is not recognized as any of the other available types.
@@ -46,7 +48,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts an adapter_type to a string.
      * @return The enum value as a string, or "Invalid adapter_type value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(const adapter_type& type);
+    constexpr const char* to_string(adapter_type type);
 
     /**
      * @brief Basic information about an adapter.
@@ -88,7 +90,7 @@ namespace LLRI_NAMESPACE
     class Adapter
     {
         friend Instance;
-        friend result detail::impl_createInstance(const instance_desc&, Instance**, const bool&);
+        friend result detail::impl_createInstance(const instance_desc&, Instance**, bool);
         friend void detail::impl_destroyInstance(Instance*);
 
     public:
@@ -121,7 +123,7 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage If supported is nullptr.
          * @return ErrorDeviceLost If the adapter was removed or lost.
          */
-        result queryExtensionSupport(const adapter_extension_type& type, bool* supported) const;
+        result queryExtensionSupport(adapter_extension_type type, bool* supported) const;
     private:
         //Force private constructor/deconstructor so that only instance can manage lifetime
         Adapter() = default;
@@ -133,6 +135,6 @@ namespace LLRI_NAMESPACE
 
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
-        result impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const;
+        result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
     };
 }

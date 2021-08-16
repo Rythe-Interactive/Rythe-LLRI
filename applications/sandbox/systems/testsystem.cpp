@@ -17,7 +17,7 @@
 //#define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING //uncommenting this disables implementation message polling
 #include <llri/llri.hpp>
 
-void callback(const llri::validation_callback_severity& severity, const llri::validation_callback_source& source, const char* message, void* userData)
+void callback(llri::validation_callback_severity severity, llri::validation_callback_source source, const char* message, void* userData)
 {
     lgn::log::severity sev = lgn::log::severity_info;
     switch (severity)

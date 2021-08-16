@@ -11,7 +11,7 @@ namespace LLRI_NAMESPACE
 {
     namespace internal
     {
-        result mapHRESULT(const HRESULT& value);
+        result mapHRESULT(HRESULT value);
     }
 
     result Adapter::impl_queryInfo(adapter_info* info) const
@@ -56,7 +56,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    result Adapter::impl_queryExtensionSupport(const adapter_extension_type& type, bool* supported) const
+    result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
         *supported = false;
 

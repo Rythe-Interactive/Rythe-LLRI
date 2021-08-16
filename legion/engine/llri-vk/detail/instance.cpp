@@ -11,7 +11,7 @@ namespace LLRI_NAMESPACE
 {
     namespace internal
     {
-        constexpr adapter_type mapPhysicalDeviceType(const VkPhysicalDeviceType& type)
+        constexpr adapter_type mapPhysicalDeviceType(VkPhysicalDeviceType type)
         {
             switch (type)
             {
@@ -63,12 +63,12 @@ namespace LLRI_NAMESPACE
             return VK_FALSE;
         }
 
-        void dummyValidationCallback(const validation_callback_severity&, const validation_callback_source&, const char*, void*) { }
+        void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
     }
 
     namespace detail
     {
-        result impl_createInstance(const instance_desc& desc, Instance** instance, const bool& enableImplementationMessagePolling)
+        result impl_createInstance(const instance_desc& desc, Instance** instance, bool enableImplementationMessagePolling)
         {
             internal::lazyInitializeVolk();
 

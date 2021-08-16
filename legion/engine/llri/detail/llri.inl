@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr inline const char* to_string(const result& r)
+    constexpr inline const char* to_string(result r)
     {
         switch (r)
         {
