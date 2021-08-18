@@ -68,4 +68,31 @@ namespace LLRI_NAMESPACE
 
         return result::Success;
     }
+
+    result Adapter::impl_queryQueueCount(queue_type type, uint8_t* count) const
+    {
+        //DirectX doesn't have a limit on the number of created queues,
+        //so we impose a reasonable arbitrary limit.
+        //these values are taken from the queue limits on NVIDIA GPUs on the Vulkan implementation.
+        switch(type)
+        {
+            case queue_type::Graphics:
+            {
+                *count = 16;
+                break;
+            }
+            case queue_type::Compute:
+            {
+                *count = 8;
+                break;
+            }
+            case queue_type::Transfer:
+            {
+                *count = 2;
+                break;
+            }
+        }
+;
+        return result::Success;
+    }
 }

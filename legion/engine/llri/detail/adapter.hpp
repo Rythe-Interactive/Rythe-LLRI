@@ -14,6 +14,7 @@
 namespace LLRI_NAMESPACE
 {
     enum struct adapter_extension_type : uint8_t;
+    enum struct queue_type : uint8_t;
 
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
@@ -99,7 +100,7 @@ namespace LLRI_NAMESPACE
          * @param info A pointer to the adapter_info structure that needs to be filled.
          *
          * @return ErrorInvalidUsage if info is nullptr.
-         * @return ErrorDeviceLost If the adapter was removed or lost.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
         */
         result queryInfo(adapter_info* info) const;
 
@@ -110,7 +111,7 @@ namespace LLRI_NAMESPACE
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if features is nullptr.
          * @return ErrorIncompatibleDriver if the Adapter doesn't support the implementation's requested graphics API.
-         * @return ErrorDeviceLost If the adapter was removed or lost.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
         */
         result queryFeatures(adapter_features* features) const;
 
@@ -120,10 +121,25 @@ namespace LLRI_NAMESPACE
          * @param supported A pointer to the boolean that describes if the extension is supported.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage If supported is nullptr.
-         * @return ErrorDeviceLost If the adapter was removed or lost.
+         * @return ErrorInvalidUsage if supported is nullptr.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
          */
         result queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+
+        /**
+         * @brief Query the maximum number of available queues for a given queue type.
+         * @param type The type of queue. This must be a valid queue_type value.
+         * @param count A pointer to the uint variable describing the number of available queues.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage if type is not a valid queue_type value.
+         * @return ErrorInvalidUsage if count is nullptr.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
+         *
+         * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
+        */
+        result queryQueueCount(queue_type type, uint8_t* count) const;
+
     private:
         //Force private constructor/deconstructor so that only instance can manage lifetime
         Adapter() = default;
@@ -136,5 +152,7 @@ namespace LLRI_NAMESPACE
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
         result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+
+        result impl_queryQueueCount(queue_type type, uint8_t* count) const;
     };
 }

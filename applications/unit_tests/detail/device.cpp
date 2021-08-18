@@ -7,9 +7,9 @@
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
 
-TEST_SUITE("Device")
+TEST_CASE("Device")
 {
-    TEST_CASE("Instance::createDevice()")
+    SUBCASE("Functions")
     {
         llri::Instance* instance;
         const llri::instance_desc desc{};
@@ -18,87 +18,37 @@ TEST_SUITE("Device")
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
 
-        SUBCASE("[Incorrect usage] device == nullptr")
+        llri::Device* device = nullptr;
+        llri::queue_desc queueDesc { llri::queue_type::Graphics, llri::queue_priority::Normal }; //at least one graphics queue is practically always available
+        llri::device_desc ddesc{ adapters[0], llri::adapter_features{}, 0, nullptr, 1, &queueDesc};
+        REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);
+
+        SUBCASE("Device::queryQueue()")
         {
-            llri::device_desc ddesc{};
-            CHECK_EQ(instance->createDevice(ddesc, nullptr), llri::result::ErrorInvalidUsage);
-        }
-
-        SUBCASE("[Incorrect usage] adapter == nullptr")
-        {
-            llri::Device* device = nullptr;
-            llri::device_desc ddesc{};
-            CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
-        }
-
-        for (auto* adapter : adapters)
-        {
-            llri::Device* device = nullptr;
-            llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr };
-
-            SUBCASE("[Incorrect usage] numExtensions > 0 && extensions == nullptr")
+            SUBCASE("[Incorrect usage] Invalid queue_type value")
             {
-                ddesc.numExtensions = 1;
-                ddesc.extensions = nullptr;
-                CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
+                llri::Queue* queue;
+                CHECK_EQ(device->queryQueue((llri::queue_type)UINT_MAX, 0, &queue), llri::result::ErrorInvalidUsage);
             }
 
-            SUBCASE("[Correct usage] numExtensions == 0 && extensions == nullptr")
+            SUBCASE("[Incorrect usage] index > number of created queues of this type")
             {
-                ddesc.numExtensions = 0;
-                ddesc.extensions = nullptr;
-                auto r = instance->createDevice(ddesc, &device);
-                CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
+                for (uint8_t type = 0; type < (uint8_t)llri::queue_type::MaxEnum; type++)
+                {
+                    llri::Queue* queue;
+                    CHECK_EQ(device->queryQueue((llri::queue_type)type, 255, &queue), llri::result::ErrorInvalidUsage);
+                }
             }
 
-            SUBCASE("[Correct usage] numExtensions > 0 && extensions != nullptr")
+            SUBCASE("[Incorrect usage] queue == nullptr")
             {
-                //Reserved for future use (no current extensions supported to test this)
+                CHECK_EQ(device->queryQueue(llri::queue_type::Graphics, 0, nullptr), llri::result::ErrorInvalidUsage);
             }
 
-            SUBCASE("[Incorrect usage] invalid extension type")
+            SUBCASE("[Correct usage] Valid parameters (with queue_descs in mind)")
             {
-                //Check reserved for future use. Since there are no adapter extensions, createDevice is currently not expected to iterate over extensions and check for their support, so this remains commented out for now.
-                
-                //llri::adapter_extension extension{};
-                //extension.type = static_cast<llri::adapter_extension_type>(UINT_MAX);
-
-                //ddesc.numExtensions = 1;
-                //ddesc.extensions = &extension;
-                //CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorExtensionNotSupported);
-            }
-
-            INFO("Extension specific tests are done in \"Device Extensions\"");
-
-            instance->destroyDevice(device);
-        }
-
-        llri::destroyInstance(instance);
-    }
-
-    TEST_CASE("Instance::destroyDevice()")
-    {
-        llri::Instance* instance;
-        const llri::instance_desc desc{};
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-
-        std::vector<llri::Adapter*> adapters;
-        REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
-
-        for (auto* adapter : adapters)
-        {
-            llri::Device* device = nullptr;
-            llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr };
-            REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);
-
-            SUBCASE("[Correct usage] device != nullptr")
-            {
-                CHECK_NOTHROW(instance->destroyDevice(device));
-            }
-
-            SUBCASE("[Correct usage] device == nullptr")
-            {
-                CHECK_NOTHROW(instance->destroyDevice(nullptr));
+                llri::Queue* queue;
+                CHECK_EQ(device->queryQueue(llri::queue_type::Graphics, 0, &queue), llri::result::Success);
             }
         }
     }

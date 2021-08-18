@@ -36,6 +36,34 @@ namespace LLRI_NAMESPACE
 
             return validation_callback_severity::Info;
         }
+
+        INT mapQueuePriority(queue_priority priority)
+        {
+            switch(priority)
+            {
+                case queue_priority::Normal:
+                    return D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+                case queue_priority::High:
+                    return D3D12_COMMAND_QUEUE_PRIORITY_HIGH;
+            }
+
+            return 0;
+        }
+
+        D3D12_COMMAND_LIST_TYPE mapQueueType(queue_type type)
+        {
+            switch(type)
+            {
+                case queue_type::Graphics:
+                    return D3D12_COMMAND_LIST_TYPE_DIRECT;
+                case queue_type::Compute:
+                    return D3D12_COMMAND_LIST_TYPE_COMPUTE;
+                case queue_type::Transfer:
+                    return D3D12_COMMAND_LIST_TYPE_COPY;
+            }
+
+            return D3D12_COMMAND_LIST_TYPE_DIRECT;
+        }
     }
 
     namespace detail
@@ -215,7 +243,7 @@ namespace LLRI_NAMESPACE
         Device* output = new Device();
         output->m_validationCallback = m_validationCallback;
 
-        D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
+        const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
 
         ID3D12Device* dx12Device = nullptr;
         HRESULT r = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));
@@ -235,6 +263,45 @@ namespace LLRI_NAMESPACE
                 output->m_validationCallbackMessenger = iq;
         }
 
+        for (uint32_t i = 0; i < desc.numQueues; i++)
+        {
+            auto& queueDesc = desc.queues[i];
+
+            const INT priority = internal::mapQueuePriority(queueDesc.priority);
+            const D3D12_COMMAND_LIST_TYPE type = internal::mapQueueType(queueDesc.type);
+            D3D12_COMMAND_QUEUE_DESC commandQueueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 0 };
+
+            ID3D12CommandQueue* dx12Queue = nullptr;
+            HRESULT r = dx12Device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&dx12Queue));
+            if (FAILED(r))
+            {
+                destroyDevice(output);
+                return internal::mapHRESULT(r);
+            }
+
+            auto* queue = new Queue();
+            queue->m_ptr = dx12Queue;
+
+            switch(queueDesc.type)
+            {
+                case queue_type::Graphics:
+                {
+                    output->m_graphicsQueues.push_back(queue);
+                    break;
+                }
+                case queue_type::Compute:
+                {
+                    output->m_computeQueues.push_back(queue);
+                    break;
+                }
+                case queue_type::Transfer:
+                {
+                    output->m_transferQueues.push_back(queue);
+                    break;
+                }
+            }
+        }
+
         *device = output;
         return result::Success;
     }
@@ -243,6 +310,24 @@ namespace LLRI_NAMESPACE
     {
         if (!device)
             return;
+
+        for (auto* graphics : device->m_graphicsQueues)
+        {
+            static_cast<ID3D12CommandQueue*>(graphics->m_ptr)->Release();
+            delete graphics;
+        }
+
+        for (auto* compute : device->m_computeQueues)
+        {
+            static_cast<ID3D12CommandQueue*>(compute->m_ptr)->Release();
+            delete compute;
+        }
+        
+        for (auto* transfer : device->m_transferQueues)
+        {
+            static_cast<ID3D12CommandQueue*>(transfer->m_ptr)->Release();
+            delete transfer;
+        }
 
         if (device->m_ptr)
             static_cast<ID3D12Device*>(device->m_ptr)->Release();

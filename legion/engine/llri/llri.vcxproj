@@ -130,6 +130,8 @@ del /q ".\xcopyexclude"</Command>
     <ClInclude Include="detail\instance.hpp" />
     <ClInclude Include="detail\instance_extensions.hpp" />
     <ClInclude Include="detail\instance.inl" />
+    <ClInclude Include="detail\queue.hpp" />
+    <ClInclude Include="detail\queue.inl" />
     <ClInclude Include="llri.hpp" />
     <ClInclude Include="detail\llri.inl" />
   </ItemGroup>

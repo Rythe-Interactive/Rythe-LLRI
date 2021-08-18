@@ -177,7 +177,8 @@ namespace LLRI_NAMESPACE
      * @param instance Must be a valid pointer to an Instance pointer variable. Upon successful execution of the operation the pointer is set to the resulting instance object.
      *
      * @return Success upon correct execution of the operation.
-     * @return ErrorInvalidUsage if the instance is nullptr, or if desc.numExtensions > 0 and desc.extensions is nullptr.
+     * @return ErrorInvalidUsage if the instance is nullptr
+     * @return ErrorInvalidUsage if desc.numExtensions > 0 and desc.extensions is nullptr.
      * @return ErrorExtensionNotSupported if any of the extensions fail to be created.
      * @return Implementation defined result values: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
     */
@@ -208,7 +209,7 @@ namespace LLRI_NAMESPACE
          * @brief Retrieve a vector of adapters available to this application. Adapters usually represent PCIe devices such as GPUs.
          *
          * Using this function, you can select one or more adapters for Device creation.
-         * The adapters returned by this function are individual adapters and are listed separately regardless of SLI/Crossfire/Multi-GPU configuration.
+         * The adapters returned by this function **may** represent one or more physical adapters depending on system hardware configuration. Hardware features like SLI/Crossfire cause adapters to be linked together and be listed as a single Adapter.
          *
          * @param adapters The vector to fill with available adapters. The vector is cleared at the start of the operation and is only filled if the operation succeeds.
          *
@@ -225,7 +226,14 @@ namespace LLRI_NAMESPACE
          * @param device A pointer to a device pointer variable. The pointer variable will be set to the resulting device upon successful execution.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr.
+         * @return ErrorInvalidUsage if device is nullptr.
+         * @return ErrorInvalidUsage if desc.adapter is nullptr.
+         * @return ErrorInvalidUsage if desc.numExtensions is more than 0 and desc.extensions is nullptr.
+         * @return ErrorInvalidUsage if desc.numQueues is less than 1.
+         * @return ErrorInvalidUsage if desc.queues is nullptr.
+         * @return ErrorInvalidUsage if more queues of a given type are requested than the maximum number of queues for that given type.
+         * @return ErrorInvalidUsage if any of the queue_desc's types was an invalid queue_type value.
+         * @return ErrorInvalidUsage if any of the queue_desc's priorities was an invalid queue_priority value.
          * @return ErrorDeviceLost if the adapter was lost.
         */
         result createDevice(const device_desc& desc, Device** device) const;
