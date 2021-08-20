@@ -303,6 +303,7 @@ namespace LLRI_NAMESPACE
     result Instance::impl_createDevice(const device_desc& desc, Device** device) const
     {
         auto* output = new Device();
+        output->m_adapter = desc.adapter;
         output->m_validationCallback = m_validationCallback;
 
         //Queue creation

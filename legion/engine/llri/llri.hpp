@@ -134,9 +134,17 @@ namespace LLRI_NAMESPACE
         */
         ErrorIncompatibleDriver,
         /**
+         * @brief A resource was in a different state than the operation expected it to be in.
+        */
+        ErrorInvalidState,
+        /**
+         * @brief An API defined creation/allocation limit was exceeded.
+        */
+        ErrorExceededLimit,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorIncompatibleDriver
+        MaxEnum = ErrorExceededLimit
     };
 
     /**
@@ -156,5 +164,8 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/queue.hpp>
 #include <llri/detail/device.hpp>
+
+#include <llri/detail/command_group.hpp>
+#include <llri/detail/command_list.hpp>
 
 #include <llri/detail/llri.inl>

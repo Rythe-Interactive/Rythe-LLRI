@@ -13,36 +13,40 @@ namespace LLRI_NAMESPACE
     {
         switch (r)
         {
-        case result::Success:
-            return "Success";
-        case result::Timeout:
-            return "Timeout";
-        case result::ErrorUnknown:
-            return "ErrorUnknown";
-        case result::ErrorInvalidUsage:
-            return "ErrorInvalidUsage";
-        case result::ErrorFeatureNotSupported:
-            return "ErrorFeatureNotSupported";
-        case result::ErrorExtensionNotSupported:
-            return "ErrorExtensionNotSupported";
-        case result::ErrorDeviceHung:
-            return "ErrorDeviceHung";
-        case result::ErrorDeviceLost:
-            return "ErrorDeviceLost";
-        case result::ErrorDeviceRemoved:
-            return "ErrorDeviceRemoved";
-        case result::ErrorDriverFailure:
-            return "ErrorDriverFailure";
-        case result::NotReady:
-            return "NotReady";
-        case result::ErrorOutOfHostMemory:
-            return "ErrorOutOfHostMemory";
-        case result::ErrorOutOfDeviceMemory:
-            return "ErrorOutOfDeviceMemory";
-        case result::ErrorInitializationFailed:
-            return "ErrorInitializationFailed";
-        case result::ErrorIncompatibleDriver:
-            return "ErrorIncompatibleDriver";
+            case result::Success:
+                return "Success";
+            case result::Timeout:
+                return "Timeout";
+            case result::ErrorUnknown:
+                return "ErrorUnknown";
+            case result::ErrorInvalidUsage:
+                return "ErrorInvalidUsage";
+            case result::ErrorFeatureNotSupported:
+                return "ErrorFeatureNotSupported";
+            case result::ErrorExtensionNotSupported:
+                return "ErrorExtensionNotSupported";
+            case result::ErrorDeviceHung:
+                return "ErrorDeviceHung";
+            case result::ErrorDeviceLost:
+                return "ErrorDeviceLost";
+            case result::ErrorDeviceRemoved:
+                return "ErrorDeviceRemoved";
+            case result::ErrorDriverFailure:
+                return "ErrorDriverFailure";
+            case result::NotReady:
+                return "NotReady";
+            case result::ErrorOutOfHostMemory:
+                return "ErrorOutOfHostMemory";
+            case result::ErrorOutOfDeviceMemory:
+                return "ErrorOutOfDeviceMemory";
+            case result::ErrorInitializationFailed:
+                return "ErrorInitializationFailed";
+            case result::ErrorIncompatibleDriver:
+                return "ErrorIncompatibleDriver";
+            case result::ErrorInvalidState:
+                return "ErrorInvalidState";
+            case result::ErrorExceededLimit:
+                return "ErrorExceededLimit";
         }
 
         return "Invalid result value";
@@ -53,3 +57,6 @@ namespace LLRI_NAMESPACE
 #include <llri/detail/adapter.inl>
 #include <llri/detail/queue.inl>
 #include <llri/detail/device.inl>
+
+#include <llri/detail/command_group.inl>
+#include <llri/detail/command_list.inl>

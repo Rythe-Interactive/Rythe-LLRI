@@ -46,5 +46,19 @@
     <ClInclude Include="detail\queue.hpp">
       <Filter>Header Files\detail</Filter>
     </ClInclude>
+    <ClInclude Include="detail\command_group.hpp">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail\command_list.hpp">
+      <Filter>Header Files\detail</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="detail\command_list.inl">
+      <Filter>Header Files\detail</Filter>
+    </None>
+    <None Include="detail\command_group.inl">
+      <Filter>Header Files\detail</Filter>
+    </None>
   </ItemGroup>
 </Project>

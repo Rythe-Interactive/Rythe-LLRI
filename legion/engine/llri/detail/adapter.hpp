@@ -91,6 +91,7 @@ namespace LLRI_NAMESPACE
     class Adapter
     {
         friend Instance;
+        friend class Device;
         friend result detail::impl_createInstance(const instance_desc&, Instance**, bool);
         friend void detail::impl_destroyInstance(Instance*);
 

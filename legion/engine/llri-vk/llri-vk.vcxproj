@@ -114,6 +114,8 @@ copy /Y "$(SolutionDir)deps\dll\" "$(OutDir)"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="detail\adapter.cpp" />
+    <ClCompile Include="detail\command_group.cpp" />
+    <ClCompile Include="detail\device.cpp" />
     <ClCompile Include="detail\instance.cpp" />
     <ClCompile Include="detail\instance_extensions.cpp" />
     <ClCompile Include="llri.cpp" />

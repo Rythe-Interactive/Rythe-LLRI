@@ -28,6 +28,12 @@
     <ClCompile Include="detail\instance_extensions.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
+    <ClCompile Include="detail\device.cpp">
+      <Filter>Source Files\detail</Filter>
+    </ClCompile>
+    <ClCompile Include="detail\command_group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="directx.hpp">

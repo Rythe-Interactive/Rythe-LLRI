@@ -240,7 +240,8 @@ namespace LLRI_NAMESPACE
 
     result Instance::impl_createDevice(const device_desc& desc, Device** device) const
     {
-        Device* output = new Device();
+        auto* output = new Device();
+        output->m_adapter = desc.adapter;
         output->m_validationCallback = m_validationCallback;
 
         const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
