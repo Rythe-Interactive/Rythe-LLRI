@@ -46,18 +46,12 @@ namespace LLRI_NAMESPACE
     {
         /**
          * @brief The CommandGroup to allocate the list(s) from.
-         *
-         * This CommandGroup **must** have enough unused CommandList slots left to fit command_list_alloc_desc::count new CommandLists.
         */
         CommandGroup* group;
         /**
          * @brief Describes if the CommandLists will be used to be submitted to Queues directly or if they will be submitted indirectly through other CommandLists.
         */
         command_list_usage usage;
-        /**
-         * @brief The number of CommandLists to allocate. This must not exceed the number of free CommandLists in command_list_alloc_desc::group.
-        */
-        uint32_t count;
     };
     
     /**

@@ -60,8 +60,11 @@ void TestSystem::setup()
     createInstance();
     selectAdapter();
     createDevice();
+    createCommandLists();
 
     //Cleanup created resources
+    m_device->destroyCommandGroup(m_commandGroup);
+
     m_instance->destroyDevice(m_device);
     destroyInstance(m_instance);
 }
@@ -154,4 +157,13 @@ void TestSystem::createDevice()
     THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Graphics, 0, &m_graphicsQueue));
     THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Compute, 0, &m_computeQueue));
     THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Transfer, 0, &m_transferQueue));
+}
+
+void TestSystem::createCommandLists()
+{
+    const llri::command_group_desc groupDesc { llri::queue_type::Graphics, 1 };
+    THROW_IF_FAILED(m_device->createCommandGroup(groupDesc, &m_commandGroup));
+
+    const llri::command_list_alloc_desc listDesc { m_commandGroup, llri::command_list_usage::Direct };
+    THROW_IF_FAILED(m_device->allocateCommandList(listDesc, &m_commandList));
 }

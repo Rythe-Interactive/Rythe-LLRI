@@ -9,7 +9,7 @@
 //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
 #include <llri/detail/instance.hpp>
 #include <cstdint>
-#include <vector>
+#include <list>
 
 namespace LLRI_NAMESPACE
 {
@@ -62,14 +62,12 @@ namespace LLRI_NAMESPACE
         void* m_ptr = nullptr;
         void* m_deviceHandle = nullptr;
         void* m_deviceFunctionTable = nullptr;
-        std::vector<CommandList*> m_cmdLists;
-
+        std::list<CommandList*> m_cmdLists;
         validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
         queue_type m_type;
         uint8_t m_maxCount;
-        uint8_t m_currentCount;
 
         result impl_reset();
     };
