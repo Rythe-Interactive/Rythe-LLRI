@@ -9,11 +9,6 @@
 
 namespace LLRI_NAMESPACE
 {
-    namespace internal
-    {
-        result mapHRESULT(HRESULT value);
-    }
-
     result Adapter::impl_queryInfo(adapter_info* info) const
     {
         DXGI_ADAPTER_DESC1 desc;
@@ -42,7 +37,7 @@ namespace LLRI_NAMESPACE
         if (level12_0 == E_FAIL)
             return result::ErrorIncompatibleDriver;
         else if (FAILED(level12_0)) //no matter what reason, LEVEL_12_0 should always be supported for DX12
-            return internal::mapHRESULT(level12_0);
+            return directx::mapHRESULT(level12_0);
 
         //Level 1 and 2 can more easily grant us guarantees about feature support
         HRESULT level12_1 = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);

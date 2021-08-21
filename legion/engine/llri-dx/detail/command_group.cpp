@@ -9,13 +9,15 @@
 
 namespace LLRI_NAMESPACE
 {
-    namespace internal
-    {
-        result mapHRESULT(HRESULT value);
-    }
-
     result CommandGroup::impl_reset()
     {
-        return internal::mapHRESULT(static_cast<ID3D12CommandAllocator*>(m_ptr)->Reset());
+        const auto r = static_cast<ID3D12CommandAllocator*>(m_ptr)->Reset();
+        if (FAILED(r))
+            return directx::mapHRESULT(r);
+
+        for (auto* cmdList : m_cmdLists)
+            cmdList->m_state = command_list_state::Empty;
+
+        return result::Success;
     }
 }

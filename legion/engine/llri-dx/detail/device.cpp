@@ -11,8 +11,6 @@ namespace LLRI_NAMESPACE
 {
     namespace internal
     {
-        result mapHRESULT(HRESULT value);
-
         D3D12_COMMAND_LIST_TYPE mapCommandGroupType(queue_type type)
         {
             switch (type)
@@ -44,7 +42,7 @@ namespace LLRI_NAMESPACE
         if (FAILED(r))
         {
             destroyCommandGroup(output);
-            return internal::mapHRESULT(r);
+            return directx::mapHRESULT(r);
         }
 
         output->m_ptr = allocator;
@@ -65,37 +63,38 @@ namespace LLRI_NAMESPACE
 
     result Device::impl_allocateCommandList(const command_list_alloc_desc& desc, CommandList** cmdList) const
     {
-        ID3D12CommandList* dx12CommandList = nullptr;
+        ID3D12GraphicsCommandList* dx12CommandList = nullptr;
 
-        HRESULT r;
-        switch(desc.group->m_type)
-        {
-            case queue_type::Graphics:
-                ID3D12GraphicsCommandList* list;
-                r = static_cast<ID3D12Device*>(desc.group->m_deviceHandle)
-                    ->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr), nullptr, IID_PPV_ARGS(&list));
-                dx12CommandList = list;
-                break;
-            case queue_type::Compute:
-                r = static_cast<ID3D12Device*>(desc.group->m_deviceHandle)
-                    ->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr), nullptr, IID_PPV_ARGS(&dx12CommandList));
-                break;
-            case queue_type::Transfer:
-                r = static_cast<ID3D12Device*>(desc.group->m_deviceHandle)
-                    ->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY, static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr), nullptr, IID_PPV_ARGS(&dx12CommandList));
-                break;
-            default:
-                throw;
-        }
+        const auto type = desc.usage == command_list_usage::Direct ?
+                      internal::mapCommandGroupType(desc.group->m_type) :
+                      D3D12_COMMAND_LIST_TYPE_BUNDLE;
+
+        const HRESULT r = static_cast<ID3D12Device*>(m_ptr)
+            ->CreateCommandList(0,
+                type,
+                static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr),
+                nullptr,
+                IID_PPV_ARGS(&dx12CommandList));
 
         if (FAILED(r))
-            return internal::mapHRESULT(r);
+            return directx::mapHRESULT(r);
+
+        //Dx12 command lists are opened by default, close to comply with our system
+        dx12CommandList->Close();
 
         auto* output = new CommandList();
         output->m_ptr = dx12CommandList;
+        output->m_groupHandle = desc.group->m_ptr;
+
+        output->m_deviceHandle = m_ptr;
+        output->m_deviceFunctionTable = m_functionTable;
+
+        output->m_usage = desc.usage;
         output->m_state = command_list_state::Empty;
+
         output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
+
         desc.group->m_cmdLists.push_back(output);
 
         *cmdList = output;
@@ -106,47 +105,47 @@ namespace LLRI_NAMESPACE
     {
         std::vector<CommandList*> output;
 
+        const auto type = desc.usage == command_list_usage::Direct ?
+                              internal::mapCommandGroupType(desc.group->m_type) :
+                              D3D12_COMMAND_LIST_TYPE_BUNDLE;
+
         for (uint8_t i = 0; i < count; i++)
         {
-            ID3D12CommandList* dx12CommandList = nullptr;
+            ID3D12GraphicsCommandList* dx12CommandList = nullptr;
 
-            HRESULT r;
-            switch(desc.group->m_type)
-            {
-                case queue_type::Graphics:
-                    ID3D12GraphicsCommandList* list;
-                    r = static_cast<ID3D12Device*>(desc.group->m_deviceHandle)
-                        ->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr), nullptr, IID_PPV_ARGS(&list));
-                    dx12CommandList = list;
-                    break;
-                case queue_type::Compute:
-                    r = static_cast<ID3D12Device*>(desc.group->m_deviceHandle)
-                        ->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr), nullptr, IID_PPV_ARGS(&dx12CommandList));
-                    break;
-                case queue_type::Transfer:
-                    r = static_cast<ID3D12Device*>(desc.group->m_deviceHandle)
-                        ->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COPY, static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr), nullptr, IID_PPV_ARGS(&dx12CommandList));
-                    break;
-                default:
-                    throw;
-            }
+            const HRESULT r = static_cast<ID3D12Device*>(m_ptr)
+                ->CreateCommandList(0,
+                    type,
+                    static_cast<ID3D12CommandAllocator*>(desc.group->m_ptr),
+                    nullptr,
+                    IID_PPV_ARGS(&dx12CommandList));
 
             if (FAILED(r))
             {
                 //Free already allocated command lists
-                freeCommandLists(desc.group, output.size(), output.data());
+                freeCommandLists(desc.group, static_cast<uint8_t>(output.size()), output.data());
 
-                return internal::mapHRESULT(r);
+                return directx::mapHRESULT(r);
             }
+
+            //Dx12 command lists are opened by default, close to comply with our system
+            dx12CommandList->Close();
 
             auto* cmdList = new CommandList();
             cmdList->m_ptr = dx12CommandList;
+            cmdList->m_groupHandle = desc.group->m_ptr;
+
+            cmdList->m_deviceHandle = m_ptr;
+            cmdList->m_deviceFunctionTable = m_functionTable;
+
+            cmdList->m_usage = desc.usage;
             cmdList->m_state = command_list_state::Empty;
+
             cmdList->m_validationCallback = m_validationCallback;
             cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
-            output.push_back(cmdList);
             desc.group->m_cmdLists.push_back(cmdList);
+            output.push_back(cmdList);
         }
 
         *cmdLists = output;

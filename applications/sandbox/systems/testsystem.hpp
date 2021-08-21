@@ -30,6 +30,7 @@ public:
      */
     void update(lgn::time::span deltaTime);
 
+    ~TestSystem() override;
 private:
     llri::Instance* m_instance = nullptr;
     llri::Adapter* m_adapter = nullptr;

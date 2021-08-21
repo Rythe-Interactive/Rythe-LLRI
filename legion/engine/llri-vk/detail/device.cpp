@@ -83,9 +83,17 @@ namespace LLRI_NAMESPACE
 
         auto* output = new CommandList();
         output->m_ptr = cmd;
+        output->m_groupHandle = desc.group->m_ptr;
+
+        output->m_deviceHandle = m_ptr;
+        output->m_deviceFunctionTable = m_functionTable;
+
+        output->m_usage = desc.usage;
         output->m_state = command_list_state::Empty;
+
         output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
+
         desc.group->m_cmdLists.push_back(output);
 
         *cmdList = output;
@@ -108,12 +116,19 @@ namespace LLRI_NAMESPACE
         {
             auto* cmdList = new CommandList();
             cmdList->m_ptr = cmdBuffers[i];
+            cmdList->m_groupHandle = desc.group->m_ptr;
+
+            cmdList->m_deviceHandle = m_ptr;
+            cmdList->m_deviceFunctionTable = m_functionTable;
+
+            cmdList->m_usage = desc.usage;
             cmdList->m_state = command_list_state::Empty;
+
             cmdList->m_validationCallback = m_validationCallback;
             cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
-            cmdLists->push_back(cmdList);
             desc.group->m_cmdLists.push_back(cmdList);
+            cmdLists->push_back(cmdList);
         }
 
         return result::Success;

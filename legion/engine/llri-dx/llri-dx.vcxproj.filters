@@ -16,9 +16,6 @@
     <ClCompile Include="llri.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="detail\adapter.cpp">
       <Filter>Source Files\detail</Filter>
     </ClCompile>
@@ -32,6 +29,9 @@
       <Filter>Source Files\detail</Filter>
     </ClCompile>
     <ClCompile Include="detail\command_group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="detail\command_list.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,7 +11,15 @@ namespace LLRI_NAMESPACE
 {
     result CommandGroup::impl_reset()
     {
-        return internal::mapVkResult(static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->
-            vkResetCommandPool(static_cast<VkDevice>(m_deviceHandle), static_cast<VkCommandPool>(m_ptr), VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT));
+        const auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->
+            vkResetCommandPool(static_cast<VkDevice>(m_deviceHandle), static_cast<VkCommandPool>(m_ptr), VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
+
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        for (auto* cmdList : m_cmdLists)
+            cmdList->m_state = command_list_state::Empty;
+
+        return result::Success;
     }
 }

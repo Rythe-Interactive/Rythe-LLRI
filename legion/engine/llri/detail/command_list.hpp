@@ -150,6 +150,12 @@ namespace LLRI_NAMESPACE
         ~CommandList() = default;
 
         void* m_ptr = nullptr;
+        void* m_groupHandle = nullptr;
+
+        void* m_deviceHandle = nullptr;
+        void* m_deviceFunctionTable = nullptr;
+
+        command_list_usage m_usage;
         command_list_state m_state = command_list_state::Empty;
 
         validation_callback_desc m_validationCallback;

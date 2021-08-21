@@ -14,8 +14,6 @@ namespace LLRI_NAMESPACE
         result createDriverValidationEXT(const driver_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
 
-        result mapHRESULT(HRESULT value);
-
         void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
 
         validation_callback_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
@@ -138,7 +136,7 @@ namespace LLRI_NAMESPACE
             if (FAILED(factoryCreateResult))
             {
                 llri::destroyInstance(output);
-                return internal::mapHRESULT(factoryCreateResult);
+                return directx::mapHRESULT(factoryCreateResult);
             }
 
             //Store factory and return result
@@ -251,7 +249,7 @@ namespace LLRI_NAMESPACE
         if (FAILED(r))
         {
             destroyDevice(output);
-            return internal::mapHRESULT(r);
+            return directx::mapHRESULT(r);
         }
         output->m_ptr = dx12Device;
 
@@ -277,7 +275,7 @@ namespace LLRI_NAMESPACE
             if (FAILED(r))
             {
                 destroyDevice(output);
-                return internal::mapHRESULT(r);
+                return directx::mapHRESULT(r);
             }
 
             auto* queue = new Queue();

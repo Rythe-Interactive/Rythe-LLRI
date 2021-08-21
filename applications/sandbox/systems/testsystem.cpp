@@ -61,17 +61,28 @@ void TestSystem::setup()
     selectAdapter();
     createDevice();
     createCommandLists();
-
-    //Cleanup created resources
-    m_device->destroyCommandGroup(m_commandGroup);
-
-    m_instance->destroyDevice(m_device);
-    destroyInstance(m_instance);
 }
 
 void TestSystem::update(time::span deltaTime)
 {
     (void)deltaTime;
+
+    THROW_IF_FAILED(m_commandGroup->reset());
+
+    const llri::command_list_begin_desc beginDesc {};
+    THROW_IF_FAILED(m_commandList->record(beginDesc, [](llri::CommandList* cmd)
+    {
+        //Record
+    }, m_commandList));
+}
+
+TestSystem::~TestSystem()
+{
+    //Cleanup created resources
+    m_device->destroyCommandGroup(m_commandGroup);
+
+    //m_instance->destroyDevice(m_device);
+    destroyInstance(m_instance);
 }
 
 void TestSystem::createInstance()
@@ -123,7 +134,7 @@ void TestSystem::selectAdapter()
         //Discrete adapters tend to be more powerful and have more resources so we can decide to pick them
         if (info.adapterType == llri::adapter_type::Discrete)
         {
-            log::info("Adapter selected");
+            log::info("Adapter selected: {}", info.adapterName);
             m_adapter = adapter;
             break;
         }
