@@ -30,9 +30,12 @@ int main()
     if (r != llri::result::Success)
         return -1;
 
-    //This sample displays adapter enumeration and shows some approaches you might take to selecting adapters.
+    //This sample displays adapter enumeration and shows an approach you might take to selecting adapters.
     //There are many ways of doing adapter selection, you may for example eliminate GPUs based on required features or extensions,
     //and you might rate GPUs higher based on e.g. their VRAM, or other optional supported features.
+    //
+    //You can also select multiple adapters for a multi-gpu setup.
+    //
     //this function selects adapters by giving them a score based on their featureset:
     llri::Adapter* selectedAdapter = selectAdapter(instance);
     if (selectedAdapter)
@@ -42,12 +45,11 @@ int main()
         if (r != llri::result::Success)
             return -1;
 
-        std::cout << info.adapterName << "\n";
+        std::cout << "Selected adapter: " << info.adapterName << "\n";
     }
 
     //The adapter may be used now to e.g. create an llri::Device
     //this sample however, ends here
-
 
     llri::destroyInstance(instance);
     return 0;
@@ -77,13 +79,13 @@ llri::Adapter* selectAdapter(llri::Instance* instance)
         if (r != llri::result::Success)
             return nullptr;
 
+        //you may decide to rate the adapter higher for specific features, such as max texture size, vram, etc.
         int score = 0;
 
         //Discrete adapters tend to be more performant so we'll rate them much higher
         if (info.adapterType == llri::adapter_type::Discrete)
             score += 1000;
 
-        //Adapter currently doesn't list other features yet but you may decide to rate the adapter higher for other features, such as e.g. max texture size, vram, etc.
         sortedAdapters.emplace(score, adapter);
     }
 
