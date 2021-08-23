@@ -215,6 +215,8 @@ xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="detail\command_group.cpp" />
+    <ClCompile Include="detail\command_list.cpp" />
     <ClCompile Include="detail\adapter.cpp" />
     <ClCompile Include="detail\device.cpp" />
     <ClCompile Include="detail\device_extensions.cpp" />

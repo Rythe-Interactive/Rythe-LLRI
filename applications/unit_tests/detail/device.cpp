@@ -51,5 +51,35 @@ TEST_CASE("Device")
                 CHECK_EQ(device->queryQueue(llri::queue_type::Graphics, 0, &queue), llri::result::Success);
             }
         }
+
+        SUBCASE("Device::createCommandGroup()")
+        {
+            
+        }
+
+        SUBCASE("Device::destroyCommandGroup()")
+        {
+            
+        }
+
+        SUBCASE("Device::allocateCommandList()")
+        {
+            
+        }
+
+        SUBCASE("Device::allocateCommandLists()")
+        {
+            
+        }
+
+        SUBCASE("Device::freeCommandList()")
+        {
+            
+        }
+
+        SUBCASE("Device::freeCommandLists()")
+        {
+            
+        }
     }
 }
