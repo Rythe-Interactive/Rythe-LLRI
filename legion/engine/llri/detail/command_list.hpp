@@ -66,17 +66,17 @@ namespace LLRI_NAMESPACE
         */
         Empty,
         /**
-         * @brief When a CommandList is in this state, commands may be submitted to the CommandList, but it may not be used for any other operations yet. Once CommandList::end() is called, it is transitioned into the command_list_state::Executable state.
+         * @brief When a CommandList is in this state, commands may be submitted to the CommandList, but it may not be used for any other operations yet. Once CommandList::end() is called, it is transitioned into the command_list_state::Ready state.
         */
         Recording,
         /**
-         * @brief A CommandList in this state can be executed through Queue::executeCommandLists(). CommandLists in this state can not be opened for recording again but instead must be reset through CommandGroup::reset() before use.
+         * @brief A CommandList in this state can be submitted through Queue::submit(). CommandLists in this state can not be opened for recording again but instead must be reset through CommandGroup::reset() before use.
         */
-        Executable
+        Ready
     };
 
     /**
-     * @brief Contextual information about how (and on what GPU) the CommandList will be executed, and what kind of information was previously set (if this is an indirect CommandList).
+     * @brief Contextual information about how (and on what GPU) the CommandList will be submitted, and what kind of information was previously set (if this is an indirect CommandList).
     */
     struct command_list_begin_desc
     {
@@ -93,15 +93,16 @@ namespace LLRI_NAMESPACE
     {
         friend class Device;
         friend class CommandGroup;
+        friend class Queue;
 
     public:
         /**
          * @brief Set the CommandList in a command_list_state::Recording state.
          *
          * The CommandList **must** be in the command_list_state::Empty state for it to transition into a command_list_state::Recording state.
-         * If the CommandList is in the command_list_state::Executable state, it **must** first be reset to command_list_state::Empty through CommandGroup::reset() before calling this function.
+         * If the CommandList is in the command_list_state::Ready state, it **must** first be reset to command_list_state::Empty through CommandGroup::reset() before calling this function.
          *
-         * @param desc Contains contextual information about how (and on what GPU) the CommandList will be executed, and what kind of information was previously set if this is an indirect CommandList.
+         * @param desc Contains contextual information about how (and on what GPU) the CommandList will be submitted, and what kind of information was previously set if this is an indirect CommandList.
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidState if the CommandList was not in the command_list_state::Empty state.
@@ -111,9 +112,9 @@ namespace LLRI_NAMESPACE
         result begin(const command_list_begin_desc& desc);
 
         /**
-         * @brief Set the CommandList in the command_list_state::Executable state.
+         * @brief Set the CommandList in the command_list_state::Ready state.
          *
-         * The CommandList **must** be in the command_list_state::Recording state for it to transition into a command_list_state::Executable state.
+         * The CommandList **must** be in the command_list_state::Recording state for it to transition into a command_list_state::Ready state.
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidState if the CommandList was not in the command_list_state::Recording state.
@@ -124,7 +125,7 @@ namespace LLRI_NAMESPACE
          * @brief Shorthand convenience function for recording the CommandList.
          * This is the equivalent of calling CommandList::begin(), running the commands in the passed function, and then calling CommandList::end().
          *
-         * Prior to this function call, CommandList must be in the command_list_state::Empty state. Afterwards it will be in the command_list_state::Executable state.
+         * Prior to this function call, CommandList must be in the command_list_state::Empty state. Afterwards it will be in the command_list_state::Ready state.
          *
          * @note Read the documentation for CommandList::begin() and CommandList::end() for information on their valid usage, return values, etc.
          *
@@ -141,7 +142,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Returns the current state of the CommandList.
          *
-         * After creation, CommandList will initially be in the command_list_state::Empty state. Once CommandList::begin() is called, the CommandList will be in the command_list_state::Recording state. After that, when CommandList::end() is called, CommandList will be put in the command_list_state::Executable state, in which it will stay until CommandGroup::reset() is called.
+         * After creation, CommandList will initially be in the command_list_state::Empty state. Once CommandList::begin() is called, the CommandList will be in the command_list_state::Recording state. After that, when CommandList::end() is called, CommandList will be put in the command_list_state::Ready state, in which it will stay until CommandGroup::reset() is called.
         */
         [[nodiscard]] command_list_state queryState() const { return m_state; }
     private:

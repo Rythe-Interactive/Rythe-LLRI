@@ -30,7 +30,7 @@ namespace LLRI_NAMESPACE
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        m_state = command_list_state::Executable;
+        m_state = command_list_state::Ready;
         return result::Success;
     }
 }

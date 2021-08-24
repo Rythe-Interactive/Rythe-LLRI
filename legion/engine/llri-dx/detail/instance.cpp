@@ -241,6 +241,7 @@ namespace LLRI_NAMESPACE
         auto* output = new Device();
         output->m_adapter = desc.adapter;
         output->m_validationCallback = m_validationCallback;
+        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
 
@@ -280,6 +281,8 @@ namespace LLRI_NAMESPACE
 
             auto* queue = new Queue();
             queue->m_ptr = dx12Queue;
+            queue->m_validationCallback = output->m_validationCallback;
+            queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
             switch(queueDesc.type)
             {

@@ -27,7 +27,7 @@ namespace LLRI_NAMESPACE
          if (FAILED(r))
              return directx::mapHRESULT(r);
 
-        m_state = command_list_state::Executable;
+        m_state = command_list_state::Ready;
         return result::Success;
     }
 }

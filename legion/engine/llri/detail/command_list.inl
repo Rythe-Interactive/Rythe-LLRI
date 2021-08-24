@@ -30,8 +30,8 @@ namespace LLRI_NAMESPACE
                 return "Empty";
             case command_list_state::Recording:
                 return "Recording";
-            case command_list_state::Executable:
-                return "Executable";
+            case command_list_state::Ready:
+                return "Ready";
         }
 
         return "Invalid command_list_state value";

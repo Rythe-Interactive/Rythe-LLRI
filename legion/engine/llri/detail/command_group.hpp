@@ -46,7 +46,7 @@ namespace LLRI_NAMESPACE
          * @brief Reset the CommandGroup and all of the allocated CommandLists.
          * After this, the CommandLists in this CommandGroup will be ready for recording again.
          *
-         * @note The CommandLists in this CommandGroup **can not** be in use in Queue::executeCommandLists() at this time.
+         * @note The CommandLists in this CommandGroup **can not** be in use in Queue::submit() at this time.
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidState One of the CommandLists in the group is currently in the command_list_state::Recording state.
@@ -60,14 +60,16 @@ namespace LLRI_NAMESPACE
         ~CommandGroup() = default;
 
         void* m_ptr = nullptr;
+
         void* m_deviceHandle = nullptr;
         void* m_deviceFunctionTable = nullptr;
-        std::list<CommandList*> m_cmdLists;
+
         validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
         queue_type m_type;
         uint8_t m_maxCount;
+        std::list<CommandList*> m_cmdLists;
 
         result impl_reset();
     };

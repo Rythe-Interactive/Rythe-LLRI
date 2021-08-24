@@ -305,6 +305,7 @@ namespace LLRI_NAMESPACE
         auto* output = new Device();
         output->m_adapter = desc.adapter;
         output->m_validationCallback = m_validationCallback;
+        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         //Queue creation
         auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
@@ -381,6 +382,8 @@ namespace LLRI_NAMESPACE
 
             auto* queue = new Queue();
             queue->m_ptr = vkQueue;
+            queue->m_validationCallback = output->m_validationCallback;
+            queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
             switch(queueDesc.type)
             {
