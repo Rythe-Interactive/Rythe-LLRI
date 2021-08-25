@@ -54,7 +54,7 @@ namespace LLRI_NAMESPACE
         if (m_cmdLists.size() + 1 > m_maxCount)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorExceededLimit because allocating 1 CommandList from the group would exceed the CommandGroup's maximum number of allocated CommandLists");
-            return result::ErrorInvalidUsage;
+            return result::ErrorExceededLimit;
         }
 #endif
 
@@ -96,7 +96,7 @@ namespace LLRI_NAMESPACE
         {
             const std::string str = std::string("CommandGroup::allocate() returned ErrorExceededLimit because the CommandGroup currently has ") + std::to_string(m_cmdLists.size()) + " CommandLists allocated, and allocating " + std::to_string(count) + " more CommandLists from the group would exceed the CommandGroup's maximum number of allocated CommandLists (" + std::to_string(m_maxCount) + ").";
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, str.c_str());
-            return result::ErrorInvalidUsage;
+            return result::ErrorExceededLimit;
         }
 #endif
 
