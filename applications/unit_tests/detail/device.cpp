@@ -95,6 +95,7 @@ TEST_CASE("Device")
                         llri::CommandGroup* cmdGroup;
                         llri::command_group_desc desc { (llri::queue_type)type, 1 };
                         CHECK_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
+                        device->destroyCommandGroup(cmdGroup);
                     }
                 }
             }
@@ -102,7 +103,22 @@ TEST_CASE("Device")
 
         SUBCASE("Device::destroyCommandGroup()")
         {
-            
+            CHECK_NOTHROW(device->destroyCommandGroup(nullptr));
+
+            for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+            {
+                uint8_t count;
+                REQUIRE_EQ(adapter->queryQueueCount((llri::queue_type)type, &count), llri::result::Success);
+
+                if (count > 0)
+                {
+                    llri::CommandGroup* cmdGroup;
+                    llri::command_group_desc desc { (llri::queue_type)type, 1 };
+                    REQUIRE_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
+
+                    CHECK_NOTHROW(device->destroyCommandGroup(cmdGroup));
+                }
+            }
         }
     }
 }
