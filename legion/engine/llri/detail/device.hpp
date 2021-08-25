@@ -19,9 +19,6 @@ namespace LLRI_NAMESPACE
     struct command_group_desc;
     class CommandGroup;
 
-    struct command_list_alloc_desc;
-    class CommandList;
-
     /**
      * @brief Device description to be used in Instance::createDevice().
     */
@@ -105,71 +102,6 @@ namespace LLRI_NAMESPACE
         */
         void destroyCommandGroup(CommandGroup* cmdGroup) const;
 
-        /**
-         * @brief Allocate a CommandList from the CommandGroup in command_list_alloc_desc. The resulting CommandList will be of the same queue_type as the the CommandGroup.
-         *
-         * Allocated CommandLists **may** be free'd from the CommandGroup through Device::freeCommandList() or Device::freeCommandLists(), but if that isn't done, the CommandGroup will free all of its CommandLists upon destruction.
-         *
-         * @param desc The allocation description describes the command list's usage.
-         * @param cmdList A pointer to the resulting command list variable;
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if cmdList was nullptr.
-         * @return ErrorInvalidUsage if desc.group was nullptr.
-         * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
-         * @return ErrorExceededLimit if the CommandGroup doesn't have enough CommandLists to allocate another.
-         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
-        */
-        result allocateCommandList(const command_list_alloc_desc& desc, CommandList** cmdList) const;
-
-        /**
-         * @brief Allocate one or more CommandLists from the CommandGroup in command_list_alloc_desc. The resulting CommandLists will be of the same queue_type as the CommandGroup.
-         *
-         * Allocated CommandLists **may** be free'd from the CommandGroup through Device::freeCommandList() or Device::freeCommandLists(), but if that isn't done, the CommandGroup will free all of its CommandLists upon destruction.
-         *
-         * @param desc The allocation description describes the command list's usage. Each CommandList is allocated with this same structure.
-         * @param count The number of CommandLists to allocate.
-         * @param cmdLists A pointer to the resulting command list vector.
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if cmdLists was nullptr.
-         * @return ErrorInvalidUsage if desc.group was nullptr.
-         * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enumv alue.
-         * @return ErrorInvalidUsage if count was 0.
-         * @return ErrorExceededLimit if the CommandGroup doesn't have enough CommandLists to allocate count CommandLists.
-         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
-        */
-        result allocateCommandLists(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists) const;
-
-        /**
-         * @brief Free the CommandList from the CommandGroup, which allows the CommandGroup to release all of the device memory allocated for the CommandList.
-         *
-         * @param group The CommandGroup to free the CommandList from.
-         * @param cmdList The CommandList to be free'd and destroyed.
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if group is nullptr.
-         * @return ErrorInvalidUsage if cmdList is nullptr.
-         * @return ErrorInvalidUsage if the cmdList didn't belong to the CommandGroup.
-        */
-        result freeCommandList(CommandGroup* group, CommandList* cmdList) const;
-
-        /**
-         * @brief Free the CommandLists from the CommandGroup, which allows the CommandGroup to release all of the device memory allocated for the CommandLists.
-         *
-         * @param group The CommandGroup to free the CommandLists from.
-         * @param numCommandLists The number of CommandLists to be free'd, *should** match the size of the cmdLists array.
-         * @param cmdLists An array of CommandGroups, **must** not be nullptr and **must** at least contain numCommandLists amount of CommandLists.
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if group is nullptr.
-         * @return ErrorInvalidUsage if numCommandLists is 0.
-         * @return ErrorInvalidUsage if cmdLists is nullptr.
-         * @return ErrorInvalidUsage if any of the CommandLists in cmdLists is nullptr.
-         * @return ErrorInvalidUsage if any of the CommandLists in cmdLists doesn't belong to the CommandGroup.
-        */
-        result freeCommandLists(CommandGroup* group, uint8_t numCommandLists, CommandList** cmdLists) const;
-
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
@@ -188,10 +120,5 @@ namespace LLRI_NAMESPACE
 
         result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup) const;
         void impl_destroyCommandGroup(CommandGroup* cmdGroup) const;
-
-        result impl_allocateCommandList(const command_list_alloc_desc& desc, CommandList** cmdList) const;
-        result impl_allocateCommandLists(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists) const;
-        result impl_freeCommandList(CommandGroup* group, CommandList* cmdList) const;
-        result impl_freeCommandLists(CommandGroup* group, uint8_t numCommandLists, CommandList** cmdLists) const;
     };
 }

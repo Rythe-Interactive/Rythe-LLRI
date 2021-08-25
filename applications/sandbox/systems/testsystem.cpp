@@ -175,6 +175,6 @@ void TestSystem::createCommandLists()
     const llri::command_group_desc groupDesc { llri::queue_type::Graphics, 1 };
     THROW_IF_FAILED(m_device->createCommandGroup(groupDesc, &m_commandGroup));
 
-    const llri::command_list_alloc_desc listDesc { m_commandGroup, llri::command_list_usage::Direct };
-    THROW_IF_FAILED(m_device->allocateCommandList(listDesc, &m_commandList));
+    const llri::command_list_alloc_desc listDesc { llri::command_list_usage::Direct };
+    THROW_IF_FAILED(m_commandGroup->allocate(listDesc, &m_commandList));
 }

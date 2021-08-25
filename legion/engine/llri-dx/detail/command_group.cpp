@@ -20,4 +20,125 @@ namespace LLRI_NAMESPACE
 
         return result::Success;
     }
+
+    result CommandGroup::impl_allocate(const command_list_alloc_desc& desc, CommandList** cmdList)
+    {
+        ID3D12GraphicsCommandList* dx12CommandList = nullptr;
+
+        const auto type = desc.usage == command_list_usage::Direct ?
+                      directx::mapCommandGroupType(m_type) :
+                      D3D12_COMMAND_LIST_TYPE_BUNDLE;
+
+        const HRESULT r = static_cast<ID3D12Device*>(m_deviceHandle)
+            ->CreateCommandList(0,
+                type,
+                static_cast<ID3D12CommandAllocator*>(m_ptr),
+                nullptr,
+                IID_PPV_ARGS(&dx12CommandList));
+
+        if (FAILED(r))
+            return directx::mapHRESULT(r);
+
+        //Dx12 command lists are opened by default, close to comply with our system
+        dx12CommandList->Close();
+
+        auto* output = new CommandList();
+        output->m_ptr = dx12CommandList;
+        output->m_groupHandle = m_ptr;
+
+        output->m_deviceHandle = m_deviceHandle;
+        output->m_deviceFunctionTable = m_deviceFunctionTable;
+
+        output->m_usage = desc.usage;
+        output->m_state = command_list_state::Empty;
+
+        output->m_validationCallback = m_validationCallback;
+        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
+
+        m_cmdLists.push_back(output);
+
+        *cmdList = output;
+        return result::Success;
+    }
+    
+    result CommandGroup::impl_allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists)
+    {
+        std::vector<CommandList*> output;
+
+        const auto type = desc.usage == command_list_usage::Direct ?
+                              directx::mapCommandGroupType(m_type) :
+                              D3D12_COMMAND_LIST_TYPE_BUNDLE;
+
+        for (uint8_t i = 0; i < count; i++)
+        {
+            ID3D12GraphicsCommandList* dx12CommandList = nullptr;
+
+            const HRESULT r = static_cast<ID3D12Device*>(m_deviceHandle)
+                ->CreateCommandList(0,
+                    type,
+                    static_cast<ID3D12CommandAllocator*>(m_ptr),
+                    nullptr,
+                    IID_PPV_ARGS(&dx12CommandList));
+
+            if (FAILED(r))
+            {
+                //Free already allocated command lists
+                this->free(static_cast<uint8_t>(output.size()), output.data());
+
+                return directx::mapHRESULT(r);
+            }
+
+            //Dx12 command lists are opened by default, close to comply with our system
+            dx12CommandList->Close();
+
+            auto* cmdList = new CommandList();
+            cmdList->m_ptr = dx12CommandList;
+            cmdList->m_groupHandle = m_ptr;
+
+            cmdList->m_deviceHandle = m_deviceHandle;
+            cmdList->m_deviceFunctionTable = m_deviceFunctionTable;
+
+            cmdList->m_usage = desc.usage;
+            cmdList->m_state = command_list_state::Empty;
+
+            cmdList->m_validationCallback = m_validationCallback;
+            cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
+
+            m_cmdLists.push_back(cmdList);
+            output.push_back(cmdList);
+        }
+
+        *cmdLists = output;
+        return result::Success;
+    }
+
+    result CommandGroup::impl_free(CommandList* cmdList)
+    {
+        //Free internal pointer
+        static_cast<IUnknown*>(cmdList->m_ptr)->Release();
+
+        //Remove from commandlist list
+        m_cmdLists.remove(cmdList);
+
+        //Delete wrapper
+        delete cmdList;
+        return result::Success;
+    }
+
+    result CommandGroup::impl_free(uint8_t numCommandLists, CommandList** cmdLists)
+    {
+        for (uint8_t i = 0; i < numCommandLists; i++)
+        {
+            //Free internal pointer
+            static_cast<IUnknown*>(cmdLists[i]->m_ptr)->Release();
+
+            //Remove from commandlist list
+            m_cmdLists.remove(cmdLists[i]);
+
+            //Delete wrapper
+            delete cmdLists[i];
+        }
+
+        return result::Success;
+    }
 }

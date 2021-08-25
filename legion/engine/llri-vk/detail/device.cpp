@@ -12,19 +12,6 @@ namespace LLRI_NAMESPACE
     namespace internal
     {
         std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice);
-
-        VkCommandBufferLevel mapCommandListUsage(command_list_usage usage)
-        {
-            switch(usage)
-            {
-                case command_list_usage::Direct:
-                    return VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-                case command_list_usage::Indirect:
-                    return VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-            }
-
-            throw;
-        }
     }
 
     result Device::impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup) const
@@ -67,108 +54,5 @@ namespace LLRI_NAMESPACE
             static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyCommandPool(static_cast<VkDevice>(m_ptr), static_cast<VkCommandPool>(cmdGroup->m_ptr), nullptr);
 
         delete cmdGroup;
-    }
-
-    result Device::impl_allocateCommandList(const command_list_alloc_desc& desc, CommandList** cmdList) const
-    {
-        VkCommandBufferAllocateInfo allocInfo { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO, nullptr };
-        allocInfo.commandPool = static_cast<VkCommandPool>(desc.group->m_ptr);
-        allocInfo.commandBufferCount = 1;
-        allocInfo.level = internal::mapCommandListUsage(desc.usage);
-
-        VkCommandBuffer cmd;
-        auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_ptr), &allocInfo, &cmd);
-        if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
-
-        auto* output = new CommandList();
-        output->m_ptr = cmd;
-        output->m_groupHandle = desc.group->m_ptr;
-
-        output->m_deviceHandle = m_ptr;
-        output->m_deviceFunctionTable = m_functionTable;
-
-        output->m_usage = desc.usage;
-        output->m_state = command_list_state::Empty;
-
-        output->m_validationCallback = m_validationCallback;
-        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
-
-        desc.group->m_cmdLists.push_back(output);
-
-        *cmdList = output;
-        return result::Success;
-    }
-
-    result Device::impl_allocateCommandLists(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists) const
-    {
-        VkCommandBufferAllocateInfo allocInfo { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO, nullptr };
-        allocInfo.commandPool = static_cast<VkCommandPool>(desc.group->m_ptr);
-        allocInfo.commandBufferCount = count;
-        allocInfo.level = internal::mapCommandListUsage(desc.usage);
-
-        std::vector<VkCommandBuffer> cmdBuffers(count);
-        auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_ptr), &allocInfo, cmdBuffers.data());
-        if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
-
-        for (uint8_t i = 0; i < count; i++)
-        {
-            auto* cmdList = new CommandList();
-            cmdList->m_ptr = cmdBuffers[i];
-            cmdList->m_groupHandle = desc.group->m_ptr;
-
-            cmdList->m_deviceHandle = m_ptr;
-            cmdList->m_deviceFunctionTable = m_functionTable;
-
-            cmdList->m_usage = desc.usage;
-            cmdList->m_state = command_list_state::Empty;
-
-            cmdList->m_validationCallback = m_validationCallback;
-            cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
-
-            desc.group->m_cmdLists.push_back(cmdList);
-            cmdLists->push_back(cmdList);
-        }
-
-        return result::Success;
-    }
-
-    result Device::impl_freeCommandList(CommandGroup* group, CommandList* cmdList) const
-    {
-        //Free internal pointer
-        auto buffer = static_cast<VkCommandBuffer>(cmdList->m_ptr);
-        static_cast<VolkDeviceTable*>(m_functionTable)
-            ->vkFreeCommandBuffers(static_cast<VkDevice>(m_ptr), static_cast<VkCommandPool>(group->m_ptr), 1, &buffer);
-
-        //Remove from commandlist list
-        group->m_cmdLists.remove(cmdList);
-
-        //Delete wrapper
-        delete cmdList;
-        return result::Success;
-    }
-
-    result Device::impl_freeCommandLists(CommandGroup* group, uint8_t numCommandLists, CommandList** cmdLists) const
-    {
-        //Gather vk handles
-        std::vector<VkCommandBuffer> buffers(numCommandLists);
-        for (uint8_t i = 0; i < numCommandLists; i++)
-            buffers[i] = static_cast<VkCommandBuffer>(cmdLists[i]->m_ptr);
-
-        //Free internal pointers
-        static_cast<VolkDeviceTable*>(m_functionTable)
-            ->vkFreeCommandBuffers(static_cast<VkDevice>(m_ptr), static_cast<VkCommandPool>(group->m_ptr), buffers.size(), buffers.data());
-
-        for (uint8_t i = 0; i < numCommandLists; i++)
-        {
-            //Remove from commandlist list
-            group->m_cmdLists.remove(cmdLists[i]);
-
-            //Delete wrapper
-            delete cmdLists[i];
-        }
-
-        return result::Success;
     }
 }

@@ -48,7 +48,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Function that maps an HRESULT to an llri::result.
         */
-        constexpr inline result mapHRESULT(const HRESULT value)
+        constexpr result mapHRESULT(const HRESULT value)
         {
             switch (value)
             {
@@ -89,6 +89,21 @@ namespace LLRI_NAMESPACE
             }
 
             return result::ErrorUnknown;
+        }
+
+        constexpr D3D12_COMMAND_LIST_TYPE mapCommandGroupType(queue_type type)
+        {
+            switch (type)
+            {
+                case queue_type::Graphics:
+                    return D3D12_COMMAND_LIST_TYPE_DIRECT;
+                case queue_type::Compute:
+                    return D3D12_COMMAND_LIST_TYPE_COMPUTE;
+                case queue_type::Transfer:
+                    return D3D12_COMMAND_LIST_TYPE_COPY;
+            }
+
+            throw;
         }
     }
 }

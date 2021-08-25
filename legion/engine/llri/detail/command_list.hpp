@@ -40,16 +40,12 @@ namespace LLRI_NAMESPACE
     constexpr const char* to_string(command_list_usage usage);
 
     /**
-     * @brief Describes how many CommandLists should be allocated through the given CommandGroup, and what their usage will be.
+     * @brief Describes how the command list(s) should be allocated what their usage will be.
     */
     struct command_list_alloc_desc
     {
         /**
-         * @brief The CommandGroup to allocate the list(s) from.
-        */
-        CommandGroup* group;
-        /**
-         * @brief Describes if the CommandLists will be used to be submitted to Queues directly or if they will be submitted indirectly through other CommandLists.
+         * @brief Describes if the CommandList will be used to be submitted to Queues directly or if they will be submitted indirectly through other CommandLists.
         */
         command_list_usage usage;
     };
