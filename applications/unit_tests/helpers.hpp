@@ -33,4 +33,27 @@ namespace helpers
         REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);
         return device;
     }
+
+    inline llri::queue_type availableQueueType(llri::Adapter* adapter)
+    {
+        for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+        {
+            uint8_t count = 0;
+            adapter->queryQueueCount(static_cast<llri::queue_type>(type), &count);
+
+            if (count > 0)
+                return static_cast<llri::queue_type>(type);
+        }
+
+        FAIL("No available queue for this adapter");
+        return llri::queue_type::MaxEnum;
+    }
+
+    inline llri::CommandGroup* defaultCommandGroup(llri::Device* device, llri::queue_type type, uint32_t count)
+    {
+        llri::CommandGroup* cmdGroup;
+        const llri::command_group_desc desc { type, count };
+        REQUIRE_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
+        return cmdGroup;
+    }
 }
