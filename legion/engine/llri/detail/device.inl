@@ -108,6 +108,9 @@ namespace LLRI_NAMESPACE
 
     inline void Device::destroyCommandGroup(CommandGroup* cmdGroup) const
     {
+        if (!cmdGroup)
+            return;
+
         if (cmdGroup->m_ptr)
         {
             std::vector<CommandList*> cmdLists;
