@@ -120,5 +120,8 @@ TEST_CASE("Device")
                 }
             }
         }
+
+        instance->destroyDevice(device);
+        llri::destroyInstance(instance);
     }
 }
