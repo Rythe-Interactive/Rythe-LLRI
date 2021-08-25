@@ -10,4 +10,7 @@
     <ClCompile Include="detail\command_group.cpp" />
     <ClCompile Include="detail\command_list.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="helpers.hpp" />
+  </ItemGroup>
 </Project>

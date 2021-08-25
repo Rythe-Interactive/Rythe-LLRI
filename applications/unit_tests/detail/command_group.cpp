@@ -13,4 +13,24 @@ TEST_CASE("CommandGroup")
     {
         
     }
+
+    SUBCASE("CommandGroup::allocate() (single)")
+    {
+        
+    }
+
+    SUBCASE("CommandGroup::allocate() (multi)")
+    {
+        
+    }
+
+    SUBCASE("CommandGroup::free() (single)")
+    {
+        
+    }
+
+    SUBCASE("CommandGroup::free() (multi)")
+    {
+        
+    }
 }

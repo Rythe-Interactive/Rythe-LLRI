@@ -75,28 +75,28 @@
     <OutDir>$(SolutionDir)binaries\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)intermediates\$(Platform)\$(Configuration)\engine\$(ProjectName)\</IntDir>
     <TargetName>legion-$(ProjectName)-d</TargetName>
-    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(SolutionDir)applications\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-DX|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)binaries\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)intermediates\$(Platform)\$(Configuration)\engine\$(ProjectName)\</IntDir>
     <TargetName>legion-$(ProjectName)-d</TargetName>
-    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(SolutionDir)applications\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-VK|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)binaries\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)intermediates\$(Platform)\$(Configuration)\engine\$(ProjectName)\</IntDir>
     <TargetName>legion-$(ProjectName)</TargetName>
-    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(SolutionDir)applications\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-DX|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)binaries\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)intermediates\$(Platform)\$(Configuration)\engine\$(ProjectName)\</IntDir>
     <TargetName>legion-$(ProjectName)</TargetName>
-    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)legion\engine;$(SolutionDir)deps\include;$(SolutionDir)deps\include\legion\engine;$(SolutionDir)applications\deps\include;$(SolutionDir)applications\deps\include\legion\engine;$(SolutionDir)applications\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-VK|x64'">
     <ClCompile>
@@ -223,6 +223,9 @@ xcopy /Y /E /I /R "$(SolutionDir)applications\deps\dll\" "$(OutDir)"</Command>
     <ClCompile Include="detail\instance.cpp" />
     <ClCompile Include="detail\instance_extensions.cpp" />
     <ClCompile Include="llri.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="helpers.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
