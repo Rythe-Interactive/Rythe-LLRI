@@ -49,11 +49,21 @@ namespace helpers
         return llri::queue_type::MaxEnum;
     }
 
-    inline llri::CommandGroup* defaultCommandGroup(llri::Device* device, llri::queue_type type, uint32_t count)
+    inline llri::CommandGroup* defaultCommandGroup(llri::Device* device, llri::queue_type type, uint8_t count)
     {
         llri::CommandGroup* cmdGroup;
         const llri::command_group_desc desc { type, count };
         REQUIRE_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
         return cmdGroup;
+    }
+
+    inline llri::CommandList* defaultCommandList(llri::CommandGroup* group, llri::command_list_usage usage)
+    {
+        llri::command_list_alloc_desc desc{};
+        desc.usage = usage;
+
+        llri::CommandList* cmd;
+        REQUIRE_EQ(group->allocate(desc, &cmd), llri::result::Success);
+        return cmd;
     }
 }
