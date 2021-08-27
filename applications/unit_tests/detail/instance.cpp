@@ -6,6 +6,7 @@
 
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
+#include <unit_tests/helpers.hpp>
 
 void dummyCallback(llri::validation_callback_severity sev, llri::validation_callback_source src, const char* message, void* userData)
 {
@@ -101,9 +102,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::enumerateAdapters")
     {
-        llri::Instance* instance;
-        const llri::instance_desc desc{};
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        llri::Instance* instance = helpers::defaultInstance();
 
         SUBCASE("[Incorrect usage] adapters == nullptr")
         {
@@ -154,9 +153,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::createDevice()")
     {
-        llri::Instance* instance;
-        const llri::instance_desc desc{};
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        llri::Instance* instance = helpers::defaultInstance();
 
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
@@ -320,9 +317,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::destroyDevice()")
     {
-        llri::Instance* instance;
-        const llri::instance_desc desc{};
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        llri::Instance* instance = helpers::defaultInstance();
 
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);

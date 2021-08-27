@@ -6,12 +6,11 @@
 
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
+#include <unit_tests/helpers.hpp>
 
 TEST_CASE("Adapter")
 {
-    llri::Instance* instance = nullptr;
-    llri::instance_desc desc{ 0, nullptr, "", {} };
-    REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+    llri::Instance* instance = helpers::defaultInstance();
 
     std::vector<llri::Adapter*> adapters;
     REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
