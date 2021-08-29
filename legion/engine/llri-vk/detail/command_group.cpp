@@ -48,7 +48,7 @@ namespace LLRI_NAMESPACE
         output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
-        m_cmdLists.push_back(output);
+        m_cmdLists.emplace(output);
 
         *cmdList = output;
         return result::Success;
@@ -81,7 +81,7 @@ namespace LLRI_NAMESPACE
             cmdList->m_validationCallback = m_validationCallback;
             cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
-            m_cmdLists.push_back(cmdList);
+            m_cmdLists.emplace(cmdList);
             cmdLists->push_back(cmdList);
         }
 
@@ -96,7 +96,7 @@ namespace LLRI_NAMESPACE
             ->vkFreeCommandBuffers(static_cast<VkDevice>(m_deviceHandle), static_cast<VkCommandPool>(m_ptr), 1, &buffer);
 
         //Remove from commandlist list
-        m_cmdLists.remove(cmdList);
+        m_cmdLists.erase(cmdList);
 
         //Delete wrapper
         delete cmdList;
@@ -117,7 +117,7 @@ namespace LLRI_NAMESPACE
         for (uint8_t i = 0; i < numCommandLists; i++)
         {
             //Remove from commandlist list
-            m_cmdLists.remove(cmdLists[i]);
+            m_cmdLists.erase(cmdLists[i]);
 
             //Delete wrapper
             delete cmdLists[i];

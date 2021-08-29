@@ -9,7 +9,7 @@
 //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
 #include <llri/detail/instance.hpp>
 #include <cstdint>
-#include <list>
+#include <unordered_set>
 
 namespace LLRI_NAMESPACE
 {
@@ -129,7 +129,7 @@ namespace LLRI_NAMESPACE
 
         queue_type m_type;
         uint8_t m_maxCount;
-        std::list<CommandList*> m_cmdLists;
+        std::unordered_set<CommandList*> m_cmdLists;
 
         result impl_reset();
 
