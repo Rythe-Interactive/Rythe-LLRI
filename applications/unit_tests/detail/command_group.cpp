@@ -36,11 +36,61 @@ TEST_CASE("CommandGroup")
 
     SUBCASE("CommandGroup::allocate() (single)")
     {
+        SUBCASE("[Correct usage] Valid parameters")
+        {
+            llri::CommandList* cmdList;
+            llri::command_list_alloc_desc desc { llri::command_list_usage::Direct };
+            CHECK_EQ(group->allocate(desc, &cmdList), llri::result::Success);
+        }
+
+        SUBCASE("[Incorrect usage] Invalid command_list_usage enum value")
+        {
+            llri::CommandList* cmdList;
+            llri::command_list_alloc_desc desc { static_cast<llri::command_list_usage>(UINT_MAX) };
+            CHECK_EQ(group->allocate(desc, &cmdList), llri::result::ErrorInvalidUsage);
+        }
+
+        SUBCASE("[Incorrect usage] More CommandLists than available")
+        {
+            auto* smallGroup = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 1);
+
+            llri::CommandList* cmdList;
+            llri::command_list_alloc_desc desc { llri::command_list_usage::Direct };
+            REQUIRE_EQ(smallGroup->allocate(desc, &cmdList), llri::result::Success);
+
+            llri::CommandList* cmdList2;
+            CHECK_EQ(smallGroup->allocate(desc, &cmdList2), llri::result::ErrorExceededLimit);
+
+            device->destroyCommandGroup(smallGroup);
+        }
     }
 
     SUBCASE("CommandGroup::allocate() (multi)")
     {
-        
+        SUBCASE("[Correct usage] Valid parameters")
+        {
+            std::vector<llri::CommandList*> cmdLists;
+            llri::command_list_alloc_desc desc { llri::command_list_usage::Direct };
+            CHECK_EQ(group->allocate(desc, 5, &cmdLists), llri::result::Success);
+        }
+
+        SUBCASE("[Incorrect usage] Invalid command_list_usage enum value")
+        {
+            std::vector<llri::CommandList*> cmdLists;
+            llri::command_list_alloc_desc desc { static_cast<llri::command_list_usage>(UINT_MAX) };
+            CHECK_EQ(group->allocate(desc, 1, &cmdLists), llri::result::ErrorInvalidUsage);
+        }
+
+        SUBCASE("[Incorrect usage] More CommandLists than available")
+        {
+            auto* smallGroup = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 5);
+
+            std::vector<llri::CommandList*> cmdLists;
+            llri::command_list_alloc_desc desc { llri::command_list_usage::Direct };
+            REQUIRE_EQ(smallGroup->allocate(desc, 6, &cmdLists), llri::result::ErrorExceededLimit);
+
+            device->destroyCommandGroup(smallGroup);
+        }
     }
 
     SUBCASE("CommandGroup::free() (single)")
