@@ -63,11 +63,11 @@ namespace LLRI_NAMESPACE
     
     result CommandGroup::impl_allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists)
     {
-        std::vector<CommandList*> output;
-
         const auto type = desc.usage == command_list_usage::Direct ?
                               directx::mapCommandGroupType(m_type) :
                               D3D12_COMMAND_LIST_TYPE_BUNDLE;
+
+        cmdLists->reserve(count);
 
         for (uint8_t i = 0; i < count; i++)
         {
@@ -83,8 +83,8 @@ namespace LLRI_NAMESPACE
             if (FAILED(r))
             {
                 //Free already allocated command lists
-                this->free(static_cast<uint8_t>(output.size()), output.data());
-
+                this->free(static_cast<uint8_t>(cmdLists->size()), cmdLists->data());
+                cmdLists->clear();
                 return directx::mapHRESULT(r);
             }
 
@@ -105,10 +105,9 @@ namespace LLRI_NAMESPACE
             cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
             m_cmdLists.push_back(cmdList);
-            output.push_back(cmdList);
+            cmdLists->push_back(cmdList);
         }
 
-        *cmdLists = output;
         return result::Success;
     }
 
