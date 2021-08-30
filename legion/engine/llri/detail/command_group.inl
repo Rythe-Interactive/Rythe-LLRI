@@ -114,14 +114,20 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (cmdList == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::free() returned ErrorInvalidUsage because the passed cmdList parameter was nullptr");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::free() returned ErrorInvalidUsage because the passed cmdList parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
         if (std::find(m_cmdLists.begin(), m_cmdLists.end(), cmdList) == m_cmdLists.end())
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::free() returned ErrorInvalidUsage because the passed CommandList wasn't allocated through the passed CommandGroup");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::free() returned ErrorInvalidUsage because the passed CommandList wasn't allocated through the passed CommandGroup.");
             return result::ErrorInvalidUsage;
+        }
+
+        if (cmdList->m_state == command_list_state::Recording)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::free() returned ErrorInvalidState because the passed CommandList is in a recording state.");
+            return result::ErrorInvalidState;
         }
 #endif
 
@@ -163,6 +169,12 @@ namespace LLRI_NAMESPACE
                 const std::string str = "CommandGroup::free() returned ErrorInvalidUsage because cmdLists member " + std::to_string(i) + " wasn't allocated through the CommandGroup";
                 m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, str.c_str());
                 return result::ErrorInvalidUsage;
+            }
+
+            if (cmdLists[i]->m_state == command_list_state::Recording)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::free() returned ErrorInvalidState because one of the CommandLists is in a recording state.");
+                return result::ErrorInvalidState;
             }
         }
 #endif
