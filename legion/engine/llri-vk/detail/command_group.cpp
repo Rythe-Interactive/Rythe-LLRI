@@ -37,7 +37,7 @@ namespace LLRI_NAMESPACE
 
         auto* output = new CommandList();
         output->m_ptr = cmd;
-        output->m_groupHandle = m_ptr;
+        output->m_group = this;
 
         output->m_deviceHandle = m_deviceHandle;
         output->m_deviceFunctionTable = m_deviceFunctionTable;
@@ -70,7 +70,7 @@ namespace LLRI_NAMESPACE
         {
             auto* cmdList = new CommandList();
             cmdList->m_ptr = cmdBuffers[i];
-            cmdList->m_groupHandle = m_ptr;
+            cmdList->m_group = this;
 
             cmdList->m_deviceHandle = m_deviceHandle;
             cmdList->m_deviceFunctionTable = m_deviceFunctionTable;

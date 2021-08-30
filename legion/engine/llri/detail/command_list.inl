@@ -46,6 +46,13 @@ namespace LLRI_NAMESPACE
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
             return result::ErrorInvalidState;
         }
+
+        if (m_group->m_currentlyRecording)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandList::begin() returned ErrorOccupided because its parent CommandGroup is already recording a CommandList.");
+            return result::ErrorOccupied;
+        }
+        m_group->m_currentlyRecording = this;
 #endif
         
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
@@ -66,6 +73,8 @@ namespace LLRI_NAMESPACE
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
             return result::ErrorInvalidState;
         }
+
+        m_group->m_currentlyRecording = nullptr;
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING

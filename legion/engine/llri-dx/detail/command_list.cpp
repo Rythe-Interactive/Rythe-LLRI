@@ -13,7 +13,7 @@ namespace LLRI_NAMESPACE
     {
         //TODO: Handle node mask
         //TODO: Handle inheritance/indirect
-        const auto r = static_cast<ID3D12GraphicsCommandList*>(m_ptr)->Reset(static_cast<ID3D12CommandAllocator*>(m_groupHandle), nullptr);
+        const auto r = static_cast<ID3D12GraphicsCommandList*>(m_ptr)->Reset(static_cast<ID3D12CommandAllocator*>(m_group->m_ptr), nullptr);
         if (FAILED(r))
             return directx::mapHRESULT(r);
 

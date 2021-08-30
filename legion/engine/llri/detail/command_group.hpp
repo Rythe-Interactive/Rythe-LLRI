@@ -41,6 +41,7 @@ namespace LLRI_NAMESPACE
     class CommandGroup
     {
         friend class Device;
+        friend class CommandList;
 
     public:
         /**
@@ -120,6 +121,7 @@ namespace LLRI_NAMESPACE
         ~CommandGroup() = default;
 
         void* m_ptr = nullptr;
+        void* m_indirectPtr = nullptr;
 
         void* m_deviceHandle = nullptr;
         void* m_deviceFunctionTable = nullptr;
@@ -130,6 +132,10 @@ namespace LLRI_NAMESPACE
         queue_type m_type;
         uint8_t m_maxCount;
         std::unordered_set<CommandList*> m_cmdLists;
+
+#ifndef LLRI_DISABLE_VALIDATION
+        CommandList* m_currentlyRecording = nullptr;
+#endif
 
         result impl_reset();
 

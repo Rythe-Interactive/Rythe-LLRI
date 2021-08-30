@@ -43,6 +43,17 @@ TEST_CASE("CommandList")
             //previously recorded
             CHECK_EQ(list->begin(desc), llri::result::ErrorInvalidState);
         }
+
+        SUBCASE("[Incorrect usage] The CommandGroup this CommandList belongs to was already recording a CommandList")
+        {
+            auto* list2 = helpers::defaultCommandList(group, llri::command_list_usage::Direct);
+
+            REQUIRE_EQ(list->begin({}), llri::result::Success);
+
+            CHECK_EQ(list2->begin({}), llri::result::ErrorOccupied);
+
+            REQUIRE_EQ(list->end(), llri::result::Success);
+        }
     }
 
     SUBCASE("CommandList::end()")

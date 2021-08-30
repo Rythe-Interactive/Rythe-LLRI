@@ -142,9 +142,13 @@ namespace LLRI_NAMESPACE
         */
         ErrorExceededLimit,
         /**
+         * @brief An object was already occupied with another operation and thus couldn't be used for the submitted operation
+        */
+        ErrorOccupied,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorExceededLimit
+        MaxEnum = ErrorOccupied
     };
 
     /**

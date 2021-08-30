@@ -147,7 +147,7 @@ namespace LLRI_NAMESPACE
         ~CommandList() = default;
 
         void* m_ptr = nullptr;
-        void* m_groupHandle = nullptr;
+        CommandGroup* m_group = nullptr;
 
         void* m_deviceHandle = nullptr;
         void* m_deviceFunctionTable = nullptr;
