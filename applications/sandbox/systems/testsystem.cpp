@@ -80,6 +80,10 @@ void TestSystem::createInstance()
     if (queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation))
         instanceExtensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true });
 
+    m_adapterNodesSupported = queryInstanceExtensionSupport(llri::instance_extension_type::AdapterNodes);
+    if (m_adapterNodesSupported)
+        instanceExtensions.emplace_back(llri::instance_extension_type::AdapterNodes, llri::adapter_nodes_ext { true });
+
     const llri::instance_desc instanceDesc{
         (uint32_t)instanceExtensions.size(), instanceExtensions.data(),
         "sandbox",
@@ -107,6 +111,13 @@ void TestSystem::selectAdapter()
         log::info("\tAdapter ID: {}", info.adapterId);
         log::info("\tAdapter Type: {}", to_string(info.adapterType));
 
+        if (m_adapterNodesSupported)
+        {
+            uint8_t nodeCount;
+            THROW_IF_FAILED(adapter->queryNodeCountEXT(&nodeCount));
+            log::info("\tAdapter Nodes: {}", nodeCount);
+        }
+
         uint8_t maxGraphicsQueueCount, maxComputeQueueCount, maxTransferQueueCount;
         THROW_IF_FAILED(adapter->queryQueueCount(llri::queue_type::Graphics, &maxGraphicsQueueCount));
         THROW_IF_FAILED(adapter->queryQueueCount(llri::queue_type::Compute, &maxComputeQueueCount));
@@ -122,7 +133,6 @@ void TestSystem::selectAdapter()
         {
             log::info("Adapter selected");
             m_adapter = adapter;
-            break;
         }
     }
 
