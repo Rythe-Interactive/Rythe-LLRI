@@ -27,11 +27,6 @@ namespace LLRI_NAMESPACE
                     ID3D12Debug1* temp = nullptr;
                     return SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
                 }
-                case instance_extension_type::AdapterNodes:
-                {
-                    //DX12 always supports the adapter nodes extension
-                    return true;
-                }
             }
 
             return false;

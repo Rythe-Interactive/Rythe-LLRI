@@ -95,16 +95,4 @@ namespace LLRI_NAMESPACE
 ;
         return result::Success;
     }
-
-    result Adapter::impl_queryNodeCountEXT(uint8_t* count) const
-    {
-        ID3D12Device* device = nullptr;
-        const HRESULT h = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device));
-
-        if (FAILED(h))
-            return internal::mapHRESULT(h);
-
-        *count = static_cast<uint8_t>(device->GetNodeCount());
-        return result::Success;
-    }
 }

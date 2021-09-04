@@ -125,28 +125,4 @@ namespace LLRI_NAMESPACE
 
         return result::Success;
     }
-
-    result Adapter::impl_queryNodeCountEXT(uint8_t* count) const
-    {
-        uint32_t groupCount;
-        vkEnumeratePhysicalDeviceGroups(static_cast<VkInstance>(m_instanceHandle), &groupCount, nullptr);
-
-        std::vector<VkPhysicalDeviceGroupProperties> groups(groupCount);
-        vkEnumeratePhysicalDeviceGroups(static_cast<VkInstance>(m_instanceHandle), &groupCount, groups.data());
-
-        for (const VkPhysicalDeviceGroupProperties& group : groups)
-        {
-            for (uint32_t i = 0; i < group.physicalDeviceCount; i++)
-            {
-                if (group.physicalDevices[i] == static_cast<VkPhysicalDevice>(m_ptr))
-                {
-                    *count = static_cast<uint8_t>(group.physicalDeviceCount);
-                    return result::Success;
-                }
-            }
-        }
-
-        //This should never happen because every physical device is part of a device group
-        return result::ErrorUnknown;
-    }
 }

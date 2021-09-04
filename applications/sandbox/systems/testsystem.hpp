@@ -41,8 +41,6 @@ private:
     llri::Queue* m_computeQueue = nullptr;
     llri::Queue* m_transferQueue = nullptr;
 
-    bool m_adapterNodesSupported = false;
-
     void createInstance();
     void selectAdapter();
     void createDevice();

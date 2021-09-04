@@ -94,11 +94,6 @@ namespace LLRI_NAMESPACE
                         extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
                         break;
                     }
-                    case instance_extension_type::AdapterNodes:
-                    {
-                        extensionCreateResult = result::Success;
-                        break;
-                    }
                     default:
                     {
                         if (desc.callbackDesc.callback)
@@ -233,6 +228,14 @@ namespace LLRI_NAMESPACE
                 adapter->m_instanceHandle = m_ptr;
                 adapter->m_validationCallback = m_validationCallback;
                 adapter->m_validationCallbackMessenger = m_validationCallbackMessenger;
+
+                //Attempt to query node count
+                ID3D12Device* device = nullptr;
+                if (SUCCEEDED(directx::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device))))
+                {
+                    adapter->m_nodeCount = static_cast<uint8_t>(device->GetNodeCount());
+                    device->Release();
+                }
 
                 m_cachedAdapters[(void*)luid] = adapter;
                 adapters->push_back(adapter);

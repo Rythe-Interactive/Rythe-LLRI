@@ -45,12 +45,10 @@ namespace LLRI_NAMESPACE
     {
         switch (type)
         {
-        case instance_extension_type::DriverValidation:
-            return "DriverValidation";
-        case instance_extension_type::GPUValidation:
-            return "GPUValidation";
-        case instance_extension_type::AdapterNodes:
-            return "AdapterNodes";
+            case instance_extension_type::DriverValidation:
+                return "DriverValidation";
+            case instance_extension_type::GPUValidation:
+                return "GPUValidation";
         }
 
         return "Invalid instance_extension_type value";
@@ -82,44 +80,15 @@ namespace LLRI_NAMESPACE
                 desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, "createInstance() returned ErrorInvalidUsage because desc.numExtensions was more than 0 but desc.extensions was nullptr.");
             return result::ErrorInvalidUsage;
         }
-
-        detail::instance_validation_data validationData = {};
-        for (uint32_t i = 0; i < desc.numExtensions; i++)
-        {
-            switch(desc.extensions[i].type)
-            {
-                case instance_extension_type::AdapterNodes:
-                {
-                    if (desc.extensions[i].adapterNodes.enable)
-                        validationData.adapterNodesEnabled = true;
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = detail::impl_createInstance(desc, instance, true);
         if (*instance)
-        {
             detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
-
-            #ifndef LLRI_DISABLE_VALIDATION
-            (*instance)->m_instanceValidationData = validationData;
-            #endif
-        }
         return r;
 #else
-        #ifndef LLRI_DISABLE_VALIDATION
-        const auto r = detail::impl_createInstance(desc, instance, true);
-        if (*instance)
-            (*instance)->m_instanceValidationData = validationData;
-        return r;
-        #else
         return detail::impl_createInstance(desc, instance, false);
-        #endif
 #endif
     }
 
@@ -142,22 +111,9 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
-
-        #ifndef LLRI_DISABLE_VALIDATION
-                for (auto* adapter : (*adapters))
-                    adapter->m_instanceValidationData = m_instanceValidationData;
-        #endif
-
         return r;
 #else
-        #ifndef LLRI_DISABLE_VALIDATION
-        const auto r = impl_enumerateAdapters(adapters);
-                for (auto* adapter : (*adapters))
-                    adapter->m_instanceValidationData = m_instanceValidationData;
-        return r;
-        #else
         return impl_enumerateAdapters(adapters);
-        #endif
 #endif
     }
 

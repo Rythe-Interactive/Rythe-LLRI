@@ -16,7 +16,6 @@ namespace LLRI_NAMESPACE
             internal::lazyInitializeVolk();
 
             auto& layers = internal::queryAvailableLayers();
-            auto& extensions = internal::queryAvailableExtensions();
 
             switch (type)
             {
@@ -27,10 +26,6 @@ namespace LLRI_NAMESPACE
                 case instance_extension_type::GPUValidation:
                 {
                     return true;
-                }
-                case instance_extension_type::AdapterNodes:
-                {
-                    return extensions.find(internal::nameHash("VK_KHR_device_group_creation")) != extensions.end();
                 }
             }
 
