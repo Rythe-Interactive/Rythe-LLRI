@@ -13,36 +13,38 @@ namespace LLRI_NAMESPACE
     {
         switch (r)
         {
-        case result::Success:
-            return "Success";
-        case result::Timeout:
-            return "Timeout";
-        case result::ErrorUnknown:
-            return "ErrorUnknown";
-        case result::ErrorInvalidUsage:
-            return "ErrorInvalidUsage";
-        case result::ErrorFeatureNotSupported:
-            return "ErrorFeatureNotSupported";
-        case result::ErrorExtensionNotSupported:
-            return "ErrorExtensionNotSupported";
-        case result::ErrorDeviceHung:
-            return "ErrorDeviceHung";
-        case result::ErrorDeviceLost:
-            return "ErrorDeviceLost";
-        case result::ErrorDeviceRemoved:
-            return "ErrorDeviceRemoved";
-        case result::ErrorDriverFailure:
-            return "ErrorDriverFailure";
-        case result::NotReady:
-            return "NotReady";
-        case result::ErrorOutOfHostMemory:
-            return "ErrorOutOfHostMemory";
-        case result::ErrorOutOfDeviceMemory:
-            return "ErrorOutOfDeviceMemory";
-        case result::ErrorInitializationFailed:
-            return "ErrorInitializationFailed";
-        case result::ErrorIncompatibleDriver:
-            return "ErrorIncompatibleDriver";
+            case result::Success:
+                return "Success";
+            case result::Timeout:
+                return "Timeout";
+            case result::ErrorUnknown:
+                return "ErrorUnknown";
+            case result::ErrorInvalidUsage:
+                return "ErrorInvalidUsage";
+            case result::ErrorFeatureNotSupported:
+                return "ErrorFeatureNotSupported";
+            case result::ErrorExtensionNotSupported:
+                return "ErrorExtensionNotSupported";
+            case result::ErrorExtensionNotEnabled:
+                return "ErrorExtensionNotEnabled";
+            case result::ErrorDeviceHung:
+                return "ErrorDeviceHung";
+            case result::ErrorDeviceLost:
+                return "ErrorDeviceLost";
+            case result::ErrorDeviceRemoved:
+                return "ErrorDeviceRemoved";
+            case result::ErrorDriverFailure:
+                return "ErrorDriverFailure";
+            case result::NotReady:
+                return "NotReady";
+            case result::ErrorOutOfHostMemory:
+                return "ErrorOutOfHostMemory";
+            case result::ErrorOutOfDeviceMemory:
+                return "ErrorOutOfDeviceMemory";
+            case result::ErrorInitializationFailed:
+                return "ErrorInitializationFailed";
+            case result::ErrorIncompatibleDriver:
+                return "ErrorIncompatibleDriver";
         }
 
         return "Invalid result value";
