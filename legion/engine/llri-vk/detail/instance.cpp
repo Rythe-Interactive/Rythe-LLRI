@@ -430,7 +430,7 @@ namespace LLRI_NAMESPACE
             table->vkGetDeviceQueue(vkDevice, families[queueDesc.type], queueCounts[queueDesc.type], &vkQueue);
 
             auto* queue = new Queue();
-            queue->m_ptr = vkQueue;
+            queue->m_ptrs = std::vector<void*>(desc.adapter->m_nodeCount, vkQueue);
 
             switch(queueDesc.type)
             {
