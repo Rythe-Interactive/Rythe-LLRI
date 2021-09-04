@@ -387,6 +387,9 @@ namespace LLRI_NAMESPACE
         //Extensions
         std::vector<const char*> extensions;
 
+        if (desc.adapter->m_nodeCount > 1)
+            extensions.push_back("VK_KHR_device_group");
+
         //Features
         VkPhysicalDeviceFeatures features{};
 
