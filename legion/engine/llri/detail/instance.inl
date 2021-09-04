@@ -49,6 +49,8 @@ namespace LLRI_NAMESPACE
             return "DriverValidation";
         case instance_extension_type::GPUValidation:
             return "GPUValidation";
+        case instance_extension_type::AdapterNodes:
+            return "AdapterNodes";
         }
 
         return "Invalid instance_extension_type value";
@@ -111,9 +113,22 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+
+        #ifndef LLRI_DISABLE_VALIDATION
+                for (auto* adapter : (*adapters))
+                    adapter->m_instanceValidationData = m_instanceValidationData;
+        #endif
+
         return r;
 #else
+        #ifndef LLRI_DISABLE_VALIDATION
+        const auto r = impl_enumerateAdapters(adapters);
+                for (auto* adapter : (*adapters))
+                    adapter->m_instanceValidationData = m_instanceValidationData;
+        return r;
+        #else
         return impl_enumerateAdapters(adapters);
+        #endif
 #endif
     }
 

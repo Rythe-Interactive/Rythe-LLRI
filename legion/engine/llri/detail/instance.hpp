@@ -168,6 +168,13 @@ namespace LLRI_NAMESPACE
          * @param messenger This value may differ depending on the function that is calling it, the most relevant messenger will be picked.
         */
         void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger);
+
+#ifndef LLRI_DISABLE_VALIDATION
+        struct instance_validation_data
+        {
+            bool adapterNodesEnabled = false;
+        };
+#endif
     }
 
     /**
@@ -261,6 +268,10 @@ namespace LLRI_NAMESPACE
         void* m_validationCallbackMessenger = nullptr; //Allows API to store their callback messenger if needed
 
         std::map<void*, Adapter*> m_cachedAdapters;
+
+#ifndef LLRI_DISABLE_VALIDATION
+        detail::instance_validation_data m_instanceValidationData;
+#endif
 
         result impl_enumerateAdapters(std::vector<Adapter*>* adapters);
         result impl_createDevice(const device_desc& desc, Device** device) const;

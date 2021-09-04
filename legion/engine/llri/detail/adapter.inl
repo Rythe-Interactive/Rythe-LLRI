@@ -118,7 +118,7 @@ namespace LLRI_NAMESPACE
 
         if (m_ptr == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrordeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
         }
 #endif
@@ -129,6 +129,37 @@ namespace LLRI_NAMESPACE
         return r;
 #else
         return impl_queryQueueCount(type, count);
+#endif
+    }
+
+    inline result Adapter::queryNodeCountEXT(uint8_t* count) const
+    {
+#ifndef LLRI_DISABLE_VALIDATION
+        if (count == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryNodeCountEXT() returned ErrorInvalidUsage because the passed count parameter was nullptr.");
+            return result::ErrorInvalidUsage;
+        }
+
+        if (m_ptr == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryNodeCountEXT() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            return result::ErrorDeviceLost;
+        }
+
+        if (!m_instanceValidationData.adapterNodesEnabled)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryNodeCountEXT() returned ErrorExtensionNotEnabled because the adapter_nodes_ext extension wasn't enabled in Instance");
+            return result::ErrorExtensionNotEnabled;
+        }
+#endif
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto r = impl_queryNodeCountEXT(count);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        return r;
+#else
+        return impl_queryNodeCountEXT(count);
 #endif
     }
 }

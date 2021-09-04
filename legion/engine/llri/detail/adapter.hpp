@@ -140,6 +140,19 @@ namespace LLRI_NAMESPACE
         */
         result queryQueueCount(queue_type type, uint8_t* count) const;
 
+        /**
+         * @brief Query the number of nodes that this adapter represents.
+         *
+         * @note The adapter_nodes_ext extension must be enabled for this function to succeed.
+         *
+         * @param count A pointer to the count variable.
+         * @return Success upon correct execution of the operation.
+         * @return ErrorExtensionNotEnabled if the adapter_nodes_ext was not enabled.
+         * @return ErrorInvalidUsage if count was nullptr.
+         * @return ErrorDeviceLost if the adapter was removed or lost.
+         * @return Implementation defined result values: 
+        */
+        result queryNodeCountEXT(uint8_t* count) const;
     private:
         //Force private constructor/deconstructor so that only instance can manage lifetime
         Adapter() = default;
@@ -149,10 +162,15 @@ namespace LLRI_NAMESPACE
         validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
+#ifndef LLRI_DISABLE_VALIDATION
+        detail::instance_validation_data m_instanceValidationData;
+#endif
+
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
         result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
 
         result impl_queryQueueCount(queue_type type, uint8_t* count) const;
+        result impl_queryNodeCountEXT(uint8_t* count) const;
     };
 }

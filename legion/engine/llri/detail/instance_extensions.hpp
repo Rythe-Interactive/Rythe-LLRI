@@ -25,9 +25,13 @@ namespace LLRI_NAMESPACE
         */
         GPUValidation,
         /**
+         * @brief Support multiple physical adapters being represented as a single adapter/device. This is possible in the case of SLI or Crossfire, but the system **may** support enabling this extension even if no such adapters exist.
+        */
+        AdapterNodes,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = GPUValidation
+        MaxEnum = AdapterNodes
     };
 
     /**
@@ -50,6 +54,16 @@ namespace LLRI_NAMESPACE
      * GPU validation validates shader operations such as buffer read/writes. Enabling this can be useful for debugging but is often associated with a significant cost.
     */
     struct gpu_validation_ext
+    {
+        bool enable : 1;
+    };
+
+    /**
+     * @brief Enable adapter nodes. Enabling this extension enables the Adapter::queryNodeCount() function, and allows functions with a nodeMask parameter to accept values other than 0.
+     *
+     * Adapter nodes are multiple physical adapters that can be represented as a single Device. This is often possible in the case of SLI or Crossfire setups.
+    */
+    struct adapter_nodes_ext
     {
         bool enable : 1;
     };
@@ -85,11 +99,13 @@ namespace LLRI_NAMESPACE
         {
             driver_validation_ext driverValidation;
             gpu_validation_ext gpuValidation;
+            adapter_nodes_ext adapterNodes;
         };
 
         instance_extension() = default;
         instance_extension(instance_extension_type type, const driver_validation_ext& ext) : type(type), driverValidation(ext) { }
         instance_extension(instance_extension_type type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
+        instance_extension(instance_extension_type type, const adapter_nodes_ext& ext) : type(type), adapterNodes(ext) { }
     };
 
     namespace detail
