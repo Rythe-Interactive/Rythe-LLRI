@@ -94,6 +94,11 @@ namespace LLRI_NAMESPACE
                         extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
                         break;
                     }
+                    case instance_extension_type::AdapterNodes:
+                    {
+                        extensionCreateResult = result::Success;
+                        break;
+                    }
                     default:
                     {
                         if (desc.callbackDesc.callback)
