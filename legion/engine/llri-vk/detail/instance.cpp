@@ -126,33 +126,39 @@ namespace LLRI_NAMESPACE
                 auto& extension = desc.extensions[i];
                 switch (extension.type)
                 {
-                case instance_extension_type::DriverValidation:
-                {
-                    if (extension.driverValidation.enable)
-                        layers.push_back("VK_LAYER_KHRONOS_validation");
-                    break;
-                }
-                case instance_extension_type::GPUValidation:
-                {
-                    if (extension.gpuValidation.enable)
+                    case instance_extension_type::DriverValidation:
                     {
-                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
-                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
-
-                        features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
-                        features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
-                        pNext = &features;
+                        if (extension.driverValidation.enable)
+                            layers.push_back("VK_LAYER_KHRONOS_validation");
+                        break;
                     }
-                    break;
-                }
-                default:
-                {
-                    if (desc.callbackDesc.callback)
-                        desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+                    case instance_extension_type::GPUValidation:
+                    {
+                        if (extension.gpuValidation.enable)
+                        {
+                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
+                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
 
-                    llri::destroyInstance(result);
-                    return result::ErrorExtensionNotSupported;
-                }
+                            features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
+                            features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
+                            pNext = &features;
+                        }
+                        break;
+                    }
+                    case instance_extension_type::AdapterNodes:
+                    {
+                        if (extension.adapterNodes.enable)
+                            extensions.push_back("VK_KHR_device_group_creation");
+                        break;
+                    }
+                    default:
+                    {
+                        if (desc.callbackDesc.callback)
+                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+
+                        llri::destroyInstance(result);
+                        return result::ErrorExtensionNotSupported;
+                    }
                 }
             }
 
@@ -164,7 +170,7 @@ namespace LLRI_NAMESPACE
                 const auto& available = internal::queryAvailableExtensions();
                 //Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
                 //so instead the check is implicit, implementation callbacks aren't guaranteed
-                if (available.find(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) != available.end())
+                if (available.find(internal::nameHash("VK_EXT_debug_utils")) != available.end())
                 {
                     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                     result->m_shouldConstructValidationCallbackMessenger = true;
@@ -290,6 +296,7 @@ namespace LLRI_NAMESPACE
             {
                 Adapter* adapter = new Adapter();
                 adapter->m_ptr = physicalDevice;
+                adapter->m_instanceHandle = m_ptr;
                 adapter->m_validationCallback = m_validationCallback;
 
                 m_cachedAdapters[physicalDevice] = adapter;

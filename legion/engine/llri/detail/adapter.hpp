@@ -141,7 +141,7 @@ namespace LLRI_NAMESPACE
         result queryQueueCount(queue_type type, uint8_t* count) const;
 
         /**
-         * @brief Query the number of nodes that this adapter represents.
+         * @brief Query the number of nodes that this adapter represents. If there are no linked physical adapters, this returns 1.
          *
          * @note The adapter_nodes_ext extension must be enabled for this function to succeed.
          *
@@ -159,6 +159,8 @@ namespace LLRI_NAMESPACE
         ~Adapter() = default;
 
         void* m_ptr = nullptr;
+        void* m_instanceHandle = nullptr;
+
         validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 

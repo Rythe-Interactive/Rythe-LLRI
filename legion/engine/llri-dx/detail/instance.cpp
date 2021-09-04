@@ -230,6 +230,7 @@ namespace LLRI_NAMESPACE
             {
                 Adapter* adapter = new Adapter();
                 adapter->m_ptr = dxgiAdapter;
+                adapter->m_instanceHandle = m_ptr;
                 adapter->m_validationCallback = m_validationCallback;
                 adapter->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
