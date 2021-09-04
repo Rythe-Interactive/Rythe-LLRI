@@ -82,15 +82,44 @@ namespace LLRI_NAMESPACE
                 desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, "createInstance() returned ErrorInvalidUsage because desc.numExtensions was more than 0 but desc.extensions was nullptr.");
             return result::ErrorInvalidUsage;
         }
+
+        detail::instance_validation_data validationData = {};
+        for (uint32_t i = 0; i < desc.numExtensions; i++)
+        {
+            switch(desc.extensions[i].type)
+            {
+                case instance_extension_type::AdapterNodes:
+                {
+                    if (desc.extensions[i].adapterNodes.enable)
+                        validationData.adapterNodesEnabled = true;
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = detail::impl_createInstance(desc, instance, true);
         if (*instance)
+        {
             detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
+
+            #ifndef LLRI_DISABLE_VALIDATION
+            (*instance)->m_instanceValidationData = validationData;
+            #endif
+        }
         return r;
 #else
+        #ifndef LLRI_DISABLE_VALIDATION
+        const auto r = detail::impl_createInstance(desc, instance, true);
+        if (*instance)
+            (*instance)->m_instanceValidationData = validationData;
+        return r;
+        #else
         return detail::impl_createInstance(desc, instance, false);
+        #endif
 #endif
     }
 
