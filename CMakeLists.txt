@@ -9,6 +9,7 @@ set(CMAKE_FOLDER CMakePredefinedTargets)
 project(llri LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 # Easy folder references for subdirs
 set(LLRI_DIR_OUTPUT_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
