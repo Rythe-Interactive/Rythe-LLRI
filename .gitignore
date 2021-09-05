@@ -124,3 +124,14 @@ applications/sandbox/imgui.ini
 
 # Reference files (not for upload)
 **/**_ref/*
+
+# OSX
+*.DS_Store
+*.xcodeproj/
+XCBuildData/
+
+# CMake
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CMakeCache.txt
