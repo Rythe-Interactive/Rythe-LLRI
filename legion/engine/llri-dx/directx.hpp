@@ -30,13 +30,13 @@ namespace LLRI_NAMESPACE
             if (d3d12 != nullptr && dxgi != nullptr)
                 return;
 
-            dxgi = LoadLibrary(L"dxgi");
+            dxgi = LoadLibrary("dxgi");
             if (dxgi)
             {
                 CreateDXGIFactory2 = (PFN_CREATE_DXGI_FACTORY2)GetProcAddress(dxgi, "CreateDXGIFactory2");
             }
 
-            d3d12 = LoadLibrary(L"D3D12");
+            d3d12 = LoadLibrary("D3D12");
             if (d3d12)
             {
                 D3D12CreateDevice = (PFN_D3D12_CREATE_DEVICE)GetProcAddress(d3d12, "D3D12CreateDevice");
