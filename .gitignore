@@ -88,10 +88,6 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-# Args engine asset folder
-!**/assets/**
-!**/engine/resources/**
-
 # Word temporary files
 ~$*.*
 
@@ -102,20 +98,11 @@ bld/
 **/Thumbs.db
 *.xcf
 
-deps/lib/legion*
-*.shil
-!**/applications/**/engine/**
-
 # Mono VM
 vm/**
 
-# Legion Libraries
+# LLRI generated
 lib/*
-
-# Legion Precompiled shader files
-*.shil
-
-# Legion Includes
 include/**
 
 # Misc
@@ -135,3 +122,8 @@ CMakeFiles/
 CMakeScripts/
 cmake_install.cmake
 CMakeCache.txt
+
+# Visual Studio project files
+*.vcxproj
+*.vcxproj.filters
+*.sln
