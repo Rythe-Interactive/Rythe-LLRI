@@ -8,7 +8,13 @@ file(GLOB_RECURSE source *.hpp *.cpp)
 add_executable(sandbox ${source})
 
 include_directories(../deps/include/)
+include_directories(../deps/include/legion/engine)
 include_directories(../../legion/engine)
 include_directories(${PROJECT_SOURCE_DIR})
 
 target_link_libraries(sandbox ${LLRI_SELECTED_APP_IMPLEMENTATION})
+
+target_link_libraries(sandbox ../deps/lib/OptickCore)
+target_link_libraries(sandbox ../deps/lib/OpenCL)
+target_link_libraries(sandbox debug ../deps/lib/legion-core-d)
+target_link_libraries(sandbox optimized ../deps/lib/legion-core)
