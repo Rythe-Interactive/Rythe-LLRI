@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
 # Folder structure
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -10,18 +10,28 @@ project(llri LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Easy folder references for subdirs
+set(LLRI_DIR_OUTPUT_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(LLRI_DIR_OUTPUT_LIB ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+set(LLRI_DIR_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/deps)
+set(LLRI_DIR_SRC ${CMAKE_CURRENT_SOURCE_DIR}/legion/engine)
+
+set(LLRI_DIR_APPLICATIONS ${CMAKE_CURRENT_SOURCE_DIR}/applications)
+set(LLRI_DIR_APPLICATIONS_DEPS ${CMAKE_CURRENT_SOURCE_DIR}/applications/deps)
+
 # Include threading
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-add_subdirectory(legion/engine/llri)
+add_subdirectory(${LLRI_DIR_SRC}/llri)
 set_property(TARGET llri PROPERTY FOLDER "llri")
 
 if(WIN32)
-	add_subdirectory(legion/engine/llri-dx)
+	add_subdirectory(${LLRI_DIR_SRC}/llri-dx)
 	set_property(TARGET llri-dx PROPERTY FOLDER "llri")
 
-	add_subdirectory(legion/engine/llri-vk)
+	add_subdirectory(${LLRI_DIR_SRC}/llri-vk)
 	set_property(TARGET llri-vk PROPERTY FOLDER "llri")
 	
 	set(LLRI_IMPLEMENTATION_OPTIONS "llri-dx;llri-vk")
@@ -30,7 +40,7 @@ if(WIN32)
 
 elseif(APPLE)
 	# TODO: apple might also support vulkan builds through moltenvk
-	add_subdirectory(legion/engine/llri-mtl)
+	add_subdirectory(${LLRI_DIR_SRC}/llri-mtl)
 	set_property(TARGET llri-mtl PROPERTY FOLDER "llri")
 
 	set(LLRI_IMPLEMENTATION_OPTIONS "llri-mtl")
@@ -38,7 +48,7 @@ elseif(APPLE)
 	set_property(CACHE LLRI_SELECTED_APP_IMPLEMENTATION PROPERTY STRINGS ${LLRI_IMPLEMENTATION_OPTIONS})
 
 elseif(UNIX) # elseif here guarantees that unix is not apple unix
-	add_subdirectory(legion/engine/llri-vk)
+	add_subdirectory(${LLRI_DIR_SRC}/llri-vk)
 	set_property(TARGET llri-vk PROPERTY FOLDER "llri")
 
 	set(LLRI_IMPLEMENTATION_OPTIONS "llri-vk")

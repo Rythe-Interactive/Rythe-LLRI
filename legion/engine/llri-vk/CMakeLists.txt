@@ -1,12 +1,27 @@
-cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 project(llri-vk LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-file(GLOB_RECURSE source *.hpp *.cpp)
+file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_library(llri-vk ${source})
 
-include_directories(../)
-include_directories(../../../deps/include)
+include_directories(${LLRI_DIR_SRC})
+include_directories(${LLRI_DIR_DEPS}/include)
 include_directories(${PROJECT_SOURCE_DIR})
+
+# Create /lib folder and copy build files to it
+add_custom_command(TARGET llri-vk POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E make_directory 
+		"../../../lib")
+
+add_custom_command(TARGET llri-vk POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+		"Debug/llri-vk.lib"
+		"../../../lib/llri-vk-d.lib")
+
+add_custom_command(TARGET llri-vk POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+		"Release/llri-vk.lib"
+		"../../../lib/llri-vk.lib")
