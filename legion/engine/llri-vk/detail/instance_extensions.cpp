@@ -15,7 +15,7 @@ namespace LLRI_NAMESPACE
         {
             internal::lazyInitializeVolk();
 
-            auto layers = internal::queryAvailableLayers();
+            auto& layers = internal::queryAvailableLayers();
 
             switch (type)
             {

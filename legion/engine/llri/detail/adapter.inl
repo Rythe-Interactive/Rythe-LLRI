@@ -118,7 +118,7 @@ namespace LLRI_NAMESPACE
 
         if (m_ptr == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrordeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
         }
 #endif
@@ -130,5 +130,10 @@ namespace LLRI_NAMESPACE
 #else
         return impl_queryQueueCount(type, count);
 #endif
+    }
+
+    inline uint8_t Adapter::queryNodeCount() const
+    {
+        return m_nodeCount;
     }
 }

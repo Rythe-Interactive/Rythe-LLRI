@@ -225,8 +225,17 @@ namespace LLRI_NAMESPACE
             {
                 Adapter* adapter = new Adapter();
                 adapter->m_ptr = dxgiAdapter;
+                adapter->m_instanceHandle = m_ptr;
                 adapter->m_validationCallback = m_validationCallback;
                 adapter->m_validationCallbackMessenger = m_validationCallbackMessenger;
+
+                //Attempt to query node count
+                ID3D12Device* device = nullptr;
+                if (SUCCEEDED(directx::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device))))
+                {
+                    adapter->m_nodeCount = static_cast<uint8_t>(device->GetNodeCount());
+                    device->Release();
+                }
 
                 m_cachedAdapters[(void*)luid] = adapter;
                 adapters->push_back(adapter);
@@ -269,18 +278,24 @@ namespace LLRI_NAMESPACE
 
             const INT priority = internal::mapQueuePriority(queueDesc.priority);
             const D3D12_COMMAND_LIST_TYPE type = internal::mapQueueType(queueDesc.type);
-            D3D12_COMMAND_QUEUE_DESC commandQueueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 0 };
 
-            ID3D12CommandQueue* dx12Queue = nullptr;
-            HRESULT r = dx12Device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&dx12Queue));
-            if (FAILED(r))
+            std::vector<void*> queues(desc.adapter->m_nodeCount, nullptr);
+            for (uint8_t node = 0; node < desc.adapter->m_nodeCount; node++)
             {
-                destroyDevice(output);
-                return internal::mapHRESULT(r);
+                D3D12_COMMAND_QUEUE_DESC queueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 1u << static_cast<UINT>(node) };
+                ID3D12CommandQueue* dx12Queue = nullptr;
+                r = dx12Device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&dx12Queue));
+                if (FAILED(r))
+                {
+                    destroyDevice(output);
+                    return internal::mapHRESULT(r);
+                }
+
+                queues[node] = dx12Queue;
             }
 
             auto* queue = new Queue();
-            queue->m_ptr = dx12Queue;
+            queue->m_ptrs = queues;
 
             switch(queueDesc.type)
             {
@@ -313,19 +328,22 @@ namespace LLRI_NAMESPACE
 
         for (auto* graphics : device->m_graphicsQueues)
         {
-            static_cast<ID3D12CommandQueue*>(graphics->m_ptr)->Release();
+            for (auto* ptr : graphics->m_ptrs)
+                static_cast<ID3D12CommandQueue*>(ptr)->Release();
             delete graphics;
         }
 
         for (auto* compute : device->m_computeQueues)
         {
-            static_cast<ID3D12CommandQueue*>(compute->m_ptr)->Release();
+            for (auto* ptr : compute->m_ptrs)
+                static_cast<ID3D12CommandQueue*>(ptr)->Release();
             delete compute;
         }
         
         for (auto* transfer : device->m_transferQueues)
         {
-            static_cast<ID3D12CommandQueue*>(transfer->m_ptr)->Release();
+            for (auto* ptr : transfer->m_ptrs)
+                static_cast<ID3D12CommandQueue*>(ptr)->Release();
             delete transfer;
         }
 

@@ -45,10 +45,10 @@ namespace LLRI_NAMESPACE
     {
         switch (type)
         {
-        case instance_extension_type::DriverValidation:
-            return "DriverValidation";
-        case instance_extension_type::GPUValidation:
-            return "GPUValidation";
+            case instance_extension_type::DriverValidation:
+                return "DriverValidation";
+            case instance_extension_type::GPUValidation:
+                return "GPUValidation";
         }
 
         return "Invalid instance_extension_type value";

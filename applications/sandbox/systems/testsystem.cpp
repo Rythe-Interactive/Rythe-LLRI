@@ -107,6 +107,9 @@ void TestSystem::selectAdapter()
         log::info("\tAdapter ID: {}", info.adapterId);
         log::info("\tAdapter Type: {}", to_string(info.adapterType));
 
+        uint8_t nodeCount = adapter->queryNodeCount();
+        log::info("\tAdapter Nodes: {}", nodeCount);
+
         uint8_t maxGraphicsQueueCount, maxComputeQueueCount, maxTransferQueueCount;
         THROW_IF_FAILED(adapter->queryQueueCount(llri::queue_type::Graphics, &maxGraphicsQueueCount));
         THROW_IF_FAILED(adapter->queryQueueCount(llri::queue_type::Compute, &maxComputeQueueCount));
@@ -122,7 +125,6 @@ void TestSystem::selectAdapter()
         {
             log::info("Adapter selected");
             m_adapter = adapter;
-            break;
         }
     }
 

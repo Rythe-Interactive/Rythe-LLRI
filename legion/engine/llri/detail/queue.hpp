@@ -6,6 +6,7 @@
 
 #pragma once
 #include <cstdint>
+#include <vector>
 
 namespace LLRI_NAMESPACE
 {
@@ -106,6 +107,6 @@ namespace LLRI_NAMESPACE
         Queue() = default;
         ~Queue() = default;
 
-        void* m_ptr;
+        std::vector<void*> m_ptrs;
     };
 }
