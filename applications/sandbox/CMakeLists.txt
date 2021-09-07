@@ -7,6 +7,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(sandbox ${source})
 
+file(GLOB dllDeps ${LLRI_DIR_APPLICATIONS_DEPS}/dll/*.dll)
+
+add_custom_command(TARGET sandbox PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${dllDeps} ${CMAKE_CURRENT_BINARY_DIR}/Debug
+)
+
+add_custom_command(TARGET sandbox PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${dllDeps} ${CMAKE_CURRENT_BINARY_DIR}/Release
+)
+
 include_directories(${LLRI_DIR_APPLICATIONS_DEPS}/include/)
 include_directories(${LLRI_DIR_APPLICATIONS_DEPS}/include/legion/engine)
 include_directories(${LLRI_DIR_SRC})
