@@ -17,13 +17,13 @@ add_custom_command(TARGET llri-dx POST_BUILD
 		${LLRI_DIR_OUTPUT_LIB})
 
 add_custom_command(TARGET llri-dx POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy
-		"Debug/llri-dx.lib"
+	COMMAND $<$<CONFIG:Debug>:${CMAKE_COMMAND}> -E copy
+		$<TARGET_FILE:llri-dx>
 		"${LLRI_DIR_OUTPUT_LIB}/llri-dx-d.lib")
 
 add_custom_command(TARGET llri-dx POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy
-		"Release/llri-dx.lib"
+	COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> -E copy
+		$<TARGET_FILE:llri-dx>
 		"${LLRI_DIR_OUTPUT_LIB}/llri-dx.lib")
 
 # Create /include folder and copy llri headers to it
