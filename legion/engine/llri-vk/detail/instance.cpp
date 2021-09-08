@@ -227,8 +227,6 @@ namespace LLRI_NAMESPACE
 
         void impl_destroyInstance(Instance* instance)
         {
-            if (!instance)
-                return;
             const VkInstance vkInstance = static_cast<VkInstance>(instance->m_ptr);
 
             //Destroy debug messenger if possible
@@ -259,12 +257,6 @@ namespace LLRI_NAMESPACE
 
     result Instance::impl_enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-        adapters->clear();
-
-        //Clear internal pointers, lost adapters will have a nullptr internally
-        for (auto& [ptr, adapter] : m_cachedAdapters)
-            adapter->m_ptr = nullptr;
-
         const auto& extensions = internal::queryAvailableExtensions();
         const bool groupsSupported = extensions.find(internal::nameHash("VK_KHR_device_group_creation")) != extensions.end();
 
@@ -457,9 +449,6 @@ namespace LLRI_NAMESPACE
 
     void Instance::impl_destroyDevice(Device* device) const
     {
-        if (!device)
-            return;
-
         //Cleanup queue wrappers
         for (auto* graphics : device->m_graphicsQueues)
             delete graphics;

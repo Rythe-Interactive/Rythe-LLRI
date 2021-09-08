@@ -149,9 +149,6 @@ namespace LLRI_NAMESPACE
 
         void impl_destroyInstance(Instance* instance)
         {
-            if (!instance)
-                return;
-
             for (auto& [ptr, adapter] : instance->m_cachedAdapters)
                 delete adapter;
 
@@ -190,12 +187,6 @@ namespace LLRI_NAMESPACE
 
     result Instance::impl_enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-        adapters->clear();
-
-        //Clear internal pointers, lost adapters will have a nullptr m_ptr
-        for (auto& [ptr, adapter] : m_cachedAdapters)
-            adapter->m_ptr = nullptr;
-
         IDXGIAdapter* dxgiAdapter = nullptr;
         HRESULT result = 0;
         uint32_t i = 0;
@@ -323,9 +314,6 @@ namespace LLRI_NAMESPACE
 
     void Instance::impl_destroyDevice(Device* device) const
     {
-        if (!device)
-            return;
-
         for (auto* graphics : device->m_graphicsQueues)
         {
             for (auto* ptr : graphics->m_ptrs)

@@ -94,6 +94,9 @@ namespace LLRI_NAMESPACE
 
     inline void destroyInstance(Instance* instance)
     {
+        if (!instance)
+            return;
+        
         detail::impl_destroyInstance(instance);
         //Can't do any polling after the instance is destroyed
     }
@@ -107,6 +110,12 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 #endif
+
+        adapters->clear();
+
+        //Clear internal pointers, lost adapters will have a nullptr m_ptr
+        for (auto& [ptr, adapter] : m_cachedAdapters)
+            adapter->m_ptr = nullptr;
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
@@ -223,6 +232,9 @@ namespace LLRI_NAMESPACE
 
     inline void Instance::destroyDevice(Device* device) const
     {
+        if (!device)
+            return;
+        
         impl_destroyDevice(device);
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING

@@ -58,12 +58,10 @@ namespace LLRI_NAMESPACE
 
     result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
-        *supported = false;
-
         switch (type)
         {
-        default:
-            break;
+            default:
+                break;
         }
 
         return result::Success;
