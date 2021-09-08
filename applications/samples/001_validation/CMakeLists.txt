@@ -1,3 +1,6 @@
+# Copyright 2021-2021 Leon Brands. All rights served.
+# License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 project(001_validation LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
