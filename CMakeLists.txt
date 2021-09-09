@@ -10,8 +10,6 @@ set(CMAKE_FOLDER CMakePredefinedTargets)
 
 # Project
 project(llri LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 # Easy folder references for subdirs
