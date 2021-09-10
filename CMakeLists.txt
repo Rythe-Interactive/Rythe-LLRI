@@ -31,10 +31,8 @@ set_property(TARGET llri PROPERTY FOLDER "llri")
 
 if(WIN32)
 	add_subdirectory(${LLRI_DIR_SRC}/llri-dx)
-	set_property(TARGET llri-dx PROPERTY FOLDER "llri")
-
 	add_subdirectory(${LLRI_DIR_SRC}/llri-vk)
-	set_property(TARGET llri-vk PROPERTY FOLDER "llri")
+	set_target_properties(llri-dx llri-vk PROPERTIES FOLDER "llri")
 	
 	set(LLRI_IMPLEMENTATION_OPTIONS "llri-dx;llri-vk")
 	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-dx" CACHE STRING "Implementation build for samples/unit tests chosen by the user at CMake configure time.")
