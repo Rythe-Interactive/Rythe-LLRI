@@ -9,14 +9,8 @@ add_executable(sandbox ${source})
 target_compile_features(sandbox PRIVATE cxx_std_17)
 
 file(GLOB dllDeps ${LLRI_DIR_APPLICATIONS_DEPS}/dll/*.dll)
-
-add_custom_command(TARGET sandbox PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${dllDeps} ${CMAKE_CURRENT_BINARY_DIR}/Debug
-)
-
-add_custom_command(TARGET sandbox PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${dllDeps} ${CMAKE_CURRENT_BINARY_DIR}/Release
-)
+file(COPY ${dllDeps} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+file(COPY ${dllDeps} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
 
 include_directories(${LLRI_DIR_APPLICATIONS_DEPS}/include/)
 include_directories(${LLRI_DIR_APPLICATIONS_DEPS}/include/legion/engine)
