@@ -1,8 +1,7 @@
 # Copyright 2021-2021 Leon Brands. All rights served.
 # License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
 
-project(llri-mtl LANGUAGES CXX)
-set(CMAKE_CXX_FLAGS "-x objective-c++")
+project(llri-mtl LANGUAGES OBJCXX)
 
 file(GLOB_RECURSE source *.hpp *.inl *.cpp *.mm)
 add_library(llri-mtl ${source})
