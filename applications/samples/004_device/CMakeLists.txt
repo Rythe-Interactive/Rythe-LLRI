@@ -1,0 +1,14 @@
+# Copyright 2021-2021 Leon Brands. All rights served.
+# License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+
+project(004_device LANGUAGES CXX)
+
+file(GLOB_RECURSE source *.hpp *.inl *.cpp)
+add_executable(004_device ${source})
+
+target_compile_features(004_device PRIVATE cxx_std_17)
+
+include_directories(${LLRI_DIR_SRC})
+include_directories(${PROJECT_SOURCE_DIR})
+
+target_link_libraries(004_device ${LLRI_SELECTED_APP_IMPLEMENTATION})
