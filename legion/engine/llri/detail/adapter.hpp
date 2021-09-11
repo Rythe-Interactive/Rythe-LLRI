@@ -141,12 +141,21 @@ namespace LLRI_NAMESPACE
         */
         result queryQueueCount(queue_type type, uint8_t* count) const;
 
+        /**
+         * @brief Query the number of nodes (physical adapters) that this adapter represents. If there are no linked physical adapters, this returns 1.
+        */
+        [[nodiscard]] uint8_t queryNodeCount() const;
+
     private:
         //Force private constructor/deconstructor so that only instance can manage lifetime
         Adapter() = default;
         ~Adapter() = default;
 
         void* m_ptr = nullptr;
+        uint8_t m_nodeCount = 1;
+
+        void* m_instanceHandle = nullptr;
+
         validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 

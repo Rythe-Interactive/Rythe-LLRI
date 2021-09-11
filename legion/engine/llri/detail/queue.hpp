@@ -6,6 +6,7 @@
 
 #pragma once
 #include <cstdint>
+#include <vector>
 
 //detail includes should be kept to a minimum but
 //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
@@ -112,8 +113,8 @@ namespace LLRI_NAMESPACE
         Queue() = default;
         ~Queue() = default;
 
-        void* m_ptr;
-
+        std::vector<void*> m_ptrs;
+		
         void* m_deviceHandle = nullptr;
         void* m_deviceFunctionTable = nullptr;
 

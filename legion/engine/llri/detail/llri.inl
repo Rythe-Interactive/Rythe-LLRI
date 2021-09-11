@@ -25,6 +25,8 @@ namespace LLRI_NAMESPACE
                 return "ErrorFeatureNotSupported";
             case result::ErrorExtensionNotSupported:
                 return "ErrorExtensionNotSupported";
+            case result::ErrorExtensionNotEnabled:
+                return "ErrorExtensionNotEnabled";
             case result::ErrorDeviceHung:
                 return "ErrorDeviceHung";
             case result::ErrorDeviceLost:

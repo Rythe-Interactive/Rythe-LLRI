@@ -61,8 +61,6 @@ namespace LLRI_NAMESPACE
 
     result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
-        *supported = false;
-
         switch (type)
         {
             default:
@@ -74,8 +72,6 @@ namespace LLRI_NAMESPACE
 
     result Adapter::impl_queryQueueCount(queue_type type, uint8_t* count) const
     {
-        *count = 0;
-
         //Get queue family info
         uint32_t propertyCount;
         vkGetPhysicalDeviceQueueFamilyProperties(static_cast<VkPhysicalDevice>(m_ptr), &propertyCount, nullptr);

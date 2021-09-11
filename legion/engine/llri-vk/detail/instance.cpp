@@ -111,9 +111,12 @@ namespace LLRI_NAMESPACE
             internal::lazyInitializeVolk();
 
             auto* result = new Instance();
+            const auto& availableExtensions = internal::queryAvailableExtensions();
 
             std::vector<const char*> layers;
             std::vector<const char*> extensions;
+            if (availableExtensions.find(internal::nameHash("VK_KHR_device_group_creation")) != availableExtensions.end())
+                extensions.push_back("VK_KHR_device_group_creation");
 
             void* pNext = nullptr;
 
@@ -126,33 +129,33 @@ namespace LLRI_NAMESPACE
                 auto& extension = desc.extensions[i];
                 switch (extension.type)
                 {
-                case instance_extension_type::DriverValidation:
-                {
-                    if (extension.driverValidation.enable)
-                        layers.push_back("VK_LAYER_KHRONOS_validation");
-                    break;
-                }
-                case instance_extension_type::GPUValidation:
-                {
-                    if (extension.gpuValidation.enable)
+                    case instance_extension_type::DriverValidation:
                     {
-                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
-                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
-
-                        features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
-                        features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
-                        pNext = &features;
+                        if (extension.driverValidation.enable)
+                            layers.push_back("VK_LAYER_KHRONOS_validation");
+                        break;
                     }
-                    break;
-                }
-                default:
-                {
-                    if (desc.callbackDesc.callback)
-                        desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+                    case instance_extension_type::GPUValidation:
+                    {
+                        if (extension.gpuValidation.enable)
+                        {
+                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
+                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
 
-                    llri::destroyInstance(result);
-                    return result::ErrorExtensionNotSupported;
-                }
+                            features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
+                            features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
+                            pNext = &features;
+                        }
+                        break;
+                    }
+                    default:
+                    {
+                        if (desc.callbackDesc.callback)
+                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
+
+                        llri::destroyInstance(result);
+                        return result::ErrorExtensionNotSupported;
+                    }
                 }
             }
 
@@ -161,10 +164,9 @@ namespace LLRI_NAMESPACE
             result->m_validationCallbackMessenger = nullptr;
             if (enableImplementationMessagePolling && desc.callbackDesc.callback)
             {
-                const auto& available = internal::queryAvailableExtensions();
                 //Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
                 //so instead the check is implicit, implementation callbacks aren't guaranteed
-                if (available.find(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)) != available.end())
+                if (availableExtensions.find(internal::nameHash("VK_EXT_debug_utils")) != availableExtensions.end())
                 {
                     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                     result->m_shouldConstructValidationCallbackMessenger = true;
@@ -225,8 +227,6 @@ namespace LLRI_NAMESPACE
 
         void impl_destroyInstance(Instance* instance)
         {
-            if (!instance)
-                return;
             const VkInstance vkInstance = static_cast<VkInstance>(instance->m_ptr);
 
             //Destroy debug messenger if possible
@@ -257,43 +257,86 @@ namespace LLRI_NAMESPACE
 
     result Instance::impl_enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-        adapters->clear();
-
-        //Clear internal pointers, lost adapters will have a nullptr internally
-        for (auto& [ptr, adapter] : m_cachedAdapters)
-            adapter->m_ptr = nullptr;
+        const auto& extensions = internal::queryAvailableExtensions();
+        const bool groupsSupported = extensions.find(internal::nameHash("VK_KHR_device_group_creation")) != extensions.end();
 
         std::vector<VkPhysicalDevice> physicalDevices;
 
-        //Get count
-        //Can't use Vulkan.hpp convenience function because we need it to not throw if it fails
-        uint32_t physicalDeviceCount = 0;
-        VkResult r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, nullptr);
-        if (r != VK_SUCCESS && r != VK_TIMEOUT)
-            return internal::mapVkResult(r);
-
-        //Get actual physical devices
-        physicalDevices.resize(physicalDeviceCount);
-        r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, physicalDevices.data());
-        if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
-
-        for (VkPhysicalDevice physicalDevice : physicalDevices)
+        // Ideally we iterate over physical devices using device groups
+        // so that linked adapters are listed as single adapters
+        if (groupsSupported)
         {
-            if (m_cachedAdapters.find(physicalDevice) != m_cachedAdapters.end())
-            {
-                //Re-assign pointer to found adapters
-                m_cachedAdapters[physicalDevice]->m_ptr = physicalDevice;
-                adapters->push_back(m_cachedAdapters[physicalDevice]);
-            }
-            else
-            {
-                Adapter* adapter = new Adapter();
-                adapter->m_ptr = physicalDevice;
-                adapter->m_validationCallback = m_validationCallback;
+            uint32_t groupCount;
+            VkResult r = vkEnumeratePhysicalDeviceGroups(static_cast<VkInstance>(m_ptr), &groupCount, nullptr);
+            if (r != VK_SUCCESS)
+                return internal::mapVkResult(r);
 
-                m_cachedAdapters[physicalDevice] = adapter;
-                adapters->push_back(adapter);
+            std::vector<VkPhysicalDeviceGroupProperties> groups(groupCount);
+            r = vkEnumeratePhysicalDeviceGroups(static_cast<VkInstance>(m_ptr), &groupCount, groups.data());
+            if (r != VK_SUCCESS)
+                return internal::mapVkResult(r);
+
+            for (const auto& group : groups)
+            {
+                // First try to find existing physical devices and re-assign pointer to found adapters
+                // It is possible that physial device [0] is not the one stored so we iterate over all and find the related one
+                bool found = false;
+                for (uint32_t i = 0; i < group.physicalDeviceCount; i++)
+                {
+                    if (m_cachedAdapters.find(group.physicalDevices[i]) != m_cachedAdapters.end())
+                    {
+                        m_cachedAdapters[group.physicalDevices[i]]->m_ptr = group.physicalDevices[i];
+                        m_cachedAdapters[group.physicalDevices[i]]->m_nodeCount = static_cast<uint8_t>(group.physicalDeviceCount);
+                        adapters->push_back(m_cachedAdapters[group.physicalDevices[i]]);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    Adapter* adapter = new Adapter();
+                    adapter->m_ptr = group.physicalDevices[0];
+                    adapter->m_instanceHandle = m_ptr;
+                    adapter->m_validationCallback = m_validationCallback;
+                    adapter->m_nodeCount = static_cast<uint8_t>(group.physicalDeviceCount);
+
+                    m_cachedAdapters[group.physicalDevices[0]] = adapter;
+                    adapters->push_back(adapter);
+                }
+            }
+        }
+        else
+        {            
+            uint32_t physicalDeviceCount = 0;
+            VkResult r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, nullptr);
+            if (r != VK_SUCCESS)
+                return internal::mapVkResult(r);
+
+            //Get actual physical devices
+            physicalDevices.resize(physicalDeviceCount);
+            r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, physicalDevices.data());
+            if (r != VK_SUCCESS)
+                return internal::mapVkResult(r);
+           
+            for (VkPhysicalDevice physicalDevice : physicalDevices)
+            {
+                if (m_cachedAdapters.find(physicalDevice) != m_cachedAdapters.end())
+                {
+                    //Re-assign pointer to found adapters
+                    m_cachedAdapters[physicalDevice]->m_ptr = physicalDevice;
+                    adapters->push_back(m_cachedAdapters[physicalDevice]);
+                }
+                else
+                {
+                    Adapter* adapter = new Adapter();
+                    adapter->m_ptr = physicalDevice;
+                    adapter->m_instanceHandle = m_ptr;
+                    adapter->m_validationCallback = m_validationCallback;
+
+                    m_cachedAdapters[physicalDevice] = adapter;
+                    adapters->push_back(adapter);
+                }
             }
         }
 
@@ -338,6 +381,9 @@ namespace LLRI_NAMESPACE
         //Extensions
         std::vector<const char*> extensions;
 
+        if (desc.adapter->m_nodeCount > 1)
+            extensions.push_back("VK_KHR_device_group");
+
         //Features
         VkPhysicalDeviceFeatures features{};
 
@@ -381,7 +427,7 @@ namespace LLRI_NAMESPACE
             table->vkGetDeviceQueue(vkDevice, families[queueDesc.type], queueCounts[queueDesc.type], &vkQueue);
 
             auto* queue = new Queue();
-            queue->m_ptr = vkQueue;
+            queue->m_ptrs = std::vector<void*>(desc.adapter->m_nodeCount, vkQueue);
             queue->m_validationCallback = output->m_validationCallback;
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
@@ -407,9 +453,6 @@ namespace LLRI_NAMESPACE
 
     void Instance::impl_destroyDevice(Device* device) const
     {
-        if (!device)
-            return;
-
         //Cleanup queue wrappers
         for (auto* graphics : device->m_graphicsQueues)
             delete graphics;

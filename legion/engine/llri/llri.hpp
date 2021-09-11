@@ -99,6 +99,10 @@ namespace LLRI_NAMESPACE
         */
         ErrorExtensionNotSupported,
         /**
+         * @brief An operation with an extension was used but the extension wasn't enabled.
+        */
+        ErrorExtensionNotEnabled,
+        /**
          * @brief The operation caused the device to become non-responsive for a long period of time. This is often caused by badly formed commands sent by the application.
         */
         ErrorDeviceHung,

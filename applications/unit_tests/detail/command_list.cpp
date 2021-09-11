@@ -5,7 +5,7 @@
  */
 
 #include <llri/llri.hpp>
-#include <unit_tests/helpers.hpp>
+#include <helpers.hpp>
 #include <doctest/doctest.h>
 
 TEST_CASE("CommandList")

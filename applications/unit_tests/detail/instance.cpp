@@ -6,7 +6,7 @@
 
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
-#include <unit_tests/helpers.hpp>
+#include <helpers.hpp>
 
 void dummyCallback(llri::validation_callback_severity sev, llri::validation_callback_source src, const char* message, void* userData)
 {

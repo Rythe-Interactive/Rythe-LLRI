@@ -222,6 +222,8 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Creates a virtual LLRI device. Device represents one or multiple adapters and is used to allocate memory, create resources, or send commands to the adapter.
          *
+         * If the adapter that the Device is created for contains multiple adapter nodes, then the device will also represent the said adapter nodes.
+         *
          * @param desc The description of the device.
          * @param device A pointer to a device pointer variable. The pointer variable will be set to the resulting device upon successful execution.
          *

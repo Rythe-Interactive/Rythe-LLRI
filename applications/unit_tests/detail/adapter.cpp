@@ -6,7 +6,7 @@
 
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
-#include <unit_tests/helpers.hpp>
+#include <helpers.hpp>
 
 TEST_CASE("Adapter")
 {
