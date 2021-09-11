@@ -92,6 +92,8 @@ namespace LLRI_NAMESPACE
         }
 #endif
 
+        *supported = false;
+
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryExtensionSupport(type, supported);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
@@ -122,6 +124,8 @@ namespace LLRI_NAMESPACE
             return result::ErrorDeviceLost;
         }
 #endif
+
+        *count = 0;
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryQueueCount(type, count);
