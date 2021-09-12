@@ -353,30 +353,55 @@ namespace LLRI_NAMESPACE
         //Queue creation
         auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
 
-        std::vector<VkDeviceQueueCreateInfo> queues(desc.numQueues);
-        std::vector<float> priorities(desc.numQueues);
+        std::vector<float> graphicsPriorities;
+        std::vector<float> computePriorities;
+        std::vector<float> transferPriorities;
+
         for (uint32_t i = 0; i < desc.numQueues; i++)
         {
             auto& queueDesc = desc.queues[i];
 
-            VkDeviceQueueCreateInfo ci { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {} };
-
-            switch(queueDesc.priority)
+            float priority = 0;
+            switch (queueDesc.priority)
             {
                 case queue_priority::Normal:
-                    priorities[i] = 0.5f;
+                    priority = 0.5f;
                     break;
                 case queue_priority::High:
-                    priorities[i] = 1.0f;
+                    priority = 1.0f;
                     break;
             }
 
-            ci.queueCount = 1;
-            ci.pQueuePriorities = &priorities[i];
-            ci.queueFamilyIndex = families[queueDesc.type];
-
-            queues[i] = ci;
+            switch (queueDesc.type)
+            {
+                case queue_type::Graphics:
+                    graphicsPriorities.push_back(priority);
+                    break;
+                case queue_type::Compute:
+                    computePriorities.push_back(priority);
+                    break;
+                case queue_type::Transfer:
+                    transferPriorities.push_back(priority);
+                    break;
+            }
         }
+
+        std::vector<VkDeviceQueueCreateInfo> queues;
+
+        if (!graphicsPriorities.empty())
+            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {},
+                families[queue_type::Graphics],
+                static_cast<uint32_t>(graphicsPriorities.size()), graphicsPriorities.data() });
+
+        if (!computePriorities.empty())
+            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {},
+                families[queue_type::Compute],
+                static_cast<uint32_t>(computePriorities.size()), computePriorities.data() });
+
+        if (!transferPriorities.empty())
+            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {},
+                families[queue_type::Transfer],
+                static_cast<uint32_t>(transferPriorities.size()), transferPriorities.data() });
 
         //Extensions
         std::vector<const char*> extensions;
