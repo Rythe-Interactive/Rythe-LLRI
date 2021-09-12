@@ -15,7 +15,7 @@ namespace LLRI_NAMESPACE
     class CommandGroup;
 
     /**
-     * @brief Describes how the CommandList is going to be used. Each usage is exclusive from one another and can not be changed.
+     * @brief Describes how the CommandList is going to be used. A CommandList's usage is exclusive and can not be changed after allocation.
     */
     enum struct command_list_usage : uint8_t
     {
@@ -24,7 +24,10 @@ namespace LLRI_NAMESPACE
         */
         Direct,
         /**
-         * @brief The CommandList is indirect and will be submitted to another CommandList before that CommandList is submitted to a queue.
+         * @brief The CommandList is indirect and can be submitted to another CommandList before that CommandList is submitted to a queue.
+         * This can be useful for recording a set of commands that can be dynamically submitted to other lists, which might save CPU time.
+         *
+         * Indirect CommandLists **can not** be submitted to a queue directly.
         */
         Indirect,
         /**
@@ -49,7 +52,7 @@ namespace LLRI_NAMESPACE
          *
          * For convenience, 0 **may** be passed, which is interpreted as 1 and refers to the first/default node.
          *
-         * The node mask **must** not have a bit set if the bit is at a position more than or equals Adapter::queryNodeCount.
+         * The node mask **must** not have a bit set if the bit is at a position more than or equals Adapter::queryNodeCount().
         */
         uint32_t nodeMask;
 
@@ -67,15 +70,15 @@ namespace LLRI_NAMESPACE
     enum struct command_list_state : uint8_t
     {
         /**
-         * @brief The default state of a CommandList. A CommandList is in this state just after creation, or after having been reset through CommandGroup::reset(). From here, CommandList may transition into command_list_state::Recording through CommandList::begin().
+         * @brief The default state of a CommandList. A CommandList is in this state just after creation, or after having been reset through CommandGroup::reset(). From here, CommandList **may** transition into command_list_state::Recording through CommandList::begin().
         */
         Empty,
         /**
-         * @brief When a CommandList is in this state, commands may be submitted to the CommandList, but it may not be used for any other operations yet. Once CommandList::end() is called, it is transitioned into the command_list_state::Ready state.
+         * @brief When a CommandList is in this state, commands may be submitted to the CommandList, but it **can not** be used for any other operations. Once CommandList::end() is called, it is transitioned into the command_list_state::Ready state.
         */
         Recording,
         /**
-         * @brief A CommandList in this state can be submitted through Queue::submit(). CommandLists in this state can not be opened for recording again but instead must be reset through CommandGroup::reset() before use.
+         * @brief A CommandList in this state **can** be submitted through Queue::submit(). CommandLists in this state **can not** be opened for recording again but instead **must** be reset through CommandGroup::reset() before they **can** be used for recording again.
         */
         Ready
     };
@@ -85,7 +88,7 @@ namespace LLRI_NAMESPACE
     */
     struct command_list_begin_desc
     {
-        //TODO
+        // Empty placeholder structure for future begin information
     };
 
     /**
@@ -112,7 +115,7 @@ namespace LLRI_NAMESPACE
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidState if the CommandList was not in the command_list_state::Empty state.
          *
-         * @note The memory required for CommandList recording is allocated through its CommandGroup. Because of this, commandLists allocated through the same CommandGroup **can not** be recorded simultaneously and are thus not thread-safe. For multi-threaded recording, create at least one separate CommandGroup per thread to prevent this from becoming an issue.
+         * @note The memory required for CommandList recording is allocated through its CommandGroup. Because of this, commandLists allocated through the same CommandGroup **can not** be recorded simultaneously and are thus not thread-safe. For multi-threaded recording, it is recommended to create at least one separate CommandGroup per thread to prevent this from becoming an issue.
         */
         result begin(const command_list_begin_desc& desc);
 
@@ -151,7 +154,7 @@ namespace LLRI_NAMESPACE
         */
         [[nodiscard]] command_list_state queryState() const { return m_state; }
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        //Force private constructor/deconstructor so that only alloc/free can manage lifetime
         CommandList() = default;
         ~CommandList() = default;
 

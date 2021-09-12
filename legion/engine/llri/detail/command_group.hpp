@@ -36,7 +36,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief CommandGroups are responsible for allocating the memory required to record CommandLists. They are used to allocate one or multiple CommandLists but never more than command_group_desc::count.
      *
-     * @note CommandGroups are not thread-safe. CommandLists allocated through the same CommandGroup **can not** be recorded from separate threads simultaneously. For multi-threaded recording, create at least one separate CommandGroup per thread to prevent this from becoming an issue.
+     * @note CommandGroups are not thread-safe. CommandLists allocated through the same CommandGroup **can not** be recorded from separate threads simultaneously. For multi-threaded recording, it is recommended to create at least one separate CommandGroup per thread to prevent this from becoming an issue.
     */
     class CommandGroup
     {
@@ -59,15 +59,15 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Allocate a CommandList. The resulting CommandList will be of the same queue_type as the the CommandGroup, and is a non-owning pointer.
          *
-         * Allocated CommandLists **may** be free'd through CommandGroup::free(), but if that isn't done, the CommandGroup will free all of its CommandLists upon destruction. CommandGroup maintains ownership over all of its allocated CommandLists.
+         * Allocated CommandLists **may** be free'd through CommandGroup::free(), but if that isn't done, the CommandGroup frees all of its CommandLists upon destruction. CommandGroup maintains ownership over all of its allocated CommandLists.
          *
          * @param desc The allocation description describes the command list's usage.
          * @param cmdList A pointer to the resulting command list variable;
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if cmdList was nullptr.
-         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set to 1 which was not represented by a node in the Device. The node mask must always have its positive bit set at Adapter::queryNodeCount() or less.
-         * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set to 1.
+         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set which was not represented by a node in the Device. The node mask **must** always have its positive bit set at a position less than Adapter::queryNodeCount().
+         * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set.
          * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
          * @return ErrorExceededLimit if the CommandGroup doesn't have enough CommandLists to allocate another.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
