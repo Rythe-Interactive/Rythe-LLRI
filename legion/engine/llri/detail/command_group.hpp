@@ -66,6 +66,8 @@ namespace LLRI_NAMESPACE
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if cmdList was nullptr.
+         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set to 1 which was not represented by a node in the Device. The node mask must always have its positive bit set at Adapter::queryNodeCount() or less.
+         * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set to 1.
          * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
          * @return ErrorExceededLimit if the CommandGroup doesn't have enough CommandLists to allocate another.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
@@ -83,6 +85,8 @@ namespace LLRI_NAMESPACE
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if cmdLists was nullptr.
+         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set to 1 which was not represented by a node in the Device. The node mask must always have its positive bit set at Adapter::queryNodeCount() or less.
+         * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set to 1.
          * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
          * @return ErrorInvalidUsage if count was 0.
          * @return ErrorExceededLimit if the CommandGroup doesn't have enough CommandLists to allocate count CommandLists.
@@ -123,7 +127,7 @@ namespace LLRI_NAMESPACE
         void* m_ptr = nullptr;
         void* m_indirectPtr = nullptr;
 
-        void* m_deviceHandle = nullptr;
+        Device* m_device = nullptr;
         void* m_deviceFunctionTable = nullptr;
 
         validation_callback_desc m_validationCallback;

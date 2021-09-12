@@ -103,6 +103,14 @@ namespace LLRI_NAMESPACE
         */
         ErrorExtensionNotEnabled,
         /**
+         * @brief A passed node mask was not a valid node mask in the device. This may occur if the node mask had a positive bit set that was higher than the number of nodes represented in the device.
+        */
+        ErrorInvalidNodeMask,
+        /**
+         * @brief An object interacted with another object, where the two objects did not have matching node masks.
+        */
+        ErrorIncompatibleNodeMask,
+        /**
          * @brief The operation caused the device to become non-responsive for a long period of time. This is often caused by badly formed commands sent by the application.
         */
         ErrorDeviceHung,

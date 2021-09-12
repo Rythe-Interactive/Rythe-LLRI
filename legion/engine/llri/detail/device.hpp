@@ -60,6 +60,7 @@ namespace LLRI_NAMESPACE
     class Device
     {
         friend Instance;
+        friend class CommandGroup;
     public:
         /**
          * @brief Query a created Queue by type and index.
@@ -94,13 +95,13 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if this device's Adapter::queryQueueCount(desc.type) returns 0.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
-        result createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup) const;
+        result createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
 
         /**
          * @brief Destroy the command group.
          * @param cmdGroup A pointer to a valid CommandGroup, or nullptr.
         */
-        void destroyCommandGroup(CommandGroup* cmdGroup) const;
+        void destroyCommandGroup(CommandGroup* cmdGroup);
 
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
@@ -118,7 +119,7 @@ namespace LLRI_NAMESPACE
         std::vector<Queue*> m_computeQueues;
         std::vector<Queue*> m_transferQueues;
 
-        result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup) const;
-        void impl_destroyCommandGroup(CommandGroup* cmdGroup) const;
+        result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
+        void impl_destroyCommandGroup(CommandGroup* cmdGroup);
     };
 }

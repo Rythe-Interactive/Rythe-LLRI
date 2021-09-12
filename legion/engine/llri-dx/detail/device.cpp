@@ -9,10 +9,10 @@
 
 namespace LLRI_NAMESPACE
 {
-    result Device::impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup) const
+    result Device::impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
     {
         auto* output = new CommandGroup();
-        output->m_deviceHandle = m_ptr;
+        output->m_device = this;
         output->m_deviceFunctionTable = m_functionTable;
         output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
@@ -41,7 +41,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    void Device::impl_destroyCommandGroup(CommandGroup* cmdGroup) const
+    void Device::impl_destroyCommandGroup(CommandGroup* cmdGroup)
     {
         if (!cmdGroup)
             return;

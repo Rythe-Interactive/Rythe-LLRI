@@ -45,6 +45,15 @@ namespace LLRI_NAMESPACE
     struct command_list_alloc_desc
     {
         /**
+         * @brief The Device node on which the command list(s) should be allocated. Every bit in the mask corresponds to a node (if present) and in this case, only a single bit may be set.
+         *
+         * For convenience, 0 may be passed, which will be interpreted as 1 and refers to the first/default node.
+         *
+         * The node mask must not have a bit set to 1 if the bit is more than Adapter::queryNodeCount.
+        */
+        uint32_t nodeMask;
+
+        /**
          * @brief Describes if the CommandList will be used to be submitted to Queues directly or if they will be submitted indirectly through other CommandLists.
         */
         command_list_usage usage;
@@ -152,6 +161,7 @@ namespace LLRI_NAMESPACE
         void* m_deviceHandle = nullptr;
         void* m_deviceFunctionTable = nullptr;
 
+        uint32_t m_nodeMask;
         command_list_usage m_usage;
         command_list_state m_state = command_list_state::Empty;
 

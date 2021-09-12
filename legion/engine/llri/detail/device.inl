@@ -63,7 +63,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    inline result Device::createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup) const
+    inline result Device::createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
     {
 #ifndef LLRI_DISABLE_VALIDATION
         if (cmdGroup == nullptr)
@@ -106,7 +106,7 @@ namespace LLRI_NAMESPACE
 #endif
     }
 
-    inline void Device::destroyCommandGroup(CommandGroup* cmdGroup) const
+    inline void Device::destroyCommandGroup(CommandGroup* cmdGroup)
     {
         if (!cmdGroup)
             return;

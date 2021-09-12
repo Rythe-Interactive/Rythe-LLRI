@@ -37,7 +37,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (cmdList == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorInvalidUsage because the passed cmdList parameter was nullptr");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorInvalidUsage because the passed cmdList parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -47,14 +47,21 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (desc.usage > command_list_usage::MaxEnum)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() return ErrorInvalidUsage because desc.usage is not a valid enum value");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() return ErrorInvalidUsage because desc.usage is not a valid enum value.");
             return result::ErrorInvalidUsage;
         }
 
         if (m_cmdLists.size() + 1 > m_maxCount)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorExceededLimit because allocating 1 CommandList from the group would exceed the CommandGroup's maximum number of allocated CommandLists");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorExceededLimit because allocating 1 CommandList from the group would exceed the CommandGroup's maximum number of allocated CommandLists.");
             return result::ErrorExceededLimit;
+        }
+
+        //determines if the node mask is not a power of two -> if it isn't then multiple bits are set
+        if ((desc.nodeMask & (desc.nodeMask - 1)) != 0)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorInvalidNodeMask because the node mask " + std::to_string(desc.nodeMask) + "has multiple bits set which is not valid for CommandList allocation.");
+            return result::ErrorInvalidNodeMask;
         }
 #endif
 

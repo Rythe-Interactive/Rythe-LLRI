@@ -12,7 +12,7 @@ namespace LLRI_NAMESPACE
     result CommandGroup::impl_reset()
     {
         const auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->
-            vkResetCommandPool(static_cast<VkDevice>(m_deviceHandle), static_cast<VkCommandPool>(m_ptr), VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
+            vkResetCommandPool(static_cast<VkDevice>(m_device->m_ptr), static_cast<VkCommandPool>(m_ptr), VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
 
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
@@ -31,7 +31,7 @@ namespace LLRI_NAMESPACE
         allocInfo.level = internal::mapCommandListUsage(desc.usage);
 
         VkCommandBuffer cmd;
-        auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_deviceHandle), &allocInfo, &cmd);
+        auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), &allocInfo, &cmd);
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
@@ -39,9 +39,10 @@ namespace LLRI_NAMESPACE
         output->m_ptr = cmd;
         output->m_group = this;
 
-        output->m_deviceHandle = m_deviceHandle;
+        output->m_deviceHandle = m_device->m_ptr;
         output->m_deviceFunctionTable = m_deviceFunctionTable;
 
+        output->m_nodeMask = desc.nodeMask;
         output->m_usage = desc.usage;
         output->m_state = command_list_state::Empty;
 
@@ -62,7 +63,7 @@ namespace LLRI_NAMESPACE
         allocInfo.level = internal::mapCommandListUsage(desc.usage);
 
         std::vector<VkCommandBuffer> cmdBuffers(count);
-        auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_deviceHandle), &allocInfo, cmdBuffers.data());
+        auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), &allocInfo, cmdBuffers.data());
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
@@ -72,9 +73,10 @@ namespace LLRI_NAMESPACE
             cmdList->m_ptr = cmdBuffers[i];
             cmdList->m_group = this;
 
-            cmdList->m_deviceHandle = m_deviceHandle;
+            cmdList->m_deviceHandle = m_device->m_ptr;
             cmdList->m_deviceFunctionTable = m_deviceFunctionTable;
 
+            cmdList->m_nodeMask = desc.nodeMask;
             cmdList->m_usage = desc.usage;
             cmdList->m_state = command_list_state::Empty;
 
@@ -93,7 +95,7 @@ namespace LLRI_NAMESPACE
         //Free internal pointer
         auto buffer = static_cast<VkCommandBuffer>(cmdList->m_ptr);
         static_cast<VolkDeviceTable*>(m_deviceFunctionTable)
-            ->vkFreeCommandBuffers(static_cast<VkDevice>(m_deviceHandle), static_cast<VkCommandPool>(m_ptr), 1, &buffer);
+            ->vkFreeCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), static_cast<VkCommandPool>(m_ptr), 1, &buffer);
 
         //Remove from commandlist list
         m_cmdLists.erase(cmdList);
@@ -112,7 +114,7 @@ namespace LLRI_NAMESPACE
 
         //Free internal pointers
         static_cast<VolkDeviceTable*>(m_deviceFunctionTable)
-            ->vkFreeCommandBuffers(static_cast<VkDevice>(m_deviceHandle), static_cast<VkCommandPool>(m_ptr), static_cast<uint32_t>(buffers.size()), buffers.data());
+            ->vkFreeCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), static_cast<VkCommandPool>(m_ptr), static_cast<uint32_t>(buffers.size()), buffers.data());
 
         for (uint8_t i = 0; i < numCommandLists; i++)
         {

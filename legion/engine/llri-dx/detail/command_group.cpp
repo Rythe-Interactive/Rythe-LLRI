@@ -32,8 +32,8 @@ namespace LLRI_NAMESPACE
         auto* allocator = desc.usage == command_list_usage::Direct ?
             m_ptr : m_indirectPtr;
 
-        const HRESULT r = static_cast<ID3D12Device*>(m_deviceHandle)
-            ->CreateCommandList(0,
+        const HRESULT r = static_cast<ID3D12Device*>(m_device->m_ptr)
+            ->CreateCommandList(desc.nodeMask,
                 type,
                 static_cast<ID3D12CommandAllocator*>(allocator),
                 nullptr,
@@ -49,9 +49,10 @@ namespace LLRI_NAMESPACE
         output->m_ptr = dx12CommandList;
         output->m_group = this;
 
-        output->m_deviceHandle = m_deviceHandle;
+        output->m_deviceHandle = m_device->m_ptr;
         output->m_deviceFunctionTable = m_deviceFunctionTable;
 
+        output->m_nodeMask = desc.nodeMask;
         output->m_usage = desc.usage;
         output->m_state = command_list_state::Empty;
 
@@ -80,8 +81,8 @@ namespace LLRI_NAMESPACE
         {
             ID3D12GraphicsCommandList* dx12CommandList = nullptr;
 
-            const HRESULT r = static_cast<ID3D12Device*>(m_deviceHandle)
-                ->CreateCommandList(0,
+            const HRESULT r = static_cast<ID3D12Device*>(m_device->m_ptr)
+                ->CreateCommandList(desc.nodeMask,
                     type,
                     allocator,
                     nullptr,
@@ -102,9 +103,10 @@ namespace LLRI_NAMESPACE
             cmdList->m_ptr = dx12CommandList;
             cmdList->m_group = this;
 
-            cmdList->m_deviceHandle = m_deviceHandle;
+            cmdList->m_deviceHandle = m_device->m_ptr;
             cmdList->m_deviceFunctionTable = m_deviceFunctionTable;
 
+            cmdList->m_nodeMask = desc.nodeMask;
             cmdList->m_usage = desc.usage;
             cmdList->m_state = command_list_state::Empty;
 
