@@ -13,7 +13,8 @@ namespace helpers
     inline llri::Instance* defaultInstance()
     {
         llri::Instance* instance;
-        const llri::instance_desc desc{};
+        llri::instance_extension ext{ llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { true } };
+        const llri::instance_desc desc{ 1, &ext, ""};
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         return instance;
     }
@@ -28,8 +29,22 @@ namespace helpers
     inline llri::Device* defaultDevice(llri::Instance* instance, llri::Adapter* adapter)
     {
         llri::Device* device = nullptr;
-        llri::queue_desc queueDesc { llri::queue_type::Graphics, llri::queue_priority::Normal };
-        const llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 1, &queueDesc};
+
+        uint8_t graphicsQueueCount, computeQueueCount, transferQueueCount;
+        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Graphics, &graphicsQueueCount), llri::result::Success);
+        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Compute, &computeQueueCount), llri::result::Success);
+        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Transfer, &transferQueueCount), llri::result::Success);
+
+        std::vector<llri::queue_desc> queues;
+
+        if (graphicsQueueCount > 0)
+            queues.push_back(llri::queue_desc{ llri::queue_type::Graphics, llri::queue_priority::Normal });
+        if (computeQueueCount > 0)
+            queues.push_back(llri::queue_desc{ llri::queue_type::Compute, llri::queue_priority::Normal });
+        if (transferQueueCount > 0)
+            queues.push_back(llri::queue_desc{ llri::queue_type::Transfer, llri::queue_priority::Normal });
+
+        const llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, static_cast<uint32_t>(queues.size()), queues.data() };
         REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);
         return device;
     }

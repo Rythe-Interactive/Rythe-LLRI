@@ -17,9 +17,9 @@ TEST_CASE("Device")
         auto* device = helpers::defaultDevice(instance, adapter);
 
         uint8_t graphicsQueueCount, computeQueueCount, transferQueueCount;
-        adapter->queryQueueCount(llri::queue_type::Graphics, &graphicsQueueCount);
-        adapter->queryQueueCount(llri::queue_type::Compute, &computeQueueCount);
-        adapter->queryQueueCount(llri::queue_type::Transfer, &transferQueueCount);
+        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Graphics, &graphicsQueueCount), llri::result::Success);
+        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Compute, &computeQueueCount), llri::result::Success);
+        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Transfer, &transferQueueCount), llri::result::Success);
 
         SUBCASE("Device::queryQueue()")
         {
@@ -74,8 +74,7 @@ TEST_CASE("Device")
 
             for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
             {
-                uint8_t count;
-                adapter->queryQueueCount((llri::queue_type)type, &count);
+                uint8_t count = device->queryQueueCount(static_cast<llri::queue_type>(type));
 
                 if (count == 0)
                 {
@@ -107,8 +106,7 @@ TEST_CASE("Device")
 
             for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
             {
-                uint8_t count;
-                REQUIRE_EQ(adapter->queryQueueCount((llri::queue_type)type, &count), llri::result::Success);
+                uint8_t count = device->queryQueueCount((llri::queue_type)type);
 
                 if (count > 0)
                 {
