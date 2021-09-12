@@ -70,6 +70,10 @@ namespace LLRI_NAMESPACE
                               directx::mapCommandGroupType(m_type) :
                               D3D12_COMMAND_LIST_TYPE_BUNDLE;
 
+        auto* allocator = desc.usage == command_list_usage::Direct ?
+            static_cast<ID3D12CommandAllocator*>(m_ptr) :
+            static_cast<ID3D12CommandAllocator*>(m_indirectPtr);
+
         cmdLists->reserve(count);
 
         for (uint8_t i = 0; i < count; i++)
@@ -79,7 +83,7 @@ namespace LLRI_NAMESPACE
             const HRESULT r = static_cast<ID3D12Device*>(m_deviceHandle)
                 ->CreateCommandList(0,
                     type,
-                    static_cast<ID3D12CommandAllocator*>(m_ptr),
+                    allocator,
                     nullptr,
                     IID_PPV_ARGS(&dx12CommandList));
 
