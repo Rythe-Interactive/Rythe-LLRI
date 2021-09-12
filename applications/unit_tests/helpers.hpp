@@ -57,9 +57,10 @@ namespace helpers
         return cmdGroup;
     }
 
-    inline llri::CommandList* defaultCommandList(llri::CommandGroup* group, llri::command_list_usage usage)
+    inline llri::CommandList* defaultCommandList(llri::CommandGroup* group, uint32_t nodeMask, llri::command_list_usage usage)
     {
         llri::command_list_alloc_desc desc{};
+        desc.nodeMask = nodeMask;
         desc.usage = usage;
 
         llri::CommandList* cmd;
