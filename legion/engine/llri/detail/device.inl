@@ -63,6 +63,21 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
+    inline uint8_t Device::queryQueueCount(queue_type type)
+    {
+        switch (type)
+        {
+            case queue_type::Graphics:
+                return m_graphicsQueues.size();
+            case queue_type::Compute:
+                return m_computeQueues.size();
+            case queue_type::Transfer:
+                return m_transferQueues.size();
+        }
+
+        return 0;
+    }
+
     inline result Device::createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
     {
 #ifndef LLRI_DISABLE_VALIDATION
@@ -88,11 +103,10 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
-        uint8_t availableQueueCount;
-        m_adapter->queryQueueCount(desc.type, &availableQueueCount);
+        uint8_t availableQueueCount = queryQueueCount(desc.type);
         if (availableQueueCount == 0)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because the the Device's adapter has no queues available for the passed command_group_desc::type.");
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because the the Device has no queues available for the passed command_group_desc::type.");
             return result::ErrorInvalidUsage;
         }
 #endif

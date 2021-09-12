@@ -83,6 +83,11 @@ namespace LLRI_NAMESPACE
         result queryQueue(queue_type type, uint8_t index, Queue** queue);
 
         /**
+        * @brief Get the number of created queues of a given type.
+        */
+        uint8_t queryQueueCount(queue_type type);
+
+        /**
          * @brief Create a command group. Command groups are responsible for allocating and managing the necessary device memory for command queues.
          *
          * @param desc The description of the command group.
@@ -92,7 +97,7 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if cmdGroup is nullptr.
          * @return ErrorInvalidUsage if desc.type is not a valid queue_type enum value.
          * @return ErrorInvalidUsage if desc.count is 0.
-         * @return ErrorInvalidUsage if this device's Adapter::queryQueueCount(desc.type) returns 0.
+         * @return ErrorInvalidUsage if this device's Device::queryQueueCount(desc.type) returns 0.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
