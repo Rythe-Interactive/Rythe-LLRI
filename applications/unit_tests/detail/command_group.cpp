@@ -169,6 +169,8 @@ TEST_CASE("CommandGroup")
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdList), llri::result::Success);
 
                     CHECK_EQ(group->free(cmdList), llri::result::ErrorInvalidUsage);
+
+                    device->destroyCommandGroup(group2);
                 }
             }
 
