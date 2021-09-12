@@ -32,7 +32,7 @@ int main()
     // CommandLists can only be allocated through a CommandGroup.
     // CommandGroups are responsible for managing the device memory allocated for each CommandList.
     llri::command_group_desc groupDesc{};
-    groupDesc.count = 1; // CommandGroups must know pre-emptively how many CommandLists they can allocate to reserve the appropriate device memory.
+    groupDesc.count = 1; // CommandGroups must know how many CommandLists they can allocate to reserve the appropriate device memory.
     groupDesc.type = llri::queue_type::Graphics; // There **must** be an Adapter queue of this type available for this to be valid.
 
     llri::CommandGroup* group;
@@ -41,6 +41,7 @@ int main()
 
     // When CommandLists are allocated through their CommandGroup, the group maintains full ownership over the CommandList(s).
     llri::command_list_alloc_desc alloc{ };
+    alloc.nodeMask = 0; // nodeMask is used for linked multi-gpu tech such as SLI/Crossfire, passing 0 simply uses the default device.
     alloc.usage = llri::command_list_usage::Direct; // This CommandList will be directly submitted to Queues
 
     // This CommandList **may** be free'd through CommandGroup::free() but this is
@@ -81,6 +82,7 @@ int main()
     }, list);
 
     // Make sure to clean up created resources.
+    // note how we don't need to free CommandLists, the CommandGroup can take care of that.
     device->destroyCommandGroup(group);
     instance->destroyDevice(device);
     llri::destroyInstance(instance);
