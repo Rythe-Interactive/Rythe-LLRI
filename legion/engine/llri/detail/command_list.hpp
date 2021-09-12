@@ -45,11 +45,11 @@ namespace LLRI_NAMESPACE
     struct command_list_alloc_desc
     {
         /**
-         * @brief The Device node on which the command list(s) should be allocated. Every bit in the mask corresponds to a node (if present) and in this case, only a single bit may be set.
+         * @brief The Device node on which the command list(s) should be allocated. Every bit in the mask corresponds to a node (if present) and for command list allocation a single bit **must** be set.
          *
-         * For convenience, 0 may be passed, which will be interpreted as 1 and refers to the first/default node.
+         * For convenience, 0 **may** be passed, which is interpreted as 1 and refers to the first/default node.
          *
-         * The node mask must not have a bit set to 1 if the bit is more than Adapter::queryNodeCount.
+         * The node mask **must** not have a bit set if the bit is at a position more than or equals Adapter::queryNodeCount.
         */
         uint32_t nodeMask;
 

@@ -16,7 +16,8 @@ TEST_CASE("CommandGroup")
     auto* device = helpers::defaultDevice(instance, adapter);
     auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 10);
 
-    for (uint32_t i = 0; i < adapter->queryNodeCount(); i++)
+    const auto nodeCount = adapter->queryNodeCount();
+    for (uint32_t i = 0; i < nodeCount; i++)
     {
         uint32_t nodeMask = 1 << i;
         const std::string str = std::string("Device node ") + std::to_string(nodeMask);
@@ -80,6 +81,25 @@ TEST_CASE("CommandGroup")
                     CHECK_EQ(smallGroup->allocate(desc, &cmdList2), llri::result::ErrorExceededLimit);
 
                     device->destroyCommandGroup(smallGroup);
+                }
+
+                SUBCASE("[Incorrect usage] Nodemask for non-existing node")
+                {
+                    uint32_t incorrectNodeMask = 1 << nodeCount;
+                    llri::CommandList* cmdList;
+                    llri::command_list_alloc_desc desc { incorrectNodeMask, llri::command_list_usage::Direct };
+                    CHECK_EQ(group->allocate(desc, &cmdList), llri::result::ErrorInvalidNodeMask);
+                }
+
+                if (nodeCount > 1)
+                {
+                    SUBCASE("[Incorrect usage] Nodemask with multiple enabled bits")
+                    {
+                        constexpr uint32_t incorrectNodeMask = 1 << 0 | 1 << 1;
+                        llri::CommandList* cmdList;
+                        llri::command_list_alloc_desc desc { incorrectNodeMask, llri::command_list_usage::Direct };
+                        CHECK_EQ(group->allocate(desc, &cmdList), llri::result::ErrorInvalidNodeMask);
+                    }
                 }
             }
 

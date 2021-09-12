@@ -49,6 +49,12 @@ namespace LLRI_NAMESPACE
                 return "ErrorInvalidState";
             case result::ErrorExceededLimit:
                 return "ErrorExceededLimit";
+            case result::ErrorInvalidNodeMask:
+                return "ErrorInvalidNodeMask";
+            case result::ErrorIncompatibleNodeMask:
+                return "ErrorIncompatibleNodeMask";
+            case result::ErrorOccupied:
+                return "ErrorOccupied";
         }
 
         return "Invalid result value";

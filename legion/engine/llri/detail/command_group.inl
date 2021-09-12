@@ -63,6 +63,12 @@ namespace LLRI_NAMESPACE
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorInvalidNodeMask because the node mask " + std::to_string(desc.nodeMask) + "has multiple bits set which is not valid for CommandList allocation.");
             return result::ErrorInvalidNodeMask;
         }
+
+        if (desc.nodeMask >= (1 << m_device->m_adapter->queryNodeCount()))
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandGroup::allocate() returned ErrorInvalidNodeMask because the node mask " + std::to_string(desc.nodeMask) + " has a bit set that is more than or at Adapter::queryNodeCount().");
+            return result::ErrorInvalidNodeMask;
+        }
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
