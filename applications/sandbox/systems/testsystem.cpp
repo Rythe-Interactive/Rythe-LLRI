@@ -57,6 +57,8 @@ void TestSystem::setup()
 {
     filter(log::severity_debug);
 
+    log::info("LLRI linked Implementation: {}", llri::to_string(llri::queryImplementation()));
+
     createInstance();
     selectAdapter();
     createDevice();

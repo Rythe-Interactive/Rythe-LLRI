@@ -11,5 +11,8 @@
 
 namespace LLRI_NAMESPACE
 {
-    //reserved for future use
+    [[nodiscard]] implementation queryImplementation()
+    {
+        return implementation::Vulkan;
+    }
 }

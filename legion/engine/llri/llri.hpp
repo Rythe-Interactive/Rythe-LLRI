@@ -168,6 +168,36 @@ namespace LLRI_NAMESPACE
      * @return The enum value as a string, or "Invalid result value" if the value was not recognized as an enum member.
     */
     constexpr const char* to_string(result r);
+
+    /**
+    * @brief Names the implementation.
+    */
+    enum struct implementation : uint8_t
+    {
+        /**
+        * @brief The cross-platform Vulkan API. 
+        */
+        Vulkan,
+        /**
+        * @brief Microsoft's DirectX 12 API.
+        */
+        DirectX12,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = DirectX12
+    };
+
+    /**
+     * @brief Converts an implementation to a string.
+     * @return The enum value as a string, or "Invalid implementation value" if the value was not recognized as an enum member.
+    */
+    constexpr const char* to_string(implementation impl);
+
+    /**
+    * @brief Query the currently linked implementation.
+    */
+    [[nodiscard]] implementation queryImplementation();
 }
 
 // ReSharper disable CppUnusedIncludeDirective

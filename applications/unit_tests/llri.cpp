@@ -8,3 +8,11 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
+
+TEST_CASE("queryImplementation()")
+{
+    SUBCASE("")
+    {
+        CHECK_UNARY(llri::queryImplementation() <= llri::implementation::MaxEnum);
+    }
+}
