@@ -9,11 +9,6 @@
 
 namespace LLRI_NAMESPACE
 {
-    namespace internal
-    {
-        std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice);
-    }
-
     result Device::impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
     {
         auto* output = new CommandGroup();

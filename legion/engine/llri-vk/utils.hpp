@@ -52,5 +52,10 @@ namespace LLRI_NAMESPACE
         }
 
         unsigned long long nameHash(std::string name);
+
+        /**
+         * @brief Finds LLRI standard queue families (Graphics, Compute, Transfer)
+        */
+        std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice);
     }
 }
