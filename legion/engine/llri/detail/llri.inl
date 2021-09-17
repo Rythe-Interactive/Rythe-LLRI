@@ -59,6 +59,19 @@ namespace LLRI_NAMESPACE
 
         return "Invalid result value";
     }
+
+    constexpr inline const char* to_string(implementation impl)
+    {
+        switch (impl)
+        {
+            case implementation::Vulkan:
+                return "Vulkan";
+            case implementation::DirectX12:
+                return "DirectX12";
+        }
+
+        return "Invalid implementation value";
+    }
 }
 
 #include <llri/detail/instance.inl>
