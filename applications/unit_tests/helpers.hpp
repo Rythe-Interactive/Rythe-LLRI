@@ -51,7 +51,7 @@ namespace helpers
 
     inline llri::queue_type availableQueueType(llri::Adapter* adapter)
     {
-        for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+        for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
         {
             uint8_t count = 0;
             adapter->queryQueueCount(static_cast<llri::queue_type>(type), &count);

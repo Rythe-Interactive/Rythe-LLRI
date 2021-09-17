@@ -67,7 +67,7 @@ namespace LLRI_NAMESPACE
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        for (uint8_t i = 0; i < count; i++)
+        for (size_t i = 0; i < count; i++)
         {
             auto* cmdList = new CommandList();
             cmdList->m_ptr = cmdBuffers[i];
@@ -109,14 +109,14 @@ namespace LLRI_NAMESPACE
     {
         //Gather vk handles
         std::vector<VkCommandBuffer> buffers(numCommandLists);
-        for (uint8_t i = 0; i < numCommandLists; i++)
+        for (size_t i = 0; i < numCommandLists; i++)
             buffers[i] = static_cast<VkCommandBuffer>(cmdLists[i]->m_ptr);
 
         //Free internal pointers
         static_cast<VolkDeviceTable*>(m_deviceFunctionTable)
             ->vkFreeCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), static_cast<VkCommandPool>(m_ptr), static_cast<uint32_t>(buffers.size()), buffers.data());
 
-        for (uint8_t i = 0; i < numCommandLists; i++)
+        for (size_t i = 0; i < numCommandLists; i++)
         {
             //Remove from commandlist list
             m_cmdLists.erase(cmdLists[i]);

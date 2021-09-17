@@ -168,7 +168,7 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
-        for (uint8_t i = 0; i < numCommandLists; i++)
+        for (size_t i = 0; i < numCommandLists; i++)
         {
             if (cmdLists[i] == nullptr)
             {

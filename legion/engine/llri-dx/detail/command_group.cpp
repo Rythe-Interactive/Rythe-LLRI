@@ -25,12 +25,12 @@ namespace LLRI_NAMESPACE
     {
         ID3D12GraphicsCommandList* dx12CommandList = nullptr;
 
-        const auto type = desc.usage == command_list_usage::Direct ?
+        const auto type = (desc.usage == command_list_usage::Direct ?
                       directx::mapCommandGroupType(m_type) :
-                      D3D12_COMMAND_LIST_TYPE_BUNDLE;
+                      D3D12_COMMAND_LIST_TYPE_BUNDLE);
 
-        auto* allocator = desc.usage == command_list_usage::Direct ?
-            m_ptr : m_indirectPtr;
+        auto* allocator = (desc.usage == command_list_usage::Direct ?
+            m_ptr : m_indirectPtr);
 
         const HRESULT r = static_cast<ID3D12Device*>(m_device->m_ptr)
             ->CreateCommandList(desc.nodeMask,
@@ -67,17 +67,17 @@ namespace LLRI_NAMESPACE
     
     result CommandGroup::impl_allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists)
     {
-        const auto type = desc.usage == command_list_usage::Direct ?
+        const auto type = (desc.usage == command_list_usage::Direct ?
                               directx::mapCommandGroupType(m_type) :
-                              D3D12_COMMAND_LIST_TYPE_BUNDLE;
+                              D3D12_COMMAND_LIST_TYPE_BUNDLE);
 
-        auto* allocator = desc.usage == command_list_usage::Direct ?
+        auto* allocator = (desc.usage == command_list_usage::Direct ?
             static_cast<ID3D12CommandAllocator*>(m_ptr) :
-            static_cast<ID3D12CommandAllocator*>(m_indirectPtr);
+            static_cast<ID3D12CommandAllocator*>(m_indirectPtr));
 
         cmdLists->reserve(count);
 
-        for (uint8_t i = 0; i < count; i++)
+        for (size_t i = 0; i < count; i++)
         {
             ID3D12GraphicsCommandList* dx12CommandList = nullptr;
 
@@ -135,7 +135,7 @@ namespace LLRI_NAMESPACE
 
     result CommandGroup::impl_free(uint8_t numCommandLists, CommandList** cmdLists)
     {
-        for (uint8_t i = 0; i < numCommandLists; i++)
+        for (size_t i = 0; i < numCommandLists; i++)
         {
             //Free internal pointer
             static_cast<IUnknown*>(cmdLists[i]->m_ptr)->Release();

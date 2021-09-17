@@ -73,7 +73,7 @@ namespace LLRI_NAMESPACE
             auto* output = new Instance();
             UINT factoryFlags = 0;
 
-            for (uint32_t i = 0; i < desc.numExtensions; i++)
+            for (size_t i = 0; i < desc.numExtensions; i++)
             {
                 auto& extension = desc.extensions[i];
                 result extensionCreateResult;
@@ -263,7 +263,7 @@ namespace LLRI_NAMESPACE
                 output->m_validationCallbackMessenger = iq;
         }
 
-        for (uint32_t i = 0; i < desc.numQueues; i++)
+        for (size_t i = 0; i < desc.numQueues; i++)
         {
             auto& queueDesc = desc.queues[i];
 
@@ -271,7 +271,7 @@ namespace LLRI_NAMESPACE
             const D3D12_COMMAND_LIST_TYPE type = internal::mapQueueType(queueDesc.type);
 
             std::vector<void*> queues(desc.adapter->m_nodeCount, nullptr);
-            for (uint8_t node = 0; node < desc.adapter->m_nodeCount; node++)
+            for (size_t node = 0; node < desc.adapter->m_nodeCount; node++)
             {
                 D3D12_COMMAND_QUEUE_DESC queueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 1u << static_cast<UINT>(node) };
                 ID3D12CommandQueue* dx12Queue = nullptr;

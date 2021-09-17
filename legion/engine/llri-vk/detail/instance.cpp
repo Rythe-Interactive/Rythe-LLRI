@@ -80,7 +80,7 @@ namespace LLRI_NAMESPACE
             std::vector<VkQueueFamilyProperties> properties(propertyCount);
             vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, properties.data());
 
-            for (uint32_t i = 0; i < propertyCount; i++)
+            for (size_t i = 0; i < propertyCount; i++)
             {
                 auto& p = properties[i];
 
@@ -124,7 +124,7 @@ namespace LLRI_NAMESPACE
             VkValidationFeaturesEXT features;
             std::vector<VkValidationFeatureEnableEXT> enables;
 
-            for (uint32_t i = 0; i < desc.numExtensions; i++)
+            for (size_t i = 0; i < desc.numExtensions; i++)
             {
                 auto& extension = desc.extensions[i];
                 switch (extension.type)
@@ -281,7 +281,7 @@ namespace LLRI_NAMESPACE
                 // First try to find existing physical devices and re-assign pointer to found adapters
                 // It is possible that physial device [0] is not the one stored so we iterate over all and find the related one
                 bool found = false;
-                for (uint32_t i = 0; i < group.physicalDeviceCount; i++)
+                for (size_t i = 0; i < group.physicalDeviceCount; i++)
                 {
                     if (m_cachedAdapters.find(group.physicalDevices[i]) != m_cachedAdapters.end())
                     {
@@ -357,7 +357,7 @@ namespace LLRI_NAMESPACE
         std::vector<float> computePriorities;
         std::vector<float> transferPriorities;
 
-        for (uint32_t i = 0; i < desc.numQueues; i++)
+        for (size_t i = 0; i < desc.numQueues; i++)
         {
             auto& queueDesc = desc.queues[i];
 
@@ -444,7 +444,7 @@ namespace LLRI_NAMESPACE
             { queue_type::Transfer, 0 }
         };
 
-        for (uint32_t i = 0; i < desc.numQueues; i++)
+        for (size_t i = 0; i < desc.numQueues; i++)
         {
             auto& queueDesc = desc.queues[i];
 

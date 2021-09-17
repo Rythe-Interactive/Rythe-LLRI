@@ -17,7 +17,7 @@ TEST_CASE("CommandGroup")
     auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 10);
 
     const auto nodeCount = adapter->queryNodeCount();
-    for (uint32_t i = 0; i < nodeCount; i++)
+    for (size_t i = 0; i < nodeCount; i++)
     {
         uint32_t nodeMask = 1 << i;
         const std::string str = std::string("Device node ") + std::to_string(nodeMask);
@@ -54,7 +54,7 @@ TEST_CASE("CommandGroup")
             {
                 SUBCASE("[Correct usage] Valid parameters")
                 {
-                    for (uint8_t usage = 0; usage <= static_cast<uint8_t>(llri::command_list_usage::MaxEnum); usage++)
+                    for (size_t usage = 0; usage <= static_cast<uint8_t>(llri::command_list_usage::MaxEnum); usage++)
                     {
                         llri::CommandList* cmdList;
                         llri::command_list_alloc_desc desc{ nodeMask, static_cast<llri::command_list_usage>(usage) };
@@ -107,7 +107,7 @@ TEST_CASE("CommandGroup")
             {
                 SUBCASE("[Correct usage] Valid parameters")
                 {
-                    for (uint8_t usage = 0; usage <= static_cast<uint8_t>(llri::command_list_usage::MaxEnum); usage++)
+                    for (size_t usage = 0; usage <= static_cast<uint8_t>(llri::command_list_usage::MaxEnum); usage++)
                     {
                         std::vector<llri::CommandList*> cmdLists;
                         llri::command_list_alloc_desc desc{ nodeMask, static_cast<llri::command_list_usage>(usage) };

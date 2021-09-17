@@ -31,7 +31,7 @@ TEST_CASE("Device")
 
             SUBCASE("[Incorrect usage] index > number of created queues of this type")
             {
-                for (uint8_t type = 0; type <= (uint8_t)llri::queue_type::MaxEnum; type++)
+                for (size_t type = 0; type <= (uint8_t)llri::queue_type::MaxEnum; type++)
                 {
                     llri::Queue* queue;
                     CHECK_EQ(device->queryQueue((llri::queue_type)type, 255, &queue), llri::result::ErrorInvalidUsage);
@@ -72,7 +72,7 @@ TEST_CASE("Device")
                 CHECK_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::ErrorInvalidUsage);
             }
 
-            for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+            for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
             {
                 uint8_t count = device->queryQueueCount(static_cast<llri::queue_type>(type));
 
@@ -104,7 +104,7 @@ TEST_CASE("Device")
         {
             CHECK_NOTHROW(device->destroyCommandGroup(nullptr));
 
-            for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+            for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
             {
                 uint8_t count = device->queryQueueCount((llri::queue_type)type);
 
