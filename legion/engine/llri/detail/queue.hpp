@@ -43,7 +43,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a queue_priority to a string.
      * @return The enum value as a string, or "Invalid queue_priority value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(queue_priority priority);
+    inline std::string to_string(queue_priority priority);
 
     /**
      * @brief Queue types define what kind of commands can be sent to the queue created with it.
@@ -79,7 +79,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a queue_type to a string.
      * @return The enum value as a string, or "Invalid queue_type value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(queue_type type);
+    inline std::string to_string(queue_type type);
 
     /**
      * @brief Describes the information needed to create a queue upon device creation.

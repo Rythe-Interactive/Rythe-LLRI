@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr inline const char* to_string(validation_callback_severity severity)
+    inline std::string to_string(validation_callback_severity severity)
     {
         switch (severity)
         {
@@ -28,7 +28,7 @@ namespace LLRI_NAMESPACE
         return "Invalid validation_callback_severity value";
     }
 
-    constexpr inline const char* to_string(validation_callback_source source)
+    inline std::string to_string(validation_callback_source source)
     {
         switch (source)
         {
@@ -41,7 +41,7 @@ namespace LLRI_NAMESPACE
         return "Invalid validation_callback_source value";
     }
 
-    constexpr inline const char* to_string(instance_extension_type type)
+    inline std::string to_string(instance_extension_type type)
     {
         switch (type)
         {

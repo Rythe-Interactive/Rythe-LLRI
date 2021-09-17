@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr inline const char* to_string(result r)
+    inline std::string to_string(result r)
     {
         switch (r)
         {
@@ -60,7 +60,7 @@ namespace LLRI_NAMESPACE
         return "Invalid result value";
     }
 
-    constexpr inline const char* to_string(implementation impl)
+    inline std::string to_string(implementation impl)
     {
         switch (impl)
         {

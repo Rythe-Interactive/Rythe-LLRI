@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr const char* to_string(queue_priority priority)
+    inline std::string to_string(queue_priority priority)
     {
         switch(priority)
         {
@@ -21,7 +21,7 @@ namespace LLRI_NAMESPACE
         return "Invalid queue_priority value";
     }
 
-    constexpr const char* to_string(queue_type type)
+    inline std::string to_string(queue_type type)
     {
         switch(type)
         {

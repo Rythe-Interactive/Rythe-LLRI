@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr inline const char* to_string(adapter_type type)
+    inline std::string to_string(adapter_type type)
     {
         switch (type)
         {

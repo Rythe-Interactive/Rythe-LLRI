@@ -55,7 +55,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a validation_callback_severity to a string.
      * @return The enum value as a string, or "Invalid validation_callback_severity value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(validation_callback_severity severity);
+    inline std::string to_string(validation_callback_severity severity);
 
     /**
      * @brief Describes the source of the validation callback message.
@@ -86,7 +86,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a validation_callback_source to a string.
      * @return The enum value as a string, or "Invalid validation_callback_source value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(validation_callback_source source);
+    inline std::string to_string(validation_callback_source source);
 
     /**
      * @brief The validation callback function.
