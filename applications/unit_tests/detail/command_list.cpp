@@ -15,7 +15,7 @@ TEST_CASE("CommandList")
     auto* device = helpers::defaultDevice(instance, adapter);
     auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 10);
 
-    for (size_t i = 0; i < adapter->queryNodeCount(); i++)
+    for (uint8_t i = 0; i < adapter->queryNodeCount(); i++)
     {
         uint32_t nodeMask = 1 << i;
         const std::string str = std::string("Device node ") + std::to_string(nodeMask);

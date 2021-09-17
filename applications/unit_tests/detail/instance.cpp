@@ -294,9 +294,9 @@ TEST_SUITE("Instance")
                 adapter->queryQueueCount(llri::queue_type::Compute, &maxQueueCounts[llri::queue_type::Compute]);
                 adapter->queryQueueCount(llri::queue_type::Transfer, &maxQueueCounts[llri::queue_type::Transfer]);
 
-                for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+                for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
-                    for (size_t i = 0; i < maxQueueCounts[static_cast<llri::queue_type>(type)]; i++)
+                    for (uint8_t i = 0; i < maxQueueCounts[static_cast<llri::queue_type>(type)]; i++)
                         queues.push_back(llri::queue_desc { static_cast<llri::queue_type>(type), llri::queue_priority::High });
                 }
 
