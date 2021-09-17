@@ -6,12 +6,11 @@
 
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
+#include <helpers.hpp>
 
 TEST_CASE("Adapter")
 {
-    llri::Instance* instance = nullptr;
-    llri::instance_desc desc{ 0, nullptr, "", {} };
-    REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+    llri::Instance* instance = helpers::defaultInstance();
 
     std::vector<llri::Adapter*> adapters;
     REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
@@ -98,7 +97,7 @@ TEST_CASE("Adapter")
 
             SUBCASE("[Correct usage] type is a valid queue_type value and count != nullptr")
             {
-                for (uint8_t type = 0; type < (uint8_t)llri::queue_type::MaxEnum; type++)
+                for (uint8_t type = 0; type <= (uint8_t)llri::queue_type::MaxEnum; type++)
                 {
                     uint8_t count;
                     auto r = adapter->queryQueueCount((llri::queue_type)type, &count);

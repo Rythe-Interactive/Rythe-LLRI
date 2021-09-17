@@ -38,6 +38,24 @@ namespace LLRI_NAMESPACE
 
         result mapVkResult(VkResult result);
 
+        constexpr inline VkCommandBufferLevel mapCommandListUsage(command_list_usage usage)
+        {
+            switch(usage)
+            {
+                case command_list_usage::Direct:
+                    return VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+                case command_list_usage::Indirect:
+                    return VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+            }
+
+            throw;
+        }
+
         unsigned long long nameHash(std::string name);
+
+        /**
+         * @brief Finds LLRI standard queue families (Graphics, Compute, Transfer)
+        */
+        std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice);
     }
 }

@@ -62,4 +62,82 @@ namespace LLRI_NAMESPACE
         *queue = queues->at(index);
         return result::Success;
     }
+
+    inline uint8_t Device::queryQueueCount(queue_type type)
+    {
+        switch (type)
+        {
+            case queue_type::Graphics:
+                return m_graphicsQueues.size();
+            case queue_type::Compute:
+                return m_computeQueues.size();
+            case queue_type::Transfer:
+                return m_transferQueues.size();
+        }
+
+        return 0;
+    }
+
+    inline result Device::createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
+    {
+#ifndef LLRI_DISABLE_VALIDATION
+        if (cmdGroup == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because the passed cmdGroup parameter must not be nullptr.");
+            return result::ErrorInvalidUsage;
+        }
+#endif
+
+        *cmdGroup = nullptr;
+
+#ifndef LLRI_DISABLE_VALIDATION
+        if (desc.type > queue_type::MaxEnum)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because desc.type was not a valid queue_type enum value.");
+            return result::ErrorInvalidUsage;
+        }
+
+        if (desc.count == 0)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because desc.count was 0");
+            return result::ErrorInvalidUsage;
+        }
+
+        uint8_t availableQueueCount = queryQueueCount(desc.type);
+        if (availableQueueCount == 0)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because the the Device has no queues available for the passed command_group_desc::type.");
+            return result::ErrorInvalidUsage;
+        }
+#endif
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto r = impl_createCommandGroup(desc, cmdGroup);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        return r;
+#else
+        return impl_createCommandGroup(desc, cmdGroup);
+#endif
+    }
+
+    inline void Device::destroyCommandGroup(CommandGroup* cmdGroup)
+    {
+        if (!cmdGroup)
+            return;
+
+        if (cmdGroup->m_ptr)
+        {
+            std::vector<CommandList*> cmdLists;
+            cmdLists.reserve(cmdGroup->m_cmdLists.size());
+            for (auto element : cmdGroup->m_cmdLists)
+                cmdLists.push_back(element);
+            cmdGroup->free(static_cast<uint8_t>(cmdLists.size()), cmdLists.data());
+        }
+
+        impl_destroyCommandGroup(cmdGroup);
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+#endif
+    }
 }

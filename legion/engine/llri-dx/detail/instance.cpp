@@ -14,8 +14,6 @@ namespace LLRI_NAMESPACE
         result createDriverValidationEXT(const driver_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
 
-        result mapHRESULT(HRESULT value);
-
         void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
 
         validation_callback_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
@@ -75,7 +73,7 @@ namespace LLRI_NAMESPACE
             auto* output = new Instance();
             UINT factoryFlags = 0;
 
-            for (uint32_t i = 0; i < desc.numExtensions; i++)
+            for (size_t i = 0; i < desc.numExtensions; i++)
             {
                 auto& extension = desc.extensions[i];
                 result extensionCreateResult;
@@ -138,7 +136,7 @@ namespace LLRI_NAMESPACE
             if (FAILED(factoryCreateResult))
             {
                 llri::destroyInstance(output);
-                return internal::mapHRESULT(factoryCreateResult);
+                return directx::mapHRESULT(factoryCreateResult);
             }
 
             //Store factory and return result
@@ -240,8 +238,10 @@ namespace LLRI_NAMESPACE
 
     result Instance::impl_createDevice(const device_desc& desc, Device** device) const
     {
-        Device* output = new Device();
+        auto* output = new Device();
+        output->m_adapter = desc.adapter;
         output->m_validationCallback = m_validationCallback;
+        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
 
@@ -250,7 +250,7 @@ namespace LLRI_NAMESPACE
         if (FAILED(r))
         {
             destroyDevice(output);
-            return internal::mapHRESULT(r);
+            return directx::mapHRESULT(r);
         }
         output->m_ptr = dx12Device;
 
@@ -263,7 +263,7 @@ namespace LLRI_NAMESPACE
                 output->m_validationCallbackMessenger = iq;
         }
 
-        for (uint32_t i = 0; i < desc.numQueues; i++)
+        for (size_t i = 0; i < desc.numQueues; i++)
         {
             auto& queueDesc = desc.queues[i];
 
@@ -271,7 +271,7 @@ namespace LLRI_NAMESPACE
             const D3D12_COMMAND_LIST_TYPE type = internal::mapQueueType(queueDesc.type);
 
             std::vector<void*> queues(desc.adapter->m_nodeCount, nullptr);
-            for (uint8_t node = 0; node < desc.adapter->m_nodeCount; node++)
+            for (size_t node = 0; node < desc.adapter->m_nodeCount; node++)
             {
                 D3D12_COMMAND_QUEUE_DESC queueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 1u << static_cast<UINT>(node) };
                 ID3D12CommandQueue* dx12Queue = nullptr;
@@ -279,7 +279,7 @@ namespace LLRI_NAMESPACE
                 if (FAILED(r))
                 {
                     destroyDevice(output);
-                    return internal::mapHRESULT(r);
+                    return directx::mapHRESULT(r);
                 }
 
                 queues[node] = dx12Queue;
@@ -287,6 +287,8 @@ namespace LLRI_NAMESPACE
 
             auto* queue = new Queue();
             queue->m_ptrs = queues;
+			queue->m_validationCallback = output->m_validationCallback;
+            queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
             switch(queueDesc.type)
             {

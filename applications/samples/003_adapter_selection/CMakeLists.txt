@@ -9,6 +9,6 @@ add_executable(003_adapter_selection ${source})
 target_compile_features(003_adapter_selection PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(003_adapter_selection ${LLRI_SELECTED_APP_IMPLEMENTATION})

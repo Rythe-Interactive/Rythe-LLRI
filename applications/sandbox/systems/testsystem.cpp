@@ -60,15 +60,29 @@ void TestSystem::setup()
     createInstance();
     selectAdapter();
     createDevice();
-
-    //Cleanup created resources
-    m_instance->destroyDevice(m_device);
-    destroyInstance(m_instance);
+    createCommandLists();
 }
 
 void TestSystem::update(time::span deltaTime)
 {
     (void)deltaTime;
+
+    THROW_IF_FAILED(m_commandGroup->reset());
+
+    const llri::command_list_begin_desc beginDesc {};
+    THROW_IF_FAILED(m_commandList->record(beginDesc, [](llri::CommandList* cmd)
+    {
+        //Record
+    }, m_commandList));
+}
+
+TestSystem::~TestSystem()
+{
+    //Cleanup created resources
+    m_device->destroyCommandGroup(m_commandGroup);
+
+    m_instance->destroyDevice(m_device);
+    destroyInstance(m_instance);
 }
 
 void TestSystem::createInstance()
@@ -123,7 +137,7 @@ void TestSystem::selectAdapter()
         //Discrete adapters tend to be more powerful and have more resources so we can decide to pick them
         if (info.adapterType == llri::adapter_type::Discrete)
         {
-            log::info("Adapter selected");
+            log::info("Adapter selected: {}", info.adapterName);
             m_adapter = adapter;
         }
     }
@@ -156,4 +170,13 @@ void TestSystem::createDevice()
     THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Graphics, 0, &m_graphicsQueue));
     THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Compute, 0, &m_computeQueue));
     THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Transfer, 0, &m_transferQueue));
+}
+
+void TestSystem::createCommandLists()
+{
+    const llri::command_group_desc groupDesc { llri::queue_type::Graphics, 1 };
+    THROW_IF_FAILED(m_device->createCommandGroup(groupDesc, &m_commandGroup));
+
+    const llri::command_list_alloc_desc listDesc { 0, llri::command_list_usage::Direct };
+    THROW_IF_FAILED(m_commandGroup->allocate(listDesc, &m_commandList));
 }

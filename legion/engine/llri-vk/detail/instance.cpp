@@ -64,44 +64,6 @@ namespace LLRI_NAMESPACE
         }
 
         void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
-
-        std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice)
-        {
-            std::map<queue_type, uint32_t> output
-            {
-                { queue_type::Graphics, 0 },
-                { queue_type::Compute, 0 },
-                { queue_type::Transfer, 0 }
-            };
-
-            //Get queue family info
-            uint32_t propertyCount;
-            vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, nullptr);
-            std::vector<VkQueueFamilyProperties> properties(propertyCount);
-            vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, properties.data());
-
-            for (uint32_t i = 0; i < propertyCount; i++)
-            {
-                auto& p = properties[i];
-
-                //Only the graphics queue has the graphics bit set
-                //it usually also has compute & transfer set, because graphics queue tends to be general purpose
-                if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
-                    output[queue_type::Graphics] = i;
-
-                //Dedicated compute family has no graphics bit but does have a compute bit
-                else if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 && (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == VK_QUEUE_COMPUTE_BIT)
-                    output[queue_type::Compute] = i;
-
-                //Dedicated transfer family has no graphics bit, no compute bit, but does have a transfer bit
-                else if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
-                    (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0 &&
-                    (p.queueFlags & VK_QUEUE_TRANSFER_BIT) == VK_QUEUE_TRANSFER_BIT)
-                    output[queue_type::Transfer] = i;
-            }
-
-            return output;
-        }
     }
 
     namespace detail
@@ -124,7 +86,7 @@ namespace LLRI_NAMESPACE
             VkValidationFeaturesEXT features;
             std::vector<VkValidationFeatureEnableEXT> enables;
 
-            for (uint32_t i = 0; i < desc.numExtensions; i++)
+            for (size_t i = 0; i < desc.numExtensions; i++)
             {
                 auto& extension = desc.extensions[i];
                 switch (extension.type)
@@ -281,7 +243,7 @@ namespace LLRI_NAMESPACE
                 // First try to find existing physical devices and re-assign pointer to found adapters
                 // It is possible that physial device [0] is not the one stored so we iterate over all and find the related one
                 bool found = false;
-                for (uint32_t i = 0; i < group.physicalDeviceCount; i++)
+                for (size_t i = 0; i < group.physicalDeviceCount; i++)
                 {
                     if (m_cachedAdapters.find(group.physicalDevices[i]) != m_cachedAdapters.end())
                     {
@@ -346,35 +308,62 @@ namespace LLRI_NAMESPACE
     result Instance::impl_createDevice(const device_desc& desc, Device** device) const
     {
         auto* output = new Device();
+        output->m_adapter = desc.adapter;
         output->m_validationCallback = m_validationCallback;
+        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         //Queue creation
         auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
 
-        std::vector<VkDeviceQueueCreateInfo> queues(desc.numQueues);
-        std::vector<float> priorities(desc.numQueues);
-        for (uint32_t i = 0; i < desc.numQueues; i++)
+        std::vector<float> graphicsPriorities;
+        std::vector<float> computePriorities;
+        std::vector<float> transferPriorities;
+
+        for (size_t i = 0; i < desc.numQueues; i++)
         {
             auto& queueDesc = desc.queues[i];
 
-            VkDeviceQueueCreateInfo ci { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {} };
-
-            switch(queueDesc.priority)
+            float priority = 0;
+            switch (queueDesc.priority)
             {
                 case queue_priority::Normal:
-                    priorities[i] = 0.5f;
+                    priority = 0.5f;
                     break;
                 case queue_priority::High:
-                    priorities[i] = 1.0f;
+                    priority = 1.0f;
                     break;
             }
 
-            ci.queueCount = 1;
-            ci.pQueuePriorities = &priorities[i];
-            ci.queueFamilyIndex = families[queueDesc.type];
-
-            queues[i] = ci;
+            switch (queueDesc.type)
+            {
+                case queue_type::Graphics:
+                    graphicsPriorities.push_back(priority);
+                    break;
+                case queue_type::Compute:
+                    computePriorities.push_back(priority);
+                    break;
+                case queue_type::Transfer:
+                    transferPriorities.push_back(priority);
+                    break;
+            }
         }
+
+        std::vector<VkDeviceQueueCreateInfo> queues;
+
+        if (!graphicsPriorities.empty())
+            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {},
+                families[queue_type::Graphics],
+                static_cast<uint32_t>(graphicsPriorities.size()), graphicsPriorities.data() });
+
+        if (!computePriorities.empty())
+            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {},
+                families[queue_type::Compute],
+                static_cast<uint32_t>(computePriorities.size()), computePriorities.data() });
+
+        if (!transferPriorities.empty())
+            queues.push_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, {},
+                families[queue_type::Transfer],
+                static_cast<uint32_t>(transferPriorities.size()), transferPriorities.data() });
 
         //Extensions
         std::vector<const char*> extensions;
@@ -417,7 +406,7 @@ namespace LLRI_NAMESPACE
             { queue_type::Transfer, 0 }
         };
 
-        for (uint32_t i = 0; i < desc.numQueues; i++)
+        for (size_t i = 0; i < desc.numQueues; i++)
         {
             auto& queueDesc = desc.queues[i];
 
@@ -426,6 +415,8 @@ namespace LLRI_NAMESPACE
 
             auto* queue = new Queue();
             queue->m_ptrs = std::vector<void*>(desc.adapter->m_nodeCount, vkQueue);
+            queue->m_validationCallback = output->m_validationCallback;
+            queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
             switch(queueDesc.type)
             {

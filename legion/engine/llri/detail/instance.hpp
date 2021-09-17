@@ -124,6 +124,8 @@ namespace LLRI_NAMESPACE
          * @brief Convenience operator used internally to call the callback.
         */
         void operator ()(validation_callback_severity severity, validation_callback_source source, const char* message) const { callback(severity, source, message, userData); }
+
+        void operator ()(validation_callback_severity severity, validation_callback_source source, std::string message) const { callback(severity, source, message.c_str(), userData);}
 #endif
     };
 

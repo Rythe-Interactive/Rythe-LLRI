@@ -16,6 +16,9 @@ namespace LLRI_NAMESPACE
     enum struct queue_type : uint8_t;
     class Queue;
 
+    struct command_group_desc;
+    class CommandGroup;
+
     /**
      * @brief Device description to be used in Instance::createDevice().
     */
@@ -57,6 +60,7 @@ namespace LLRI_NAMESPACE
     class Device
     {
         friend Instance;
+        friend class CommandGroup;
     public:
         /**
          * @brief Query a created Queue by type and index.
@@ -78,12 +82,39 @@ namespace LLRI_NAMESPACE
         */
         result queryQueue(queue_type type, uint8_t index, Queue** queue);
 
+        /**
+        * @brief Get the number of created queues of a given type.
+        */
+        uint8_t queryQueueCount(queue_type type);
+
+        /**
+         * @brief Create a command group. Command groups are responsible for allocating and managing the necessary device memory for command queues.
+         *
+         * @param desc The description of the command group.
+         * @param cmdGroup A pointer to the resulting command group variable.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage if cmdGroup is nullptr.
+         * @return ErrorInvalidUsage if desc.type is not a valid queue_type enum value.
+         * @return ErrorInvalidUsage if desc.count is 0.
+         * @return ErrorInvalidUsage if this device's Device::queryQueueCount(desc.type) returns 0.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
+        */
+        result createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
+
+        /**
+         * @brief Destroy the command group.
+         * @param cmdGroup A pointer to a valid CommandGroup, or nullptr.
+        */
+        void destroyCommandGroup(CommandGroup* cmdGroup);
+
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
         ~Device() = default;
 
         void* m_ptr = nullptr;
+        Adapter* m_adapter = nullptr;
         void* m_functionTable = nullptr;
 
         validation_callback_desc m_validationCallback;
@@ -92,5 +123,8 @@ namespace LLRI_NAMESPACE
         std::vector<Queue*> m_graphicsQueues;
         std::vector<Queue*> m_computeQueues;
         std::vector<Queue*> m_transferQueues;
+
+        result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
+        void impl_destroyCommandGroup(CommandGroup* cmdGroup);
     };
 }

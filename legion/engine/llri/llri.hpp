@@ -103,6 +103,14 @@ namespace LLRI_NAMESPACE
         */
         ErrorExtensionNotEnabled,
         /**
+         * @brief A passed node mask was not a valid node mask in the device. This may occur if the node mask had a positive bit set that was higher than the number of nodes represented in the device.
+        */
+        ErrorInvalidNodeMask,
+        /**
+         * @brief An object interacted with another object, where the two objects did not have matching node masks.
+        */
+        ErrorIncompatibleNodeMask,
+        /**
          * @brief The operation caused the device to become non-responsive for a long period of time. This is often caused by badly formed commands sent by the application.
         */
         ErrorDeviceHung,
@@ -138,9 +146,21 @@ namespace LLRI_NAMESPACE
         */
         ErrorIncompatibleDriver,
         /**
+         * @brief A resource was in a different state than the operation expected it to be in.
+        */
+        ErrorInvalidState,
+        /**
+         * @brief An API defined creation/allocation limit was exceeded.
+        */
+        ErrorExceededLimit,
+        /**
+         * @brief An object was already occupied with another operation and thus couldn't be used for the submitted operation
+        */
+        ErrorOccupied,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorIncompatibleDriver
+        MaxEnum = ErrorOccupied
     };
 
     /**
@@ -160,5 +180,8 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/queue.hpp>
 #include <llri/detail/device.hpp>
+
+#include <llri/detail/command_group.hpp>
+#include <llri/detail/command_list.hpp>
 
 #include <llri/detail/llri.inl>

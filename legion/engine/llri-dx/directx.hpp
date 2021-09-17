@@ -5,6 +5,7 @@
  */
 
 #pragma once
+#include <llri/llri.hpp>
 #include <graphics/directx/d3d12.h>
 #include <dxgi1_6.h>
 
@@ -42,6 +43,67 @@ namespace LLRI_NAMESPACE
                 D3D12CreateDevice = (PFN_D3D12_CREATE_DEVICE)GetProcAddress(d3d12, "D3D12CreateDevice");
                 D3D12GetDebugInterface = (PFN_D3D12_GET_DEBUG_INTERFACE)GetProcAddress(d3d12, "D3D12GetDebugInterface");
             }
+        }
+
+        /**
+         * @brief Function that maps an HRESULT to an llri::result.
+        */
+        constexpr result mapHRESULT(const HRESULT value)
+        {
+            switch (value)
+            {
+                case S_OK :
+                    return result::Success;
+                case DXGI_ERROR_WAIT_TIMEOUT :
+                    return result::Timeout;
+                case DXGI_ERROR_DEVICE_HUNG :
+                    return result::ErrorDeviceHung;
+                case DXGI_ERROR_DEVICE_REMOVED :
+                    return result::ErrorDeviceRemoved;
+                case DXGI_ERROR_DEVICE_RESET :
+                    return result::ErrorDeviceLost;
+                case DXGI_ERROR_DRIVER_INTERNAL_ERROR :
+                    return result::ErrorDriverFailure;
+                case DXGI_ERROR_UNSUPPORTED :
+                    return result::ErrorFeatureNotSupported;
+                case D3D12_ERROR_ADAPTER_NOT_FOUND:
+                    break;
+                case D3D12_ERROR_DRIVER_VERSION_MISMATCH:
+                    return result::ErrorIncompatibleDriver;
+                case DXGI_ERROR_INVALID_CALL:
+                    return result::ErrorInvalidUsage;
+                case DXGI_ERROR_WAS_STILL_DRAWING:
+                    break;
+                case E_FAIL:
+                    break;
+                case E_NOINTERFACE:
+                    return result::ErrorExtensionNotSupported;
+                case E_INVALIDARG:
+                    return result::ErrorInvalidUsage;
+                case E_OUTOFMEMORY:
+                    return result::ErrorOutOfHostMemory;
+                case E_NOTIMPL:
+                    return result::ErrorFeatureNotSupported;
+                case S_FALSE:
+                    return result::NotReady;
+            }
+
+            return result::ErrorUnknown;
+        }
+
+        constexpr D3D12_COMMAND_LIST_TYPE mapCommandGroupType(queue_type type)
+        {
+            switch (type)
+            {
+                case queue_type::Graphics:
+                    return D3D12_COMMAND_LIST_TYPE_DIRECT;
+                case queue_type::Compute:
+                    return D3D12_COMMAND_LIST_TYPE_COMPUTE;
+                case queue_type::Transfer:
+                    return D3D12_COMMAND_LIST_TYPE_COPY;
+            }
+
+            throw;
         }
     }
 }

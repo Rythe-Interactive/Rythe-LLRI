@@ -15,7 +15,7 @@ file(COPY ${dllDeps} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
 include_directories(${LLRI_DIR_APPLICATIONS_DEPS}/include/)
 include_directories(${LLRI_DIR_APPLICATIONS_DEPS}/include/legion/engine)
 include_directories(${LLRI_DIR_SRC})
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_directories(sandbox PUBLIC ${LLRI_DIR_APPLICATIONS_DEPS}/lib)
 

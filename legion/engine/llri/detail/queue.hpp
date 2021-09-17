@@ -8,8 +8,14 @@
 #include <cstdint>
 #include <vector>
 
+//detail includes should be kept to a minimum but
+//are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
+#include <llri/detail/instance.hpp>
+
 namespace LLRI_NAMESPACE
 {
+    class CommandList;
+
     /**
      * @brief Declare queue priority. Queues with a higher priority **may** be assigned more resources and processing time by the Adapter.
     */
@@ -108,5 +114,11 @@ namespace LLRI_NAMESPACE
         ~Queue() = default;
 
         std::vector<void*> m_ptrs;
+		
+        void* m_deviceHandle = nullptr;
+        void* m_deviceFunctionTable = nullptr;
+
+        validation_callback_desc m_validationCallback;
+        void* m_validationCallbackMessenger = nullptr;
     };
 }

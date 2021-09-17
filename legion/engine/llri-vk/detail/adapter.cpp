@@ -16,16 +16,16 @@ namespace LLRI_NAMESPACE
         {
             switch (type)
             {
-            case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-                return adapter_type::Other;
-            case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-                return adapter_type::Integrated;
-            case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-                return adapter_type::Discrete;
-            case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-                return adapter_type::Virtual;
-            default:
-                break;
+                case VK_PHYSICAL_DEVICE_TYPE_OTHER:
+                    return adapter_type::Other;
+                case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+                    return adapter_type::Integrated;
+                case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+                    return adapter_type::Discrete;
+                case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+                    return adapter_type::Virtual;
+                default:
+                    break;
             }
 
             return adapter_type::Other;

@@ -9,6 +9,6 @@ add_executable(002_validation_ext ${source})
 target_compile_features(002_validation_ext PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(002_validation_ext ${LLRI_SELECTED_APP_IMPLEMENTATION})

@@ -6,6 +6,7 @@
 
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
+#include <helpers.hpp>
 
 void dummyCallback(llri::validation_callback_severity sev, llri::validation_callback_source src, const char* message, void* userData)
 {
@@ -101,9 +102,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::enumerateAdapters")
     {
-        llri::Instance* instance;
-        const llri::instance_desc desc{};
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        llri::Instance* instance = helpers::defaultInstance();
 
         SUBCASE("[Incorrect usage] adapters == nullptr")
         {
@@ -154,9 +153,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::createDevice()")
     {
-        llri::Instance* instance;
-        const llri::instance_desc desc{};
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        llri::Instance* instance = helpers::defaultInstance();
 
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
@@ -268,7 +265,7 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Incorrect usage] more queues of a type than supported")
             {
-                for (uint8_t type = 0; type < static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+                for (size_t type = 0; type < static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
                     //Get max number of queues
                     uint8_t count;
@@ -288,9 +285,19 @@ TEST_SUITE("Instance")
             {
                 std::vector<llri::queue_desc> queues;
 
-                for (uint8_t type = 0; type < static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
+                std::map<llri::queue_type, uint8_t> maxQueueCounts{
+                    { llri::queue_type::Graphics, 0 },
+                    { llri::queue_type::Compute, 0 },
+                    { llri::queue_type::Transfer, 0 }
+                };
+                adapter->queryQueueCount(llri::queue_type::Graphics, &maxQueueCounts[llri::queue_type::Graphics]);
+                adapter->queryQueueCount(llri::queue_type::Compute, &maxQueueCounts[llri::queue_type::Compute]);
+                adapter->queryQueueCount(llri::queue_type::Transfer, &maxQueueCounts[llri::queue_type::Transfer]);
+
+                for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
-                    queues.push_back(llri::queue_desc { static_cast<llri::queue_type>(type), llri::queue_priority::High });
+                    for (uint8_t i = 0; i < maxQueueCounts[static_cast<llri::queue_type>(type)]; i++)
+                        queues.push_back(llri::queue_desc { static_cast<llri::queue_type>(type), llri::queue_priority::High });
                 }
 
                 ddesc.numQueues = static_cast<uint32_t>(queues.size());
@@ -310,9 +317,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::destroyDevice()")
     {
-        llri::Instance* instance;
-        const llri::instance_desc desc{};
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        llri::Instance* instance = helpers::defaultInstance();
 
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);

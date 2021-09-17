@@ -7,15 +7,13 @@
 #pragma once
 #include <core/core.hpp>
 
-/**
- * @file testsystem.hpp
- */
-
 namespace llri {
     class Instance;
     class Adapter;
     class Device;
     class Queue;
+    class CommandGroup;
+    class CommandList;
 }
 
 /**@class TestSystem
@@ -32,6 +30,7 @@ public:
      */
     void update(lgn::time::span deltaTime);
 
+    ~TestSystem() override;
 private:
     llri::Instance* m_instance = nullptr;
     llri::Adapter* m_adapter = nullptr;
@@ -41,7 +40,11 @@ private:
     llri::Queue* m_computeQueue = nullptr;
     llri::Queue* m_transferQueue = nullptr;
 
+    llri::CommandGroup* m_commandGroup = nullptr;
+    llri::CommandList* m_commandList = nullptr;
+
     void createInstance();
     void selectAdapter();
     void createDevice();
+    void createCommandLists();
 };

@@ -45,6 +45,16 @@ namespace LLRI_NAMESPACE
                 return "ErrorInitializationFailed";
             case result::ErrorIncompatibleDriver:
                 return "ErrorIncompatibleDriver";
+            case result::ErrorInvalidState:
+                return "ErrorInvalidState";
+            case result::ErrorExceededLimit:
+                return "ErrorExceededLimit";
+            case result::ErrorInvalidNodeMask:
+                return "ErrorInvalidNodeMask";
+            case result::ErrorIncompatibleNodeMask:
+                return "ErrorIncompatibleNodeMask";
+            case result::ErrorOccupied:
+                return "ErrorOccupied";
         }
 
         return "Invalid result value";
@@ -55,3 +65,6 @@ namespace LLRI_NAMESPACE
 #include <llri/detail/adapter.inl>
 #include <llri/detail/queue.inl>
 #include <llri/detail/device.inl>
+
+#include <llri/detail/command_group.inl>
+#include <llri/detail/command_list.inl>

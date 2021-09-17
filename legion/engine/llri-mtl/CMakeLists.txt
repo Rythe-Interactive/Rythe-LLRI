@@ -10,7 +10,7 @@ target_compile_features(llri-mtl PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})
 include_directories(${LLRI_DIR_DEPS}/include)
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Create /lib folder and copy build files to it
 add_custom_command(TARGET llri-mtl POST_BUILD

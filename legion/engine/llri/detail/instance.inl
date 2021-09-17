@@ -186,7 +186,8 @@ namespace LLRI_NAMESPACE
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }
         };
-        for (uint32_t i = 0; i < desc.numQueues; i++)
+
+        for (size_t i = 0; i < desc.numQueues; i++)
         {
             auto& queue = desc.queues[i];
 
