@@ -167,7 +167,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a result to a string.
      * @return The enum value as a string, or "Invalid result value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(result r);
+    inline std::string to_string(result r);
 
     /**
     * @brief Names the implementation.
@@ -192,7 +192,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts an implementation to a string.
      * @return The enum value as a string, or "Invalid implementation value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(implementation impl);
+    inline std::string to_string(implementation impl);
 
     /**
     * @brief Query the currently linked implementation.

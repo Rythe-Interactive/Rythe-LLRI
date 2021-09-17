@@ -40,7 +40,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a command_list_usage to a string.
      * @return The enum value as a string, or "Invalid command_list_usage value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(command_list_usage usage);
+    inline std::string to_string(command_list_usage usage);
 
     /**
      * @brief Describes how the command list(s) should be allocated what their usage will be.
@@ -95,7 +95,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a command_list_state to a string.
      * @return The enum value as a string, or "Invalid command_list_state value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(command_list_state state);
+    inline std::string to_string(command_list_state state);
 
     class CommandList
     {

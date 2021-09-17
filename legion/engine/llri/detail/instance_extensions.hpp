@@ -34,7 +34,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts a instance_extension_type to a string.
      * @return The enum value as a string, or "Invalid instance_extension_type value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(instance_extension_type type);
+    inline std::string to_string(instance_extension_type type);
 
     /**
      * @brief Enable or disable driver validation.

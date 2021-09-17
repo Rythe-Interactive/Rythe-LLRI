@@ -49,7 +49,7 @@ namespace LLRI_NAMESPACE
      * @brief Converts an adapter_type to a string.
      * @return The enum value as a string, or "Invalid adapter_type value" if the value was not recognized as an enum member.
     */
-    constexpr const char* to_string(adapter_type type);
+    inline std::string to_string(adapter_type type);
 
     /**
      * @brief Basic information about an adapter.

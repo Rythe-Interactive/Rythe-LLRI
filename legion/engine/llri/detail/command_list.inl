@@ -9,7 +9,7 @@
 
 namespace LLRI_NAMESPACE
 {
-    constexpr const char* to_string(command_list_usage usage)
+    inline std::string to_string(command_list_usage usage)
     {
         switch(usage)
         {
@@ -22,7 +22,7 @@ namespace LLRI_NAMESPACE
         return "Invalid command_list_usage value";
     }
 
-    constexpr const char* to_string(command_list_state state)
+    inline std::string to_string(command_list_state state)
     {
         switch(state)
         {
