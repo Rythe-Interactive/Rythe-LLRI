@@ -77,7 +77,7 @@ namespace LLRI_NAMESPACE
 
         cmdLists->reserve(count);
 
-        for (size_t i = 0; i < count; i++)
+        for (uint8_t i = 0; i < count; i++)
         {
             ID3D12GraphicsCommandList* dx12CommandList = nullptr;
 

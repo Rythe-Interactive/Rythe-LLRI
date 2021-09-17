@@ -97,7 +97,7 @@ TEST_CASE("Adapter")
 
             SUBCASE("[Correct usage] type is a valid queue_type value and count != nullptr")
             {
-                for (size_t type = 0; type <= (uint8_t)llri::queue_type::MaxEnum; type++)
+                for (uint8_t type = 0; type <= (uint8_t)llri::queue_type::MaxEnum; type++)
                 {
                     uint8_t count;
                     auto r = adapter->queryQueueCount((llri::queue_type)type, &count);
