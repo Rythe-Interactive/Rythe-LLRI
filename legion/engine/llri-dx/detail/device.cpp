@@ -91,10 +91,10 @@ namespace LLRI_NAMESPACE
         {
             auto& fence = fences[i];
             auto* dx12Fence = static_cast<ID3D12Fence*>(fences[i]->m_ptr);
-
+            
             if (dx12Fence->GetCompletedValue() < fence->m_counter)
-		    {
-			    auto r = dx12Fence->SetEventOnCompletion(fence->m_counter, fence->m_event);
+            {
+                auto r = dx12Fence->SetEventOnCompletion(fence->m_counter, fence->m_event);
                 if (FAILED(r))
                     return directx::mapHRESULT(r);
 
@@ -102,10 +102,10 @@ namespace LLRI_NAMESPACE
 
                 if (r == WAIT_TIMEOUT)
                     return result::Timeout;
-
+            
                 if (r == WAIT_FAILED)
                     return result::ErrorUnknown;
-		    }
+            }
         }
 
         return result::Success;
