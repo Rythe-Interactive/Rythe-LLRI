@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <type_traits>
 
 #if defined(DOXY_EXCLUDE)
 /**
@@ -198,6 +199,75 @@ namespace LLRI_NAMESPACE
     * @brief Query the currently linked implementation.
     */
     [[nodiscard]] implementation queryImplementation();
+
+    /**
+     * @brief wrapper structure for flags of type E, used to distinguish between x_flag_bits and x_flags.
+    */
+    template<typename E>
+    struct flags
+    {
+        using U = std::underlying_type_t<E>;
+
+        E value = static_cast<E>(0);
+
+        constexpr flags() noexcept = default;
+        ~flags() noexcept = default;
+
+        constexpr flags(const flags& val) noexcept { value = val.value; }
+        constexpr flags(flags&& val) noexcept { value = val.value; val.value = static_cast<E>(0); }
+
+        constexpr flags(E val) noexcept : value(val) { }
+        [[nodiscard]] constexpr operator E() noexcept { return value; }
+        [[nodiscard]] constexpr operator U() noexcept { return static_cast<U>(value); }
+
+        constexpr flags& operator =(flags val) noexcept { value = val.value; return *this; }
+        constexpr flags& operator =(flags&& val) noexcept { value = val.value; val.value = static_cast<E>(0); return *this; }
+        constexpr flags& operator =(E val) noexcept { value = val; return *this; }
+
+        [[nodiscard]] constexpr flags operator |(E rhs) noexcept { return value | rhs; }
+        constexpr flags& operator |=(E rhs) noexcept { value |= rhs; return *this; }
+
+        [[nodiscard]] constexpr flags operator &(E rhs) noexcept { return value & rhs; }
+        constexpr flags& operator &=(E rhs) noexcept { value &= rhs; return *this; }
+    };
+
+    template<typename E>
+    [[nodiscard]] constexpr flags<E> operator | (E lhs, flags<E> rhs) noexcept { return lhs | rhs.value; }
+
+    template<typename E>
+    [[nodiscard]] constexpr flags<E> operator & (E lhs, flags<E> rhs) noexcept { return lhs & rhs.value; }
+
+    /**
+     * @brief Add bitwise operators to flag_bits enum classes.
+     */
+#define LLRI_DEFINE_FLAG_BIT_OPERATORS(E) \
+    constexpr E operator | (E lhs, E rhs) noexcept \
+    { \
+        using T = std::underlying_type_t<E>; \
+        return static_cast<E>(static_cast<T>(lhs) | static_cast<T>(rhs)); \
+    }\
+    \
+    constexpr E operator |= (E lhs, E rhs) noexcept \
+    { \
+        lhs = lhs | rhs; \
+        return lhs; \
+    } \
+    constexpr E operator & (E lhs, E rhs) noexcept \
+    { \
+        using T = std::underlying_type_t<E>; \
+        return static_cast<E>(static_cast<T>(lhs) & static_cast<T>(rhs)); \
+    }\
+    \
+    constexpr E operator &= (E lhs, E rhs) noexcept \
+    { \
+        lhs = lhs & rhs; \
+        return lhs; \
+    } \
+    constexpr E operator ~(E lhs) noexcept \
+    { \
+        using T = std::underlying_type_t<E>; \
+        return static_cast<E>(~static_cast<T>(lhs)); \
+    }
 }
 
 // ReSharper disable CppUnusedIncludeDirective
