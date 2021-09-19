@@ -53,6 +53,9 @@
 #define LLRI_NAMESPACE llri
 #endif
 
+#define LLRI_TIMEOUT_NONE 0u
+#define LLRI_TIMEOUT_INFINITE 0xFFFFFFFFu
+
 namespace LLRI_NAMESPACE
 {
     /**

@@ -78,7 +78,7 @@ void TestSystem::update(time::span deltaTime)
         //Record
     }, m_commandList));
 
-    m_device->waitFences(1, &m_fence, LLRI_INFINITE);
+    m_device->waitFences(1, &m_fence, LLRI_TIMEOUT_INFINITE);
 }
 
 TestSystem::~TestSystem()
