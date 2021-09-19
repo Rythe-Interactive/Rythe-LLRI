@@ -162,9 +162,13 @@ namespace LLRI_NAMESPACE
         */
         ErrorOccupied,
         /**
+         * @brief An operation attempted to wait on a Fence that has not been signaled.
+        */
+        ErrorNotSignaled,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorOccupied
+        MaxEnum = ErrorNotSignaled
     };
 
     /**

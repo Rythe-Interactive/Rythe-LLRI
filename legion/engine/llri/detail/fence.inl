@@ -29,7 +29,7 @@ namespace LLRI_NAMESPACE
         if ((flags & fence_flag_bits::Signaled) == fence_flag_bits::Signaled)
         {
             result += " | Signaled";
-            tmp &= ~fence_flag_bits::Signaled;
+            tmp &= ~fence_flag_bits::Signaled; // remove bit
         }
 
         if (tmp != fence_flag_bits::None)

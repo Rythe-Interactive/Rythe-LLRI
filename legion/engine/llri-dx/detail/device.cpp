@@ -57,8 +57,6 @@ namespace LLRI_NAMESPACE
 
     result Device::impl_createFence(fence_flags flags, Fence** fence)
     {
-        // fence flag signaled ignored, waiting on the default fence is valid regardless
-
         ID3D12Fence* dx12Fence;
         const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&dx12Fence));
         if (FAILED(r))
@@ -68,6 +66,9 @@ namespace LLRI_NAMESPACE
         output->m_counter = 0;
         output->m_event = CreateEvent(nullptr, false, false, nullptr);
         output->m_ptr = dx12Fence;
+
+        if ((flags & fence_flag_bits::Signaled) == fence_flag_bits::Signaled)
+            output->m_signaled = true;
 
         *fence = output;
         return result::Success;
@@ -97,7 +98,7 @@ namespace LLRI_NAMESPACE
                 if (FAILED(r))
                     return directx::mapHRESULT(r);
 
-                r = WaitForSingleObject(fence->m_event, timeout); // windows takes the timeout in ms so we can pass it directly
+                r = WaitForSingleObject(fence->m_event, static_cast<DWORD>(timeout)); // windows takes the timeout in ms so we can pass it directly
 
                 if (r == WAIT_TIMEOUT)
                     return result::Timeout;

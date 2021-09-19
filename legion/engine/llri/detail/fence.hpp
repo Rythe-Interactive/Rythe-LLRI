@@ -61,5 +61,6 @@ namespace LLRI_NAMESPACE
         void* m_ptr = nullptr;
         void* m_event = nullptr;
         uint64_t m_counter = 0;
+        bool m_signaled = false;
     };
 }

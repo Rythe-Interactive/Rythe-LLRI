@@ -202,12 +202,18 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
-        for (uint32_t i = 0; i < numFences; i++)
+        for (size_t i = 0; i < numFences; i++)
         {
             if (fences[i] == nullptr)
             {
                 m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorInvalidUsage because fences[" + std::to_string(i) + "] was nullptr.");
                 return result::ErrorInvalidUsage;
+            }
+
+            if (!fences[i]->m_signaled)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorNotSignaled because fences[" + std::to_string(i) + "] was not signaled");
+                return result::ErrorNotSignaled;
             }
         }
 #endif
@@ -215,10 +221,16 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_waitFences(numFences, fences, timeout);
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
-        return r;
 #else
-        return impl_waitFences(numFences, fences, timeout)
+        const auto r = impl_waitFences(numFences, fences, timeout)
 #endif
+
+        if (r == result::Success)
+        {
+            for (size_t i = 0; i < numFences; i++)
+                fences[i]->m_signaled = false;
+        }
+        return r;
     }
 
     inline result Device::waitFence(Fence* fence, uint64_t timeout)

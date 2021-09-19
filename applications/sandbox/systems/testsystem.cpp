@@ -77,8 +77,6 @@ void TestSystem::update(time::span deltaTime)
     {
         //Record
     }, m_commandList));
-
-    m_device->waitFences(1, &m_fence, LLRI_TIMEOUT_INFINITE);
 }
 
 TestSystem::~TestSystem()
@@ -188,5 +186,8 @@ void TestSystem::createCommandLists()
 
 void TestSystem::createSynchronization()
 {
-    THROW_IF_FAILED(m_device->createFence(llri::fence_flag_bits::None, &m_fence));
+    THROW_IF_FAILED(m_device->createFence(llri::fence_flag_bits::Signaled, &m_fence));
+
+    // unnecessary, just here to test fence_flag_bits::Signaled
+    m_device->waitFence(m_fence, LLRI_TIMEOUT_INFINITE);
 }

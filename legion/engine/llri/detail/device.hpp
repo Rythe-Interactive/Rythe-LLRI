@@ -131,21 +131,22 @@ namespace LLRI_NAMESPACE
         void destroyFence(Fence* fence);
 
         /**
-         * @brief Wait for each fence in the array to be signaled, or until the timeout value.
+         * @brief Wait for each fence in the array to reach their signal, or until the timeout value.
          *
-         * If all fences have already been signaled, this function returns immediately.
+         * If all fences have already reached their signal, this function returns immediately.
          *
-         * If any of the fences are currently not signaled, the function will block until all fences have been signaled. If the timeout occurs before all of the fences are signaled, the operation returns result::Timeout, and none of the fences are reset.
+         * If any of the fences have not reached their signal, the function will block until all fences do. If the timeout occurs before all of the fences reach their signal, the operation returns result::Timeout, and none of the fences are reset.
          *
          * @param numFences The number of fences in the fences array.
          * @param fences An array of Fence pointers. Each fence must be a valid pointer to a Fence.
-         * @param timeout Timeout is the time in milliseconds until the function **must** return. If timeout is more than 0, the function will block as described in the brief. If timeout is 0, then no blocking occurs, but the function returns Success if all fences were signaled, and returns Timeout if some fences were not signaled yet.
+         * @param timeout Timeout is the time in milliseconds until the function **must** return. If timeout is more than 0, the function will block as described above. If timeout is 0, then no blocking occurs, but the function returns Success if all fences reach their signal, and returns Timeout if (some of) fences did not.
          *
          * @return Success upon correct execution of the operation, if all fences finish within the timeout.
          * @return Timeout if the wait time for the fences was longer than their wait time.
          * @return ErrorInvalidUsage if numFences was 0.
          * @return ErrorInvalidUsage if fences was nullptr.
          * @return ErrorInvalidUsage if any of the Fence pointers in the fences array were nullptr.
+         * @return ErrorNotSignaled if any of the fences have not been signaled and thus can never reach their signal.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorDeviceLost.
         */
         result waitFences(uint32_t numFences, Fence** fences, uint64_t timeout);

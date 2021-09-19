@@ -28,7 +28,8 @@ namespace LLRI_NAMESPACE
         info.flags = {};
 
         VkCommandPool pool;
-        const auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkCreateCommandPool(static_cast<VkDevice>(m_ptr), &info, nullptr, &pool);
+        const auto r = static_cast<VolkDeviceTable*>(m_functionTable)->
+            vkCreateCommandPool(static_cast<VkDevice>(m_ptr), &info, nullptr, &pool);
         if (r != VK_SUCCESS)
         {
             destroyCommandGroup(output);
@@ -46,8 +47,71 @@ namespace LLRI_NAMESPACE
             return;
 
         if (cmdGroup->m_ptr)
-            static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyCommandPool(static_cast<VkDevice>(m_ptr), static_cast<VkCommandPool>(cmdGroup->m_ptr), nullptr);
+        {
+            static_cast<VolkDeviceTable*>(m_functionTable)->
+                vkDestroyCommandPool(static_cast<VkDevice>(m_ptr), static_cast<VkCommandPool>(cmdGroup->m_ptr), nullptr);
+        }
 
         delete cmdGroup;
+    }
+
+    result Device::impl_createFence(fence_flags flags, Fence** fence)
+    {
+        const bool signaled = (flags & fence_flag_bits::Signaled) == fence_flag_bits::Signaled;
+
+        VkFenceCreateFlags vkFlags = 0;
+        if (signaled)
+            vkFlags |= VK_FENCE_CREATE_SIGNALED_BIT;
+
+        VkFenceCreateInfo info;
+        info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        info.pNext = nullptr;
+        info.flags = vkFlags;
+
+        VkFence vkFence;
+        const auto r = static_cast<VolkDeviceTable*>(m_functionTable)->
+            vkCreateFence(static_cast<VkDevice>(m_ptr), &info, nullptr, &vkFence);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        auto* output = new Fence();
+        output->m_ptr = vkFence;
+        output->m_signaled = signaled;
+
+        *fence = output;
+        return result::Success;
+    }
+
+    void Device::impl_destroyFence(Fence* fence)
+    {
+        if (fence->m_ptr)
+        {
+             static_cast<VolkDeviceTable*>(m_functionTable)->
+                vkDestroyFence(static_cast<VkDevice>(m_ptr), static_cast<VkFence>(fence->m_ptr), nullptr);
+        }
+
+        delete fence;
+    }
+
+    result Device::impl_waitFences(uint32_t numFences, Fence** fences, uint64_t timeout)
+    {
+        uint64_t vkTimeout = timeout;
+        if (timeout != LLRI_TIMEOUT_INFINITE)
+            vkTimeout *= 1000000u; // milliseconds to nanoseconds
+
+        std::vector<VkFence> vkFences(numFences);
+        for (size_t i = 0; i < numFences; i++)
+            vkFences[i] = static_cast<VkFence>(fences[i]->m_ptr);
+
+        const VkResult r = static_cast<VolkDeviceTable*>(m_functionTable)->
+            vkWaitForFences(static_cast<VkDevice>(m_ptr), numFences, vkFences.data(), true, vkTimeout);
+
+        if (r == VK_SUCCESS)
+        {
+            static_cast<VolkDeviceTable*>(m_functionTable)->
+                vkResetFences(static_cast<VkDevice>(m_ptr), numFences, vkFences.data());
+        }
+
+        return internal::mapVkResult(r);
     }
 }

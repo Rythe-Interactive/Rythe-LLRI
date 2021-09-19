@@ -55,6 +55,8 @@ namespace LLRI_NAMESPACE
                 return "ErrorIncompatibleNodeMask";
             case result::ErrorOccupied:
                 return "ErrorOccupied";
+            case result::ErrorNotSignaled:
+                return "ErrorNotSignaled";
         }
 
         return "Invalid result value";
