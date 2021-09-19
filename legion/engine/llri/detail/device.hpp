@@ -135,8 +135,10 @@ namespace LLRI_NAMESPACE
          * @brief Wait for each fence in the array to reach their signal, or until the timeout value.
          *
          * If all fences have already reached their signal, this function returns immediately.
+         * If any of the fences have not reached their signal, the function will block until all fences do.
+         * If the timeout occurs before all of the fences reach their signal, the operation returns result::Timeout, and none of the fences are reset.
          *
-         * If any of the fences have not reached their signal, the function will block until all fences do. If the timeout occurs before all of the fences reach their signal, the operation returns result::Timeout, and none of the fences are reset.
+         * When waitFences() returns result::Success, all fences are reset, meaning that they're no longer signaled.
          *
          * @param numFences The number of fences in the fences array.
          * @param fences An array of Fence pointers. Each fence must be a valid pointer to a Fence.
