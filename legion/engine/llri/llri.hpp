@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <type_traits>
 
 #if defined(DOXY_EXCLUDE)
 /**
@@ -51,6 +52,17 @@
  */
 #define LLRI_NAMESPACE llri
 #endif
+
+/**
+ * @def LLRI_TIMEOUT_MIN
+ * @brief Timeout immediately. If waiting needs to occur then the wait function will immediately return result::Timeout, if no waiting needs to occur, the waiting function returns result::Success.
+ */
+#define LLRI_TIMEOUT_MIN 0u
+/**
+ * @def LLRI_TIMEOUT_MAX
+ * @brief The maximum possible timeout. Using this **may** disable timeout entirely in some implementations.
+ */
+#define LLRI_TIMEOUT_MAX 0xFFFFFFFFu
 
 namespace LLRI_NAMESPACE
 {
@@ -158,9 +170,13 @@ namespace LLRI_NAMESPACE
         */
         ErrorOccupied,
         /**
+         * @brief An operation attempted to wait on a Fence that has not been signaled.
+        */
+        ErrorNotSignaled,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorOccupied
+        MaxEnum = ErrorNotSignaled
     };
 
     /**
@@ -202,6 +218,8 @@ namespace LLRI_NAMESPACE
 
 // ReSharper disable CppUnusedIncludeDirective
 
+#include <llri/detail/flags.hpp>
+
 #include <llri/detail/instance.hpp>
 #include <llri/detail/instance_extensions.hpp>
 
@@ -213,5 +231,8 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/command_group.hpp>
 #include <llri/detail/command_list.hpp>
+
+#include <llri/detail/fence.hpp>
+#include <llri/detail/semaphore.hpp>
 
 #include <llri/detail/llri.inl>

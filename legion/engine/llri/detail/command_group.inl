@@ -16,7 +16,7 @@ namespace LLRI_NAMESPACE
         {
             if (cmdList->queryState() == command_list_state::Recording)
             {
-                const std::string str = "CommandGroup::reset() returned ErrorInvalidState because CommandList " + std::to_string((int)cmdList) + " was in the command_list_state::Recording state.";
+                const std::string str = "CommandGroup::reset() returned ErrorInvalidState because CommandList " + std::to_string((uint64_t)cmdList) + " was in the command_list_state::Recording state.";
                 m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, str.c_str());
                 return result::ErrorInvalidState;
             }

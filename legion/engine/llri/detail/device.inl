@@ -103,7 +103,7 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
-        uint8_t availableQueueCount = queryQueueCount(desc.type);
+        const uint8_t availableQueueCount = queryQueueCount(desc.type);
         if (availableQueueCount == 0)
         {
             m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because the the Device has no queues available for the passed command_group_desc::type.");
@@ -135,6 +135,136 @@ namespace LLRI_NAMESPACE
         }
 
         impl_destroyCommandGroup(cmdGroup);
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+#endif
+    }
+
+    inline result Device::createFence(fence_flags flags, Fence** fence)
+    {
+#ifndef LLRI_DISABLE_VALIDATION
+        if (fence == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createFence() returned ErrorInvalidUsage because the passed fence parameter must not be nullptr.");
+            return result::ErrorInvalidUsage;
+        }
+#endif
+
+        *fence = nullptr;
+
+#ifndef LLRI_DISABLE_VALIDATION
+        const std::unordered_set<fence_flags> supportedFlags = {
+            fence_flag_bits::None,
+            fence_flag_bits::Signaled
+        };
+
+        if (supportedFlags.find(flags) == supportedFlags.end())
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createFence() returned ErrorInvalidUsage because the flags value " + std::to_string(flags) + "was not a supported combination of fence_flags.");
+            return result::ErrorInvalidUsage;
+        }
+#endif
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto r = impl_createFence(flags, fence);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        return r;
+#else
+        return impl_createFence(flags, fence);
+#endif
+    }
+
+    inline void Device::destroyFence(Fence* fence)
+    {
+        if (!fence)
+            return;
+
+        impl_destroyFence(fence);
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+#endif
+    }
+
+    inline result Device::waitFences(uint32_t numFences, Fence** fences, uint64_t timeout)
+    {
+#ifndef LLRI_DISABLE_VALIDATION
+        if (numFences == 0)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorInvalidUsage because numFences was 0.");
+            return result::ErrorInvalidUsage;
+        }
+
+        if (fences == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorInvalidUsage because fences was nullptr.");
+            return result::ErrorInvalidUsage;
+        }
+
+        for (size_t i = 0; i < numFences; i++)
+        {
+            if (fences[i] == nullptr)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorInvalidUsage because fences[" + std::to_string(i) + "] was nullptr.");
+                return result::ErrorInvalidUsage;
+            }
+
+            if (!fences[i]->m_signaled)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorNotSignaled because fences[" + std::to_string(i) + "] was not signaled");
+                return result::ErrorNotSignaled;
+            }
+        }
+#endif
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto r = impl_waitFences(numFences, fences, timeout);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+#else
+        const auto r = impl_waitFences(numFences, fences, timeout)
+#endif
+
+        if (r == result::Success)
+        {
+            for (size_t i = 0; i < numFences; i++)
+                fences[i]->m_signaled = false;
+        }
+        return r;
+    }
+
+    inline result Device::waitFence(Fence* fence, uint64_t timeout)
+    {
+        return waitFences(1, &fence, timeout);
+    }
+
+    inline result Device::createSemaphore(Semaphore** semaphore)
+    {
+#ifndef LLRI_DISABLE_VALIDATION
+        if (semaphore == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createSemaphore() returned ErrorInvalidUsage because semaphore was nullptr.");
+            return result::ErrorInvalidUsage;
+        }
+#endif
+
+        *semaphore = nullptr;
+        
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto r = impl_createSemaphore(semaphore);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        return r;
+#else
+        return impl_createSemaphore(semaphore);
+#endif
+    }
+
+    inline void Device::destroySemaphore(Semaphore* semaphore)
+    {
+        if (!semaphore)
+            return;
+
+        impl_destroySemaphore(semaphore);
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);

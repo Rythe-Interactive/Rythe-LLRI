@@ -7,6 +7,7 @@
 #pragma once
 //detail includes should be kept to a minimum but
 //are allowed as long as dependencies are upwards (e.g. device may include adapter but not vice versa)
+#include <llri/detail/flags.hpp>
 #include <llri/detail/adapter.hpp>
 
 namespace LLRI_NAMESPACE
@@ -18,6 +19,12 @@ namespace LLRI_NAMESPACE
 
     struct command_group_desc;
     class CommandGroup;
+
+    enum struct fence_flag_bits : uint32_t;
+    using fence_flags = flags<fence_flag_bits>;
+    class Fence;
+
+    class Semaphore;
 
     /**
      * @brief Device description to be used in Instance::createDevice().
@@ -108,6 +115,69 @@ namespace LLRI_NAMESPACE
         */
         void destroyCommandGroup(CommandGroup* cmdGroup);
 
+        /**
+         * @brief Create a Fence which can be used for cpu-gpu synchronization.
+         * @param flags Flags to describe how the Fence should be created.
+         * @param fence A pointer to the resulting fence variable.
+         * @return Success upon correct execution of the operation.
+         *
+         * @return ErrorInvalidUsage if fence is nullptr.
+         * @return ErrorInvalidUsage if flags is not a valid combination of fence_flags enum values.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
+        */
+        result createFence(fence_flags flags, Fence** fence);
+
+        /**
+         * @brief Destroy the Fence.
+         * @param fence A pointer to a valid Fence, or nullptr.
+        */
+        void destroyFence(Fence* fence);
+
+        /**
+         * @brief Wait for each fence in the array to reach their signal, or until the timeout value.
+         *
+         * If all fences have already reached their signal, this function returns immediately.
+         * If any of the fences have not reached their signal, the function will block until all fences do.
+         * If the timeout occurs before all of the fences reach their signal, the operation returns result::Timeout, and none of the fences are reset.
+         *
+         * When waitFences() returns result::Success, all fences are reset, meaning that they're no longer signaled.
+         *
+         * @param numFences The number of fences in the fences array.
+         * @param fences An array of Fence pointers. Each fence must be a valid pointer to a Fence.
+         * @param timeout Timeout is the time in milliseconds until the function **must** return. If timeout is more than 0, the function will block as described above. If timeout is 0, then no blocking occurs, but the function returns Success if all fences reach their signal, and returns Timeout if (some of) fences did not.
+         *
+         * @return Success upon correct execution of the operation, if all fences finish within the timeout.
+         * @return Timeout if the wait time for the fences was longer than their wait time.
+         * @return ErrorInvalidUsage if numFences was 0.
+         * @return ErrorInvalidUsage if fences was nullptr.
+         * @return ErrorInvalidUsage if any of the Fence pointers in the fences array were nullptr.
+         * @return ErrorNotSignaled if any of the fences have not been signaled and thus can never reach their signal.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorDeviceLost.
+        */
+        result waitFences(uint32_t numFences, Fence** fences, uint64_t timeout);
+
+        /**
+         * @brief Utility function. Equivalent of calling waitFences(1, &fence, timeout). Refer to the documentation of waitFences() for information on its usage.
+         * @return All possible result values from Device::waitFences().
+        */
+        result waitFence(Fence* fence, uint64_t timeout);
+
+        /**
+         * @brief Create a Semaphore, which can be used for synchronization between GPU events.
+         * @param semaphore A pointer to the resulting Semaphore variable.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage if semaphore was nullptr.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
+        */
+        result createSemaphore(Semaphore** semaphore);
+
+        /**
+         * @brief Destroy the given semaphore.
+         * @param semaphore A pointer to a valid Semaphore, or nullptr.
+        */
+        void destroySemaphore(Semaphore* semaphore);
+
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
@@ -126,5 +196,12 @@ namespace LLRI_NAMESPACE
 
         result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
         void impl_destroyCommandGroup(CommandGroup* cmdGroup);
+
+        result impl_createFence(fence_flags flags, Fence** fence);
+        void impl_destroyFence(Fence* fence);
+        result impl_waitFences(uint32_t numFences, Fence** fences, uint64_t timeout);
+
+        result impl_createSemaphore(Semaphore** semaphore);
+        void impl_destroySemaphore(Semaphore* semaphore);
     };
 }
