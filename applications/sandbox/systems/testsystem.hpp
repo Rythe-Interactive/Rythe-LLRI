@@ -14,6 +14,7 @@ namespace llri {
     class Queue;
     class CommandGroup;
     class CommandList;
+    class Fence;
 }
 
 /**@class TestSystem
@@ -43,8 +44,11 @@ private:
     llri::CommandGroup* m_commandGroup = nullptr;
     llri::CommandList* m_commandList = nullptr;
 
+    llri::Fence* m_fence = nullptr;
+    
     void createInstance();
     void selectAdapter();
     void createDevice();
     void createCommandLists();
+    void createSynchronization();
 };

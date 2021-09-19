@@ -80,7 +80,7 @@ void TestSystem::update(time::span deltaTime)
 
 TestSystem::~TestSystem()
 {
-    //Cleanup created resources
+    m_device->destroyFence(m_fence);
     m_device->destroyCommandGroup(m_commandGroup);
 
     m_instance->destroyDevice(m_device);
@@ -181,4 +181,9 @@ void TestSystem::createCommandLists()
 
     const llri::command_list_alloc_desc listDesc { 0, llri::command_list_usage::Direct };
     THROW_IF_FAILED(m_commandGroup->allocate(listDesc, &m_commandList));
+}
+
+void TestSystem::createSynchronization()
+{
+    THROW_IF_FAILED(m_device->createFence(llri::fence_flag_bits::None, &m_fence));
 }

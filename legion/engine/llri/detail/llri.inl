@@ -81,3 +81,5 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/command_group.inl>
 #include <llri/detail/command_list.inl>
+
+#include <llri/detail/fence.inl>

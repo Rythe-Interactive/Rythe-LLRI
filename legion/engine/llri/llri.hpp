@@ -291,4 +291,6 @@ namespace std
 #include <llri/detail/command_group.hpp>
 #include <llri/detail/command_list.hpp>
 
+#include <llri/detail/fence.hpp>
+
 #include <llri/detail/llri.inl>
