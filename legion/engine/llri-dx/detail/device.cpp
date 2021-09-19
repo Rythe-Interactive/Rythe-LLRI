@@ -87,25 +87,32 @@ namespace LLRI_NAMESPACE
 
     result Device::impl_waitFences(uint32_t numFences, Fence** fences, uint64_t timeout)
     {
+        std::vector<void*> events;
+
         for (size_t i = 0; i < numFences; i++)
         {
             auto& fence = fences[i];
             auto* dx12Fence = static_cast<ID3D12Fence*>(fences[i]->m_ptr);
-            
+
             if (dx12Fence->GetCompletedValue() < fence->m_counter)
             {
-                auto r = dx12Fence->SetEventOnCompletion(fence->m_counter, fence->m_event);
+                const auto r = dx12Fence->SetEventOnCompletion(fence->m_counter, fence->m_event);
                 if (FAILED(r))
                     return directx::mapHRESULT(r);
 
-                r = WaitForSingleObject(fence->m_event, static_cast<DWORD>(timeout)); // windows takes the timeout in ms so we can pass it directly
-
-                if (r == WAIT_TIMEOUT)
-                    return result::Timeout;
-            
-                if (r == WAIT_FAILED)
-                    return result::ErrorUnknown;
+                events.push_back(fence->m_event);
             }
+        }
+
+        if (!events.empty())
+        {
+            const auto r = WaitForMultipleObjects(static_cast<DWORD>(events.size()), events.data(), true, static_cast<DWORD>(timeout)); // windows takes the timeout in ms so we can pass it directly
+
+            if (r == WAIT_TIMEOUT)
+                return result::Timeout;
+        
+            if (r == WAIT_FAILED)
+                return result::ErrorUnknown;
         }
 
         return result::Success;
