@@ -7,6 +7,7 @@
 #pragma once
 //detail includes should be kept to a minimum but
 //are allowed as long as dependencies are upwards (e.g. device may include adapter but not vice versa)
+#include <llri/detail/flags.hpp>
 #include <llri/detail/adapter.hpp>
 
 namespace LLRI_NAMESPACE

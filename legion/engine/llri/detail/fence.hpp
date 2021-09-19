@@ -5,6 +5,7 @@
  */
 
 #pragma once
+#include <llri/detail/flags.hpp>
 #include <cstdint>
 #include <string>
 
