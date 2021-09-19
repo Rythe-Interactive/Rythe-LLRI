@@ -114,4 +114,35 @@ namespace LLRI_NAMESPACE
 
         return internal::mapVkResult(r);
     }
+
+    result Device::impl_createSemaphore(Semaphore** semaphore)
+    {
+        VkSemaphoreCreateInfo info;
+        info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+        info.pNext = nullptr;
+        info.flags = {};
+
+        VkSemaphore vkSemaphore;
+        const VkResult r = static_cast<VolkDeviceTable*>(m_functionTable)->
+            vkCreateSemaphore(static_cast<VkDevice>(m_ptr), &info, nullptr, &vkSemaphore);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        auto* output = new Semaphore();
+        output->m_ptr = vkSemaphore;
+
+        *semaphore = output;
+        return result::Success;
+    }
+
+    void Device::impl_destroySemaphore(Semaphore* semaphore)
+    {
+        if (semaphore->m_ptr)
+        {
+             static_cast<VolkDeviceTable*>(m_functionTable)->
+                vkDestroySemaphore(static_cast<VkDevice>(m_ptr), static_cast<VkSemaphore>(semaphore->m_ptr), nullptr);
+        }
+
+        delete semaphore;
+    }
 }

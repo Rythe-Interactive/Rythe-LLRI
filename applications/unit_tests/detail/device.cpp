@@ -212,6 +212,36 @@ TEST_CASE("Device")
             device->destroyFence(signaledFence);
         }
 
+        SUBCASE("Device::createSemaphore()")
+        {
+            SUBCASE("[Incorrect usage] semaphore == nullptr")
+            {
+                CHECK_EQ(device->createSemaphore(nullptr), llri::result::ErrorInvalidUsage);
+            }
+
+            SUBCASE("[Correct usage] valid parameters")
+            {
+                llri::Semaphore* semaphore;
+                auto r = device->createSemaphore(&semaphore);
+                CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorOutOfDeviceMemory || r == llri::result::ErrorOutOfHostMemory);
+
+                device->destroySemaphore(semaphore);
+            }
+        }
+
+        SUBCASE("Device::destroySemaphore")
+        {
+            // nullptr is allowed
+            CHECK_NOTHROW(device->destroySemaphore(nullptr));
+
+            // valid pointer is allowed
+            llri::Semaphore* semaphore;
+            auto r = device->createSemaphore(&semaphore);
+            REQUIRE_UNARY(r == llri::result::Success || r == llri::result::ErrorOutOfDeviceMemory || r == llri::result::ErrorOutOfHostMemory);
+            if (r == llri::result::Success)
+                CHECK_NOTHROW(device->destroySemaphore(semaphore));
+        }
+
         instance->destroyDevice(device);
         llri::destroyInstance(instance);
     }

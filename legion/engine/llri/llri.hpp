@@ -225,5 +225,6 @@ namespace LLRI_NAMESPACE
 #include <llri/detail/command_list.hpp>
 
 #include <llri/detail/fence.hpp>
+#include <llri/detail/semaphore.hpp>
 
 #include <llri/detail/llri.inl>

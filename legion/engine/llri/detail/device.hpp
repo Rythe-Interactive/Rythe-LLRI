@@ -24,6 +24,8 @@ namespace LLRI_NAMESPACE
     using fence_flags = flags<fence_flag_bits>;
     class Fence;
 
+    class Semaphore;
+
     /**
      * @brief Device description to be used in Instance::createDevice().
     */
@@ -160,6 +162,22 @@ namespace LLRI_NAMESPACE
         */
         result waitFence(Fence* fence, uint64_t timeout);
 
+        /**
+         * @brief Create a Semaphore, which can be used for synchronization between GPU events.
+         * @param semaphore A pointer to the resulting Semaphore variable.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage if semaphore was nullptr.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
+        */
+        result createSemaphore(Semaphore** semaphore);
+
+        /**
+         * @brief Destroy the given semaphore.
+         * @param semaphore A pointer to a valid Semaphore, or nullptr.
+        */
+        void destroySemaphore(Semaphore* semaphore);
+
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
@@ -182,5 +200,8 @@ namespace LLRI_NAMESPACE
         result impl_createFence(fence_flags flags, Fence** fence);
         void impl_destroyFence(Fence* fence);
         result impl_waitFences(uint32_t numFences, Fence** fences, uint64_t timeout);
+
+        result impl_createSemaphore(Semaphore** semaphore);
+        void impl_destroySemaphore(Semaphore* semaphore);
     };
 }

@@ -110,4 +110,30 @@ namespace LLRI_NAMESPACE
 
         return result::Success;
     }
+
+    result Device::impl_createSemaphore(Semaphore** semaphore)
+    {
+        // in the DX12 implementation, Semaphores are represented by DX12 Fences
+        // DX12 Fences are more general purpose than some other implementations
+        // but in LLRI this behaviour is split
+
+        ID3D12Fence* dx12Fence;
+        const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&dx12Fence));
+        if (FAILED(r))
+            return directx::mapHRESULT(r);
+
+        auto* output = new Semaphore();
+        output->m_ptr = dx12Fence;
+
+        *semaphore = output;
+        return result::Success;
+    }
+
+    void Device::impl_destroySemaphore(Semaphore* semaphore)
+    {
+        if (semaphore->m_ptr)
+            static_cast<ID3D12Fence*>(semaphore->m_ptr)->Release();
+
+        delete semaphore;
+    }
 }

@@ -237,4 +237,37 @@ namespace LLRI_NAMESPACE
     {
         return waitFences(1, &fence, timeout);
     }
+
+    inline result Device::createSemaphore(Semaphore** semaphore)
+    {
+#ifndef LLRI_DISABLE_VALIDATION
+        if (semaphore == nullptr)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createSemaphore() returned ErrorInvalidUsage because semaphore was nullptr.");
+            return result::ErrorInvalidUsage;
+        }
+#endif
+
+        *semaphore = nullptr;
+        
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto r = impl_createSemaphore(semaphore);
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        return r;
+#else
+        return impl_createSemaphore(semaphore);
+#endif
+    }
+
+    inline void Device::destroySemaphore(Semaphore* semaphore)
+    {
+        if (!semaphore)
+            return;
+
+        impl_destroySemaphore(semaphore);
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+#endif
+    }
 }

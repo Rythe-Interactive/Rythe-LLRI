@@ -7,15 +7,9 @@
 #pragma once
 #include <core/core.hpp>
 
-namespace llri {
-    class Instance;
-    class Adapter;
-    class Device;
-    class Queue;
-    class CommandGroup;
-    class CommandList;
-    class Fence;
-}
+//#define LLRI_DISABLE_VALIDATION //uncommenting this disables API validation (see docs)
+//#define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING //uncommenting this disables implementation message polling
+#include <llri/llri.hpp>
 
 /**@class TestSystem
  * @brief Custom system.
@@ -45,6 +39,7 @@ private:
     llri::CommandList* m_commandList = nullptr;
 
     llri::Fence* m_fence = nullptr;
+    llri::Semaphore* m_semaphore = nullptr;
     
     void createInstance();
     void selectAdapter();
