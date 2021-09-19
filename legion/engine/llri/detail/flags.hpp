@@ -15,13 +15,13 @@ namespace LLRI_NAMESPACE
     template<typename E>
     struct flags
     {
-        using U = std::underlying_type_t<E>;
-        E value = static_cast<E>(U{});
+        using underlying_t = std::underlying_type_t<E>;
+        E value = static_cast<E>(underlying_t{});
 
         constexpr flags() noexcept = default;
         constexpr flags(E val) noexcept : value(val) { }
         [[nodiscard]] constexpr operator E() noexcept { return value; }
-        [[nodiscard]] constexpr operator U() noexcept { return static_cast<U>(value); }
+        [[nodiscard]] constexpr operator underlying_t() noexcept { return static_cast<underlying_t>(value); }
 
         constexpr flags& operator =(E val) noexcept { value = val; return *this; }
 
@@ -81,7 +81,7 @@ namespace std
     {
         std::size_t operator()(const LLRI_NAMESPACE::flags<E>& f) const
         {
-            return hash<typename LLRI_NAMESPACE::flags<E>::U>()(static_cast<typename LLRI_NAMESPACE::flags<E>::U>(f.value));
+            return hash<typename LLRI_NAMESPACE::flags<E>::underlying_t>()(static_cast<typename LLRI_NAMESPACE::flags<E>::underlying_t>(f.value));
         }
     };
 }
