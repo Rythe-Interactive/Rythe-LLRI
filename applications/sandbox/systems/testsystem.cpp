@@ -66,13 +66,19 @@ void TestSystem::update(time::span deltaTime)
 {
     (void)deltaTime;
 
-    THROW_IF_FAILED(m_commandGroup->reset());
+    // wait for our frame to be ready
+    m_device->waitFence(m_fence, LLRI_TIMEOUT_MAX);
 
+    // record command list
+    THROW_IF_FAILED(m_commandGroup->reset());
     const llri::command_list_begin_desc beginDesc {};
     THROW_IF_FAILED(m_commandList->record(beginDesc, [](llri::CommandList* cmd)
     {
-        //Record
     }, m_commandList));
+
+    // submit
+    const llri::submit_desc submitDesc { 0, 1, &m_commandList, 0, nullptr, 0, nullptr, m_fence };
+    THROW_IF_FAILED(m_graphicsQueue->submit(submitDesc));
 }
 
 TestSystem::~TestSystem()
@@ -184,9 +190,5 @@ void TestSystem::createCommandLists()
 void TestSystem::createSynchronization()
 {
     THROW_IF_FAILED(m_device->createFence(llri::fence_flag_bits::Signaled, &m_fence));
-
-    // unnecessary, just here to test fence_flag_bits::Signaled
-    m_device->waitFence(m_fence, LLRI_TIMEOUT_MAX);
-
     THROW_IF_FAILED(m_device->createSemaphore(&m_semaphore));
 }

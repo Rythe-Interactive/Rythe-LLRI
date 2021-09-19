@@ -53,6 +53,7 @@ namespace LLRI_NAMESPACE
     class Fence
     {
         friend class Device;
+        friend class Queue;
 
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime

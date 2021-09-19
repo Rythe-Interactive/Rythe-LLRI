@@ -236,7 +236,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    result Instance::impl_createDevice(const device_desc& desc, Device** device) const
+    result Instance::impl_createDevice(const device_desc& desc, Device** device)
     {
         auto* output = new Device();
         output->m_adapter = desc.adapter;
@@ -286,6 +286,7 @@ namespace LLRI_NAMESPACE
             }
 
             auto* queue = new Queue();
+            queue->m_device = output;
             queue->m_ptrs = queues;
 			queue->m_validationCallback = output->m_validationCallback;
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
@@ -314,7 +315,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    void Instance::impl_destroyDevice(Device* device) const
+    void Instance::impl_destroyDevice(Device* device)
     {
         for (auto* graphics : device->m_graphicsQueues)
         {

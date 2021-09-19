@@ -126,7 +126,7 @@ namespace LLRI_NAMESPACE
 #endif
     }
 
-    inline result Instance::createDevice(const device_desc& desc, Device** device) const
+    inline result Instance::createDevice(const device_desc& desc, Device** device)
     {
 #ifndef LLRI_DISABLE_VALIDATION
         if (device == nullptr)
@@ -231,7 +231,7 @@ namespace LLRI_NAMESPACE
 #endif
     }
 
-    inline void Instance::destroyDevice(Device* device) const
+    inline void Instance::destroyDevice(Device* device)
     {
         if (!device)
             return;

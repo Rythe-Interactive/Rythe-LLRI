@@ -68,6 +68,8 @@ namespace LLRI_NAMESPACE
     {
         friend Instance;
         friend class CommandGroup;
+        friend class Queue;
+
     public:
         /**
          * @brief Query a created Queue by type and index.
@@ -119,8 +121,8 @@ namespace LLRI_NAMESPACE
          * @brief Create a Fence which can be used for cpu-gpu synchronization.
          * @param flags Flags to describe how the Fence should be created.
          * @param fence A pointer to the resulting fence variable.
-         * @return Success upon correct execution of the operation.
          *
+         * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if fence is nullptr.
          * @return ErrorInvalidUsage if flags is not a valid combination of fence_flags enum values.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
