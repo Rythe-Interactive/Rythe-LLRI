@@ -207,28 +207,23 @@ namespace LLRI_NAMESPACE
     struct flags
     {
         using U = std::underlying_type_t<E>;
-
-        E value = static_cast<E>(0);
+        E value = static_cast<E>(U{});
 
         constexpr flags() noexcept = default;
-        ~flags() noexcept = default;
-
-        constexpr flags(const flags& val) noexcept { value = val.value; }
-        constexpr flags(flags&& val) noexcept { value = val.value; val.value = static_cast<E>(0); }
-
         constexpr flags(E val) noexcept : value(val) { }
         [[nodiscard]] constexpr operator E() noexcept { return value; }
         [[nodiscard]] constexpr operator U() noexcept { return static_cast<U>(value); }
 
-        constexpr flags& operator =(flags val) noexcept { value = val.value; return *this; }
-        constexpr flags& operator =(flags&& val) noexcept { value = val.value; val.value = static_cast<E>(0); return *this; }
         constexpr flags& operator =(E val) noexcept { value = val; return *this; }
 
-        [[nodiscard]] constexpr flags operator |(E rhs) noexcept { return value | rhs; }
+        [[nodiscard]] constexpr flags operator |(E rhs) const noexcept { return value | rhs; }
         constexpr flags& operator |=(E rhs) noexcept { value |= rhs; return *this; }
 
-        [[nodiscard]] constexpr flags operator &(E rhs) noexcept { return value & rhs; }
+        [[nodiscard]] constexpr flags operator &(E rhs) const noexcept { return value & rhs; }
         constexpr flags& operator &=(E rhs) noexcept { value &= rhs; return *this; }
+
+        constexpr bool operator ==(flags rhs) const noexcept { return value == rhs.value; }
+        constexpr bool operator ==(E rhs) const noexcept { return value == rhs; }
     };
 
     template<typename E>
@@ -268,6 +263,18 @@ namespace LLRI_NAMESPACE
         using T = std::underlying_type_t<E>; \
         return static_cast<E>(~static_cast<T>(lhs)); \
     }
+}
+
+namespace std
+{
+    template<typename E>
+    struct hash<LLRI_NAMESPACE::flags<E>>
+    {
+        std::size_t operator()(const LLRI_NAMESPACE::flags<E>& f) const
+        {
+            return hash<typename LLRI_NAMESPACE::flags<E>::U>()(static_cast<typename LLRI_NAMESPACE::flags<E>::U>(f.value));
+        }
+    };
 }
 
 // ReSharper disable CppUnusedIncludeDirective
