@@ -172,12 +172,12 @@ TEST_CASE("Device")
 
             SUBCASE("[Incorrect usage] numFences == 0")
             {
-                CHECK_EQ(device->waitFences(0, &signaledFence, LLRI_TIMEOUT_INFINITE), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->waitFences(0, &signaledFence, LLRI_TIMEOUT_MAX), llri::result::ErrorInvalidUsage);
             }
 
             SUBCASE("[Incorrect usage] fences == nullptr")
             {
-                CHECK_EQ(device->waitFences(1, nullptr, LLRI_TIMEOUT_INFINITE), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->waitFences(1, nullptr, LLRI_TIMEOUT_MAX), llri::result::ErrorInvalidUsage);
             }
 
             SUBCASE("[Incorrect usage] a fences[n] == nullptr")
@@ -186,7 +186,7 @@ TEST_CASE("Device")
                     signaledFence,
                     nullptr
                 };
-                CHECK_EQ(device->waitFences(fences.size(), fences.data(), LLRI_TIMEOUT_INFINITE), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->waitFences(fences.size(), fences.data(), LLRI_TIMEOUT_MAX), llri::result::ErrorInvalidUsage);
             }
 
             SUBCASE("[Incorrect usage] attempting to wait on unsignaled fence(s)")
@@ -195,18 +195,18 @@ TEST_CASE("Device")
                 llri::Fence* nonSignaledFence;
                 REQUIRE_EQ(device->createFence(llri::fence_flag_bits::None, &nonSignaledFence), llri::result::Success);
 
-                CHECK_EQ(device->waitFences(1, &nonSignaledFence, LLRI_TIMEOUT_INFINITE), llri::result::ErrorNotSignaled);
+                CHECK_EQ(device->waitFences(1, &nonSignaledFence, LLRI_TIMEOUT_MAX), llri::result::ErrorNotSignaled);
 
                 device->destroyFence(nonSignaledFence);
 
                 // Fence that was signaled but was waited upon already
-                REQUIRE_EQ(device->waitFences(1, &signaledFence, LLRI_TIMEOUT_INFINITE), llri::result::Success);
-                CHECK_EQ(device->waitFences(1, &signaledFence, LLRI_TIMEOUT_INFINITE), llri::result::ErrorNotSignaled);
+                REQUIRE_EQ(device->waitFences(1, &signaledFence, LLRI_TIMEOUT_MAX), llri::result::Success);
+                CHECK_EQ(device->waitFences(1, &signaledFence, LLRI_TIMEOUT_MAX), llri::result::ErrorNotSignaled);
             }
 
             SUBCASE("[Correct usage] valid")
             {
-                CHECK_EQ(device->waitFences(1, &signaledFence, LLRI_TIMEOUT_INFINITE), llri::result::Success);
+                CHECK_EQ(device->waitFences(1, &signaledFence, LLRI_TIMEOUT_MAX), llri::result::Success);
             }
 
             device->destroyFence(signaledFence);

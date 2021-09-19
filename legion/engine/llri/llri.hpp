@@ -53,8 +53,16 @@
 #define LLRI_NAMESPACE llri
 #endif
 
-#define LLRI_TIMEOUT_NONE 0u
-#define LLRI_TIMEOUT_INFINITE 0xFFFFFFFFu
+/**
+ * @def LLRI_TIMEOUT_MIN
+ * @brief Timeout immediately. If waiting needs to occur then the wait function will immediately return result::Timeout, if no waiting needs to occur, the waiting function returns result::Success.
+ */
+#define LLRI_TIMEOUT_MIN 0u
+/**
+ * @def LLRI_TIMEOUT_MAX
+ * @brief The maximum possible timeout. Using this **may** disable timeout entirely in some implementations.
+ */
+#define LLRI_TIMEOUT_MAX 0xFFFFFFFFu
 
 namespace LLRI_NAMESPACE
 {

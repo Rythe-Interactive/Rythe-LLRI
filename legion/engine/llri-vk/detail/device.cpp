@@ -96,7 +96,7 @@ namespace LLRI_NAMESPACE
     result Device::impl_waitFences(uint32_t numFences, Fence** fences, uint64_t timeout)
     {
         uint64_t vkTimeout = timeout;
-        if (timeout != LLRI_TIMEOUT_INFINITE)
+        if (timeout != LLRI_TIMEOUT_MAX)
             vkTimeout *= 1000000u; // milliseconds to nanoseconds
 
         std::vector<VkFence> vkFences(numFences);

@@ -186,7 +186,7 @@ void TestSystem::createSynchronization()
     THROW_IF_FAILED(m_device->createFence(llri::fence_flag_bits::Signaled, &m_fence));
 
     // unnecessary, just here to test fence_flag_bits::Signaled
-    m_device->waitFence(m_fence, LLRI_TIMEOUT_INFINITE);
+    m_device->waitFence(m_fence, LLRI_TIMEOUT_MAX);
 
     THROW_IF_FAILED(m_device->createSemaphore(&m_semaphore));
 }
