@@ -80,6 +80,8 @@ namespace LLRI_NAMESPACE
 
         if (fence->m_ptr)
             static_cast<ID3D12Fence*>(fence->m_ptr)->Release();
+
+        delete fence;
     }
 
     result Device::impl_waitFences(uint32_t numFences, Fence** fences, uint64_t timeout)
