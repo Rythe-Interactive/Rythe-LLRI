@@ -63,6 +63,7 @@ void TestSystem::setup()
     selectAdapter();
     createDevice();
     createCommandLists();
+    createSynchronization();
 }
 
 void TestSystem::update(time::span deltaTime)
@@ -76,6 +77,8 @@ void TestSystem::update(time::span deltaTime)
     {
         //Record
     }, m_commandList));
+
+    m_device->waitFences(1, &m_fence, LLRI_INFINITE);
 }
 
 TestSystem::~TestSystem()
