@@ -13,7 +13,11 @@ namespace LLRI_NAMESPACE
     {
         HRESULT r;
         unsigned long index;
-        _BitScanForward64(&index, desc.nodeMask);
+
+        if (desc.nodeMask != 0)
+            _BitScanForward64(&index, desc.nodeMask);
+        else
+            index = 0;
 
         // add wait semaphores to queue
         for (size_t i = 0; i < desc.numWaitSemaphores; i++)
