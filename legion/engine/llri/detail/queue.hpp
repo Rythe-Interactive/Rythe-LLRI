@@ -171,12 +171,17 @@ namespace LLRI_NAMESPACE
          *
          * @return ErrorInvalidUsage if desc.numCommandLists is 0.
          * @return ErrorInvalidUsage if desc.commandLists is nullptr.
+         * @return ErrorInvalidUsage if any of the CommandLists in desc.commandLists is nullptr.
+         *
+         * @return ErrorInvalidState if any of the CommandLists in desc.commandLists was not in the command_list_state::Ready state.
          *
          * @return ErrorInvalidUsage if desc.numWaitSemaphores is more than 0 and desc.waitSemaphores is nullptr.
          * @return ErrorInvalidUsage if desc.numWaitSemaphores is more than 0 and any of the pointers in desc.waitSemaphores is nullptr.
          *
          * @return ErrorInvalidUsage if desc.numSignalSemaphores is more than 0 and desc.signalSemaphores is nullptr.
          * @return ErrorInvalidUsage if desc.numSignalSemaphores is more than 0 and any of the pointers in desc.signalSemaphores is nullptr.
+         *
+         * @return ErrorAlreadySignaled if desc.fence has already been signaled and has not yet been waited upon.
         */
         result submit(const submit_desc& desc);
 

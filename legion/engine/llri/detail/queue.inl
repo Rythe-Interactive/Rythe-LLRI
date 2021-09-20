@@ -63,6 +63,29 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
+        for (size_t i = 0; i < desc.numCommandLists; i++)
+        {
+            if (desc.commandLists[i] == nullptr)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Queue::submit() returned ErrorInvalidUsage because desc.commandLists[" + std::to_string(i) + "] is nullptr.");
+                return result::ErrorInvalidUsage;
+            }
+
+            if (desc.commandLists[i]->m_state != llri::command_list_state::Ready)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Queue::submit() returned ErrorInvalidState because desc.commandLists[" + std::to_string(i) + "] is in the " + llri::to_string(desc.commandLists[i]->m_state) + " state");
+                return result::ErrorInvalidState;
+            }
+
+            uint32_t descNodeMask = desc.nodeMask == 0 ? 1 : desc.nodeMask;
+            uint32_t cmdListNodeMask = desc.commandLists[i]->m_nodeMask == 0 ? 1 : desc.commandLists[i]->m_nodeMask;
+            if (descNodeMask != cmdListNodeMask)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Queue::submit() returned ErrorIncompatibleNodeMask because desc.commandLists[" + std::to_string(i) + "]'s nodeMask (" + std::to_string(cmdListNodeMask) + ") is not the same as desc.nodeMask " + std::to_string(descNodeMask));
+                return result::ErrorIncompatibleNodeMask;
+            }
+        }
+
         if (desc.numWaitSemaphores > 0)
         {
             if (desc.waitSemaphores == nullptr)
@@ -96,6 +119,12 @@ namespace LLRI_NAMESPACE
                     m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Queue::submit() returned ErrorInvalidUsage because desc.numSignalSemaphores is more than 0, but desc.signalSemaphores[" + std::to_string(i) + "] is nullptr.");
                     return result::ErrorInvalidUsage;
                 }
+            }
+
+            if (desc.fence->m_signaled)
+            {
+                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Queue::submit() returned ErrorAlreadySignaled because desc.fence was already signaled and must be waited on first.");
+                return result::ErrorAlreadySignaled;
             }
         }
 #endif
