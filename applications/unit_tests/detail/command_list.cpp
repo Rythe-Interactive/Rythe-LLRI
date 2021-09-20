@@ -86,4 +86,8 @@ TEST_CASE("CommandList")
             }
         }
     }
+
+    device->destroyCommandGroup(group);
+    instance->destroyDevice(device);
+    llri::destroyInstance(instance);
 }
