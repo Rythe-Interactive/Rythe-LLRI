@@ -57,6 +57,8 @@ namespace LLRI_NAMESPACE
                 return "ErrorOccupied";
             case result::ErrorNotSignaled:
                 return "ErrorNotSignaled";
+            case result::ErrorAlreadySignaled:
+                return "ErrorAlreadySignaled";
         }
 
         return "Invalid result value";
