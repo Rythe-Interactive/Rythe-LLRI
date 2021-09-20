@@ -120,12 +120,12 @@ namespace LLRI_NAMESPACE
                     return result::ErrorInvalidUsage;
                 }
             }
+        }
 
-            if (desc.fence->m_signaled)
-            {
-                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Queue::submit() returned ErrorAlreadySignaled because desc.fence was already signaled and must be waited on first.");
-                return result::ErrorAlreadySignaled;
-            }
+        if (desc.fence && desc.fence->m_signaled)
+        {
+            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Queue::submit() returned ErrorAlreadySignaled because desc.fence was already signaled and must be waited on first.");
+            return result::ErrorAlreadySignaled;
         }
 #endif
 
