@@ -115,7 +115,9 @@ void TestSystem::selectAdapter()
     //Iterate over adapters
     std::vector<llri::Adapter*> adapters;
     THROW_IF_FAILED(m_instance->enumerateAdapters(&adapters));
+    assert(!adapters.empty());
 
+    std::map<int, llri::Adapter*> sortedAdapters;
     for (llri::Adapter* adapter : adapters)
     {
         //Log adapter info
@@ -140,16 +142,16 @@ void TestSystem::selectAdapter()
         log::info("\t\t Compute: {}", maxComputeQueueCount);
         log::info("\t\t Transfer: {}", maxTransferQueueCount);
 
+        uint32_t score = 0;
+
         //Discrete adapters tend to be more powerful and have more resources so we can decide to pick them
         if (info.adapterType == llri::adapter_type::Discrete)
-        {
-            log::info("Adapter selected: {}", info.adapterName);
-            m_adapter = adapter;
-        }
+            score += 1000;
+
+        sortedAdapters[score] = adapter;
     }
 
-    if (m_adapter == nullptr)
-        throw std::runtime_error("Failed to find a suitable LLRI adapter");
+    m_adapter = sortedAdapters.begin()->second;
 }
 
 void TestSystem::createDevice()
