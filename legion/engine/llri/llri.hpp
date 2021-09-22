@@ -223,6 +223,7 @@ namespace LLRI_NAMESPACE
 // ReSharper disable CppUnusedIncludeDirective
 
 #include <llri/detail/flags.hpp>
+#include <llri/detail/callback.hpp>
 
 #include <llri/detail/instance.hpp>
 #include <llri/detail/instance_extensions.hpp>

@@ -31,20 +31,20 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (info == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryInfo() returned ErrorInvalidUsage because the passed info parameter was nullptr.");
+            detail::apiError("Adapter::queryInfo()", result::ErrorInvalidUsage, "the passed info parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
         if (m_ptr == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryInfo() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            detail::apiError("Adapter::queryInfo()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
         }
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryInfo(info);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_queryInfo(info);
@@ -56,20 +56,20 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (features == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryFeatures() returned ErrorInvalidUsage because the passed features parameter was nullptr.");
+            detail::apiError("Adapter::queryFeatures()", result::ErrorInvalidUsage, "the passed features parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
         if (m_ptr == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryFeatures() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            detail::apiError("Adapter::queryFeatures()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
         }
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryFeatures(features);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_queryFeatures(features);
@@ -81,13 +81,13 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (supported == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryExtensionSupport() returned ErrorInvalidUsage because the passed supported parameter was nullptr.");
+            detail::apiError("Adapter::queryExtensionSupport()", result::ErrorInvalidUsage, "the passed supported parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
         if (m_ptr == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryExtensionSupport() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            detail::apiError("Adapter::queryExtensionSupport()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
         }
 #endif
@@ -96,7 +96,7 @@ namespace LLRI_NAMESPACE
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryExtensionSupport(type, supported);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_queryExtensionSupport(type, supported);
@@ -108,19 +108,19 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (count == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrorInvalidUsage because the passed count parameter was nullptr.");
+            detail::apiError("Adapter::queryQueueCount()", result::ErrorInvalidUsage, "the passed count parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
         if (type > queue_type::MaxEnum)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrorInvalidUsage because the passed type parameter was not a valid queue_type value");
+            detail::apiError("Adapter::queryQueueCount()", result::ErrorInvalidUsage, "the passed type parameter was not a valid queue_type value");
             return result::ErrorInvalidUsage;
         }
 
         if (m_ptr == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Adapter::queryQueueCount() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            detail::apiError("Adapter::queryQueueCount()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
         }
 #endif
@@ -129,7 +129,7 @@ namespace LLRI_NAMESPACE
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_queryQueueCount(type, count);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_queryQueueCount(type, count);

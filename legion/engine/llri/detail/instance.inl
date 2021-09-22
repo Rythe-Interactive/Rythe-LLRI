@@ -9,38 +9,6 @@
 
 namespace LLRI_NAMESPACE
 {
-    inline std::string to_string(validation_callback_severity severity)
-    {
-        switch (severity)
-        {
-        case validation_callback_severity::Verbose:
-            return "Verbose";
-        case validation_callback_severity::Info:
-            return "Info";
-        case validation_callback_severity::Warning:
-            return "Warning";
-        case validation_callback_severity::Error:
-            return "Error";
-        case validation_callback_severity::Corruption:
-            return "Corruption";
-        }
-
-        return "Invalid validation_callback_severity value";
-    }
-
-    inline std::string to_string(validation_callback_source source)
-    {
-        switch (source)
-        {
-        case validation_callback_source::Validation:
-            return "Validation";
-        case validation_callback_source::Implementation:
-            return "Implementation";
-        }
-
-        return "Invalid validation_callback_source value";
-    }
-
     inline std::string to_string(instance_extension_type type)
     {
         switch (type)
@@ -64,8 +32,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (instance == nullptr)
         {
-            if (desc.callbackDesc.callback)
-                desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, "createInstance() returned ErrorInvalidUsage because the passed instance parameter was nullptr.");
+            detail::apiError("createInstance()", result::ErrorInvalidUsage, "the passed instance parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -76,8 +43,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
         {
-            if (desc.callbackDesc.callback)
-                desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, "createInstance() returned ErrorInvalidUsage because desc.numExtensions was more than 0 but desc.extensions was nullptr.");
+            detail::apiError("createInstance()", result::ErrorInvalidUsage, "desc.numExtensions was more than 0 but desc.extensions was nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -85,7 +51,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = detail::impl_createInstance(desc, instance, true);
         if (*instance)
-            detail::impl_pollAPIMessages((*instance)->m_validationCallback, (*instance)->m_validationCallbackMessenger);
+            detail::impl_pollAPIMessages((*instance)->m_validationCallbackMessenger);
         return r;
 #else
         return detail::impl_createInstance(desc, instance, false);
@@ -106,7 +72,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (adapters == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::enumerateAdapters() returned ErrorInvalidUsage because the passed adapters parameter was nullptr.");
+            detail::apiError("Instance::enumerateAdapters()", result::ErrorInvalidUsage, "the passed adapters parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -119,7 +85,7 @@ namespace LLRI_NAMESPACE
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_enumerateAdapters(adapters);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_enumerateAdapters(adapters);
@@ -131,7 +97,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (device == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because the passed device parameter was nullptr.");
+            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "the passed device parameter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -142,31 +108,31 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (desc.adapter == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because desc.adapter was nullptr.");
+            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.adapter was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
         if (desc.numExtensions > 0 && desc.extensions == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because desc.numExtensions was more than 0 but desc.extensions was nullptr.");
+            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.numExtensions was more than 0 but desc.extensions was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
         if (desc.adapter->m_ptr == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.");
+            detail::apiError("Instance::createDevice()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
             return result::ErrorDeviceLost;
         }
 
         if (desc.numQueues == 0)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because desc.numQueues is 0 but it must be at least 1.");
+            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.numQueues is 0 but it must be at least 1.");
             return result::ErrorInvalidUsage;
         }
 
         if (desc.queues == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Instance::createDevice() returned ErrorInvalidUsage because desc.queues is nullptr but it must be a valid pointer to an array of queue_desc of size desc.numQueues.");
+            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.queues is nullptr but it must be a valid pointer to an array of queue_desc of size desc.numQueues.");
             return result::ErrorInvalidUsage;
         }
 
@@ -194,8 +160,7 @@ namespace LLRI_NAMESPACE
             //Queue type must be valid
             if (queue.type > queue_type::MaxEnum)
             {
-                const std::string msg = "Instance::createDevice() returned ErrorInvalidUsage because queue_desc[" + std::to_string(i) + "]::type " + std::to_string((uint8_t)queue.type) + " is not a valid queue type.";
-                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::type " + std::to_string((uint8_t)queue.type) + " is not a valid queue type.");
                 return result::ErrorInvalidUsage;
             }
 
@@ -203,19 +168,15 @@ namespace LLRI_NAMESPACE
             queueCounts[queue.type]++;
             if (queueCounts[queue.type] > maxQueueCounts[queue.type])
             {
-                const std::string msg = "Instance::createDevice() returned ErrorInvalidUsage because queue_desc " + std::to_string(i) +
-                    " is the " + std::to_string(queueCounts[queue.type]) + "th " +
-                    to_string(queue.type) + " queue, even though the maximum number of queues of this type is " + std::to_string(maxQueueCounts[queue.type]) + ".";
-
-                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc " + std::to_string(i) + " is the " + std::to_string(queueCounts[queue.type]) + "th " +
+                    to_string(queue.type) + " queue, even though the maximum number of queues of this type is " + std::to_string(maxQueueCounts[queue.type]) + ".");
                 return result::ErrorInvalidUsage;
             }
 
             //Queue priority must be valid
             if (queue.priority > queue_priority::MaxEnum)
             {
-                const std::string msg = "Instance::createDevice() returned ErrorInvalidUsage because queue_desc[" + std::to_string(i) + "]::priority " + std::to_string((uint8_t)queue.priority) + " is not a valid priority value";
-                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::priority " + std::to_string((uint8_t)queue.priority) + " is not a valid priority value");
                 return result::ErrorInvalidUsage;
             }
         }
@@ -224,7 +185,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_createDevice(desc, device);
         if (*device)
-            detail::impl_pollAPIMessages((*device)->m_validationCallback, (*device)->m_validationCallbackMessenger);
+            detail::impl_pollAPIMessages((*device)->m_validationCallbackMessenger);
         return r;
 #else
         return impl_createDevice(desc, device);
@@ -235,12 +196,12 @@ namespace LLRI_NAMESPACE
     {
         if (!device)
             return;
-        
+
         impl_destroyDevice(device);
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         //Can't use device messenger here because the device is destroyed
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
 #endif
     }
 }

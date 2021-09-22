@@ -9,9 +9,9 @@
 #include <array>
 
 // See 001_validation.
-void callback(llri::validation_callback_severity severity, llri::validation_callback_source source, const char* message, void* userData)
+void callback(llri::callback_severity severity, llri::callback_source source, const char* message, void* userData)
 {
-    if (severity <= llri::validation_callback_severity::Info)
+    if (severity <= llri::callback_severity::Info)
         return;
 
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
@@ -25,6 +25,8 @@ llri::CommandList* allocateCommandList(llri::CommandGroup* group);
 
 int main()
 {
+    llri::setUserCallback(&callback);
+
     auto* instance = createInstance();
     auto* adapter = selectAdapter(instance);
     auto* device = createDevice(instance, adapter);
@@ -63,13 +65,7 @@ int main()
 // See 000_hello_llri.
 llri::Instance* createInstance()
 {
-    const llri::instance_desc instanceDesc = {
-        0, nullptr, "validation",
-        llri::validation_callback_desc {
-            &callback,
-            nullptr
-        }
-    };
+    const llri::instance_desc instanceDesc = { 0, nullptr, "queue_submit" };
 
     llri::Instance* instance;
     const llri::result r = llri::createInstance(instanceDesc, &instance);

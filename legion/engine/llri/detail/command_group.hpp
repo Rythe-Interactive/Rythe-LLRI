@@ -130,7 +130,6 @@ namespace LLRI_NAMESPACE
         Device* m_device = nullptr;
         void* m_deviceFunctionTable = nullptr;
 
-        validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
         queue_type m_type;

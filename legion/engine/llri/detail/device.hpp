@@ -189,7 +189,6 @@ namespace LLRI_NAMESPACE
         Adapter* m_adapter = nullptr;
         void* m_functionTable = nullptr;
 
-        validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
         std::vector<Queue*> m_graphicsQueues;

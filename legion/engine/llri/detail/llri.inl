@@ -78,6 +78,8 @@ namespace LLRI_NAMESPACE
     }
 }
 
+#include <llri/detail/callback.inl>
+
 #include <llri/detail/instance.inl>
 #include <llri/detail/adapter.inl>
 #include <llri/detail/queue.inl>

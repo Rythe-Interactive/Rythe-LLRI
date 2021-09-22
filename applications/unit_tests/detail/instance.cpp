@@ -8,11 +8,6 @@
 #include <doctest/doctest.h>
 #include <helpers.hpp>
 
-void dummyCallback(llri::validation_callback_severity sev, llri::validation_callback_source src, const char* message, void* userData)
-{
-    //Empty
-}
-
 TEST_SUITE("Instance")
 {
     TEST_CASE("createInstance()")
@@ -20,7 +15,7 @@ TEST_SUITE("Instance")
         CHECK(llri::createInstance({}, nullptr) == llri::result::ErrorInvalidUsage);
 
         llri::Instance* instance = nullptr;
-        llri::instance_desc desc { 0, nullptr, "", { nullptr, nullptr }};
+        llri::instance_desc desc { 0, nullptr, ""};
 
         SUBCASE("[Incorrect usage] numExtensions > 0 && extensions == nullptr")
         {
@@ -65,18 +60,6 @@ TEST_SUITE("Instance")
         SUBCASE("[Correct usage] applicationName != nullptr")
         {
             desc.applicationName = "Test";
-            CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-        }
-
-        SUBCASE("[Correct usage] callbackDesc.callback == nullptr")
-        {
-            desc.callbackDesc.callback = nullptr;
-            CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-        }
-
-        SUBCASE("[Correct usage] callbackDesc.callback != nullptr")
-        {
-            desc.callbackDesc.callback = &dummyCallback;
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         }
 

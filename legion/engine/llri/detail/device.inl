@@ -14,7 +14,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (queue == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::queryQueue() returned ErrorInvalidUsage because the passed queue parameter must not be nullptr.");
+            detail::apiError("Device::queryQueue()", result::ErrorInvalidUsage, "the passed queue parameter must not be nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -24,8 +24,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (type > queue_type::MaxEnum)
         {
-            const std::string msg = "Device::queryQueue() returned ErrorInvalidUsage because the passed type parameter " + std::to_string((uint8_t)type) + " is not a valid queue_type value.";
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+            detail::apiError("Device::queryQueue()", result::ErrorInvalidUsage, "the passed type parameter " + std::to_string((uint8_t)type) + " is not a valid queue_type value.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -53,8 +52,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (index >= static_cast<uint8_t>(queues->size()))
         {
-            const std::string msg =  "Device::queryQueue() returned ErrorInvalidUsage because the passed index parameter " + std::to_string(index) + " is not smaller than the number of created queues (" + std::to_string(queues->size()) + ") of type " + to_string(type) + ".";
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+            detail::apiError("Device::queryQueue()", result::ErrorInvalidUsage, "the passed index parameter " + std::to_string(index) + " is not smaller than the number of created queues (" + std::to_string(queues->size()) + ") of type " + to_string(type) + ".");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -83,7 +81,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (cmdGroup == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because the passed cmdGroup parameter must not be nullptr.");
+            detail::apiError("Device::createCommandGroup()", result::ErrorInvalidUsage, "the passed cmdGroup parameter must not be nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -93,27 +91,27 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (desc.type > queue_type::MaxEnum)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because desc.type was not a valid queue_type enum value.");
+            detail::apiError("Device::createCommandGroup()", result::ErrorInvalidUsage, "desc.type was not a valid queue_type enum value.");
             return result::ErrorInvalidUsage;
         }
 
         if (desc.count == 0)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because desc.count was 0");
+            detail::apiError("Device::createCommandGroup()", result::ErrorInvalidUsage, "because desc.count was 0");
             return result::ErrorInvalidUsage;
         }
 
         const uint8_t availableQueueCount = queryQueueCount(desc.type);
         if (availableQueueCount == 0)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createCommandGroup() returned ErrorInvalidUsage because the the Device has no queues available for the passed command_group_desc::type.");
+            detail::apiError("Device::createCommandGroup()", result::ErrorInvalidUsage, "the Device has no queues for the passed command_group_desc::type.");
             return result::ErrorInvalidUsage;
         }
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_createCommandGroup(desc, cmdGroup);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_createCommandGroup(desc, cmdGroup);
@@ -137,7 +135,7 @@ namespace LLRI_NAMESPACE
         impl_destroyCommandGroup(cmdGroup);
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
 #endif
     }
 
@@ -146,7 +144,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (fence == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createFence() returned ErrorInvalidUsage because the passed fence parameter must not be nullptr.");
+            detail::apiError("Device::createFence()", result::ErrorInvalidUsage, "the passed fence parameter must not be nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -161,14 +159,14 @@ namespace LLRI_NAMESPACE
 
         if (supportedFlags.find(flags) == supportedFlags.end())
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createFence() returned ErrorInvalidUsage because the flags value " + std::to_string(flags) + "was not a supported combination of fence_flags.");
+            detail::apiError("Device::createFence()", result::ErrorInvalidUsage, "the flags value " + std::to_string(flags) + "was not a supported combination of fence_flags.");
             return result::ErrorInvalidUsage;
         }
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_createFence(flags, fence);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_createFence(flags, fence);
@@ -183,7 +181,7 @@ namespace LLRI_NAMESPACE
         impl_destroyFence(fence);
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
 #endif
     }
 
@@ -192,13 +190,13 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (numFences == 0)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorInvalidUsage because numFences was 0.");
+            detail::apiError("Device::waitFences()", result::ErrorInvalidUsage, "because numFences was 0.");
             return result::ErrorInvalidUsage;
         }
 
         if (fences == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorInvalidUsage because fences was nullptr.");
+            detail::apiError("Device::waitFences()", result::ErrorInvalidUsage, "fences was nullptr.");
             return result::ErrorInvalidUsage;
         }
 
@@ -206,13 +204,13 @@ namespace LLRI_NAMESPACE
         {
             if (fences[i] == nullptr)
             {
-                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorInvalidUsage because fences[" + std::to_string(i) + "] was nullptr.");
+                detail::apiError("Device::waitFences()", result::ErrorInvalidUsage, "fences[" + std::to_string(i) + "] was nullptr.");
                 return result::ErrorInvalidUsage;
             }
 
             if (!fences[i]->m_signaled)
             {
-                m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::waitFences() returned ErrorNotSignaled because fences[" + std::to_string(i) + "] was not signaled");
+                detail::apiError("Device::waitFences()", result::ErrorNotSignaled, "fences[" + std::to_string(i) + "] was not signaled");
                 return result::ErrorNotSignaled;
             }
         }
@@ -220,7 +218,7 @@ namespace LLRI_NAMESPACE
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_waitFences(numFences, fences, timeout);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
 #else
         const auto r = impl_waitFences(numFences, fences, timeout)
 #endif
@@ -243,7 +241,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (semaphore == nullptr)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "Device::createSemaphore() returned ErrorInvalidUsage because semaphore was nullptr.");
+            detail::apiError("Device::createSemaphore()", result::ErrorInvalidUsage, "because semaphore was nullptr.");
             return result::ErrorInvalidUsage;
         }
 #endif
@@ -252,7 +250,7 @@ namespace LLRI_NAMESPACE
         
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_createSemaphore(semaphore);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_createSemaphore(semaphore);
@@ -267,7 +265,7 @@ namespace LLRI_NAMESPACE
         impl_destroySemaphore(semaphore);
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
 #endif
     }
 }

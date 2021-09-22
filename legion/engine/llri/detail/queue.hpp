@@ -204,7 +204,6 @@ namespace LLRI_NAMESPACE
 
         Device* m_device = nullptr;
 
-        validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
         result impl_submit(const submit_desc& desc);

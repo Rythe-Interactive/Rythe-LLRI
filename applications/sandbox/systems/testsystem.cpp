@@ -24,25 +24,25 @@ using namespace legion;
     } \
 } \
 
-void callback(llri::validation_callback_severity severity, llri::validation_callback_source source, const char* message, void* userData)
+void callback(llri::callback_severity severity, llri::callback_source source, const char* message, void* userData)
 {
     log::severity sev = log::severity_info;
     switch (severity)
     {
-        case llri::validation_callback_severity::Verbose:
+        case llri::callback_severity::Verbose:
             sev = log::severity_trace;
             break;
-        case llri::validation_callback_severity::Info:
+        case llri::callback_severity::Info:
             //Even though this semantically maps to info, we'd recommend running this on the trace severity to avoid the excessive info logs that some APIs output
             sev = log::severity_trace;
             break;
-        case llri::validation_callback_severity::Warning:
+        case llri::callback_severity::Warning:
             sev = log::severity_warn;
             break;
-        case llri::validation_callback_severity::Error:
+        case llri::callback_severity::Error:
             sev = log::severity_error;
             break;
-        case llri::validation_callback_severity::Corruption:
+        case llri::callback_severity::Corruption:
             sev = log::severity_error;
     }
 
@@ -54,6 +54,8 @@ void TestSystem::setup()
     filter(log::severity_debug);
 
     log::info("LLRI linked Implementation: {}", llri::to_string(llri::queryImplementation()));
+
+    llri::setUserCallback(&callback);
 
     createInstance();
     selectAdapter();
@@ -100,11 +102,7 @@ void TestSystem::createInstance()
     if (queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation))
         instanceExtensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true });
 
-    const llri::instance_desc instanceDesc{
-        (uint32_t)instanceExtensions.size(), instanceExtensions.data(),
-        "sandbox",
-        llri::validation_callback_desc { &callback, nullptr }
-    };
+    const llri::instance_desc instanceDesc{ (uint32_t)instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
 
     //Create instance
     THROW_IF_FAILED(llri::createInstance(instanceDesc, &m_instance));

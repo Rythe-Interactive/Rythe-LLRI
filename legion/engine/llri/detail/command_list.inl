@@ -42,14 +42,13 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (m_state != command_list_state::Empty)
         {
-            const std::string msg = std::string("CommandList::begin() returned ErrorInvalidState because CommandList::queryState() returned ") + to_string(m_state) + ". CommandList must be in the command_list_state::Empty state before calling begin().";
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+            detail::apiError("CommandList::begin()", result::ErrorInvalidState, "CommandList::queryState() returned " + to_string(m_state) + ". CommandList must be in the command_list_state::Empty state before calling begin().");
             return result::ErrorInvalidState;
         }
 
         if (m_group->m_currentlyRecording)
         {
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, "CommandList::begin() returned ErrorOccupided because its parent CommandGroup is already recording a CommandList.");
+            detail::apiError("CommandList::begin()", result::ErrorOccupied, "its parent CommandGroup is already recording a CommandList.");
             return result::ErrorOccupied;
         }
         m_group->m_currentlyRecording = this;
@@ -57,7 +56,7 @@ namespace LLRI_NAMESPACE
         
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_begin(desc);
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_begin(desc);
@@ -69,8 +68,7 @@ namespace LLRI_NAMESPACE
 #ifndef LLRI_DISABLE_VALIDATION
         if (m_state != command_list_state::Recording)
         {
-            const std::string msg = std::string("CommandList::end() returned ErrorInvalidState because CommandList::queryState() returned ") + to_string(m_state) + ". CommandList must be in the command_list_state::Recording state before calling end().";
-            m_validationCallback(validation_callback_severity::Error, validation_callback_source::Validation, msg.c_str());
+            detail::apiError("CommandList::end()", result::ErrorInvalidState, "CommandList::queryState() returned " + to_string(m_state) + ". CommandList must be in the command_list_state::Recording state before calling end().");
             return result::ErrorInvalidState;
         }
 
@@ -79,7 +77,7 @@ namespace LLRI_NAMESPACE
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
         const auto r = impl_end();
-        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
         return impl_end();

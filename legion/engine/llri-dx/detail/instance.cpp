@@ -14,25 +14,23 @@ namespace LLRI_NAMESPACE
         result createDriverValidationEXT(const driver_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
 
-        void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
-
-        validation_callback_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
+        callback_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
         {
             switch (sev)
             {
             case D3D12_MESSAGE_SEVERITY_CORRUPTION:
-                return validation_callback_severity::Corruption;
+                return callback_severity::Corruption;
             case D3D12_MESSAGE_SEVERITY_ERROR:
-                return validation_callback_severity::Error;
+                return callback_severity::Error;
             case D3D12_MESSAGE_SEVERITY_WARNING:
-                return validation_callback_severity::Warning;
+                return callback_severity::Warning;
             case D3D12_MESSAGE_SEVERITY_INFO:
-                return validation_callback_severity::Info;
+                return callback_severity::Info;
             case D3D12_MESSAGE_SEVERITY_MESSAGE:
-                return validation_callback_severity::Verbose;
+                return callback_severity::Verbose;
             }
 
-            return validation_callback_severity::Info;
+            return callback_severity::Info;
         }
 
         INT mapQueuePriority(queue_priority priority)
@@ -94,9 +92,6 @@ namespace LLRI_NAMESPACE
                     }
                     default:
                     {
-                        if (desc.callbackDesc.callback)
-                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
-
                         extensionCreateResult = result::ErrorExtensionNotSupported;
                         break;
                     }
@@ -112,16 +107,7 @@ namespace LLRI_NAMESPACE
             //Store user defined validation callback
             //DirectX creates validation callbacks upon device creation so we just need to store information about this right now.
             output->m_validationCallbackMessenger = nullptr;
-            if (enableImplementationMessagePolling && desc.callbackDesc.callback)
-            {
-                output->m_validationCallback = desc.callbackDesc;
-                output->m_shouldConstructValidationCallbackMessenger = true;
-            }
-            else
-            {
-                output->m_validationCallback = { &internal::dummyValidationCallback, nullptr };
-                output->m_shouldConstructValidationCallbackMessenger = false;
-            }
+            output->m_shouldConstructValidationCallbackMessenger = enableImplementationMessagePolling;
 
             //Attempt to create factory
             IDXGIFactory* factory = nullptr;
@@ -159,7 +145,7 @@ namespace LLRI_NAMESPACE
             delete instance;
         }
 
-        void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger)
+        void impl_pollAPIMessages(messenger_type* messenger)
         {
             if (messenger != nullptr)
             {
@@ -173,7 +159,8 @@ namespace LLRI_NAMESPACE
 
                     auto* pMessage = static_cast<D3D12_MESSAGE*>(malloc(messageLength));
                     iq->GetMessage(i, pMessage, &messageLength);
-                    validation(internal::mapSeverity(pMessage->Severity), validation_callback_source::Implementation, pMessage->pDescription);
+
+                    detail::callUserCallback(internal::mapSeverity(pMessage->Severity), callback_source::Implementation, pMessage->pDescription);
 
                     free(pMessage);
                 }
@@ -215,7 +202,6 @@ namespace LLRI_NAMESPACE
                 Adapter* adapter = new Adapter();
                 adapter->m_ptr = dxgiAdapter;
                 adapter->m_instanceHandle = m_ptr;
-                adapter->m_validationCallback = m_validationCallback;
                 adapter->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
                 //Attempt to query node count
@@ -238,20 +224,16 @@ namespace LLRI_NAMESPACE
 
     result Instance::impl_createDevice(const device_desc& desc, Device** device)
     {
-        auto* output = new Device();
-        output->m_adapter = desc.adapter;
-        output->m_validationCallback = m_validationCallback;
-        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
-
         const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
 
         ID3D12Device* dx12Device = nullptr;
         HRESULT r = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));
         if (FAILED(r))
-        {
-            destroyDevice(output);
             return directx::mapHRESULT(r);
-        }
+
+        auto* output = new Device();
+        output->m_adapter = desc.adapter;
+        output->m_validationCallbackMessenger = m_validationCallbackMessenger;
         output->m_ptr = dx12Device;
 
         if (m_shouldConstructValidationCallbackMessenger)
@@ -303,7 +285,6 @@ namespace LLRI_NAMESPACE
             queue->m_device = output;
             queue->m_ptrs = queues;
             queue->m_fences = fences;
-			queue->m_validationCallback = output->m_validationCallback;
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
             switch(queueDesc.type)
