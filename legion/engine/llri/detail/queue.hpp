@@ -101,7 +101,7 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Describes how 
+     * @brief Describes how command lists should be submitted to a queue.
     */
     struct submit_desc
     {
@@ -185,12 +185,22 @@ namespace LLRI_NAMESPACE
         */
         result submit(const submit_desc& desc);
 
+        /**
+         * @brief Wait for the queue to go idle. This function blocks the CPU thread until all of the commands on the queue are done.
+         *
+         * This is the equivalent of adding a fence to every submit and waiting for those fences.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorDeviceLost.
+        */
+        result waitIdle();
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Queue() = default;
         ~Queue() = default;
 
         std::vector<void*> m_ptrs;
+        std::vector<Fence*> m_fences; // optional internal fences for waitIdle()
 
         Device* m_device = nullptr;
 
@@ -198,5 +208,6 @@ namespace LLRI_NAMESPACE
         void* m_validationCallbackMessenger = nullptr;
 
         result impl_submit(const submit_desc& desc);
+        result impl_waitIdle();
     };
 }

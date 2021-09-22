@@ -47,4 +47,10 @@ namespace LLRI_NAMESPACE
 
         return internal::mapVkResult(r);
     }
+
+    result Queue::impl_waitIdle()
+    {
+        const auto r = static_cast<VolkDeviceTable*>(m_device->m_functionTable)->vkQueueWaitIdle(static_cast<VkQueue>(m_ptrs[0]));
+        return internal::mapVkResult(r);
+    }
 }

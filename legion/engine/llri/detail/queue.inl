@@ -137,4 +137,15 @@ namespace LLRI_NAMESPACE
         return impl_submit(desc);
 #endif
     }
+
+    inline result Queue::waitIdle()
+    {
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto r = impl_waitIdle();
+        detail::impl_pollAPIMessages(m_validationCallback, m_validationCallbackMessenger);
+        return r;
+#else
+        return impl_waitIdle();
+#endif
+    }
 }

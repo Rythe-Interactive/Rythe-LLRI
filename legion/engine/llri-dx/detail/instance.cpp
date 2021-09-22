@@ -271,11 +271,12 @@ namespace LLRI_NAMESPACE
             const D3D12_COMMAND_LIST_TYPE type = internal::mapQueueType(queueDesc.type);
 
             std::vector<void*> queues(desc.adapter->m_nodeCount, nullptr);
+            std::vector<Fence*> fences(desc.adapter->m_nodeCount, nullptr);
             for (size_t node = 0; node < desc.adapter->m_nodeCount; node++)
             {
-                D3D12_COMMAND_QUEUE_DESC queueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 1u << static_cast<UINT>(node) };
+                D3D12_COMMAND_QUEUE_DESC dx12QueueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 1u << static_cast<UINT>(node) };
                 ID3D12CommandQueue* dx12Queue = nullptr;
-                r = dx12Device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&dx12Queue));
+                r = dx12Device->CreateCommandQueue(&dx12QueueDesc, IID_PPV_ARGS(&dx12Queue));
                 if (FAILED(r))
                 {
                     destroyDevice(output);
@@ -283,11 +284,22 @@ namespace LLRI_NAMESPACE
                 }
 
                 queues[node] = dx12Queue;
+
+                const result re = output->createFence(fence_flag_bits::None, &fences[node]);
+                if (re != result::Success)
+                {
+                    // note: we have to manually delete the dx12queue here because it hasn't yet been added to the device 
+                    dx12Queue->Release();
+
+                    destroyDevice(output);
+                    return re;
+                }
             }
 
             auto* queue = new Queue();
             queue->m_device = output;
             queue->m_ptrs = queues;
+            queue->m_fences = fences;
 			queue->m_validationCallback = output->m_validationCallback;
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
@@ -319,22 +331,40 @@ namespace LLRI_NAMESPACE
     {
         for (auto* graphics : device->m_graphicsQueues)
         {
-            for (auto* ptr : graphics->m_ptrs)
-                static_cast<ID3D12CommandQueue*>(ptr)->Release();
+            for (size_t i = 0; i < graphics->m_ptrs.size(); i++)
+            {
+                if (graphics->m_ptrs[i])
+                    static_cast<ID3D12CommandQueue*>(graphics->m_ptrs[i])->Release();
+
+                if (graphics->m_fences[i])
+                    device->destroyFence(graphics->m_fences[i]);
+            }
             delete graphics;
         }
 
         for (auto* compute : device->m_computeQueues)
         {
-            for (auto* ptr : compute->m_ptrs)
-                static_cast<ID3D12CommandQueue*>(ptr)->Release();
+            for (size_t i = 0; i < compute->m_ptrs.size(); i++)
+            {
+                if (compute->m_ptrs[i])
+                    static_cast<ID3D12CommandQueue*>(compute->m_ptrs[i])->Release();
+
+                if (compute->m_fences[i])
+                    device->destroyFence(compute->m_fences[i]);
+            }
             delete compute;
         }
         
         for (auto* transfer : device->m_transferQueues)
         {
-            for (auto* ptr : transfer->m_ptrs)
-                static_cast<ID3D12CommandQueue*>(ptr)->Release();
+            for (size_t i = 0; i < transfer->m_ptrs.size(); i++)
+            {
+                if (transfer->m_ptrs[i])
+                    static_cast<ID3D12CommandQueue*>(transfer->m_ptrs[i])->Release();
+
+                if (transfer->m_fences[i])
+                    device->destroyFence(transfer->m_fences[i]);
+            }
             delete transfer;
         }
 

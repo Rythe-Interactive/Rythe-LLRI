@@ -163,6 +163,26 @@ TEST_CASE("Queue")
                             CHECK_EQ(queue->submit(submitDesc), llri::result::ErrorAlreadySignaled);
                         }
                     }
+
+                    SUBCASE("Queue::waitIdle()")
+                    {
+                        SUBCASE("[Correct usage] empty queue")
+                        {
+                            const auto r = queue->waitIdle();
+                            CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorOutOfDeviceMemory || r == llri::result::ErrorOutOfHostMemory || r == llri::result::ErrorDeviceLost);
+                        }
+
+                        SUBCASE("[Correct usasge] non-empty queue")
+                        {
+                            llri::submit_desc submitDesc {};
+                            submitDesc.numCommandLists = 1;
+                            submitDesc.commandLists = &readyCmdList;
+                            REQUIRE_EQ(queue->submit(submitDesc), llri::result::Success);
+
+                            const auto r = queue->waitIdle();
+                            CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorOutOfDeviceMemory || r == llri::result::ErrorOutOfHostMemory || r == llri::result::ErrorDeviceLost);
+                        }
+                    }
                 }
 
                 device->destroyFence(defaultFence);

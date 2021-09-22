@@ -37,7 +37,8 @@ namespace LLRI_NAMESPACE
         // add signal semaphores to queue
         for (size_t i = 0; i < desc.numSignalSemaphores; i++)
         {
-            r = static_cast<ID3D12CommandQueue*>(m_ptrs[index])->Signal(static_cast<ID3D12Fence*>(desc.signalSemaphores[i]->m_ptr), ++desc.signalSemaphores[i]->m_counter); // NOTE: the convention is that we increase the counter upon signaling, all wait operations will use this counter without modifying it.
+            // NOTE: the convention is that we increase the counter upon signaling, all wait operations will use this counter without modifying it.
+            r = static_cast<ID3D12CommandQueue*>(m_ptrs[index])->Signal(static_cast<ID3D12Fence*>(desc.signalSemaphores[i]->m_ptr), ++desc.signalSemaphores[i]->m_counter);
             if (FAILED(r))
                 return directx::mapHRESULT(r);
         }
@@ -53,5 +54,20 @@ namespace LLRI_NAMESPACE
         }
 
         return result::Success;
+    }
+
+    result Queue::impl_waitIdle()
+    {
+        for (size_t i = 0; i < m_ptrs.size(); i++)
+        {
+            auto* queue = static_cast<ID3D12CommandQueue*>(m_ptrs[i]);
+            auto* fence = m_fences[i];
+
+            // NOTE: the convention is that we increase the counter upon signaling, all wait operations will use this counter without modifying it.
+            queue->Signal(static_cast<ID3D12Fence*>(fence->m_ptr), ++fence->m_counter);
+            fence->m_signaled = true;
+        }
+
+        return m_device->waitFences(static_cast<uint32_t>(m_fences.size()), m_fences.data(), LLRI_TIMEOUT_MAX);
     }
 }
