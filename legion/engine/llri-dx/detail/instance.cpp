@@ -263,15 +263,18 @@ namespace LLRI_NAMESPACE
                 output->m_validationCallbackMessenger = iq;
         }
 
+        std::vector<void*> queues(desc.adapter->m_nodeCount, nullptr);
+        std::vector<Fence*> fences(desc.adapter->m_nodeCount, nullptr);
         for (size_t i = 0; i < desc.numQueues; i++)
         {
+            queues.assign(queues.size(), nullptr);
+            fences.assign(fences.size(), nullptr);
+
             auto& queueDesc = desc.queues[i];
 
             const INT priority = internal::mapQueuePriority(queueDesc.priority);
             const D3D12_COMMAND_LIST_TYPE type = internal::mapQueueType(queueDesc.type);
 
-            std::vector<void*> queues(desc.adapter->m_nodeCount, nullptr);
-            std::vector<Fence*> fences(desc.adapter->m_nodeCount, nullptr);
             for (size_t node = 0; node < desc.adapter->m_nodeCount; node++)
             {
                 D3D12_COMMAND_QUEUE_DESC dx12QueueDesc { type, priority, D3D12_COMMAND_QUEUE_FLAG_NONE, 1u << static_cast<UINT>(node) };
