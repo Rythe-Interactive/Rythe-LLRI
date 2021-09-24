@@ -324,13 +324,13 @@ TEST_SUITE("Instance")
 
         for (auto* adapter : adapters)
         {
-            llri::Device* device = nullptr;
-            llri::queue_desc queue { llri::queue_type::Graphics, llri::queue_priority::Normal }; //at least one graphics queue is practically always available
-            llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 1, &queue};
-            REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);
-
             SUBCASE("[Correct usage] device != nullptr")
             {
+                llri::Device* device = nullptr;
+                llri::queue_desc queue { llri::queue_type::Graphics, llri::queue_priority::Normal }; //at least one graphics queue is practically always available
+                llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 1, &queue};
+
+                REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);
                 CHECK_NOTHROW(instance->destroyDevice(device));
             }
 

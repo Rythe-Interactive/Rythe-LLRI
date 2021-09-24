@@ -82,4 +82,12 @@ namespace helpers
         REQUIRE_EQ(group->allocate(desc, &cmd), llri::result::Success);
         return cmd;
     }
+
+    inline llri::Fence* defaultFence(llri::Device* device, bool signaled)
+    {
+        llri::fence_flags flags = signaled ? llri::fence_flag_bits::Signaled : llri::fence_flag_bits::None;
+        llri::Fence* result;
+        REQUIRE_EQ(device->createFence(flags, &result), llri::result::Success);
+        return result;
+    }
 }

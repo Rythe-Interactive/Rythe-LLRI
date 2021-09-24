@@ -16,6 +16,7 @@ add_subdirectory(samples/002_validation_ext)
 add_subdirectory(samples/003_adapter_selection)
 add_subdirectory(samples/004_device)
 add_subdirectory(samples/005_commands)
+add_subdirectory(samples/006_queue_submit)
 
 set_target_properties(
 	000_hello_llri
@@ -24,5 +25,6 @@ set_target_properties(
 	003_adapter_selection
 	004_device
 	005_commands
+	006_queue_submit
 	PROPERTIES FOLDER "applications/samples"
 )

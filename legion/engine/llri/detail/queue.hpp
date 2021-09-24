@@ -15,6 +15,8 @@
 namespace LLRI_NAMESPACE
 {
     class CommandList;
+    class Fence;
+    class Semaphore;
 
     /**
      * @brief Declare queue priority. Queues with a higher priority **may** be assigned more resources and processing time by the Adapter.
@@ -99,6 +101,58 @@ namespace LLRI_NAMESPACE
     };
 
     /**
+     * @brief Describes how command lists should be submitted to a queue.
+    */
+    struct submit_desc
+    {
+        /**
+         * @brief The nodeMask determines which adapter node the queues are submitted to. A single bit **must** be set.
+         *
+         * All the CommandLists **must** be created for this nodemask.
+        */
+        uint32_t nodeMask;
+
+        /**
+         * @brief The number of CommandLists in submit_desc::commandLists. **Must** not be 0.
+        */
+        uint32_t numCommandLists;
+        /**
+         * @brief An array of CommandList pointers that ought to be submitted to the queue.
+         * This array **must not** be nullptr, **must** be of at least size numCommandLists, and all pointers in the array **must** be valid CommandList pointers.
+        */
+        CommandList** commandLists;
+
+        /**
+         * @brief The number of Semaphores in submit_desc::waitSemaphores. **May** be 0.
+        */
+        uint32_t numWaitSemaphores;
+        /**
+         * @brief An array of Semaphores that the CommandLists must wait on prior to executing.
+         *
+         * This array **may** be nullptr if numWaitSemaphores is 0.
+         * If not, then this array **must not** be nullptr, the array **must** be of at least size numWaitSemaphores, and all pointers in the array **must** be valid Semaphore pointers.
+        */
+        Semaphore** waitSemaphores;
+
+        /**
+         * @brief The number of Semaphores in submit_desc::signalSemaphores. **May** be 0.
+        */
+        uint32_t numSignalSemaphores;
+        /**
+         * @brief An array of Semaphores that the CommandList signal after they are done executing.
+         *
+         * This array **may** be nullptr if numSignalSemaphores is 0.
+         * If not, then this array **must not** be nullptr, the array **must** be of at least size numSignalSemaphores, and all pointers in the array **must** be valid Semaphore pointers.
+        */
+        Semaphore** signalSemaphores;
+
+        /**
+         * @brief A fence to signal after the CommandLists are done executing. **Must** be a valid pointer to a Fence, or nullptr.
+        */
+        Fence* fence;
+    };
+
+    /**
      * @brief Queues are used to send commands to the Adapter. This is done by submitting CommandLists and/or synchronization operations.
     */
     class Queue
@@ -107,18 +161,53 @@ namespace LLRI_NAMESPACE
         friend class Device;
 
     public:
+        /**
+         * @brief Submit CommandLists to the queue, which means the commands they contain will be executed.
+         * @param desc Describes the CommandLists that get executed, and what synchronization they signal or wait upon.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set to 1 which was not represented by a node in the Device. The nodeMask must always have its positive bit set at Adapter::queryNodeCount() or less.
+         * @return ErrorIncompatibleNodeMask if any of the CommandLists in desc.commandLists was not created with the same nodeMask as desc.nodeMask.
+         *
+         * @return ErrorInvalidUsage if desc.numCommandLists is 0.
+         * @return ErrorInvalidUsage if desc.commandLists is nullptr.
+         * @return ErrorInvalidUsage if any of the CommandLists in desc.commandLists is nullptr.
+         *
+         * @return ErrorInvalidState if any of the CommandLists in desc.commandLists was not in the command_list_state::Ready state.
+         *
+         * @return ErrorInvalidUsage if desc.numWaitSemaphores is more than 0 and desc.waitSemaphores is nullptr.
+         * @return ErrorInvalidUsage if desc.numWaitSemaphores is more than 0 and any of the pointers in desc.waitSemaphores is nullptr.
+         *
+         * @return ErrorInvalidUsage if desc.numSignalSemaphores is more than 0 and desc.signalSemaphores is nullptr.
+         * @return ErrorInvalidUsage if desc.numSignalSemaphores is more than 0 and any of the pointers in desc.signalSemaphores is nullptr.
+         *
+         * @return ErrorAlreadySignaled if desc.fence has already been signaled and has not yet been waited upon.
+        */
+        result submit(const submit_desc& desc);
 
+        /**
+         * @brief Wait for the queue to go idle. This function blocks the CPU thread until all of the commands on the queue are done.
+         *
+         * This is the equivalent of adding a fence to every submit and waiting for those fences.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorDeviceLost.
+        */
+        result waitIdle();
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Queue() = default;
         ~Queue() = default;
 
         std::vector<void*> m_ptrs;
-		
-        void* m_deviceHandle = nullptr;
-        void* m_deviceFunctionTable = nullptr;
+        std::vector<Fence*> m_fences; // optional internal fences for waitIdle()
+
+        Device* m_device = nullptr;
 
         validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
+
+        result impl_submit(const submit_desc& desc);
+        result impl_waitIdle();
     };
 }

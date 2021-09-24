@@ -174,9 +174,13 @@ namespace LLRI_NAMESPACE
         */
         ErrorNotSignaled,
         /**
+         * @brief An operation attempted to signal a Fence that had already been signaled.
+        */
+        ErrorAlreadySignaled,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorNotSignaled
+        MaxEnum = ErrorAlreadySignaled
     };
 
     /**

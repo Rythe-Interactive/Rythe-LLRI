@@ -240,7 +240,7 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if any of the queue_desc's priorities was an invalid queue_priority value.
          * @return ErrorDeviceLost if the adapter was lost.
         */
-        result createDevice(const device_desc& desc, Device** device) const;
+        result createDevice(const device_desc& desc, Device** device);
 
         /**
          * @brief Destroy the LLRI device.
@@ -249,7 +249,7 @@ namespace LLRI_NAMESPACE
          *
          * @param device The device, **must** be a valid device pointer or nullptr.
         */
-        void destroyDevice(Device* device) const;
+        void destroyDevice(Device* device);
 
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
@@ -267,7 +267,7 @@ namespace LLRI_NAMESPACE
         std::map<void*, Adapter*> m_cachedAdapters;
 
         result impl_enumerateAdapters(std::vector<Adapter*>* adapters);
-        result impl_createDevice(const device_desc& desc, Device** device) const;
-        void impl_destroyDevice(Device* device) const;
+        result impl_createDevice(const device_desc& desc, Device** device);
+        void impl_destroyDevice(Device* device);
     };
 }

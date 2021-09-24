@@ -305,7 +305,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    result Instance::impl_createDevice(const device_desc& desc, Device** device) const
+    result Instance::impl_createDevice(const device_desc& desc, Device** device)
     {
         auto* output = new Device();
         output->m_adapter = desc.adapter;
@@ -414,6 +414,7 @@ namespace LLRI_NAMESPACE
             table->vkGetDeviceQueue(vkDevice, families[queueDesc.type], queueCounts[queueDesc.type], &vkQueue);
 
             auto* queue = new Queue();
+            queue->m_device = output;
             queue->m_ptrs = std::vector<void*>(desc.adapter->m_nodeCount, vkQueue);
             queue->m_validationCallback = output->m_validationCallback;
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
@@ -438,7 +439,7 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
-    void Instance::impl_destroyDevice(Device* device) const
+    void Instance::impl_destroyDevice(Device* device)
     {
         //Cleanup queue wrappers
         for (auto* graphics : device->m_graphicsQueues)
