@@ -6,8 +6,10 @@
 
 #pragma once
 #include <llri/llri.hpp>
+#define INITGUID
 #include <graphics/directx/d3d12.h>
 #include <dxgi1_6.h>
+#include <dxgidebug.h>
 
 namespace LLRI_NAMESPACE
 {
@@ -19,8 +21,15 @@ namespace LLRI_NAMESPACE
             _COM_Outptr_ void** ppFactory
         );
 
+        using PFN_DXGI_GET_DEBUG_INTERFACE1 = HRESULT(WINAPI*)(
+            UINT Flags,
+            REFIID riid,
+            _COM_Outptr_ void** ppFactory
+        );
+
         inline HMODULE dxgi = nullptr;
         inline PFN_CREATE_DXGI_FACTORY2 CreateDXGIFactory2 = nullptr;
+        inline PFN_DXGI_GET_DEBUG_INTERFACE1 DXGIGetDebugInterface1 = nullptr;
 
         inline HMODULE d3d12 = nullptr;
         inline PFN_D3D12_CREATE_DEVICE D3D12CreateDevice = nullptr;
@@ -35,6 +44,7 @@ namespace LLRI_NAMESPACE
             if (dxgi)
             {
                 CreateDXGIFactory2 = (PFN_CREATE_DXGI_FACTORY2)GetProcAddress(dxgi, "CreateDXGIFactory2");
+                DXGIGetDebugInterface1 = (PFN_DXGI_GET_DEBUG_INTERFACE1)GetProcAddress(dxgi, "DXGIGetDebugInterface1");
             }
 
             d3d12 = LoadLibrary("D3D12");

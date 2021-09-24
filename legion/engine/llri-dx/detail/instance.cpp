@@ -128,21 +128,40 @@ namespace LLRI_NAMESPACE
             //Store factory and return result
             output->m_ptr = factory;
             *instance = output;
+
             return result::Success;
         }
 
         void impl_destroyInstance(Instance* instance)
         {
             for (auto& [ptr, adapter] : instance->m_cachedAdapters)
+            {
+                if (adapter->m_ptr)
+                    static_cast<IDXGIAdapter*>(adapter->m_ptr)->Release();
                 delete adapter;
+            }
 
             if (instance->m_debugAPI)
                 static_cast<ID3D12Debug*>(instance->m_debugAPI)->Release();
 
             if (instance->m_debugGPU)
+            {
+                static_cast<ID3D12Debug1*>(instance->m_debugGPU)->SetEnableGPUBasedValidation(false);
                 static_cast<ID3D12Debug1*>(instance->m_debugGPU)->Release();
+            }
 
+            if (instance->m_ptr)
+                static_cast<IDXGIFactory*>(instance->m_ptr)->Release();
             delete instance;
+
+#ifndef NDEBUG
+            IDXGIDebug* debug;
+            if (SUCCEEDED(directx::DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
+            {
+                debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+                debug->Release();
+            }
+#endif
         }
 
         void impl_pollAPIMessages(messenger_type* messenger)
@@ -187,6 +206,7 @@ namespace LLRI_NAMESPACE
             const uint64_t luid = desc.AdapterLuid.LowPart + desc.AdapterLuid.HighPart;
             if (desc.Flags == DXGI_ADAPTER_FLAG_SOFTWARE)
             {
+                dxgiAdapter->Release();
                 i++;
                 continue;
             }

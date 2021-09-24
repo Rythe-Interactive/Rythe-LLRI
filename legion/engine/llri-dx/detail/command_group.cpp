@@ -134,16 +134,7 @@ namespace LLRI_NAMESPACE
     result CommandGroup::impl_free(uint8_t numCommandLists, CommandList** cmdLists)
     {
         for (size_t i = 0; i < numCommandLists; i++)
-        {
-            //Free internal pointer
-            static_cast<IUnknown*>(cmdLists[i]->m_ptr)->Release();
-
-            //Remove from commandlist list
-            m_cmdLists.erase(cmdLists[i]);
-
-            //Delete wrapper
-            delete cmdLists[i];
-        }
+            impl_free(cmdLists[i]);
 
         return result::Success;
     }
