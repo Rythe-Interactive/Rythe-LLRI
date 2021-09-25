@@ -115,7 +115,7 @@ namespace LLRI_NAMESPACE
 
             //DXGI_CREATE_FACTORY_DEBUG may not be a supported flag if the graphics tools aren't installed
             //so if this the previous call fails, use default factory flags
-            if (HRESULT_CODE(factoryCreateResult) == S_FALSE)
+            if (FAILED(factoryCreateResult))
                 factoryCreateResult = directx::CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
 
             //Check for failure
@@ -128,7 +128,6 @@ namespace LLRI_NAMESPACE
             //Store factory and return result
             output->m_ptr = factory;
             *instance = output;
-
             return result::Success;
         }
 
@@ -158,7 +157,7 @@ namespace LLRI_NAMESPACE
             IDXGIDebug* debug;
             if (SUCCEEDED(directx::DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
             {
-                debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+                debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_IGNORE_INTERNAL);
                 debug->Release();
             }
 #endif
@@ -373,7 +372,17 @@ namespace LLRI_NAMESPACE
         }
 
         if (device->m_ptr)
+        {
+#ifndef NDEBUG
+            ID3D12DebugDevice* debugDevice;
+            if (SUCCEEDED(static_cast<ID3D12Device*>(device->m_ptr)->QueryInterface(&debugDevice)))
+            {
+                debugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL);
+                debugDevice->Release();
+            }
+#endif
             static_cast<ID3D12Device*>(device->m_ptr)->Release();
+        }
 
         delete device;
     }
