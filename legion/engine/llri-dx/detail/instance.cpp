@@ -157,7 +157,7 @@ namespace LLRI_NAMESPACE
             IDXGIDebug* debug;
             if (SUCCEEDED(directx::DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
             {
-                debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_IGNORE_INTERNAL);
+                debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
                 debug->Release();
             }
 #endif
@@ -383,7 +383,7 @@ namespace LLRI_NAMESPACE
             ID3D12DebugDevice* debugDevice;
             if (SUCCEEDED(static_cast<ID3D12Device*>(device->m_ptr)->QueryInterface(&debugDevice)))
             {
-                debugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL);
+                debugDevice->ReportLiveDeviceObjects(D3D12_RLDO_SUMMARY | D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
                 debugDevice->Release();
             }
 #endif
