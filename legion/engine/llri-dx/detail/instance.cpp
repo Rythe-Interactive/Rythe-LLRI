@@ -258,9 +258,7 @@ namespace LLRI_NAMESPACE
         if (m_shouldConstructValidationCallbackMessenger)
         {
             ID3D12InfoQueue* iq = nullptr;
-            r = dx12Device->QueryInterface(IID_PPV_ARGS(&iq));
-
-            if (SUCCEEDED(r))
+            if (SUCCEEDED(dx12Device->QueryInterface(IID_PPV_ARGS(&iq))))
                 output->m_validationCallbackMessenger = iq;
         }
 
@@ -283,6 +281,10 @@ namespace LLRI_NAMESPACE
                 r = dx12Device->CreateCommandQueue(&dx12QueueDesc, IID_PPV_ARGS(&dx12Queue));
                 if (FAILED(r))
                 {
+                    // the internal queue resources for this queue havent been added to the device yet so they must be destroyed manually
+                    for (void* q : queues) { if (q) static_cast<ID3D12CommandQueue*>(q)->Release(); };
+                    for (Fence* f : fences) { if (f) output->destroyFence(f); }
+
                     destroyDevice(output);
                     return directx::mapHRESULT(r);
                 }
@@ -292,8 +294,9 @@ namespace LLRI_NAMESPACE
                 const result re = output->createFence(fence_flag_bits::None, &fences[node]);
                 if (re != result::Success)
                 {
-                    // note: we have to manually delete the dx12queue here because it hasn't yet been added to the device 
-                    dx12Queue->Release();
+                    // the internal queue resources for this queue havent been added to the device yet so they must be destroyed manually
+                    for (void* q : queues) { if (q) static_cast<ID3D12CommandQueue*>(q)->Release(); };
+                    for (Fence* f : fences) { if (f) output->destroyFence(f); }
 
                     destroyDevice(output);
                     return re;
@@ -370,6 +373,9 @@ namespace LLRI_NAMESPACE
             }
             delete transfer;
         }
+
+        if (device->m_validationCallbackMessenger)
+            static_cast<ID3D12InfoQueue*>(device->m_validationCallbackMessenger)->Release();
 
         if (device->m_ptr)
         {
