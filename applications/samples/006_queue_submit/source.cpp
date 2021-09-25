@@ -9,9 +9,9 @@
 #include <array>
 
 // See 001_validation.
-void callback(llri::callback_severity severity, llri::callback_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
-    if (severity <= llri::callback_severity::Info)
+    if (severity <= llri::message_severity::Info)
         return;
 
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
@@ -25,7 +25,7 @@ llri::CommandList* allocateCommandList(llri::CommandGroup* group);
 
 int main()
 {
-    llri::setUserCallback(&callback);
+    llri::setMessageCallback(&callback);
 
     auto* instance = createInstance();
     auto* adapter = selectAdapter(instance);

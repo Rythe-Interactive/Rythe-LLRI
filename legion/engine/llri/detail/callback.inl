@@ -1,5 +1,5 @@
 /**
- * @file callback.hpp
+ * @file callback.inl
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
  */
@@ -9,35 +9,35 @@
 
 namespace LLRI_NAMESPACE
 {
-    inline std::string to_string(callback_severity severity)
+    inline std::string to_string(message_severity severity)
     {
         switch (severity)
         {
-        case callback_severity::Verbose:
+        case message_severity::Verbose:
             return "Verbose";
-        case callback_severity::Info:
+        case message_severity::Info:
             return "Info";
-        case callback_severity::Warning:
+        case message_severity::Warning:
             return "Warning";
-        case callback_severity::Error:
+        case message_severity::Error:
             return "Error";
-        case callback_severity::Corruption:
+        case message_severity::Corruption:
             return "Corruption";
         }
 
-        return "Invalid validation_callback_severity value";
+        return "Invalid message_severity value";
     }
 
-    inline std::string to_string(callback_source source)
+    inline std::string to_string(message_source source)
     {
         switch (source)
         {
-        case callback_source::API:
+        case message_source::API:
             return "API";
-        case callback_source::Implementation:
+        case message_source::Implementation:
             return "Implementation";
         }
 
-        return "Invalid validation_callback_source value";
+        return "Invalid message_source value";
     }
 }

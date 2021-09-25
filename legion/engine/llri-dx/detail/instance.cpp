@@ -14,23 +14,23 @@ namespace LLRI_NAMESPACE
         result createDriverValidationEXT(const driver_validation_ext& ext, void** output);
         result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
 
-        callback_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
+        message_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
         {
             switch (sev)
             {
             case D3D12_MESSAGE_SEVERITY_CORRUPTION:
-                return callback_severity::Corruption;
+                return message_severity::Corruption;
             case D3D12_MESSAGE_SEVERITY_ERROR:
-                return callback_severity::Error;
+                return message_severity::Error;
             case D3D12_MESSAGE_SEVERITY_WARNING:
-                return callback_severity::Warning;
+                return message_severity::Warning;
             case D3D12_MESSAGE_SEVERITY_INFO:
-                return callback_severity::Info;
+                return message_severity::Info;
             case D3D12_MESSAGE_SEVERITY_MESSAGE:
-                return callback_severity::Verbose;
+                return message_severity::Verbose;
             }
 
-            return callback_severity::Info;
+            return message_severity::Info;
         }
 
         INT mapQueuePriority(queue_priority priority)
@@ -104,7 +104,6 @@ namespace LLRI_NAMESPACE
                 }
             }
 
-            //Store user defined validation callback
             //DirectX creates validation callbacks upon device creation so we just need to store information about this right now.
             output->m_validationCallbackMessenger = nullptr;
             output->m_shouldConstructValidationCallbackMessenger = enableImplementationMessagePolling;
@@ -178,7 +177,7 @@ namespace LLRI_NAMESPACE
                     auto* pMessage = static_cast<D3D12_MESSAGE*>(malloc(messageLength));
                     iq->GetMessage(i, pMessage, &messageLength);
 
-                    detail::callUserCallback(internal::mapSeverity(pMessage->Severity), callback_source::Implementation, pMessage->pDescription);
+                    detail::callUserCallback(internal::mapSeverity(pMessage->Severity), message_source::Implementation, pMessage->pDescription);
 
                     free(pMessage);
                 }

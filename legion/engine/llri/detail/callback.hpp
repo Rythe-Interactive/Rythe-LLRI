@@ -12,9 +12,9 @@ namespace LLRI_NAMESPACE
 {
     /**
      * @brief Describes the severity of a callback message.
-     * @note callback_severity is meant to be used for message filtering, and has no binding impact on the implementation's behaviour.
+     * @note message_severity is meant to be used for message filtering, and has no binding impact on the implementation's behaviour.
     */
-    enum struct callback_severity : uint8_t
+    enum struct message_severity : uint8_t
     {
         /**
          * @brief Extra, often excessive information about API calls, diagnostics, support, etc.
@@ -43,15 +43,15 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts a callback_severity to a string.
-     * @return The enum value as a string, or "Invalid callback_severity value" if the value was not recognized as an enum member.
+     * @brief Converts a message_severity to a string.
+     * @return The enum value as a string, or "Invalid message_severity value" if the value was not recognized as an enum member.
     */
-    inline std::string to_string(callback_severity severity);
+    inline std::string to_string(message_severity severity);
 
     /**
      * @brief Describes the source of the callback message.
     */
-    enum struct callback_source : uint8_t
+    enum struct message_source : uint8_t
     {
         /**
          * @brief The message came from the LLRI API. Either through validation or through other means.
@@ -71,18 +71,18 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts a callback_source to a string.
-     * @return The enum value as a string, or "Invalid callback_source value" if the value was not recognized as an enum member.
+     * @brief Converts a message_severity to a string.
+     * @return The enum value as a string, or "Invalid message_severity value" if the value was not recognized as an enum member.
     */
-    inline std::string to_string(callback_source source);
+    inline std::string to_string(message_source source);
 
     /**
      * @brief The callback function.
      * The callback passes numerous parameters which help classify the message's severity and source. It also passes the userData pointer that was initially passed in callback_desc.
     */
-    using callback = void(
-        callback_severity severity,
-        callback_source source,
+    using message_callback = void(
+        message_severity severity,
+        message_source source,
         const char* message,
         void* userData
         );
@@ -90,32 +90,32 @@ namespace LLRI_NAMESPACE
     namespace detail
     {
         /**
-         * @brief Global user callback, not part of the public API - should not be accessed directly but instead be set by llri::setUserCallback().
+         * @brief Global message callback, not part of the public API - should not be accessed directly but instead be set through llri::setMessageCallback().
         */
-        inline callback* m_userCallback;
+        inline message_callback* m_messageCallback;
         /**
-         * @brief Global user data, not part of the public API - should not be accessed directly but instead be set by llri::setUserCallback().
+         * @brief Global user data, not part of the public API - should not be accessed directly but instead be set through llri::setMessageCallback().
         */
         inline void* m_userData;
 
         // convenience callback functions
-        inline void callUserCallback(callback_severity severity, callback_source source, const std::string& message) { if (m_userCallback) m_userCallback(severity, source, message.c_str(), m_userData); }
-        inline void apiError(const std::string& func, result r, const std::string& message) { callUserCallback(callback_severity::Error, callback_source::API, func + " returned " + to_string(r) + " because " + message); }
+        inline void callUserCallback(message_severity severity, message_source source, const std::string& message) { if (m_messageCallback) m_messageCallback(severity, source, message.c_str(), m_userData); }
+        inline void apiError(const std::string& func, result r, const std::string& message) { callUserCallback(message_severity::Error, message_source::API, func + " returned " + to_string(r) + " because " + message); }
     }
 
     /**
-     * @brief The user callback allows the user to subscribe to callback messages so that they can write the message into their own logging system. These messages may be validation errors, implementation errors, informational messages, warnings, etc.
+     * @brief The message callback allows the user to subscribe to callback messages so that they can write the message into their own logging system. These messages may be validation errors, implementation errors, informational messages, warnings, or anything else that the API or its implementation wishes to forward.
      *
      * The callback contains contextual information about the message, like for example its severity.
      *
-     * @note Implementation messages only occur if driver_validation_ext and/or gpu_validation_ext are enabled. If no callback is set, some implementations might still output messages (Vulkan tends to print to stdout, whereas DirectX tends to print to the "Output" window in Visual Studio).
+     * @note Implementation messages only occur if driver_validation_ext and/or gpu_validation_ext are enabled. If no message callback is set, some implementations might still output messages (Vulkan tends to print to stdout, whereas DirectX tends to print to the "Output" window in Visual Studio).
      *
-     * @param userCallback The callback, the function passed must conform to the validation_callback definition. You **may** set this value to nullptr, in which case no validation messages will be sent.
+     * @param callback The callback, the function passed must conform to the message_callback definition. You **may** set this value to nullptr, in which case no messages are sent.
      * @param userData Optional user data pointer. Not used by LLRI but it's passed around and sent along the callback.
     */
-    inline void setUserCallback(callback* userCallback, void* userData = nullptr)
+    inline void setMessageCallback(message_callback* callback, void* userData = nullptr)
     {
-        detail::m_userCallback = userCallback;
+        detail::m_messageCallback = callback;
         detail::m_userData = userData;
     }
 }

@@ -15,7 +15,7 @@
 #include <llri/llri.hpp>
 #include <iostream>
 
-void callback(llri::callback_severity severity, llri::callback_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
 }
@@ -27,7 +27,7 @@ int main()
     // Without the callback, functions still return result codes which provide basic information about the result of the operation.
     // However, the callback function can provide you with a lot more detailed info about why a function returned a particular result code.
 
-    llri::setUserCallback(
+    llri::setMessageCallback(
         &callback, // pass a pointer to our callback function.
         nullptr // optional user pointer.
     );

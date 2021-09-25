@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <iostream>
 
-void callback(llri::callback_severity severity, llri::callback_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
 }
@@ -16,7 +16,7 @@ llri::Adapter* selectAdapter(llri::Instance* instance);
 
 int main()
 {
-    llri::setUserCallback(&callback);
+    llri::setMessageCallback(&callback);
 
     llri::result r;
     const llri::instance_desc instanceDesc = { 0, nullptr, "adapter_selection" };

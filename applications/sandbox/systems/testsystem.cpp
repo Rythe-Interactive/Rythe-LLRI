@@ -24,25 +24,25 @@ using namespace legion;
     } \
 } \
 
-void callback(llri::callback_severity severity, llri::callback_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
     log::severity sev = log::severity_info;
     switch (severity)
     {
-        case llri::callback_severity::Verbose:
+        case llri::message_severity::Verbose:
             sev = log::severity_trace;
             break;
-        case llri::callback_severity::Info:
+        case llri::message_severity::Info:
             //Even though this semantically maps to info, we'd recommend running this on the trace severity to avoid the excessive info logs that some APIs output
             sev = log::severity_trace;
             break;
-        case llri::callback_severity::Warning:
+        case llri::message_severity::Warning:
             sev = log::severity_warn;
             break;
-        case llri::callback_severity::Error:
+        case llri::message_severity::Error:
             sev = log::severity_error;
             break;
-        case llri::callback_severity::Corruption:
+        case llri::message_severity::Corruption:
             sev = log::severity_error;
     }
 
@@ -55,7 +55,7 @@ void TestSystem::setup()
 
     log::info("LLRI linked Implementation: {}", llri::to_string(llri::queryImplementation()));
 
-    llri::setUserCallback(&callback);
+    llri::setMessageCallback(&callback);
 
     createInstance();
     selectAdapter();

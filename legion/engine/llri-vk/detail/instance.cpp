@@ -30,28 +30,28 @@ namespace LLRI_NAMESPACE
             return adapter_type::Other;
         }
 
-        callback_severity mapSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT sev)
+        message_severity mapSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT sev)
         {
             switch (sev)
             {
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-                return callback_severity::Error;
+                return message_severity::Error;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-                return callback_severity::Warning;
+                return message_severity::Warning;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-                return callback_severity::Info;
+                return message_severity::Info;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-                return callback_severity::Verbose;
+                return message_severity::Verbose;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
                 break;
             }
 
-            return callback_severity::Info;
+            return message_severity::Info;
         }
 
         VkBool32 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT severity, VkDebugUtilsMessageTypeFlagsEXT type, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
         {
-            detail::callUserCallback(mapSeverity(severity), callback_source::Implementation, callbackData->pMessage);
+            detail::callUserCallback(mapSeverity(severity), message_source::Implementation, callbackData->pMessage);
             return VK_FALSE;
         }
     }

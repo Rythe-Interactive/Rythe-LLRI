@@ -7,17 +7,17 @@
 #include <llri/llri.hpp>
 #include <iostream>
 
-void callback(llri::callback_severity severity, llri::callback_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
 }
 
 int main()
 {
-    llri::setUserCallback(&callback);
+    llri::setMessageCallback(&callback);
 
     //This example expands on the 001_validation example by adding driver and gpu validation through Instance extensions. Both of these validation features are handled by the implementation, so they may or may not be available depending on system configuration.
-    //Whenever implementation validation is enabled, it will forward messages to llri::validation_callback_desc, so make sure to set up a callback to receive these messages.
+    //Whenever implementation validation is enabled, it will forward messages to the callback set in llri::setMessageCallback(), so make sure to set up a callback to receive these messages.
     std::vector<llri::instance_extension> extensions;
 
     //We can query for an extension's support using llri::queryInstanceExtensionSupport()
