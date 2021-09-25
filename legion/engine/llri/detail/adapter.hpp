@@ -156,7 +156,6 @@ namespace LLRI_NAMESPACE
 
         void* m_instanceHandle = nullptr;
 
-        validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
         result impl_queryInfo(adapter_info* info) const;

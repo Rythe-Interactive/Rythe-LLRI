@@ -172,9 +172,10 @@ TEST_CASE("Queue")
                             CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorOutOfDeviceMemory || r == llri::result::ErrorOutOfHostMemory || r == llri::result::ErrorDeviceLost);
                         }
 
-                        SUBCASE("[Correct usasge] non-empty queue")
+                        SUBCASE("[Correct usage] non-empty queue")
                         {
                             llri::submit_desc submitDesc {};
+                            submitDesc.nodeMask = nodeMask;
                             submitDesc.numCommandLists = 1;
                             submitDesc.commandLists = &readyCmdList;
                             REQUIRE_EQ(queue->submit(submitDesc), llri::result::Success);

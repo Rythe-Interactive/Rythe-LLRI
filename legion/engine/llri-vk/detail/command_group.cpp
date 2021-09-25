@@ -46,7 +46,6 @@ namespace LLRI_NAMESPACE
         output->m_usage = desc.usage;
         output->m_state = command_list_state::Empty;
 
-        output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         m_cmdLists.emplace(output);
@@ -80,7 +79,6 @@ namespace LLRI_NAMESPACE
             cmdList->m_usage = desc.usage;
             cmdList->m_state = command_list_state::Empty;
 
-            cmdList->m_validationCallback = m_validationCallback;
             cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
             m_cmdLists.emplace(cmdList);

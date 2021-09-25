@@ -20,12 +20,18 @@ namespace LLRI_NAMESPACE
                 case instance_extension_type::DriverValidation:
                 {
                     ID3D12Debug* temp = nullptr;
-                    return SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    const bool succeeded = SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    if (succeeded)
+                        temp->Release();
+                    return succeeded;
                 }
                 case instance_extension_type::GPUValidation:
                 {
                     ID3D12Debug1* temp = nullptr;
-                    return SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    const bool succeeded = SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    if (succeeded)
+                        temp->Release();
+                    return succeeded;
                 }
             }
 

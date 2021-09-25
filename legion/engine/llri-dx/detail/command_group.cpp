@@ -56,7 +56,6 @@ namespace LLRI_NAMESPACE
         output->m_usage = desc.usage;
         output->m_state = command_list_state::Empty;
 
-        output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         m_cmdLists.emplace(output);
@@ -110,7 +109,6 @@ namespace LLRI_NAMESPACE
             cmdList->m_usage = desc.usage;
             cmdList->m_state = command_list_state::Empty;
 
-            cmdList->m_validationCallback = m_validationCallback;
             cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
             m_cmdLists.emplace(cmdList);
@@ -136,16 +134,7 @@ namespace LLRI_NAMESPACE
     result CommandGroup::impl_free(uint8_t numCommandLists, CommandList** cmdLists)
     {
         for (size_t i = 0; i < numCommandLists; i++)
-        {
-            //Free internal pointer
-            static_cast<IUnknown*>(cmdLists[i]->m_ptr)->Release();
-
-            //Remove from commandlist list
-            m_cmdLists.erase(cmdLists[i]);
-
-            //Delete wrapper
-            delete cmdLists[i];
-        }
+            impl_free(cmdLists[i]);
 
         return result::Success;
     }

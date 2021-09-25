@@ -168,7 +168,6 @@ namespace LLRI_NAMESPACE
         command_list_usage m_usage;
         command_list_state m_state = command_list_state::Empty;
 
-        validation_callback_desc m_validationCallback;
         void* m_validationCallbackMessenger = nullptr;
 
         result impl_begin(const command_list_begin_desc& desc);

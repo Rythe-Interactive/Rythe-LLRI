@@ -25,7 +25,7 @@
  /**
   * @def LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
   * @brief Defining LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING disables all implementation message polling.
-  * Implementation message polling can be costly and disabling it could improve performance, but doing so causes implementation messages to not be forwarded to the validation callback.
+  * Implementation message polling can be costly and disabling it could improve performance, but doing so causes implementation messages to not be forwarded to the message callback.
   *
   * @note Disabling implementation message polling is not guaranteed to prevent implementations from sending messages through other means. Drivers often have their own way of forwarding messages and it's very possible that messages end up in stdout or visual studio's output window.
   */
@@ -76,7 +76,7 @@ namespace LLRI_NAMESPACE
      * 
      * @note Codes prefixed with "Error" imply that the operation failed fatally. This **may** mean that further action to recover the application's state is required by the user.
      *
-     * @note Result codes may not provide enough information, so consider using the validation callback to get additional information.
+     * @note Result codes may not provide enough information, so consider using llri::setMessageCallback() to get additional information.
     */
     enum struct result : uint8_t
     {
@@ -223,6 +223,7 @@ namespace LLRI_NAMESPACE
 // ReSharper disable CppUnusedIncludeDirective
 
 #include <llri/detail/flags.hpp>
+#include <llri/detail/callback.hpp>
 
 #include <llri/detail/instance.hpp>
 #include <llri/detail/instance_extensions.hpp>

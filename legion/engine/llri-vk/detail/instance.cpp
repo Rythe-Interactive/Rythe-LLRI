@@ -30,40 +30,30 @@ namespace LLRI_NAMESPACE
             return adapter_type::Other;
         }
 
-        validation_callback_severity mapSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT sev)
+        message_severity mapSeverity(VkDebugUtilsMessageSeverityFlagBitsEXT sev)
         {
             switch (sev)
             {
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-                return validation_callback_severity::Error;
+                return message_severity::Error;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-                return validation_callback_severity::Warning;
+                return message_severity::Warning;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-                return validation_callback_severity::Info;
+                return message_severity::Info;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-                return validation_callback_severity::Verbose;
+                return message_severity::Verbose;
             case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
                 break;
             }
 
-            return validation_callback_severity::Info;
+            return message_severity::Info;
         }
 
         VkBool32 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT severity, VkDebugUtilsMessageTypeFlagsEXT type, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
         {
-            const auto desc = (validation_callback_desc*)userData;
-
-            desc->callback(
-                mapSeverity(severity),
-                validation_callback_source::Implementation,
-                callbackData->pMessage,
-                desc->userData
-            );
-
+            detail::callUserCallback(mapSeverity(severity), message_source::Implementation, callbackData->pMessage);
             return VK_FALSE;
         }
-
-        void dummyValidationCallback(validation_callback_severity, validation_callback_source, const char*, void*) { }
     }
 
     namespace detail
@@ -112,9 +102,6 @@ namespace LLRI_NAMESPACE
                     }
                     default:
                     {
-                        if (desc.callbackDesc.callback)
-                            desc.callbackDesc(validation_callback_severity::Error, validation_callback_source::Validation, (std::string("createInstance() returned ErrorExtensionNotSupported because the extension type ") + std::to_string((int)extension.type) + " is not recognized.").c_str());
-
                         llri::destroyInstance(result);
                         return result::ErrorExtensionNotSupported;
                     }
@@ -124,7 +111,7 @@ namespace LLRI_NAMESPACE
             //Add the debug utils extension for the API callback
             result->m_shouldConstructValidationCallbackMessenger = false;
             result->m_validationCallbackMessenger = nullptr;
-            if (enableImplementationMessagePolling && desc.callbackDesc.callback)
+            if (enableImplementationMessagePolling)
             {
                 //Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
                 //so instead the check is implicit, implementation callbacks aren't guaranteed
@@ -155,8 +142,6 @@ namespace LLRI_NAMESPACE
             //Create debug utils callback
             if (result->m_shouldConstructValidationCallbackMessenger)
             {
-                result->m_validationCallback = desc.callbackDesc;
-
                 //Attempt to create the debug utils messenger
                 if (vkCreateDebugUtilsMessengerEXT) //The extension function may not have been loaded successfully
                 {
@@ -169,7 +154,7 @@ namespace LLRI_NAMESPACE
                         VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                         VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
-                    const VkDebugUtilsMessengerCreateInfoEXT debugUtilsCi{ VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT, nullptr, {}, severity, types, &internal::debugCallback, &result->m_validationCallback };
+                    const VkDebugUtilsMessengerCreateInfoEXT debugUtilsCi{ VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT, nullptr, {}, severity, types, &internal::debugCallback, nullptr };
 
                     VkDebugUtilsMessengerEXT messenger;
                     vkCreateDebugUtilsMessengerEXT(vulkanInstance, &debugUtilsCi, nullptr, &messenger);
@@ -179,7 +164,6 @@ namespace LLRI_NAMESPACE
             }
             else
             {
-                result->m_validationCallback = { &internal::dummyValidationCallback, nullptr };
                 result->m_validationCallbackMessenger = nullptr;
             }
 
@@ -208,11 +192,10 @@ namespace LLRI_NAMESPACE
             delete instance;
         }
 
-        void impl_pollAPIMessages(const validation_callback_desc& validation, messenger_type* messenger)
+        void impl_pollAPIMessages(messenger_type* messenger)
         {
             //Empty because vulkan uses a callback system
             //suppress unused parameter warnings
-            (void)validation;
             (void)messenger;
         }
     }
@@ -260,7 +243,6 @@ namespace LLRI_NAMESPACE
                     Adapter* adapter = new Adapter();
                     adapter->m_ptr = group.physicalDevices[0];
                     adapter->m_instanceHandle = m_ptr;
-                    adapter->m_validationCallback = m_validationCallback;
                     adapter->m_nodeCount = static_cast<uint8_t>(group.physicalDeviceCount);
 
                     m_cachedAdapters[group.physicalDevices[0]] = adapter;
@@ -294,7 +276,6 @@ namespace LLRI_NAMESPACE
                     Adapter* adapter = new Adapter();
                     adapter->m_ptr = physicalDevice;
                     adapter->m_instanceHandle = m_ptr;
-                    adapter->m_validationCallback = m_validationCallback;
 
                     m_cachedAdapters[physicalDevice] = adapter;
                     adapters->push_back(adapter);
@@ -309,7 +290,6 @@ namespace LLRI_NAMESPACE
     {
         auto* output = new Device();
         output->m_adapter = desc.adapter;
-        output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         //Queue creation
@@ -416,7 +396,6 @@ namespace LLRI_NAMESPACE
             auto* queue = new Queue();
             queue->m_device = output;
             queue->m_ptrs = std::vector<void*>(desc.adapter->m_nodeCount, vkQueue);
-            queue->m_validationCallback = output->m_validationCallback;
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
             switch(queueDesc.type)

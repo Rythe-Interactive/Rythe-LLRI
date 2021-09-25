@@ -14,7 +14,6 @@ namespace LLRI_NAMESPACE
         auto* output = new CommandGroup();
         output->m_device = this;
         output->m_deviceFunctionTable = m_functionTable;
-        output->m_validationCallback = m_validationCallback;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
         output->m_maxCount = desc.count;
         output->m_type = desc.type;
