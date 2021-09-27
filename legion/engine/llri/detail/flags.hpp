@@ -20,6 +20,7 @@ namespace LLRI_NAMESPACE
 
         constexpr flags() noexcept = default;
         constexpr flags(E val) noexcept : value(val) { }
+        constexpr flags(underlying_t val) noexcept : value(static_cast<E>(val)) { }
         [[nodiscard]] constexpr operator E() noexcept { return value; }
         [[nodiscard]] constexpr operator underlying_t() noexcept { return static_cast<underlying_t>(value); }
 
@@ -29,10 +30,13 @@ namespace LLRI_NAMESPACE
         constexpr flags& operator |=(E rhs) noexcept { value |= rhs; return *this; }
 
         [[nodiscard]] constexpr flags operator &(E rhs) const noexcept { return value & rhs; }
-        constexpr flags& operator &=(E rhs) noexcept { value &= rhs; return *this; }
+        constexpr flags& operator &=(E rhs) noexcept { value = value & rhs; return *this; }
 
         constexpr bool operator ==(flags rhs) const noexcept { return value == rhs.value; }
         constexpr bool operator ==(E rhs) const noexcept { return value == rhs; }
+
+        [[nodiscard]] constexpr bool contains(E flag) const noexcept { return (value & flag) == flag; }
+        constexpr void remove(E flag) noexcept { value = value & ~flag; }
     };
 
     template<typename E>
@@ -45,32 +49,20 @@ namespace LLRI_NAMESPACE
      * @brief Add bitwise operators to flag_bits enum classes.
      */
 #define LLRI_DEFINE_FLAG_BIT_OPERATORS(E) \
-    constexpr E operator |(E lhs, E rhs) noexcept \
+    constexpr flags<E> operator |(E lhs, E rhs) noexcept \
     { \
         using T = std::underlying_type_t<E>; \
-        return static_cast<E>(static_cast<T>(lhs) | static_cast<T>(rhs)); \
+        return static_cast<flags<E>>(static_cast<T>(lhs) | static_cast<T>(rhs)); \
     }\
-    \
-    constexpr E operator |=(E lhs, E rhs) noexcept \
-    { \
-        lhs = lhs | rhs; \
-        return lhs; \
-    } \
-    constexpr E operator &(E lhs, E rhs) noexcept \
+    constexpr flags<E> operator &(E lhs, E rhs) noexcept \
     { \
         using T = std::underlying_type_t<E>; \
-        return static_cast<E>(static_cast<T>(lhs) & static_cast<T>(rhs)); \
+        return static_cast<flags<E>>(static_cast<T>(lhs) & static_cast<T>(rhs)); \
     }\
-    \
-    constexpr E operator &=(E lhs, E rhs) noexcept \
-    { \
-        lhs = lhs & rhs; \
-        return lhs; \
-    } \
-    constexpr E operator ~(E lhs) noexcept \
+    constexpr flags<E> operator ~(E lhs) noexcept \
     { \
         using T = std::underlying_type_t<E>; \
-        return static_cast<E>(~static_cast<T>(lhs)); \
+        return static_cast<flags<E>>(~static_cast<T>(lhs)); \
     }
 }
 
