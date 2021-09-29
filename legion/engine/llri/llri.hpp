@@ -234,6 +234,8 @@ namespace LLRI_NAMESPACE
 #include <llri/detail/queue.hpp>
 #include <llri/detail/device.hpp>
 
+#include <llri/detail/resource.hpp>
+
 #include <llri/detail/command_group.hpp>
 #include <llri/detail/command_list.hpp>
 

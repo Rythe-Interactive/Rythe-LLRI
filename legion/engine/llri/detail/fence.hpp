@@ -42,7 +42,7 @@ namespace LLRI_NAMESPACE
 
     /**
      * @brief Converts fence_flags to a string.
-     * @return The enum value as a string, or "Invalid fence_flags value" if the value was not recognized as a valid combination of fence_flag_bits
+     * @return The flags as a string, or "Invalid fence_flags value" if the value was not recognized as a valid combination of fence_flag_bits
     */
     std::string to_string(fence_flags flags);
 

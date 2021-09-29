@@ -82,8 +82,11 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/instance.inl>
 #include <llri/detail/adapter.inl>
+
 #include <llri/detail/queue.inl>
 #include <llri/detail/device.inl>
+
+#include <llri/detail/resource.inl>
 
 #include <llri/detail/command_group.inl>
 #include <llri/detail/command_list.inl>
