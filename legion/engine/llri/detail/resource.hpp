@@ -73,6 +73,10 @@ namespace LLRI_NAMESPACE
          * @note resource_type::Buffer only.
         */
         ConstantBuffer,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = ConstantBuffer
     };
     
     /**
@@ -108,6 +112,10 @@ namespace LLRI_NAMESPACE
          * @brief A three-dimensional texture. 3D textures are described by a width, height, and depth, their size is equivalent to width * height * depth * texel size. The size of the texels may vary per texture, depending on the texture's format.
         */
         Texture3D,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = Texture3D
     };
 
     /**
@@ -212,7 +220,11 @@ namespace LLRI_NAMESPACE
         D24X8UNorm,
         D24UNormS8UInt,
         D32Float,
-        D32FloatS8X24UInt
+        D32FloatS8X24UInt,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = D32FloatS8X24UInt
     };
 
     /**
@@ -232,7 +244,11 @@ namespace LLRI_NAMESPACE
         Count8 = 8,
         Count16 = 16,
         Count32 = 32,
-        Count64 = 64
+        Count64 = 64,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = Count64
     };
 
     /**
@@ -253,7 +269,11 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Texels are laid out linearly, in a row-major order.
         */
-        Linear
+        Linear,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = Linear
     };
 
     /**
@@ -261,6 +281,10 @@ namespace LLRI_NAMESPACE
     */
     enum struct resource_usage_flag_bits : uint32_t
     {
+        /**
+         * @brief Default resource usage.
+        */
+        None = 0,
         /**
          * @brief The resource is allowed to be copied from.
         */
@@ -335,7 +359,11 @@ namespace LLRI_NAMESPACE
          *
          * Device access for read resources is typically much slower than Local resources, consider copying to the read resource instead of using the resource directly.
         */
-        Read
+        Read,
+        /**
+         * @brief The highest value in this enum.
+        */
+        MaxEnum = Read
     };
 
     /**
@@ -349,6 +377,8 @@ namespace LLRI_NAMESPACE
     */
     struct resource_desc
     {
+        //TODO: Node mask (creation & visible)
+
         /**
          * @brief The type of resource.
         */

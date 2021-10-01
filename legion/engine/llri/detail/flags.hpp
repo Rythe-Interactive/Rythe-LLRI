@@ -35,7 +35,17 @@ namespace LLRI_NAMESPACE
         constexpr bool operator ==(flags rhs) const noexcept { return value == rhs.value; }
         constexpr bool operator ==(E rhs) const noexcept { return value == rhs; }
 
-        [[nodiscard]] constexpr bool contains(E flag) const noexcept { return (value & flag) == flag; }
+        constexpr bool operator !=(flags rhs) const noexcept { return value != rhs.value; }
+        constexpr bool operator !=(E rhs) const noexcept { return value != rhs;}
+
+        constexpr bool operator >(flags rhs) const noexcept { return value > rhs.value; }
+        constexpr bool operator >(E rhs) const noexcept { return value > rhs; }
+
+        constexpr bool operator <(flags rhs) const noexcept { return value < rhs.value; }
+        constexpr bool operator <(E rhs) const noexcept { return value < rhs; }
+
+        [[nodiscard]] constexpr bool contains(E bit) const noexcept { return (value & bit) == bit; }
+        [[nodiscard]] constexpr bool contains(flags f) const noexcept { return (value & f.value) == f.value; }
         constexpr void remove(E flag) noexcept { value = value & ~flag; }
     };
 
