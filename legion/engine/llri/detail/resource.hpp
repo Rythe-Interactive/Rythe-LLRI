@@ -14,7 +14,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief Describes the current state of a Resource. Resources are assigned a state upon creation using the resource_desc::initialState field. Afterwards they can transition to other states using resource barriers.
     */
-    enum struct resource_state
+    enum struct resource_state : uint8_t
     {
         /**
          * @brief All types of device access are allowed in this state, but it is not as optimal as more explicit states.
@@ -35,7 +35,7 @@ namespace LLRI_NAMESPACE
          * @brief The texture is used as a depth stencil attachment, allowing both read and write access from the fixed graphics pipeline.
          * @note resource_type::Texture1D/2D/3D only.
         */
-        DepthStencilAttachmentReadWrite,
+        DepthStencilAttachment,
         /**
          * @brief The texture is used as a depth stencil attachment, but only allows read operations from the fixed graphics pipeline.
         */
@@ -88,7 +88,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief The type of resource. This determines how the memory for the resource is allocated and how the resource can be used.
     */
-    enum struct resource_type
+    enum struct resource_type : uint8_t
     {
         /**
          * @brief The resource allocates memory and can be used in very simple transfer operations. The resource **must** only be used for CPU to GPU copies and GPU to GPU copies. It **must** be created with its initialState set to Upload.
@@ -139,7 +139,7 @@ namespace LLRI_NAMESPACE
      *  - Float: signed float.
      *  - sRGB: unsigned normalized data with sRGB nonlinear encoding.
     */
-    enum struct texture_format
+    enum struct texture_format : uint8_t
     {
         Undefined,
 
@@ -153,11 +153,6 @@ namespace LLRI_NAMESPACE
         RG8UInt,
         RG8Int,
 
-        RGB8UNorm,
-        RGB8Norm,
-        RGB8UInt,
-        RGB8Int,
-
         RGBA8UNorm,
         RGBA8Norm,
         RGBA8UInt,
@@ -165,15 +160,10 @@ namespace LLRI_NAMESPACE
         RGBA8sRGB,
 
         BGRA8UNorm,
-        BGRA8SNorm,
-        BGRA8UInt,
-        BGRA8SInt,
         BGRA8sRGB,
 
         RGB10A2UNorm,
-        RGB10A2Norm,
         RGB10A2UInt,
-        RGB10A2Int,
 
         R16UNorm,
         R16Norm,
@@ -186,12 +176,6 @@ namespace LLRI_NAMESPACE
         RG16UInt,
         RG16Int,
         RG16Float,
-
-        RGB16UNorm,
-        RGB16Norm,
-        RGB16UInt,
-        RGB16Int,
-        RGB16Float,
 
         RGBA16UNorm,
         RGBA16Norm,
@@ -215,9 +199,7 @@ namespace LLRI_NAMESPACE
         RGBA32Int,
         RGBA32Float,
 
-        S8UInt,
         D16UNorm,
-        D24X8UNorm,
         D24UNormS8UInt,
         D32Float,
         D32FloatS8X24UInt,
@@ -236,7 +218,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief Multi-sampling - the number of samples per pixel.
     */
-    enum struct texture_sample_count
+    enum struct texture_sample_count : uint8_t
     {
         Count1 = 1,
         Count2 = 2,
@@ -244,11 +226,10 @@ namespace LLRI_NAMESPACE
         Count8 = 8,
         Count16 = 16,
         Count32 = 32,
-        Count64 = 64,
         /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = Count64
+        MaxEnum = Count32
     };
 
     /**
@@ -260,7 +241,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief Specify how a texture's data is stored.
     */
-    enum struct texture_tiling
+    enum struct texture_tiling : uint8_t
     {
         /**
          * @brief Optimal tiling allows implementation-dependent arrangement, which results in the most efficient memory access.
@@ -279,7 +260,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief Flag bits that describe how the resource will be allowed to be used. Each bit describes an enabled (or explicitly disabled) usage.
     */
-    enum struct resource_usage_flag_bits : uint32_t
+    enum struct resource_usage_flag_bits : uint16_t
     {
         /**
          * @brief Default resource usage.
@@ -300,7 +281,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief The resource is allowed be written to from within a shader.
         */
-        Storage = 1 << 3,
+        ShaderWrite = 1 << 3,
         /**
          * @brief The resource is allowed to be used as a color attachment.
         */
@@ -340,7 +321,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief The type of memory that a resource is allocated with. Different memory types support different operations and may perform better or worse for some operations.
     */
-    enum struct resource_memory_type
+    enum struct resource_memory_type : uint8_t
     {
         /**
          * @brief Optimized for device access. Can not be written to or otherwise viewed by the host. It is recommended to use this for all resources that are used frequently (more than once) by the device.
@@ -407,11 +388,11 @@ namespace LLRI_NAMESPACE
         /**
          * @brief The number of texels on the z axis of the texture. This either determines the depth of a Texture3D, or the number of array layers for all other Texture types. Ignored if type == resource_type::Buffer.
         */
-        uint32_t depthOrArrayLayers;
+        uint16_t depthOrArrayLayers;
         /**
          * @brief The number of mipmap levels on the texture. Ignored if type == resource_type::Buffer.
         */
-        uint32_t mipLevels;
+        uint16_t mipLevels;
 
         /**
          * @brief The number of samples per pixel

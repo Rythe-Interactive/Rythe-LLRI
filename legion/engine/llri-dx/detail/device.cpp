@@ -142,4 +142,43 @@ namespace LLRI_NAMESPACE
 
         delete semaphore;
     }
+
+    result Device::impl_createResource(const resource_desc& desc, Resource** resource)
+    {
+        D3D12_RESOURCE_DESC dx12Desc;
+        dx12Desc.Dimension = directx::mapResourceType(desc.type);
+        dx12Desc.Alignment = 0;
+        dx12Desc.Width = static_cast<UINT64>(desc.width);
+        dx12Desc.Height = desc.height;
+        dx12Desc.DepthOrArraySize = static_cast<UINT16>(desc.depthOrArrayLayers);
+        dx12Desc.MipLevels = static_cast<UINT16>(desc.mipLevels);
+        dx12Desc.Format = directx::mapTextureFormat(desc.format);
+        dx12Desc.SampleDesc = { static_cast<UINT>(desc.sampleCount), 0 };
+        dx12Desc.Layout = directx::mapTextureTiling(desc.tiling);
+        dx12Desc.Flags = directx::mapResourceUsage(desc.usage);
+
+        const D3D12_RESOURCE_STATES initialState = directx::mapResourceState(desc.initialState);
+
+        D3D12_HEAP_PROPERTIES heapProperties; // TODO: Heap properties havent been set yet
+
+        ID3D12Resource* dx12Resource = nullptr;
+        const auto result = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));
+
+        if (FAILED(result))
+            return directx::mapHRESULT(result);
+
+        auto* output = new Resource();
+        output->m_resource = dx12Resource;
+        output->m_state = desc.initialState;
+        output->m_implementationState = initialState;
+
+        *resource = output;
+        return result::Success;
+    }
+
+    void Device::impl_destroyResource(Resource* resource)
+    {
+        static_cast<ID3D12Resource*>(resource->m_resource)->Release();
+        delete resource;
+    }
 }

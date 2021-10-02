@@ -40,10 +40,14 @@ private:
 
     llri::Fence* m_fence = nullptr;
     llri::Semaphore* m_semaphore = nullptr;
-    
+
+    llri::Resource* m_buffer = nullptr;
+    llri::Resource* m_texture = nullptr;
+
     void createInstance();
     void selectAdapter();
     void createDevice();
     void createCommandLists();
     void createSynchronization();
+    void createResources();
 };

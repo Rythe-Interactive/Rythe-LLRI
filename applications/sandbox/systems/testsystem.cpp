@@ -62,6 +62,7 @@ void TestSystem::setup()
     createDevice();
     createCommandLists();
     createSynchronization();
+    createResources();
 }
 
 void TestSystem::update(time::span deltaTime)
@@ -85,6 +86,9 @@ void TestSystem::update(time::span deltaTime)
 
 TestSystem::~TestSystem()
 {
+    m_device->destroyResource(m_buffer);
+    m_device->destroyResource(m_texture);
+
     m_device->destroySemaphore(m_semaphore);
     m_device->destroyFence(m_fence);
     m_device->destroyCommandGroup(m_commandGroup);
@@ -191,4 +195,11 @@ void TestSystem::createSynchronization()
 {
     THROW_IF_FAILED(m_device->createFence(llri::fence_flag_bits::Signaled, &m_fence));
     THROW_IF_FAILED(m_device->createSemaphore(&m_semaphore));
+}
+
+void TestSystem::createResources()
+{
+    llri::resource_desc bufferDesc = llri::resource_desc::buffer(llri::resource_usage_flag_bits::ShaderWrite, llri::resource_memory_type::Local, llri::resource_state::ShaderReadWrite, 64);
+
+    THROW_IF_FAILED(m_device->createResource(bufferDesc, &m_buffer));
 }

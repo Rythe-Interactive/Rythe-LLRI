@@ -19,8 +19,8 @@ namespace LLRI_NAMESPACE
                 return "Upload";
             case resource_state::ColorAttachment:
                 return "ColorAttachment";
-            case resource_state::DepthStencilAttachmentReadWrite:
-                return "DepthStencilAttachmentReadWrite";
+            case resource_state::DepthStencilAttachment:
+                return "DepthStencilAttachment";
             case resource_state::DepthStencilAttachmentReadOnly:
                 return "DepthStencilAttachmentReadOnly";
             case resource_state::ShaderReadOnly:
@@ -83,14 +83,6 @@ namespace LLRI_NAMESPACE
                 return "RG8UInt";
             case texture_format::RG8Int:
                 return "RG8Int";
-            case texture_format::RGB8UNorm:
-                return "RGB8UNorm";
-            case texture_format::RGB8Norm:
-                return "RGB8Norm";
-            case texture_format::RGB8UInt:
-                return "RGB8UInt";
-            case texture_format::RGB8Int:
-                return "RGB8Int";
             case texture_format::RGBA8UNorm:
                 return "RGBA8Unorm";
             case texture_format::RGBA8Norm:
@@ -103,22 +95,12 @@ namespace LLRI_NAMESPACE
                 return "RGBA8sRGB";
             case texture_format::BGRA8UNorm:
                 return "BGRA8Unorm";
-            case texture_format::BGRA8SNorm:
-                return "BGRA8SNorm";
-            case texture_format::BGRA8UInt:
-                return "BGRA8UInt";
-            case texture_format::BGRA8SInt:
-                return "BGRA8SInt";
             case texture_format::BGRA8sRGB:
                 return "BGRA8sRGB";
             case texture_format::RGB10A2UNorm:
                 return "RGB10A2UNorm";
-            case texture_format::RGB10A2Norm:
-                return "RGB10A2Norm";
             case texture_format::RGB10A2UInt:
                 return "RGB10A2UInt";
-            case texture_format::RGB10A2Int:
-                return "RGB10A2Int";
             case texture_format::R16UNorm:
                 return "R16UNorm";
             case texture_format::R16Norm:
@@ -139,16 +121,6 @@ namespace LLRI_NAMESPACE
                 return "RG16Int";
             case texture_format::RG16Float:
                 return "RG16Float";
-            case texture_format::RGB16UNorm:
-                return "RGB16UNorm";
-            case texture_format::RGB16Norm:
-                return "RGB16Norm";
-            case texture_format::RGB16UInt:
-                return "RGB16UInt";
-            case texture_format::RGB16Int:
-                return "RGB16Int";
-            case texture_format::RGB16Float:
-                return "RGB16Float";
             case texture_format::RGBA16UNorm:
                 return "RGBA16UNorm";
             case texture_format::RGBA16Norm:
@@ -183,12 +155,8 @@ namespace LLRI_NAMESPACE
                 return "RGBA32Int";
             case texture_format::RGBA32Float:
                 return "RGBA32Float";
-            case texture_format::S8UInt:
-                return "S8UInt";
             case texture_format::D16UNorm:
                 return "D16UNorm";
-            case texture_format::D24X8UNorm:
-                return "D24X8UNorm";
             case texture_format::D24UNormS8UInt:
                 return "D24UNormS8UInt";
             case texture_format::D32Float:
@@ -216,8 +184,6 @@ namespace LLRI_NAMESPACE
                 return "Count16";
             case texture_sample_count::Count32:
                 return "Count32";
-            case texture_sample_count::Count64:
-                return "Count64";
         }
         return "Invalid texture_sample_count value";
     }
@@ -232,8 +198,8 @@ namespace LLRI_NAMESPACE
                 return "TransferDst";
             case resource_usage_flag_bits::Sampled:
                 return "Sampled";
-            case resource_usage_flag_bits::Storage:
-                return "Storage";
+            case resource_usage_flag_bits::ShaderWrite:
+                return "ShaderWrite";
             case resource_usage_flag_bits::ColorAttachment:
                 return "ColorAttachment";
             case resource_usage_flag_bits::DepthStencilAttachment:
@@ -253,7 +219,7 @@ namespace LLRI_NAMESPACE
             resource_usage_flag_bits::TransferSrc,
             resource_usage_flag_bits::TransferDst,
             resource_usage_flag_bits::Sampled,
-            resource_usage_flag_bits::Storage,
+            resource_usage_flag_bits::ShaderWrite,
             resource_usage_flag_bits::ColorAttachment,
             resource_usage_flag_bits::DepthStencilAttachment,
             resource_usage_flag_bits::DenyShaderResource
@@ -269,7 +235,7 @@ namespace LLRI_NAMESPACE
         }
 
         // all flags should've been covered and removed
-        if (flags != 0)
+        if (flags != resource_usage_flag_bits::None)
             return "Invalid resource_usage_flags value";
 
         // remove excessive initial " | "

@@ -26,6 +26,9 @@ namespace LLRI_NAMESPACE
 
     class Semaphore;
 
+    class Resource;
+    struct resource_desc;
+
     /**
      * @brief Device description to be used in Instance::createDevice().
     */
@@ -180,6 +183,50 @@ namespace LLRI_NAMESPACE
         */
         void destroySemaphore(Semaphore* semaphore);
 
+        /**
+         * @brief Create a resource (a buffer or texture) and allocate the memory for it.
+         * @param desc The description of the resource.
+         * @param resource A pointer to the resulting resource variable.
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage if resource was nullptr.
+         * @return ErrorInvalidUsage if desc.type was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.usage was not a valid combination of resource_usage_flag_bits.
+         * @return ErrorInvalidUsage if desc.usage had the DenyShaderResource bit set but not the DepthStencilAttachment bit.
+         * @return ErrorInvalidUsage if desc.usage had the DenyShaderResource bit set but had incompatible bits set. Compatible flags with DenyShaderResource are: DepthStencilAttachment, TransferSrc, TransferDst.
+         * @return ErrorInvalidUsage if desc.type was set to MemoryOnly but desc.usage had incompatible bits set. Compatible usage bits with resource_type::MemoryOnly are: TransferSrc, TransferDst.
+         * @return ErrorInvalidUsage if desc.type was set to Buffer but desc.usage had incompatible bits set. Compatible usage bits with resource_type::Buffer are: TransferSrc, TransferDst, ShaderWrite.
+         * @return ErrorInvalidUsage if desc.memoryType was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.type was set to MemoryOnly but desc.memoryType wasn't resource_memory_type::Upload.
+         * @return ErrorInvalidUsage if desc.memoryType was set to resource_memory_type::Upload and desc.usage contained resource_usage_flag_bits::ShaderWrite.
+         * @return ErrorInvalidUsage if desc.initialState was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.type was set to MemoryOnly but desc.initialState wasn't one of the following states: resource_state::Upload.
+         * @return ErrorInvalidUsage if desc.type was set to Buffer but desc.initialState wasn't one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.
+         * @return ErrorInvalidUsage if desc.type was set to Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.
+         * @return ErrorInvalidUsage if desc.initialState was set to Upload but is incompatible with resource_usage_flag_bits::ShaderWrite.
+         * @return ErrorInvalidUsage if desc.initialState was set to ColorAttachment but desc.usage doesn't have the resource_usage_flag_bits::ColorAttachment bit set.
+         * @return ErrorInvalidUsage if desc.initialState was set to DepthStencilAttachment or DepthStencilAttachmentReadOnly, but desc.usage doesn't have the resource_usage_flag_bits::DepthStencilAttachment bit set.
+         * @return ErrorInvalidUsage if desc.initialState was set to ShaderReadWrite but desc.usage doesn't have the resource_usage_flag_bits::ShaderWrite bit set.
+         * @return ErrorInvalidUsage if desc.initialState was set to TransferSrc but desc.usage doesn't have the resource_usage_flag_bits::TransferSrc bit set.
+         * @return ErrorInvalidUsage if desc.initialState was set to TransferDst but desc.usage doesn't have the resource_usage_flag_bits::TransferDst bit set.
+         * @return ErrorInvalidUsage if desc.memoryType was set to Local but desc.initialState was set to Upload.
+         * @return ErrorInvalidUsage if desc.memoryType was set to Upload but desc.initialState was set to ShaderReadWrite.
+         * @return ErrorInvalidUsage if desc.type was Texture1D but desc.height was not 1.
+         * @return ErrorInvalidUsage if desc.type was Texture2D but desc.height was not at least 1.
+         * @return ErrorInvalidUsage if desc.type was Texture3D but desc.height was not at least 1.
+         * @return ErrorInvalidUsage if desc.type was Texture3D but desc.depthOrArrayLayers was not at least 1.
+         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.mipLevels was not at least 1.
+         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.sampleCount was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.usage had the ShaderWrite bit set but desc.sampleCount was not Count1.
+         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.format was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.tiling was not a valid enum value.
+        */
+        result createResource(const resource_desc& desc, Resource** resource);
+
+        /**
+         * @brief Destroy the given resource.
+         * @param resource A pointer to a valid Resource, or nullptr.
+        */
+        void destroyResource(Resource* resource);
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
@@ -204,5 +251,8 @@ namespace LLRI_NAMESPACE
 
         result impl_createSemaphore(Semaphore** semaphore);
         void impl_destroySemaphore(Semaphore* semaphore);
+
+        result impl_createResource(const resource_desc& desc, Resource** resource);
+        void impl_destroyResource(Resource* resource);
     };
 }
