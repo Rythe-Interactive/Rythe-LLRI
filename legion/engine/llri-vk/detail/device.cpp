@@ -144,4 +144,33 @@ namespace LLRI_NAMESPACE
 
         delete semaphore;
     }
+
+    result Device::impl_createResource(const resource_desc& desc, Resource** resource)
+    {
+        bool isTexture = desc.type != resource_type::Buffer && desc.type != resource_type::MemoryOnly;
+
+        VkMemoryAllocateFlagsInfoKHR flagsInfo;
+        flagsInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO;
+        flagsInfo.pNext = nullptr;
+        flagsInfo.deviceMask = desc.visibleNodeMask;
+        flagsInfo.flags = VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT;
+
+        VkMemoryAllocateInfo allocInfo;
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.pNext = m_adapter->queryNodeCount() > 1 ? &flagsInfo : nullptr;
+        allocInfo.allocationSize = 0; //TODO
+        allocInfo.memoryTypeIndex = 0; //TODO
+
+        VkDeviceMemory memory;
+        auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkAllocateMemory(static_cast<VkDevice>(m_ptr), &allocInfo, nullptr, &memory);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        //auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkcreateim
+    }
+
+    void Device::impl_destroyResource(Resource* resource)
+    {
+
+    }
 }
