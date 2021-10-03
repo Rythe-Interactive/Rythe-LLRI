@@ -19,7 +19,7 @@ using namespace legion;
     auto r = operation; \
     if (r != llri::result::Success) \
     { \
-        log::error("LLRI Operation failed because: {}, operation: {}", llri::to_string(r), #operation); \
+        log::error("LLRI Operation {} returned: {}, operation: {}", #operation, llri::to_string(r)); \
         throw std::runtime_error("LLRI Operation failed"); \
     } \
 } \
@@ -202,4 +202,21 @@ void TestSystem::createResources()
     llri::resource_desc bufferDesc = llri::resource_desc::buffer(llri::resource_usage_flag_bits::ShaderWrite, llri::resource_memory_type::Local, llri::resource_state::ShaderReadWrite, 64);
 
     THROW_IF_FAILED(m_device->createResource(bufferDesc, &m_buffer));
+
+    llri::resource_desc textureDesc;
+    textureDesc.createNodeMask = 0;
+    textureDesc.visibleNodeMask = 0;
+    textureDesc.type = llri::resource_type::Texture2D;
+    textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::Sampled;
+    textureDesc.memoryType = llri::resource_memory_type::Local;
+    textureDesc.initialState = llri::resource_state::TransferDst;
+    textureDesc.width = 1028;
+    textureDesc.height = 1028;
+    textureDesc.depthOrArrayLayers = 1;
+    textureDesc.mipLevels = 1;
+    textureDesc.sampleCount = llri::texture_sample_count::Count1;
+    textureDesc.format = llri::texture_format::RGBA8sRGB;
+    textureDesc.tiling = llri::texture_tiling::Optimal;
+
+    THROW_IF_FAILED(m_device->createResource(textureDesc, &m_texture));
 }

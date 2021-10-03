@@ -501,6 +501,7 @@ namespace LLRI_NAMESPACE
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.initialState was set to DepthStencilAttachment or DepthStencilAttachmentReadOnly, but desc.usage doesn't have the resource_usage_flag_bits::DepthStencilAttachment bit set.");
                     return result::ErrorInvalidUsage;
                 }
+                break;
             }
             case resource_state::ShaderReadWrite:
             {
@@ -522,7 +523,7 @@ namespace LLRI_NAMESPACE
             }
             case resource_state::TransferDst:
             {
-                if (!desc.usage.contains(resource_usage_flag_bits::TransferSrc))
+                if (!desc.usage.contains(resource_usage_flag_bits::TransferDst))
                 {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.initialState was set to TransferDst but desc.usage doesn't have the resource_usage_flag_bits::TransferDst bit set.");
                     return result::ErrorInvalidUsage;
