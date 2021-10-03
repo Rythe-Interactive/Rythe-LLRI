@@ -192,6 +192,8 @@ namespace LLRI_NAMESPACE
     {
         switch(bits)
         {
+            case resource_usage_flag_bits::None:
+                return "None";
             case resource_usage_flag_bits::TransferSrc:
                 return "TransferSrc";
             case resource_usage_flag_bits::TransferDst:
@@ -260,9 +262,10 @@ namespace LLRI_NAMESPACE
         return "Invalid resource_memory_type value";
     }
 
-    constexpr resource_desc resource_desc::buffer(resource_usage_flags usage, resource_memory_type memoryType, resource_state initialState, uint32_t sizeInBytes) noexcept
+    constexpr resource_desc resource_desc::buffer(resource_usage_flags usage, resource_memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask, uint32_t visibleNodeMask) noexcept
     {
         return {
+            createNodeMask, visibleNodeMask,
             resource_type::Buffer,
             usage, memoryType, initialState,
             sizeInBytes, // width = size

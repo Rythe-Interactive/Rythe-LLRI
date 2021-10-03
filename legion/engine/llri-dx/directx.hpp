@@ -302,5 +302,20 @@ namespace LLRI_NAMESPACE
 
             throw;
         }
+
+        constexpr D3D12_HEAP_TYPE mapResourceMemoryType(resource_memory_type memory)
+        {
+            switch(memory)
+            {
+                case resource_memory_type::Local:
+                    return D3D12_HEAP_TYPE_DEFAULT;
+                case resource_memory_type::Upload:
+                    return D3D12_HEAP_TYPE_UPLOAD;
+                case resource_memory_type::Read:
+                    return D3D12_HEAP_TYPE_READBACK;
+            }
+
+            throw;
+        }
     }
 }

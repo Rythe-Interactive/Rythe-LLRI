@@ -358,7 +358,17 @@ namespace LLRI_NAMESPACE
     */
     struct resource_desc
     {
-        //TODO: Node mask (creation & visible)
+        /**
+         * @brief The device node on which the resource should be created.
+         * Exactly one bit **must** be set, and that bit **must** be less than 1 << Adapter::queryNodeCount(). Passing 0 is the equivalent of passing 1.
+        */
+        uint32_t createNodeMask;
+        /**
+         * @brief A mask with the device nodes on which the resource will be visible.
+         * At least the same bit as createNodeMask **must** be set. Passing 0 is the equivalent of passing 1.
+         * Any bits set to 1 in visibleNodeMask **must** be less than 1 << Adapter::queryNodeCount().
+        */
+        uint32_t visibleNodeMask;
 
         /**
          * @brief The type of resource.
@@ -411,7 +421,7 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Convenience function for creating a buffer resource_desc.
         */
-        static constexpr resource_desc buffer(resource_usage_flags usage, resource_memory_type memoryType, resource_state initialState, uint32_t sizeInBytes) noexcept;
+        static constexpr resource_desc buffer(resource_usage_flags usage, resource_memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask = 0, uint32_t visibleNodeMask = 0) noexcept;
     };
 
     class Resource

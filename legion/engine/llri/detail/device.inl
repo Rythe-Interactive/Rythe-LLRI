@@ -288,6 +288,32 @@ namespace LLRI_NAMESPACE
         // our rule will be to only check against previously checked variables. e.g. if we check desc.type first, we only need to check that its valid,
         // but if we check desc.usage we must check if its valid with desc.type
 
+        //determines if the node mask is not a power of two -> if it isn't then multiple bits are set
+        if ((desc.createNodeMask & (desc.createNodeMask - 1)) != 0)
+        {
+            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.createNodeMask " + std::to_string(desc.createNodeMask) + " has multiple bits set.");
+            return result::ErrorInvalidNodeMask;
+        }
+
+        if (desc.createNodeMask >= (1 << m_adapter->queryNodeCount()))
+        {
+            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.createNodeMask " + std::to_string(desc.createNodeMask) + " has a bit set that is >= (1 << Adapter::queryNodeCount()).");
+            return result::ErrorInvalidNodeMask;
+        }
+
+        if ((desc.visibleNodeMask & desc.createNodeMask) != desc.createNodeMask)
+        {
+            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.visibleNodeMask doesn't have at least the same bit set as desc.createNodeMask.");
+            return result::ErrorInvalidNodeMask;
+        }
+
+        const uint32_t maxVisibleNodeMask = (1 << m_adapter->queryNodeCount()) - 1;
+        if (desc.visibleNodeMask > maxVisibleNodeMask)
+        {
+            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.visibleNodeMask has a bit set that is >= 1 << Adapter::queryNodeCount().");
+            return result::ErrorInvalidNodeMask;
+        }
+
         // desc.type is a valid value
         if (desc.type > resource_type::MaxEnum)
         {

@@ -145,6 +145,8 @@ namespace LLRI_NAMESPACE
 
     result Device::impl_createResource(const resource_desc& desc, Resource** resource)
     {
+        bool isTexture = desc.type != resource_type::Buffer && desc.type != resource_type::MemoryOnly;
+
         D3D12_RESOURCE_DESC dx12Desc;
         dx12Desc.Dimension = directx::mapResourceType(desc.type);
         dx12Desc.Alignment = 0;
@@ -154,12 +156,14 @@ namespace LLRI_NAMESPACE
         dx12Desc.MipLevels = static_cast<UINT16>(desc.mipLevels);
         dx12Desc.Format = directx::mapTextureFormat(desc.format);
         dx12Desc.SampleDesc = { static_cast<UINT>(desc.sampleCount), 0 };
-        dx12Desc.Layout = directx::mapTextureTiling(desc.tiling);
+        dx12Desc.Layout = isTexture ? directx::mapTextureTiling(desc.tiling) : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         dx12Desc.Flags = directx::mapResourceUsage(desc.usage);
 
         const D3D12_RESOURCE_STATES initialState = directx::mapResourceState(desc.initialState);
 
-        D3D12_HEAP_PROPERTIES heapProperties; // TODO: Heap properties havent been set yet
+        D3D12_HEAP_PROPERTIES heapProperties { directx::mapResourceMemoryType(desc.memoryType),
+            D3D12_CPU_PAGE_PROPERTY_UNKNOWN, D3D12_MEMORY_POOL_UNKNOWN,
+            desc.createNodeMask, desc.visibleNodeMask };
 
         ID3D12Resource* dx12Resource = nullptr;
         const auto result = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));

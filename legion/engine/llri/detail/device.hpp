@@ -189,6 +189,10 @@ namespace LLRI_NAMESPACE
          * @param resource A pointer to the resulting resource variable.
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if resource was nullptr.
+         * @return ErrorInvalidNodeMask if desc.createNodeMask has multiple bits set.
+         * @return ErrorInvalidNodeMask if desc.createNodeMask has a bit set that is >= (1 << Adapter::queryNodeCount()).
+         * @return ErrorInvalidNodeMask if desc.visibleNodeMask doesn't have at least the same bit set as desc.createNodeMask.
+         * @return ErrorInvalidNodeMask if desc.visibleNodeMask has a bit set that is >= (1 << Adapter::queryNodeCount()).
          * @return ErrorInvalidUsage if desc.type was not a valid enum value.
          * @return ErrorInvalidUsage if desc.usage was not a valid combination of resource_usage_flag_bits.
          * @return ErrorInvalidUsage if desc.usage had the DenyShaderResource bit set but not the DepthStencilAttachment bit.
