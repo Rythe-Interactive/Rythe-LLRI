@@ -172,6 +172,7 @@ namespace LLRI_NAMESPACE
             return directx::mapHRESULT(result);
 
         auto* output = new Resource();
+        output->m_type = desc.type;
         output->m_resource = dx12Resource;
         output->m_state = desc.initialState;
         output->m_implementationState = initialState;

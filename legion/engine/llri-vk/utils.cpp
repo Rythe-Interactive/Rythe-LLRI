@@ -125,6 +125,26 @@ namespace LLRI_NAMESPACE
             return result::ErrorUnknown;
         }
 
+        uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t requiredMemoryBits, VkMemoryPropertyFlags requiredFlags)
+        {
+            VkPhysicalDeviceMemoryProperties properties;
+            vkGetPhysicalDeviceMemoryProperties(physicalDevice, &properties);
+
+            for (size_t i = 0; i < properties.memoryTypeCount; i++)
+            {
+                const uint32_t bits = 1 << i;
+                const bool isRequiredMemoryType = requiredMemoryBits & bits;
+
+                const VkMemoryPropertyFlags flags = properties.memoryTypes[i].propertyFlags;
+                const bool hasRequiredProperties = (flags & requiredFlags) == requiredFlags;
+
+                if (isRequiredMemoryType && hasRequiredProperties)
+                    return static_cast<uint32_t>(i);
+            }
+
+            return -1;
+        }
+
         /**
          * @brief Utility function for hashing strings for layer/extension names
         */
@@ -144,9 +164,9 @@ namespace LLRI_NAMESPACE
         {
             std::map<queue_type, uint32_t> output
             {
-                { queue_type::Graphics, 0 },
-                { queue_type::Compute, 0 },
-                { queue_type::Transfer, 0 }
+                { queue_type::Graphics, UINT_MAX },
+                { queue_type::Compute, UINT_MAX },
+                { queue_type::Transfer, UINT_MAX }
             };
 
             //Get queue family info

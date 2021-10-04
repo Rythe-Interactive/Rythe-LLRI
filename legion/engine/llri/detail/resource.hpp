@@ -433,6 +433,8 @@ namespace LLRI_NAMESPACE
         Resource() = default;
         ~Resource() = default;
 
+        resource_type m_type;
+
         void* m_memory = nullptr;
         void* m_resource = nullptr;
 

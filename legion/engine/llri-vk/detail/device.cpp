@@ -147,7 +147,81 @@ namespace LLRI_NAMESPACE
 
     result Device::impl_createResource(const resource_desc& desc, Resource** resource)
     {
-        bool isTexture = desc.type != resource_type::Buffer && desc.type != resource_type::MemoryOnly;
+        const bool isTexture = desc.type != resource_type::Buffer && desc.type != resource_type::MemoryOnly;
+
+        // get all valid queue families
+        const auto& families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
+        std::vector<uint32_t> familyIndices;
+        for (const auto& [key, family] : families)
+        {
+            if (family != UINT_MAX)
+                familyIndices.push_back(family);
+        }
+
+        // get internal state
+        auto internalState = internal::mapResourceState(desc.initialState);
+
+        // get memory flags
+        const auto memFlags = internal::mapMemoryType(desc.memoryType);
+
+        uint64_t dataSize = 0;
+        uint32_t memoryTypeIndex = 0;
+
+        VkImage image = VK_NULL_HANDLE;
+        VkBuffer buffer = VK_NULL_HANDLE;
+        if (isTexture)
+        {
+            uint32_t depth = desc.type == resource_type::Texture3D ? desc.depthOrArrayLayers : 1;
+            uint32_t arrayLayers = desc.type == resource_type::Texture3D ? 1 : desc.depthOrArrayLayers;
+
+            VkImageCreateInfo imageCreate;
+            imageCreate.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+            imageCreate.pNext = nullptr;
+            imageCreate.flags = 0;
+            imageCreate.imageType = internal::mapTextureType(desc.type);
+            imageCreate.format = internal::mapTextureFormat(desc.format);
+            imageCreate.extent = VkExtent3D{ desc.width, desc.height, depth };
+            imageCreate.mipLevels = desc.mipLevels;
+            imageCreate.arrayLayers = arrayLayers;
+            imageCreate.samples = (VkSampleCountFlagBits)desc.sampleCount;
+            imageCreate.tiling = internal::mapTextureTiling(desc.tiling);
+            imageCreate.usage = internal::mapTextureUsage(desc.usage);
+            imageCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
+            imageCreate.queueFamilyIndexCount = familyIndices.size();
+            imageCreate.pQueueFamilyIndices = familyIndices.data();
+            imageCreate.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            internalState = imageCreate.initialLayout;
+
+            auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkCreateImage(static_cast<VkDevice>(m_ptr), &imageCreate, nullptr, &image);
+            if (r != VK_SUCCESS)
+                return internal::mapVkResult(r);
+
+            VkMemoryRequirements reqs;
+            static_cast<VolkDeviceTable*>(m_functionTable)->vkGetImageMemoryRequirements(static_cast<VkDevice>(m_ptr), image, &reqs);
+            dataSize = reqs.size;
+            memoryTypeIndex = internal::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
+        }
+        else
+        {
+            VkBufferCreateInfo bufferCreate;
+            bufferCreate.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+            bufferCreate.pNext = nullptr;
+            bufferCreate.flags = 0;
+            bufferCreate.size = desc.width;
+            bufferCreate.usage = internal::mapBufferUsage(desc.usage);
+            bufferCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
+            bufferCreate.queueFamilyIndexCount = familyIndices.size();
+            bufferCreate.pQueueFamilyIndices = familyIndices.data();
+
+            auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkCreateBuffer(static_cast<VkDevice>(m_ptr), &bufferCreate, nullptr, &buffer);
+            if (r != VK_SUCCESS)
+                return internal::mapVkResult(r);
+
+            VkMemoryRequirements reqs;
+            static_cast<VolkDeviceTable*>(m_functionTable)->vkGetBufferMemoryRequirements(static_cast<VkDevice>(m_ptr), buffer, &reqs);
+            dataSize = reqs.size;
+            memoryTypeIndex = internal::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
+        }
 
         VkMemoryAllocateFlagsInfoKHR flagsInfo;
         flagsInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO;
@@ -158,19 +232,58 @@ namespace LLRI_NAMESPACE
         VkMemoryAllocateInfo allocInfo;
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.pNext = m_adapter->queryNodeCount() > 1 ? &flagsInfo : nullptr;
-        allocInfo.allocationSize = 0; //TODO
-        allocInfo.memoryTypeIndex = 0; //TODO
-
+        allocInfo.allocationSize = dataSize;
+        allocInfo.memoryTypeIndex = memoryTypeIndex;
+        
         VkDeviceMemory memory;
         auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkAllocateMemory(static_cast<VkDevice>(m_ptr), &allocInfo, nullptr, &memory);
         if (r != VK_SUCCESS)
+        {
+            if (isTexture)
+                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyImage(static_cast<VkDevice>(m_ptr), image, nullptr);
+            else
+                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), buffer, nullptr);
             return internal::mapVkResult(r);
+        }
 
-        //auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkcreateim
+        if (isTexture)
+            r = static_cast<VolkDeviceTable*>(m_functionTable)->vkBindImageMemory(static_cast<VkDevice>(m_ptr), image, memory, 0);
+        else
+            r = static_cast<VolkDeviceTable*>(m_functionTable)->vkBindBufferMemory(static_cast<VkDevice>(m_ptr), buffer, memory, 0);
+
+        if (r != VK_SUCCESS)
+        {
+            if (isTexture)
+                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyImage(static_cast<VkDevice>(m_ptr), image, nullptr);
+            else
+                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), buffer, nullptr);
+
+            static_cast<VolkDeviceTable*>(m_functionTable)->vkFreeMemory(static_cast<VkDevice>(m_ptr), memory, nullptr);
+
+            return internal::mapVkResult(r);
+        }
+
+        auto* output = new Resource();
+        output->m_type = desc.type;
+        output->m_resource = isTexture ? static_cast<void*>(image) : static_cast<void*>(buffer);
+        output->m_memory = memory;
+
+        output->m_state = desc.initialState;
+        output->m_implementationState = internalState; // only used for images
+
+        *resource = output;
+        return result::Success;
     }
 
     void Device::impl_destroyResource(Resource* resource)
     {
+        bool isTexture = resource->m_type != resource_type::Buffer && resource->m_type != resource_type::MemoryOnly;
 
+        if (isTexture)
+            static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyImage(static_cast<VkDevice>(m_ptr), static_cast<VkImage>(resource->m_resource), nullptr);
+        else
+            static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), static_cast<VkBuffer>(resource->m_resource), nullptr);
+        
+        static_cast<VolkDeviceTable*>(m_functionTable)->vkFreeMemory(static_cast<VkDevice>(m_ptr), static_cast<VkDeviceMemory>(resource->m_memory), nullptr);
     }
 }
