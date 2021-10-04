@@ -32,8 +32,6 @@ private:
     llri::Device* m_device = nullptr;
 
     llri::Queue* m_graphicsQueue = nullptr;
-    llri::Queue* m_computeQueue = nullptr;
-    llri::Queue* m_transferQueue = nullptr;
 
     llri::CommandGroup* m_commandGroup = nullptr;
     llri::CommandList* m_commandList = nullptr;

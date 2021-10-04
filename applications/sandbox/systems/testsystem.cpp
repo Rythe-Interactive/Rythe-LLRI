@@ -162,10 +162,8 @@ void TestSystem::createDevice()
 
     std::vector<llri::adapter_extension> adapterExtensions;
 
-    std::array<llri::queue_desc, 3> adapterQueues {
-        llri::queue_desc { llri::queue_type::Graphics, llri::queue_priority::High }, //We can give one or more queues a higher priority
-        llri::queue_desc { llri::queue_type::Compute, llri::queue_priority::Normal },
-        llri::queue_desc { llri::queue_type::Transfer, llri::queue_priority::Normal }
+    std::array<llri::queue_desc, 1> adapterQueues {
+        llri::queue_desc { llri::queue_type::Graphics, llri::queue_priority::High } //We can give one or more queues a higher priority
     };
 
     //Create device
@@ -178,8 +176,6 @@ void TestSystem::createDevice()
     THROW_IF_FAILED(m_instance->createDevice(deviceDesc, &m_device));
 
     THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Graphics, 0, &m_graphicsQueue));
-    THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Compute, 0, &m_computeQueue));
-    THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Transfer, 0, &m_transferQueue));
 }
 
 void TestSystem::createCommandLists()
