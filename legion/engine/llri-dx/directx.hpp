@@ -120,7 +120,6 @@ namespace LLRI_NAMESPACE
         {
             switch(type)
             {
-                case resource_type::MemoryOnly:
                 case resource_type::Buffer:
                     return D3D12_RESOURCE_DIMENSION_BUFFER;
                 case resource_type::Texture1D:

@@ -56,7 +56,6 @@ namespace LLRI_NAMESPACE
             switch (type)
             {
                 case resource_type::Buffer: break;
-                case resource_type::MemoryOnly: break;
                 case resource_type::Texture1D:
                     return VK_IMAGE_TYPE_1D;
                 case resource_type::Texture2D:

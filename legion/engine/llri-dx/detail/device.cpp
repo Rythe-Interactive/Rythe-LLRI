@@ -145,7 +145,7 @@ namespace LLRI_NAMESPACE
 
     result Device::impl_createResource(const resource_desc& desc, Resource** resource)
     {
-        bool isTexture = desc.type != resource_type::Buffer && desc.type != resource_type::MemoryOnly;
+        const bool isTexture = desc.type != resource_type::Buffer;
 
         D3D12_RESOURCE_DESC dx12Desc;
         dx12Desc.Dimension = directx::mapResourceType(desc.type);

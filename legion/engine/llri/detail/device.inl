@@ -361,16 +361,6 @@ namespace LLRI_NAMESPACE
         // desc.usage against desc.type
         switch(desc.type)
         {
-            case resource_type::MemoryOnly:
-            {
-                constexpr resource_usage_flags validUsage = resource_usage_flag_bits::TransferSrc | resource_usage_flag_bits::TransferDst;
-                if (!validUsage.contains(desc.usage.value))
-                {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type is MemoryOnly but desc.usage has invalid resource_usage_flag_bits set. Valid flag bits for this type are: " + to_string(validUsage));
-                    return result::ErrorInvalidUsage;
-                }
-                break;
-            }
             case resource_type::Buffer:
             {
                 constexpr resource_usage_flags validUsage = resource_usage_flag_bits::TransferSrc | resource_usage_flag_bits::TransferDst | resource_usage_flag_bits::ShaderWrite;
@@ -391,13 +381,6 @@ namespace LLRI_NAMESPACE
         if (desc.memoryType > resource_memory_type::MaxEnum)
         {
             detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType (" + std::to_string(static_cast<uint8_t>(desc.memoryType)) + " is not a valid resource_memory_type value.");
-            return result::ErrorInvalidUsage;
-        }
-
-        // desc.memoryType against desc.type
-        if (desc.type == resource_type::MemoryOnly && desc.memoryType != resource_memory_type::Upload)
-        {
-            detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type is resource_type::MemoryOnly but desc.memoryType (" + to_string(desc.memoryType) + ") is not resource_memory_type::Upload.");
             return result::ErrorInvalidUsage;
         }
 
@@ -433,15 +416,6 @@ namespace LLRI_NAMESPACE
         // desc.initialState against desc.type
         switch(desc.type)
         {
-            case resource_type::MemoryOnly:
-            {
-                if (desc.initialState != resource_state::Upload)
-                {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type was set to MemoryOnly but desc.initialState wasn't one of the following states: resource_state::Upload");
-                    return result::ErrorInvalidUsage;
-                }
-                break;
-            }
             case resource_type::Buffer:
             {
                 const std::set<resource_state> validStates { resource_state::General, resource_state::Upload, resource_state::ShaderReadOnly, resource_state::ShaderReadWrite, resource_state::TransferSrc, resource_state::TransferDst, resource_state::VertexBuffer, resource_state::IndexBuffer, resource_state::ConstantBuffer };
@@ -569,14 +543,13 @@ namespace LLRI_NAMESPACE
         // width, height, depth against desc.type
         switch(desc.type)
         {
-            case resource_type::MemoryOnly:
             case resource_type::Buffer:
             {
                 if (desc.height > 1)
-                    detail::apiWarning("Device::createResource()", "desc.type was resource_type::Buffer or resource_type::MemoryOnly but desc.height was more than 1. This value will be ignored internally but this may be a user error. The size of the created resource will only be determined by desc.width.");
+                    detail::apiWarning("Device::createResource()", "desc.type was resource_type::Buffer but desc.height was more than 1. This value will be ignored internally but this may be a user error. The size of the created resource will only be determined by desc.width.");
 
                 if (desc.depthOrArrayLayers > 1)
-                    detail::apiWarning("Device::createResource()", "desc.type was resource_type::Buffer or resource_type::MemoryOnly but desc.depthOrArrayLayers was more than 1. This value will be ignored internally but this may be a user error. The size of the created resource will only be determined by desc.width.");
+                    detail::apiWarning("Device::createResource()", "desc.type was resource_type::Buffer but desc.depthOrArrayLayers was more than 1. This value will be ignored internally but this may be a user error. The size of the created resource will only be determined by desc.width.");
                 break;
             }
             case resource_type::Texture1D:

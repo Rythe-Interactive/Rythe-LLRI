@@ -91,12 +91,6 @@ namespace LLRI_NAMESPACE
     enum struct resource_type : uint8_t
     {
         /**
-         * @brief The resource allocates memory and can be used in very simple transfer operations. The resource **must** only be used for CPU to GPU copies and GPU to GPU copies. It **must** be created with its initialState set to Upload.
-         *
-         * This resource type avoids creating resource data that it might otherwise need for normal resource usage, such as Images/Buffers in Vulkan.
-        */
-        MemoryOnly,
-        /**
          * @brief A one-dimensional unformatted chunk of data. Buffers can't be sampled like textures, but they can be read from or written to.
         */
         Buffer,

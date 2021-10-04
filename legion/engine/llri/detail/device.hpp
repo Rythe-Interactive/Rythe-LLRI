@@ -197,13 +197,10 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if desc.usage was not a valid combination of resource_usage_flag_bits.
          * @return ErrorInvalidUsage if desc.usage had the DenyShaderResource bit set but not the DepthStencilAttachment bit.
          * @return ErrorInvalidUsage if desc.usage had the DenyShaderResource bit set but had incompatible bits set. Compatible flags with DenyShaderResource are: DepthStencilAttachment, TransferSrc, TransferDst.
-         * @return ErrorInvalidUsage if desc.type was set to MemoryOnly but desc.usage had incompatible bits set. Compatible usage bits with resource_type::MemoryOnly are: TransferSrc, TransferDst.
          * @return ErrorInvalidUsage if desc.type was set to Buffer but desc.usage had incompatible bits set. Compatible usage bits with resource_type::Buffer are: TransferSrc, TransferDst, ShaderWrite.
          * @return ErrorInvalidUsage if desc.memoryType was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.type was set to MemoryOnly but desc.memoryType wasn't resource_memory_type::Upload.
          * @return ErrorInvalidUsage if desc.memoryType was set to resource_memory_type::Upload and desc.usage contained resource_usage_flag_bits::ShaderWrite.
          * @return ErrorInvalidUsage if desc.initialState was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.type was set to MemoryOnly but desc.initialState wasn't one of the following states: resource_state::Upload.
          * @return ErrorInvalidUsage if desc.type was set to Buffer but desc.initialState wasn't one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.
          * @return ErrorInvalidUsage if desc.type was set to Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.
          * @return ErrorInvalidUsage if desc.initialState was set to Upload but is incompatible with resource_usage_flag_bits::ShaderWrite.

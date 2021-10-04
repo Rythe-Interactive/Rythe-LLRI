@@ -46,8 +46,6 @@ namespace LLRI_NAMESPACE
     {
         switch(type)
         {
-            case resource_type::MemoryOnly:
-                return "MemoryOnly";
             case resource_type::Buffer:
                 return "Buffer";
             case resource_type::Texture1D:

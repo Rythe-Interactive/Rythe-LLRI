@@ -147,7 +147,7 @@ namespace LLRI_NAMESPACE
 
     result Device::impl_createResource(const resource_desc& desc, Resource** resource)
     {
-        const bool isTexture = desc.type != resource_type::Buffer && desc.type != resource_type::MemoryOnly;
+        const bool isTexture = desc.type != resource_type::Buffer;
 
         // get all valid queue families
         const auto& families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
@@ -277,7 +277,7 @@ namespace LLRI_NAMESPACE
 
     void Device::impl_destroyResource(Resource* resource)
     {
-        bool isTexture = resource->m_type != resource_type::Buffer && resource->m_type != resource_type::MemoryOnly;
+        const bool isTexture = resource->m_type != resource_type::Buffer;
 
         if (isTexture)
             static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyImage(static_cast<VkDevice>(m_ptr), static_cast<VkImage>(resource->m_resource), nullptr);
