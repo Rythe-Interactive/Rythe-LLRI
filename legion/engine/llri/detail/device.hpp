@@ -203,7 +203,7 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if desc.initialState was not a valid enum value.
          * @return ErrorInvalidUsage if desc.type was set to Buffer but desc.initialState wasn't one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.
          * @return ErrorInvalidUsage if desc.type was set to Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.
-         * @return ErrorInvalidUsage if desc.initialState was set to Upload but is incompatible with resource_usage_flag_bits::ShaderWrite.
+         * @return ErrorInvalidUsage if desc.initialState was set to Upload but also has resource_usage_flag_bits::ShaderWrite set.
          * @return ErrorInvalidUsage if desc.initialState was set to ColorAttachment but desc.usage doesn't have the resource_usage_flag_bits::ColorAttachment bit set.
          * @return ErrorInvalidUsage if desc.initialState was set to DepthStencilAttachment or DepthStencilAttachmentReadOnly, but desc.usage doesn't have the resource_usage_flag_bits::DepthStencilAttachment bit set.
          * @return ErrorInvalidUsage if desc.initialState was set to ShaderReadWrite but desc.usage doesn't have the resource_usage_flag_bits::ShaderWrite bit set.
@@ -211,10 +211,11 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if desc.initialState was set to TransferDst but desc.usage doesn't have the resource_usage_flag_bits::TransferDst bit set.
          * @return ErrorInvalidUsage if desc.memoryType was set to Local but desc.initialState was set to Upload.
          * @return ErrorInvalidUsage if desc.memoryType was set to Upload but desc.initialState was set to ShaderReadWrite.
+         * @return ErrorInvalidUsage if desc.width was not at least 1.
          * @return ErrorInvalidUsage if desc.type was Texture1D but desc.height was not 1.
          * @return ErrorInvalidUsage if desc.type was Texture2D but desc.height was not at least 1.
          * @return ErrorInvalidUsage if desc.type was Texture3D but desc.height was not at least 1.
-         * @return ErrorInvalidUsage if desc.type was Texture3D but desc.depthOrArrayLayers was not at least 1.
+         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D but desc.depthOrArrayLayers was not at least 1.
          * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.mipLevels was not at least 1.
          * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.sampleCount was not a valid enum value.
          * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.usage had the ShaderWrite bit set but desc.sampleCount was not Count1.

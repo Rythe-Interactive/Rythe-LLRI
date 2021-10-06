@@ -341,7 +341,7 @@ namespace LLRI_NAMESPACE
         if (desc.usage.contains(resource_usage_flag_bits::DenyShaderResource))
         {
             // DenyShaderResource **must** also have DepthStencilAttachment
-            if (desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment))
+            if (!desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment))
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.usage (" + to_string(desc.usage) + ") has the DenyShaderResource bit set but does not have the DepthStencilAttachment bit set.");
                 return result::ErrorInvalidUsage;
@@ -453,7 +453,7 @@ namespace LLRI_NAMESPACE
             {
                 if (desc.usage.contains(resource_usage_flag_bits::ShaderWrite))
                 {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.initialState was set to Upload but is incompatible with resource_usage_flag_bits::ShaderWrite.");
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.initialState was set to Upload but also has resource_usage_flag_bits::ShaderWrite set.");
                     return result::ErrorInvalidUsage;
                 }
                 break;   
@@ -537,7 +537,8 @@ namespace LLRI_NAMESPACE
         // desc.width is a valid value
         if (desc.width == 0)
         {
-            detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "");
+            detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.width was not at least 1.");
+            return result::ErrorInvalidUsage;
         }
 
         // width, height, depth against desc.type
@@ -555,7 +556,16 @@ namespace LLRI_NAMESPACE
             case resource_type::Texture1D:
             {
                 if (desc.height != 1)
+                {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type was resource_type::Texture1D but desc.height was not 1.");
+                    return result::ErrorInvalidUsage;
+                }
+
+                if (desc.depthOrArrayLayers < 1)
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type was resource_type::Texture1D but desc.depthOrArrayLayers was not at least 1.");
+                    return result::ErrorInvalidUsage;
+                }
                 break;
             }
             case resource_type::Texture2D:
@@ -563,6 +573,12 @@ namespace LLRI_NAMESPACE
                 if (desc.height < 1)
                 {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type was resource_type::Texture2D but desc.height was not at least 1.");
+                    return result::ErrorInvalidUsage;
+                }
+
+                if (desc.depthOrArrayLayers < 1)
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type was resource_type::Texture2D but desc.depthOrArrayLayers was not at least 1.");
                     return result::ErrorInvalidUsage;
                 }
                 break;
