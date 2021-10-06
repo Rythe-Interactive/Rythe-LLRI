@@ -285,6 +285,82 @@ TEST_CASE("Device::createResource()")
         }
     }
 
+    SUBCASE("All combinations must return ErrorInvalidUsage or Success")
+    {
+        desc = {};
+
+        for (uint8_t node = 0; node < adapter->queryNodeCount(); node++)
+        {
+            desc.createNodeMask = 1u << node;
+
+            for (uint8_t mask = 0; mask < (1 << adapter->queryNodeCount()); mask++)
+            {
+                desc.visibleNodeMask = mask;
+
+                for (uint8_t type = 0; type < static_cast<uint8_t>(llri::resource_type::MaxEnum); type++)
+                {
+                    desc.type = static_cast<llri::resource_type>(type);
+
+                    for (uint16_t usage = 0; usage < 128; usage++)
+                    {
+                        desc.usage = usage;
+
+                        for (uint8_t memType = 0; memType < static_cast<uint8_t>(llri::resource_memory_type::MaxEnum); memType++)
+                        {
+                            desc.memoryType = static_cast<llri::resource_memory_type>(memType);
+
+                            for (uint8_t resourceState = 0; resourceState < static_cast<uint8_t>(llri::resource_state::MaxEnum); resourceState++)
+                            {
+                                desc.initialState = static_cast<llri::resource_state>(resourceState);
+
+                                const std::set<uint32_t> possibleSizeValues = { 0, 1, 1024, UINT_MAX };
+                                for (auto width : possibleSizeValues)
+                                {
+                                    desc.width = width;
+
+                                    for (auto height : possibleSizeValues)
+                                    {
+                                        desc.height = height;
+
+                                        for (auto depth : possibleSizeValues)
+                                        {
+                                            desc.depthOrArrayLayers = static_cast<uint16_t>(depth);
+
+                                            for (auto mip : possibleSizeValues)
+                                            {
+                                                desc.mipLevels = static_cast<uint16_t>(mip);
+
+                                                for (uint32_t sample = 1; sample < static_cast<uint32_t>(llri::texture_sample_count::MaxEnum); sample = sample << 1)
+                                                {
+                                                    desc.sampleCount = static_cast<llri::texture_sample_count>(sample);
+
+                                                    for (uint32_t format = 0; format < static_cast<uint32_t>(llri::texture_format::MaxEnum); format++)
+                                                    {
+                                                        desc.format = static_cast<llri::texture_format>(format);
+
+                                                        for (uint8_t tiling = 0; tiling < static_cast<uint8_t>(llri::texture_tiling::MaxEnum); tiling++)
+                                                        {
+                                                            desc.tiling = static_cast<llri::texture_tiling>(tiling);
+
+                                                            llri::Resource* resource = nullptr;
+                                                            llri::result result = device->createResource(desc, &resource);
+                                                            CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage);
+                                                            device->destroyResource(resource);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     instance->destroyDevice(device);
     llri::destroyInstance(instance);
 }
