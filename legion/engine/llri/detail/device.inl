@@ -679,6 +679,47 @@ namespace LLRI_NAMESPACE
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was not a valid enum value.");
                 return result::ErrorInvalidUsage;
             }
+
+            if (desc.tiling == texture_tiling::Linear)
+            {
+                // desc.tiling against desc.type
+                if (desc.type != llri::resource_type::Texture2D)
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear but desc.type was not Texture2D.");
+                    return result::ErrorInvalidUsage;
+                }
+
+                // desc.tiling against desc.format
+                std::unordered_set<texture_format> unsupportedFormats = { texture_format::D16UNorm, texture_format::D24UNormS8UInt, texture_format::D32Float, texture_format::D32FloatS8X24UInt };
+
+                if (unsupportedFormats.find(desc.format) != unsupportedFormats.end())
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear but was not compatible with desc.format. desc.format **can not** be: D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.");
+                    return result::ErrorInvalidUsage;
+                }
+
+                // desc.tiling against depth and samplecount
+                if (desc.depthOrArrayLayers != 1)
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear and desc.type was not Texture3D but desc.depthOrArrayLayers was not 1.");
+                    return result::ErrorInvalidUsage;
+                }
+
+                // desc.tiling against desc.sampleCount
+                if (desc.sampleCount != llri::texture_sample_count::Count1)
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear but desc.samples was not Count1.");
+                    return result::ErrorInvalidUsage;
+                }
+
+                // desc.tiling against desc.usage
+                llri::resource_usage_flags supportedUsage = llri::resource_usage_flag_bits::TransferSrc | llri::resource_usage_flag_bits::TransferDst;
+                if ((desc.usage & ~supportedUsage) != llri::resource_usage_flag_bits::None)
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear but desc.usage had bits set that were not TransferSrc and/or TransferDst.");
+                    return result::ErrorInvalidUsage;
+                }
+            }
         }
 #endif
 
