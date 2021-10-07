@@ -151,11 +151,11 @@ namespace LLRI_NAMESPACE
         dx12Desc.Dimension = directx::mapResourceType(desc.type);
         dx12Desc.Alignment = 0;
         dx12Desc.Width = static_cast<UINT64>(desc.width);
-        dx12Desc.Height = desc.height;
-        dx12Desc.DepthOrArraySize = static_cast<UINT16>(desc.depthOrArrayLayers);
-        dx12Desc.MipLevels = static_cast<UINT16>(desc.mipLevels);
+        dx12Desc.Height = isTexture ? desc.height : 1;
+        dx12Desc.DepthOrArraySize = isTexture ? static_cast<UINT16>(desc.depthOrArrayLayers) : 1;
+        dx12Desc.MipLevels = isTexture ? static_cast<UINT16>(desc.mipLevels) : 1;
         dx12Desc.Format = directx::mapTextureFormat(desc.format);
-        dx12Desc.SampleDesc = { static_cast<UINT>(desc.sampleCount), 0 };
+        dx12Desc.SampleDesc = isTexture ? DXGI_SAMPLE_DESC{ static_cast<UINT>(desc.sampleCount), 0 } : DXGI_SAMPLE_DESC{ 1, 0 };
         dx12Desc.Layout = isTexture ? directx::mapTextureTiling(desc.tiling) : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         dx12Desc.Flags = directx::mapResourceUsage(desc.usage);
 
