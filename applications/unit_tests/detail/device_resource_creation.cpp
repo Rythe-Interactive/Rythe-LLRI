@@ -285,7 +285,7 @@ TEST_CASE("Device::createResource()")
         }
     }
 
-    SUBCASE("All combinations must return ErrorInvalidUsage or Success")
+    SUBCASE("Lossy testing")
     {
         desc = {};
 
@@ -318,6 +318,19 @@ TEST_CASE("Device::createResource()")
                                 {
                                     desc.width = width;
 
+                                    if (desc.type == llri::resource_type::Buffer)
+                                    {
+                                        desc.height = 1;
+                                        desc.depthOrArrayLayers = 1;
+
+                                        llri::Resource* resource = nullptr;
+                                        llri::result result = device->createResource(desc, &resource);
+                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
+                                        device->destroyResource(resource);
+
+                                        continue;
+                                    }
+
                                     for (auto height : possibleSizeValues)
                                     {
                                         desc.height = height;
@@ -344,7 +357,7 @@ TEST_CASE("Device::createResource()")
 
                                                             llri::Resource* resource = nullptr;
                                                             llri::result result = device->createResource(desc, &resource);
-                                                            CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage);
+                                                            CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
                                                             device->destroyResource(resource);
                                                         }
                                                     }

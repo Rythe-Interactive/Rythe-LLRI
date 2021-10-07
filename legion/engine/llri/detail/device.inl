@@ -283,32 +283,41 @@ namespace LLRI_NAMESPACE
         *resource = nullptr;
 
 #ifndef LLRI_DISABLE_VALIDATION
+        // convert zero to one for validation on nodemasks
+        uint32_t createNodeMask = desc.createNodeMask;
+        if (createNodeMask == 0)
+            createNodeMask = 1;
+
+        uint32_t visibleNodeMask = desc.visibleNodeMask;
+        if (visibleNodeMask == 0)
+            visibleNodeMask = 1;
+
         // In resource creation, there are a lot of combinations that can be incorrect
         // checks for these combinations can get confusing,
         // our rule will be to only check against previously checked variables. e.g. if we check desc.type first, we only need to check that its valid,
         // but if we check desc.usage we must check if its valid with desc.type
 
         //determines if the node mask is not a power of two -> if it isn't then multiple bits are set
-        if ((desc.createNodeMask & (desc.createNodeMask - 1)) != 0)
+        if ((createNodeMask & (createNodeMask - 1)) != 0)
         {
-            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.createNodeMask " + std::to_string(desc.createNodeMask) + " has multiple bits set.");
+            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.createNodeMask " + std::to_string(createNodeMask) + " has multiple bits set.");
             return result::ErrorInvalidNodeMask;
         }
 
-        if (desc.createNodeMask >= (1 << m_adapter->queryNodeCount()))
+        if (createNodeMask >= (1 << m_adapter->queryNodeCount()))
         {
-            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.createNodeMask " + std::to_string(desc.createNodeMask) + " has a bit set that is >= (1 << Adapter::queryNodeCount()).");
+            detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.createNodeMask " + std::to_string(createNodeMask) + " has a bit set that is >= (1 << Adapter::queryNodeCount()).");
             return result::ErrorInvalidNodeMask;
         }
 
-        if ((desc.visibleNodeMask & desc.createNodeMask) != desc.createNodeMask)
+        if ((visibleNodeMask & createNodeMask) != createNodeMask)
         {
             detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.visibleNodeMask doesn't have at least the same bit set as desc.createNodeMask.");
             return result::ErrorInvalidNodeMask;
         }
 
         const uint32_t maxVisibleNodeMask = (1 << m_adapter->queryNodeCount()) - 1;
-        if (desc.visibleNodeMask > maxVisibleNodeMask)
+        if (visibleNodeMask > maxVisibleNodeMask)
         {
             detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.visibleNodeMask has a bit set that is >= 1 << Adapter::queryNodeCount().");
             return result::ErrorInvalidNodeMask;
