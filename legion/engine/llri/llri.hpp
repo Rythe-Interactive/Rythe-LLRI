@@ -178,9 +178,13 @@ namespace LLRI_NAMESPACE
         */
         ErrorAlreadySignaled,
         /**
+         * @brief An invalid or incompatible format was used.
+        */
+        ErrorInvalidFormat,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorAlreadySignaled
+        MaxEnum = ErrorInvalidFormat
     };
 
     /**

@@ -97,7 +97,8 @@ namespace LLRI_NAMESPACE
                 case VK_ERROR_INCOMPATIBLE_DRIVER:
                     return result::ErrorIncompatibleDriver;
                 case VK_ERROR_TOO_MANY_OBJECTS: break;
-                case VK_ERROR_FORMAT_NOT_SUPPORTED: break;
+                case VK_ERROR_FORMAT_NOT_SUPPORTED:
+                    return result::ErrorInvalidFormat;
                 case VK_ERROR_FRAGMENTED_POOL: break;
                 case VK_ERROR_UNKNOWN:
                     return result::ErrorUnknown;
