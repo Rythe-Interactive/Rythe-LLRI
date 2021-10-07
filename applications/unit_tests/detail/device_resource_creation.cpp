@@ -156,11 +156,19 @@ TEST_CASE("Device::createResource()")
         CHECK_EQ(device->createResource(desc, &failurePlaceholder), llri::result::ErrorInvalidUsage);
     }
 
-    SUBCASE("[Invalid usage] desc.memoryType was set to Upload but desc.initialState was set to ShaderReadWrite")
+    SUBCASE("[Invalid usage] desc.memoryType was set to Upload but desc.initialState was not set to resource_state::Upload")
     {
-        desc.usage = llri::resource_usage_flag_bits::ShaderWrite;
-        desc.initialState = llri::resource_state::ShaderReadWrite;
+        desc.usage = {};
+        desc.initialState = llri::resource_state::ShaderReadOnly;
         desc.memoryType = llri::resource_memory_type::Upload;
+        CHECK_EQ(device->createResource(desc, &failurePlaceholder), llri::result::ErrorInvalidUsage);
+    }
+
+    SUBCASE("[Invalid usage] desc.memoryType was set to Read but desc.initialState was not set to resource_state::TransferDst")
+    {
+        desc.usage = {};
+        desc.initialState = llri::resource_state::ShaderReadOnly;
+        desc.memoryType = llri::resource_memory_type::Read;
         CHECK_EQ(device->createResource(desc, &failurePlaceholder), llri::result::ErrorInvalidUsage);
     }
 

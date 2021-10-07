@@ -210,7 +210,8 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if desc.initialState was set to TransferSrc but desc.usage doesn't have the resource_usage_flag_bits::TransferSrc bit set.
          * @return ErrorInvalidUsage if desc.initialState was set to TransferDst but desc.usage doesn't have the resource_usage_flag_bits::TransferDst bit set.
          * @return ErrorInvalidUsage if desc.memoryType was set to Local but desc.initialState was set to Upload.
-         * @return ErrorInvalidUsage if desc.memoryType was set to Upload but desc.initialState was set to ShaderReadWrite.
+         * @return ErrorInvalidUsage if desc.memoryType was set to Upload but desc.initialState was not resource_state::Upload.
+         * @return ErrorInvalidUsage if desc.memoryType was set to Read but desc.initialState was not set to resource_state::TransferDst.
          * @return ErrorInvalidUsage if desc.width was not at least 1.
          * @return ErrorInvalidUsage if desc.type was Texture1D but desc.height was not 1.
          * @return ErrorInvalidUsage if desc.type was Texture2D but desc.height was not at least 1.

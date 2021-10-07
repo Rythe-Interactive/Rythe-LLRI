@@ -529,16 +529,20 @@ namespace LLRI_NAMESPACE
             }
             case resource_memory_type::Upload:
             {
-                if (desc.initialState == resource_state::ShaderReadWrite)
+                if (desc.initialState != resource_state::Upload)
                 {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType was set to Upload but desc.initialState was set to ShaderReadWrite.");
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType was set to Upload but desc.initialState was not set to resource_state::Upload.");
                     return result::ErrorInvalidUsage;
                 }
                 break;
             }
             case resource_memory_type::Read:
             {
-                //TODO: Validate initialState against resource_memory_type::Read
+                if (desc.initialState != resource_state::TransferDst)
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType was set to Read but desc.initialState was not set to resource_state::TransferDst");
+                    return result::ErrorInvalidUsage;
+                }
                 break;
             }
         }
