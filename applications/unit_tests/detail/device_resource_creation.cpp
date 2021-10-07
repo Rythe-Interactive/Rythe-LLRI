@@ -325,6 +325,8 @@ TEST_CASE("Device::createResource()")
 
                                         llri::Resource* resource = nullptr;
                                         llri::result result = device->createResource(desc, &resource);
+                                        auto str = to_string(result);
+                                        INFO("result = ", to_string(result).c_str());
                                         CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
                                         device->destroyResource(resource);
 
@@ -347,9 +349,9 @@ TEST_CASE("Device::createResource()")
                                                 {
                                                     desc.sampleCount = static_cast<llri::texture_sample_count>(sample);
 
-                                                    for (uint32_t format = 0; format <= static_cast<uint32_t>(llri::texture_format::MaxEnum); format++)
+                                                    //for (uint32_t format = 0; format <= static_cast<uint32_t>(llri::texture_format::MaxEnum); format++)
                                                     {
-                                                        desc.format = static_cast<llri::texture_format>(format);
+                                                        desc.format = llri::texture_format::RGBA8UNorm;// static_cast<llri::texture_format>(format);
 
                                                         for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::texture_tiling::MaxEnum); tiling++)
                                                         {
@@ -357,6 +359,8 @@ TEST_CASE("Device::createResource()")
 
                                                             llri::Resource* resource = nullptr;
                                                             llri::result result = device->createResource(desc, &resource);
+                                                            auto str = to_string(result);
+                                                            INFO("result = ", to_string(result).c_str());
                                                             CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
                                                             device->destroyResource(resource);
                                                         }
