@@ -189,52 +189,7 @@ namespace LLRI_NAMESPACE
          * @param resource A pointer to the resulting resource variable.
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if resource was nullptr.
-         * @return ErrorInvalidNodeMask if desc.createNodeMask has multiple bits set.
-         * @return ErrorInvalidNodeMask if desc.createNodeMask has a bit set that is >= (1 << Adapter::queryNodeCount()).
-         * @return ErrorInvalidNodeMask if desc.visibleNodeMask doesn't have at least the same bit set as desc.createNodeMask.
-         * @return ErrorInvalidNodeMask if desc.visibleNodeMask has a bit set that is >= (1 << Adapter::queryNodeCount()).
-         * @return ErrorInvalidUsage if desc.type was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.usage was not a valid combination of resource_usage_flag_bits.
-         * @return ErrorInvalidUsage if desc.usage had the DenyShaderResource bit set but not the DepthStencilAttachment bit.
-         * @return ErrorInvalidUsage if desc.usage had the DenyShaderResource bit set but had incompatible bits set. Compatible flags with DenyShaderResource are: DepthStencilAttachment, TransferSrc, TransferDst.
-         * @return ErrorInvalidUsage if desc.type was set to Buffer but desc.usage had incompatible bits set. Compatible usage bits with resource_type::Buffer are: TransferSrc, TransferDst, ShaderWrite.
-         * @return ErrorInvalidUsage if desc.memoryType was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.memoryType is resource_memory_type::Upload but desc.usage has one of the following flags set: ShaderWrite | ColorAttachment | DepthStencilAttachment | DenyShaderResource.
-         * @return ErrorInvalidUsage if desc.memoryType is resource_memory_type::Read but desc.usage has one of the following flags set: ShaderWrite | ColorAttachment | DepthStencilAttachment | DenyShaderResource.
-         * @return ErrorInvalidUsage if desc.initialState was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.type was set to Buffer but desc.initialState wasn't one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.
-         * @return ErrorInvalidUsage if desc.type was set to Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.
-         * @return ErrorInvalidUsage if desc.initialState was set to Upload but also has resource_usage_flag_bits::ShaderWrite set.
-         * @return ErrorInvalidUsage if desc.initialState was set to ColorAttachment but desc.usage doesn't have the resource_usage_flag_bits::ColorAttachment bit set.
-         * @return ErrorInvalidUsage if desc.initialState was set to DepthStencilAttachment or DepthStencilAttachmentReadOnly, but desc.usage doesn't have the resource_usage_flag_bits::DepthStencilAttachment bit set.
-         * @return ErrorInvalidUsage if desc.initialState was set to ShaderReadWrite but desc.usage doesn't have the resource_usage_flag_bits::ShaderWrite bit set.
-         * @return ErrorInvalidUsage if desc.initialState was set to TransferSrc but desc.usage doesn't have the resource_usage_flag_bits::TransferSrc bit set.
-         * @return ErrorInvalidUsage if desc.initialState was set to TransferDst but desc.usage doesn't have the resource_usage_flag_bits::TransferDst bit set.
-         * @return ErrorInvalidUsage if desc.memoryType was set to Local but desc.initialState was set to Upload.
-         * @return ErrorInvalidUsage if desc.memoryType was set to Upload but desc.initialState was not resource_state::Upload.
-         * @return ErrorInvalidUsage if desc.memoryType was set to Read but desc.initialState was not set to resource_state::TransferDst.
-         * @return ErrorInvalidUsage if desc.width was not at least 1.
-         * @return ErrorInvalidUsage if desc.width was more than 16384.
-         * @return ErrorInvalidUsage if desc.height was more than 16384.
-         * @return ErrorInvalidUsage if desc.depthOrArrayLayers was more than 2048.
-         * @return ErrorInvalidUsage if desc.type was Texture1D but desc.height was not 1.
-         * @return ErrorInvalidUsage if desc.type was Texture2D but desc.height was not at least 1.
-         * @return ErrorInvalidUsage if desc.type was Texture3D but desc.height was not at least 1.
-         * @return ErrorInvalidUsage if desc.depthOrArrayLayers was not at least 1.
-         * @return ErrorInvalidUsage if desc.mipLevels was not at least 1.
-         * @return ErrorInvalidUsage if desc.width was 1 and desc.mipLevels was not exactly 1.
-         * @return ErrorInvalidUsage if desc.sampleCount was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.sampleCount was not Count1.
-         * @return ErrorInvalidUsage if desc.mipLevels was more than 1 and desc.sampleCount was not texture_sample_count::Count1.
-         * @return ErrorInvalidUsage if desc.usage had the ShaderWrite bit set but desc.sampleCount was not Count1.
-         * @return ErrorInvalidUsage if desc.format was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.format was texture_format::Undefined.
-         * @return ErrorInvalidUsage if desc.tiling was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.tiling was Linear but desc.type was not Texture2D.
-         * @return ErrorInvalidUsage if desc.tiling was Linear but was not compatible with desc.format. desc.format **can not** be: D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.
-         * @return ErrorInvalidUsage if desc.tiling was Linear but desc.depthOrArrayLayers was not 1.
-         * @return ErrorInvalidUsage if desc.tiling was Linear but desc.samples was not Count1.
-         * @return ErrorInvalidUsage if desc.tiling was Linear but desc.usage had bits set that were not TransferSrc and/or TransferDst.
+         * @return ErrorInvalidUsage if any of the conditions in resource_desc are not met.
         */
         result createResource(const resource_desc& desc, Resource** resource);
 

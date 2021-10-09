@@ -393,6 +393,13 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
+        // desc.memoryType against desc.type
+        if (desc.type != resource_type::Buffer && desc.memoryType != resource_memory_type::Local)
+        {
+            detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.type is not Buffer then desc.memoryType **must** be set to Local.");
+            return result::ErrorInvalidUsage;
+        }
+
         // desc.memoryType against desc.usage
         switch(desc.memoryType)
         {
@@ -688,6 +695,12 @@ namespace LLRI_NAMESPACE
             if (desc.mipLevels > 1 && desc.sampleCount > texture_sample_count::Count1)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.mipLevels is more than 1 then desc.sampleCount **must** be texture_sample_count::Count1");
+                return result::ErrorInvalidUsage;
+            }
+
+            if (desc.mipLevels > 1 && desc.width < pow(2, desc.mipLevels))
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.mipLevels is more than 1 then desc.width must be >= pow(2, desc.mipLevels).");
                 return result::ErrorInvalidUsage;
             }
 

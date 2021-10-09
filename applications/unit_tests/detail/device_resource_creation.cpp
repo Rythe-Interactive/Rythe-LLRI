@@ -41,7 +41,8 @@ TEST_CASE("Device::createResource()")
                         {
                             desc.initialState = static_cast<llri::resource_state>(resourceState);
 
-                            const std::set<uint32_t> possibleSizeValues = { 0, 1, 1024, UINT_MAX };
+                            // note: 0, 1, 1024, and UINT_MAX are arbitrary test values, 2048 is the default max depthOrArrayLayers value and 16384 is the default max width/height value.
+                            const std::set<uint32_t> possibleSizeValues = { 0, 1, 1024, 2048, 16384, UINT_MAX };
                             for (auto width : possibleSizeValues)
                             {
                                 desc.width = width;
