@@ -401,16 +401,24 @@ namespace LLRI_NAMESPACE
                 break;
             case resource_memory_type::Upload:
             {
-                if (desc.usage.contains(resource_usage_flag_bits::ShaderWrite))
+                constexpr auto invalidFlags = resource_usage_flag_bits::ShaderWrite | resource_usage_flag_bits::ColorAttachment | resource_usage_flag_bits::DepthStencilAttachment | resource_usage_flag_bits::DenyShaderResource;
+
+                if (desc.usage.contains(invalidFlags))
                 {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is resource_memory_type::Upload but desc.usage has the resource_usage_flag_bits::ShaderWrite bit set. Upload resources can not be used as ShaderWrite resources.");
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is resource_memory_type::Upload but desc.usage has one of the following flags set: " + to_string(invalidFlags));
                     return result::ErrorInvalidUsage;
                 }
                 break;
             }
             case resource_memory_type::Read:
             {
-                //TODO: Validate resource_usage_flags support with resource_memory_type::Read
+                constexpr auto invalidFlags = resource_usage_flag_bits::ShaderWrite | resource_usage_flag_bits::ColorAttachment | resource_usage_flag_bits::DepthStencilAttachment | resource_usage_flag_bits::DenyShaderResource;
+
+                if (desc.usage.contains(invalidFlags))
+                {
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is resource_memory_type::Read but desc.usage has one of the following flags set: " + to_string(invalidFlags));
+                    return result::ErrorInvalidUsage;
+                }
                 break;
             }
         }
@@ -631,6 +639,12 @@ namespace LLRI_NAMESPACE
                 return result::ErrorInvalidUsage;
             }
 
+            if (desc.width == 1 && desc.mipLevels > 1)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.width was 1 and desc.mipLevels was not exactly 1");
+                return result::ErrorInvalidUsage;
+            }
+
             // desc.sampleCount is a valid value
             if (desc.sampleCount > texture_sample_count::MaxEnum)
             {
@@ -639,12 +653,23 @@ namespace LLRI_NAMESPACE
             }
 
             // desc.sampleCount against desc.type
-            // no current checks
+            if (desc.sampleCount != texture_sample_count::Count1 && desc.type != resource_type::Texture2D)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.type is not resource_type::Texture2D then desc.sampleCount must be Count1.");
+                return result::ErrorInvalidUsage;
+            }
 
             // desc.sampleCount against desc.usage
             if (desc.usage.contains(resource_usage_flag_bits::ShaderWrite) && desc.sampleCount > texture_sample_count::Count1)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.usage had the ShaderWrite bit set but desc.sampleCount was not Count1.");
+                return result::ErrorInvalidUsage;
+            }
+
+            // desc.sampleCount against desc.mipLevels
+            if (desc.mipLevels > 1 && desc.sampleCount > texture_sample_count::Count1)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.mipLevels is more than 1 then desc.sampleCount **must** be texture_sample_count::Count1");
                 return result::ErrorInvalidUsage;
             }
 
