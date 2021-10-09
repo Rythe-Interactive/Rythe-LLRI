@@ -64,6 +64,13 @@
  */
 #define LLRI_TIMEOUT_MAX 0xFFFFFFFFu
 
+// Enables the D3D12 Agility SDK - can safely be ignored for all other implementations 
+extern "C"
+{
+    inline _declspec(dllexport) extern const uint32_t D3D12SDKVersion = 4;
+    inline _declspec(dllexport) extern const char* D3D12SDKPath = "D3D12/";
+}
+
 namespace LLRI_NAMESPACE
 {
     /**
