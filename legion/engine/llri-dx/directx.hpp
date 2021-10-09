@@ -133,120 +133,120 @@ namespace LLRI_NAMESPACE
             throw;
         }
 
-        constexpr DXGI_FORMAT mapTextureFormat(texture_format format)
+        constexpr DXGI_FORMAT mapTextureFormat(format format)
         {
             switch(format)
             {
-                case texture_format::Undefined:
+                case format::Undefined:
                     return DXGI_FORMAT_UNKNOWN;
-                case texture_format::R8UNorm:
+                case format::R8UNorm:
                     return DXGI_FORMAT_R8_UNORM;
-                case texture_format::R8Norm:
+                case format::R8Norm:
                     return DXGI_FORMAT_R8_SNORM;
-                case texture_format::R8UInt:
+                case format::R8UInt:
                     return DXGI_FORMAT_R8_UINT;
-                case texture_format::R8Int:
+                case format::R8Int:
                     return DXGI_FORMAT_R8_SINT;
-                case texture_format::RG8UNorm:
+                case format::RG8UNorm:
                     return DXGI_FORMAT_R8G8_UNORM;
-                case texture_format::RG8Norm:
+                case format::RG8Norm:
                     return DXGI_FORMAT_R8G8_SNORM;
-                case texture_format::RG8UInt:
+                case format::RG8UInt:
                     return DXGI_FORMAT_R8G8_UINT;
-                case texture_format::RG8Int:
+                case format::RG8Int:
                     return DXGI_FORMAT_R8G8_SINT;
-                case texture_format::RGBA8UNorm:
+                case format::RGBA8UNorm:
                     return DXGI_FORMAT_R8G8B8A8_UNORM;
-                case texture_format::RGBA8Norm:
+                case format::RGBA8Norm:
                     return DXGI_FORMAT_R8G8B8A8_SNORM;
-                case texture_format::RGBA8UInt:
+                case format::RGBA8UInt:
                     return DXGI_FORMAT_R8G8B8A8_UINT;
-                case texture_format::RGBA8Int:
+                case format::RGBA8Int:
                     return DXGI_FORMAT_R8G8B8A8_SINT;
-                case texture_format::RGBA8sRGB:
+                case format::RGBA8sRGB:
                     return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-                case texture_format::BGRA8UNorm:
+                case format::BGRA8UNorm:
                     return DXGI_FORMAT_B8G8R8A8_UNORM;
-                case texture_format::BGRA8sRGB:
+                case format::BGRA8sRGB:
                     return DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
-                case texture_format::RGB10A2UNorm:
+                case format::RGB10A2UNorm:
                     return DXGI_FORMAT_R10G10B10A2_UNORM;
-                case texture_format::RGB10A2UInt:
+                case format::RGB10A2UInt:
                     return DXGI_FORMAT_R10G10B10A2_UINT;
-                case texture_format::R16UNorm:
+                case format::R16UNorm:
                     return DXGI_FORMAT_R16_UNORM;
-                case texture_format::R16Norm:
+                case format::R16Norm:
                     return DXGI_FORMAT_R16_SNORM;
-                case texture_format::R16UInt:
+                case format::R16UInt:
                     return DXGI_FORMAT_R16_UINT;
-                case texture_format::R16Int:
+                case format::R16Int:
                     return DXGI_FORMAT_R16_SINT;
-                case texture_format::R16Float:
+                case format::R16Float:
                     return DXGI_FORMAT_R16_FLOAT;
-                case texture_format::RG16UNorm:
+                case format::RG16UNorm:
                     return DXGI_FORMAT_R16G16_UNORM;
-                case texture_format::RG16Norm:
+                case format::RG16Norm:
                     return DXGI_FORMAT_R16G16_SNORM;
-                case texture_format::RG16UInt:
+                case format::RG16UInt:
                     return DXGI_FORMAT_R16G16_UINT;
-                case texture_format::RG16Int:
+                case format::RG16Int:
                     return DXGI_FORMAT_R16G16_SINT;
-                case texture_format::RG16Float:
+                case format::RG16Float:
                     return DXGI_FORMAT_R16G16_FLOAT;
-                case texture_format::RGBA16UNorm:
+                case format::RGBA16UNorm:
                     return DXGI_FORMAT_R16G16B16A16_UNORM;
-                case texture_format::RGBA16Norm:
+                case format::RGBA16Norm:
                     return DXGI_FORMAT_R16G16B16A16_SNORM;
-                case texture_format::RGBA16UInt:
+                case format::RGBA16UInt:
                     return DXGI_FORMAT_R16G16B16A16_UINT;
-                case texture_format::RGBA16Int:
+                case format::RGBA16Int:
                     return DXGI_FORMAT_R16G16B16A16_SINT;
-                case texture_format::RGBA16Float:
+                case format::RGBA16Float:
                     return DXGI_FORMAT_R16G16B16A16_FLOAT;
-                case texture_format::R32UInt:
+                case format::R32UInt:
                     return DXGI_FORMAT_R32_UINT;
-                case texture_format::R32Int:
+                case format::R32Int:
                     return DXGI_FORMAT_R32_SINT;
-                case texture_format::R32Float:
+                case format::R32Float:
                     return DXGI_FORMAT_R32_FLOAT;
-                case texture_format::RG32UInt:
+                case format::RG32UInt:
                     return DXGI_FORMAT_R32G32_UINT;
-                case texture_format::RG32Int:
+                case format::RG32Int:
                     return DXGI_FORMAT_R32G32_SINT;
-                case texture_format::RG32Float:
+                case format::RG32Float:
                     return DXGI_FORMAT_R32G32_FLOAT;
-                case texture_format::RGB32UInt:
+                case format::RGB32UInt:
                     return DXGI_FORMAT_R32G32B32_UINT;
-                case texture_format::RGB32Int:
+                case format::RGB32Int:
                     return DXGI_FORMAT_R32G32B32_SINT;
-                case texture_format::RGB32Float:
+                case format::RGB32Float:
                     return DXGI_FORMAT_R32G32B32_FLOAT;
-                case texture_format::RGBA32UInt:
+                case format::RGBA32UInt:
                     return DXGI_FORMAT_R32G32B32A32_UINT;
-                case texture_format::RGBA32Int:
+                case format::RGBA32Int:
                     return DXGI_FORMAT_R32G32B32A32_SINT;
-                case texture_format::RGBA32Float:
+                case format::RGBA32Float:
                     return DXGI_FORMAT_R32G32B32A32_FLOAT;
-                case texture_format::D16UNorm:
+                case format::D16UNorm:
                     return DXGI_FORMAT_D16_UNORM;
-                case texture_format::D24UNormS8UInt:
+                case format::D24UNormS8UInt:
                     return DXGI_FORMAT_D24_UNORM_S8_UINT;
-                case texture_format::D32Float:
+                case format::D32Float:
                     return DXGI_FORMAT_D32_FLOAT;
-                case texture_format::D32FloatS8X24UInt:
+                case format::D32FloatS8X24UInt:
                     return DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
             }
 
             throw;
         }
 
-        constexpr D3D12_TEXTURE_LAYOUT mapTextureTiling(texture_tiling tiling)
+        constexpr D3D12_TEXTURE_LAYOUT mapTextureTiling(tiling tiling)
         {
             switch (tiling)
             {
-                case texture_tiling::Optimal:
+                case tiling::Optimal:
                     return D3D12_TEXTURE_LAYOUT_UNKNOWN;
-                case texture_tiling::Linear:
+                case tiling::Linear:
                     return D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
             }
 
@@ -302,15 +302,15 @@ namespace LLRI_NAMESPACE
             throw;
         }
 
-        constexpr D3D12_HEAP_TYPE mapResourceMemoryType(resource_memory_type memory)
+        constexpr D3D12_HEAP_TYPE mapResourceMemoryType(memory_type memory)
         {
             switch(memory)
             {
-                case resource_memory_type::Local:
+                case memory_type::Local:
                     return D3D12_HEAP_TYPE_DEFAULT;
-                case resource_memory_type::Upload:
+                case memory_type::Upload:
                     return D3D12_HEAP_TYPE_UPLOAD;
-                case resource_memory_type::Read:
+                case memory_type::Read:
                     return D3D12_HEAP_TYPE_READBACK;
             }
 

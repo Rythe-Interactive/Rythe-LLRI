@@ -136,6 +136,25 @@ namespace LLRI_NAMESPACE
 #endif
     }
 
+    inline const std::unordered_map<format, format_properties>& Adapter::queryFormatProperties() const
+    {
+        if (m_cachedFormatProperties.empty())
+        {
+            m_cachedFormatProperties = impl_queryFormatProperties();
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+            detail::impl_pollAPIMessages(m_validationCallbackMessenger);
+#endif
+        }
+
+        return m_cachedFormatProperties;
+    }
+
+    inline format_properties Adapter::queryFormatProperties(format f) const
+    {
+        return queryFormatProperties().at(f);
+    }
+
     inline uint8_t Adapter::queryNodeCount() const
     {
         return m_nodeCount;

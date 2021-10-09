@@ -67,107 +67,107 @@ namespace LLRI_NAMESPACE
             throw;
         }
 
-        constexpr VkFormat mapTextureFormat(texture_format format)
+        constexpr VkFormat mapTextureFormat(format format)
         {
             switch (format)
             {
-                case texture_format::Undefined:
+                case format::Undefined:
                     return VK_FORMAT_UNDEFINED;
-                case texture_format::R8UNorm:
+                case format::R8UNorm:
                     return VK_FORMAT_R8_UNORM;
-                case texture_format::R8Norm:
+                case format::R8Norm:
                     return VK_FORMAT_R8_SNORM;
-                case texture_format::R8UInt:
+                case format::R8UInt:
                     return VK_FORMAT_R8_UINT;
-                case texture_format::R8Int:
+                case format::R8Int:
                     return VK_FORMAT_R8_SINT;
-                case texture_format::RG8UNorm:
+                case format::RG8UNorm:
                     return VK_FORMAT_R8G8_UNORM;
-                case texture_format::RG8Norm:
+                case format::RG8Norm:
                     return VK_FORMAT_R8G8_SNORM;
-                case texture_format::RG8UInt:
+                case format::RG8UInt:
                     return VK_FORMAT_R8G8_UINT;
-                case texture_format::RG8Int:
+                case format::RG8Int:
                     return VK_FORMAT_R8G8_SINT;
-                case texture_format::RGBA8UNorm:
+                case format::RGBA8UNorm:
                     return VK_FORMAT_R8G8B8A8_UNORM;
-                case texture_format::RGBA8Norm:
+                case format::RGBA8Norm:
                     return VK_FORMAT_R8G8B8A8_SNORM;
-                case texture_format::RGBA8UInt:
+                case format::RGBA8UInt:
                     return VK_FORMAT_R8G8B8A8_UINT;
-                case texture_format::RGBA8Int:
+                case format::RGBA8Int:
                     return VK_FORMAT_R8G8B8A8_SINT;
-                case texture_format::RGBA8sRGB:
+                case format::RGBA8sRGB:
                     return VK_FORMAT_R8G8B8A8_SRGB;
-                case texture_format::BGRA8UNorm:
+                case format::BGRA8UNorm:
                     return VK_FORMAT_B8G8R8A8_UNORM;
-                case texture_format::BGRA8sRGB:
+                case format::BGRA8sRGB:
                     return VK_FORMAT_B8G8R8A8_SRGB;
-                case texture_format::RGB10A2UNorm:
+                case format::RGB10A2UNorm:
                     return VK_FORMAT_A2B10G10R10_UNORM_PACK32;
-                case texture_format::RGB10A2UInt:
+                case format::RGB10A2UInt:
                     return VK_FORMAT_A2R10G10B10_UINT_PACK32;
-                case texture_format::R16UNorm:
+                case format::R16UNorm:
                     return VK_FORMAT_R16_UNORM;
-                case texture_format::R16Norm:
+                case format::R16Norm:
                     return VK_FORMAT_R16_SNORM;
-                case texture_format::R16UInt:
+                case format::R16UInt:
                     return VK_FORMAT_R16_UINT;
-                case texture_format::R16Int:
+                case format::R16Int:
                     return VK_FORMAT_R16_SINT;
-                case texture_format::R16Float:
+                case format::R16Float:
                     return VK_FORMAT_R16_SFLOAT;
-                case texture_format::RG16UNorm:
+                case format::RG16UNorm:
                     return VK_FORMAT_R16G16_UNORM;
-                case texture_format::RG16Norm:
+                case format::RG16Norm:
                     return VK_FORMAT_R16G16_SNORM;
-                case texture_format::RG16UInt:
+                case format::RG16UInt:
                     return VK_FORMAT_R16G16_UINT;
-                case texture_format::RG16Int:
+                case format::RG16Int:
                     return VK_FORMAT_R16G16_SINT;
-                case texture_format::RG16Float:
+                case format::RG16Float:
                     return VK_FORMAT_R16G16_SFLOAT;
-                case texture_format::RGBA16UNorm:
+                case format::RGBA16UNorm:
                     return VK_FORMAT_R16G16B16A16_UNORM;
-                case texture_format::RGBA16Norm:
+                case format::RGBA16Norm:
                     return VK_FORMAT_R16G16B16A16_SNORM;
-                case texture_format::RGBA16UInt:
+                case format::RGBA16UInt:
                     return VK_FORMAT_R16G16B16A16_UINT;
-                case texture_format::RGBA16Int:
+                case format::RGBA16Int:
                     return VK_FORMAT_R16G16B16A16_SINT;
-                case texture_format::RGBA16Float:
+                case format::RGBA16Float:
                     return VK_FORMAT_R16G16B16A16_SFLOAT;
-                case texture_format::R32UInt:
+                case format::R32UInt:
                     return VK_FORMAT_R32_UINT;
-                case texture_format::R32Int:
+                case format::R32Int:
                     return VK_FORMAT_R32_SINT;
-                case texture_format::R32Float:
+                case format::R32Float:
                     return VK_FORMAT_R32_SFLOAT;
-                case texture_format::RG32UInt:
+                case format::RG32UInt:
                     return VK_FORMAT_R32G32_UINT;
-                case texture_format::RG32Int:
+                case format::RG32Int:
                     return VK_FORMAT_R32G32_SINT;
-                case texture_format::RG32Float:
+                case format::RG32Float:
                     return VK_FORMAT_R32G32_SFLOAT;
-                case texture_format::RGB32UInt:
+                case format::RGB32UInt:
                     return VK_FORMAT_R32G32B32_UINT;
-                case texture_format::RGB32Int:
+                case format::RGB32Int:
                     return VK_FORMAT_R32G32B32_SINT;
-                case texture_format::RGB32Float:
+                case format::RGB32Float:
                     return VK_FORMAT_R32G32B32_SFLOAT;
-                case texture_format::RGBA32UInt:
+                case format::RGBA32UInt:
                     return VK_FORMAT_R32G32B32A32_UINT;
-                case texture_format::RGBA32Int:
+                case format::RGBA32Int:
                     return VK_FORMAT_R32G32B32A32_SINT;
-                case texture_format::RGBA32Float:
+                case format::RGBA32Float:
                     return VK_FORMAT_R32G32B32A32_SFLOAT;
-                case texture_format::D16UNorm:
+                case format::D16UNorm:
                     return VK_FORMAT_D16_UNORM;
-                case texture_format::D24UNormS8UInt:
+                case format::D24UNormS8UInt:
                     return VK_FORMAT_D24_UNORM_S8_UINT;
-                case texture_format::D32Float:
+                case format::D32Float:
                     return VK_FORMAT_D32_SFLOAT;
-                case texture_format::D32FloatS8X24UInt:
+                case format::D32FloatS8X24UInt:
                     return VK_FORMAT_D32_SFLOAT_S8_UINT;
             }
 
@@ -207,13 +207,13 @@ namespace LLRI_NAMESPACE
             throw;
         }
 
-        constexpr VkImageTiling mapTextureTiling(texture_tiling tiling)
+        constexpr VkImageTiling mapTextureTiling(tiling tiling)
         {
             switch (tiling)
             {
-                case texture_tiling::Optimal:
+                case tiling::Optimal:
                     return VK_IMAGE_TILING_OPTIMAL;
-                case texture_tiling::Linear:
+                case tiling::Linear:
                     return VK_IMAGE_TILING_LINEAR;
             }
 
@@ -253,23 +253,23 @@ namespace LLRI_NAMESPACE
             return output;
         }
 
-        constexpr VkMemoryPropertyFlags mapMemoryType(resource_memory_type type)
+        constexpr VkMemoryPropertyFlags mapMemoryType(memory_type type)
         {
             VkMemoryPropertyFlags memFlags = 0;
             switch (type)
             {
-                case resource_memory_type::Local:
+                case memory_type::Local:
                 {
                     memFlags |= VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
                     break;
                 }
-                case resource_memory_type::Upload:
+                case memory_type::Upload:
                 {
                     memFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
                     memFlags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
                     break;
                 }
-                case resource_memory_type::Read:
+                case memory_type::Read:
                 {
                     memFlags |= VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
                     memFlags |= VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;

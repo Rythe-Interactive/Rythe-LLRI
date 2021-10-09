@@ -387,14 +387,14 @@ namespace LLRI_NAMESPACE
         }
 
         // desc.memoryType is a valid value
-        if (desc.memoryType > resource_memory_type::MaxEnum)
+        if (desc.memoryType > memory_type::MaxEnum)
         {
-            detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType (" + std::to_string(static_cast<uint8_t>(desc.memoryType)) + " is not a valid resource_memory_type value.");
+            detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType (" + std::to_string(static_cast<uint8_t>(desc.memoryType)) + " is not a valid memory_type value.");
             return result::ErrorInvalidUsage;
         }
 
         // desc.memoryType against desc.type
-        if (desc.type != resource_type::Buffer && desc.memoryType != resource_memory_type::Local)
+        if (desc.type != resource_type::Buffer && desc.memoryType != memory_type::Local)
         {
             detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.type is not Buffer then desc.memoryType **must** be set to Local.");
             return result::ErrorInvalidUsage;
@@ -403,27 +403,27 @@ namespace LLRI_NAMESPACE
         // desc.memoryType against desc.usage
         switch(desc.memoryType)
         {
-            case resource_memory_type::Local:
+            case memory_type::Local:
                 // local currently supports all flags
                 break;
-            case resource_memory_type::Upload:
+            case memory_type::Upload:
             {
                 constexpr auto invalidFlags = resource_usage_flag_bits::ShaderWrite | resource_usage_flag_bits::ColorAttachment | resource_usage_flag_bits::DepthStencilAttachment | resource_usage_flag_bits::DenyShaderResource;
 
                 if (desc.usage.any(invalidFlags))
                 {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is resource_memory_type::Upload but desc.usage has one of the following flags set: " + to_string(invalidFlags));
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is memory_type::Upload but desc.usage has one of the following flags set: " + to_string(invalidFlags));
                     return result::ErrorInvalidUsage;
                 }
                 break;
             }
-            case resource_memory_type::Read:
+            case memory_type::Read:
             {
                 constexpr auto invalidFlags = resource_usage_flag_bits::ShaderWrite | resource_usage_flag_bits::ColorAttachment | resource_usage_flag_bits::DepthStencilAttachment | resource_usage_flag_bits::DenyShaderResource;
 
                 if (desc.usage.any(invalidFlags))
                 {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is resource_memory_type::Read but desc.usage has one of the following flags set: " + to_string(invalidFlags));
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is memory_type::Read but desc.usage has one of the following flags set: " + to_string(invalidFlags));
                     return result::ErrorInvalidUsage;
                 }
                 break;
@@ -533,7 +533,7 @@ namespace LLRI_NAMESPACE
         // desc.initialState against desc.memoryType
         switch(desc.memoryType)
         {
-            case resource_memory_type::Local:
+            case memory_type::Local:
             {
                 if (desc.initialState == resource_state::Upload)
                 {
@@ -542,7 +542,7 @@ namespace LLRI_NAMESPACE
                 }
                 break;
             }
-            case resource_memory_type::Upload:
+            case memory_type::Upload:
             {
                 if (desc.initialState != resource_state::Upload)
                 {
@@ -551,7 +551,7 @@ namespace LLRI_NAMESPACE
                 }
                 break;
             }
-            case resource_memory_type::Read:
+            case memory_type::Read:
             {
                 if (desc.initialState != resource_state::TransferDst)
                 {
@@ -671,30 +671,30 @@ namespace LLRI_NAMESPACE
             }
 
             // desc.sampleCount is a valid value
-            if (desc.sampleCount > texture_sample_count::MaxEnum)
+            if (desc.sampleCount > sample_count::MaxEnum)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.sampleCount was not a valid enum value.");
                 return result::ErrorInvalidUsage;
             }
 
             // desc.sampleCount against desc.type
-            if (desc.sampleCount != texture_sample_count::Count1 && desc.type != resource_type::Texture2D)
+            if (desc.sampleCount != sample_count::Count1 && desc.type != resource_type::Texture2D)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.type is not resource_type::Texture2D then desc.sampleCount must be Count1.");
                 return result::ErrorInvalidUsage;
             }
 
             // desc.sampleCount against desc.usage
-            if (desc.usage.contains(resource_usage_flag_bits::ShaderWrite) && desc.sampleCount > texture_sample_count::Count1)
+            if (desc.usage.contains(resource_usage_flag_bits::ShaderWrite) && desc.sampleCount > sample_count::Count1)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.usage had the ShaderWrite bit set but desc.sampleCount was not Count1.");
                 return result::ErrorInvalidUsage;
             }
 
             // desc.sampleCount against desc.mipLevels
-            if (desc.mipLevels > 1 && desc.sampleCount > texture_sample_count::Count1)
+            if (desc.mipLevels > 1 && desc.sampleCount > sample_count::Count1)
             {
-                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.mipLevels is more than 1 then desc.sampleCount **must** be texture_sample_count::Count1");
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.mipLevels is more than 1 then desc.sampleCount **must** be sample_count::Count1");
                 return result::ErrorInvalidUsage;
             }
 
@@ -705,15 +705,15 @@ namespace LLRI_NAMESPACE
             }
 
             // desc.format is a valid value
-            if (desc.format > texture_format::MaxEnum)
+            if (desc.format > format::MaxEnum)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format was not a valid enum value.");
                 return result::ErrorInvalidUsage;
             }
 
-            if (desc.format == texture_format::Undefined)
+            if (desc.format == format::Undefined)
             {
-                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format was texture_format::Undefined.");
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format was format::Undefined.");
                 return result::ErrorInvalidUsage;
             }
 
@@ -724,29 +724,29 @@ namespace LLRI_NAMESPACE
             // TODO desc.format validity against desc.usage
             if (desc.usage.contains(resource_usage_flag_bits::Sampled))
             {
-                std::set<texture_format> supportedFormats;
+                std::set<format> supportedFormats;
             }
             if (desc.usage.contains(resource_usage_flag_bits::ShaderWrite))
             {
-                std::set<texture_format> supportedFormats;
+                std::set<format> supportedFormats;
             }
             if (desc.usage.contains(resource_usage_flag_bits::ColorAttachment))
             {
-                std::set<texture_format> supportedFormats;
+                std::set<format> supportedFormats;
             }
             if (desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment))
             {
-                std::set<texture_format> supportedFormats;
+                std::set<format> supportedFormats;
             }
 
             // desc.tiling is a valid enum value
-            if (desc.tiling > texture_tiling::MaxEnum)
+            if (desc.tiling > tiling::MaxEnum)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was not a valid enum value.");
                 return result::ErrorInvalidUsage;
             }
 
-            if (desc.tiling == texture_tiling::Linear)
+            if (desc.tiling == tiling::Linear)
             {
                 // desc.tiling against desc.type
                 if (desc.type != llri::resource_type::Texture2D)
@@ -756,7 +756,7 @@ namespace LLRI_NAMESPACE
                 }
 
                 // desc.tiling against desc.format
-                std::unordered_set<texture_format> unsupportedFormats = { texture_format::D16UNorm, texture_format::D24UNormS8UInt, texture_format::D32Float, texture_format::D32FloatS8X24UInt };
+                std::unordered_set<format> unsupportedFormats = { format::D16UNorm, format::D24UNormS8UInt, format::D32Float, format::D32FloatS8X24UInt };
 
                 if (unsupportedFormats.find(desc.format) != unsupportedFormats.end())
                 {
@@ -772,7 +772,7 @@ namespace LLRI_NAMESPACE
                 }
 
                 // desc.tiling against desc.sampleCount
-                if (desc.sampleCount != llri::texture_sample_count::Count1)
+                if (desc.sampleCount != llri::sample_count::Count1)
                 {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear but desc.samples was not Count1.");
                     return result::ErrorInvalidUsage;

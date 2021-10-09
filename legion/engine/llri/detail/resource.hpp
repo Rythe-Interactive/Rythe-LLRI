@@ -133,7 +133,7 @@ namespace LLRI_NAMESPACE
      *  - Float: signed float.
      *  - sRGB: unsigned normalized data with sRGB nonlinear encoding.
     */
-    enum struct texture_format : uint8_t
+    enum struct format : uint8_t
     {
         Undefined,
 
@@ -204,15 +204,15 @@ namespace LLRI_NAMESPACE
     };
 
     /**
-     * @brief Converts a texture_format to a string.
-     * @return The enum value as a string, or "Invalid texture_format value" if the value was not recognized as an enum member.
+     * @brief Converts a format to a string.
+     * @return The enum value as a string, or "Invalid format value" if the value was not recognized as an enum member.
     */
-    std::string to_string(texture_format format);
+    std::string to_string(format f);
 
     /**
      * @brief Multi-sampling - the number of samples per pixel.
     */
-    enum struct texture_sample_count : uint8_t
+    enum struct sample_count : uint8_t
     {
         Count1 = 1,
         Count2 = 2,
@@ -228,14 +228,14 @@ namespace LLRI_NAMESPACE
 
     /**
      * @brief Converts a texture_sample_count to a string.
-     * @return The enum value as a string, or "Invalid texture_sample_count value" if the value was not recognized as an enum member.
+     * @return The enum value as a string, or "Invalid sample_count value" if the value was not recognized as an enum member.
     */
-    std::string to_string(texture_sample_count count);
+    std::string to_string(sample_count count);
 
     /**
      * @brief Specify how a texture's data is stored.
     */
-    enum struct texture_tiling : uint8_t
+    enum struct tiling : uint8_t
     {
         /**
          * @brief Optimal tiling allows implementation-dependent arrangement, which results in the most efficient memory access.
@@ -315,7 +315,7 @@ namespace LLRI_NAMESPACE
     /**
      * @brief The type of memory that a resource is allocated with. Different memory types support different operations and may perform better or worse for some operations.
     */
-    enum struct resource_memory_type : uint8_t
+    enum struct memory_type : uint8_t
     {
         /**
          * @brief Optimized for device access. Can not be written to or otherwise viewed by the host. It is recommended to use this for all resources that are used frequently (more than once) by the device.
@@ -343,9 +343,9 @@ namespace LLRI_NAMESPACE
 
     /**
      * @brief Converts a resource_memory_type to a string.
-     * @return The enum value as a string, or "Invalid resource_memory_type value" if the value was not recognized as an enum member.
+     * @return The enum value as a string, or "Invalid memory_type value" if the value was not recognized as an enum member.
     */
-    std::string to_string(resource_memory_type type);
+    std::string to_string(memory_type type);
 
     /**
      * @brief Describes how a resource should be created (its type, size, allocation, usage, etc.)
@@ -392,7 +392,7 @@ namespace LLRI_NAMESPACE
          * @note if memoryType is set to Upload then initialState **must** be Upload.
          * @note if memoryType is set to Read then initialState **must** be TransferDst.
         */
-        resource_memory_type memoryType;
+        memory_type memoryType;
         /**
          * @brief The state in which the resource should be first after allocation.
          *
@@ -451,30 +451,30 @@ namespace LLRI_NAMESPACE
          * @note if usage has the ShaderWrite bit set then sampleCount **must** be Count1.
          * @note if tiling is set to Linear then sampleCount **must** be set to Count1.
         */
-        texture_sample_count sampleCount;
+        sample_count sampleCount;
         /**
          * @brief The format of the texture.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note format **must** be a valid texture_format enum value.
+         * @note format **must** be a valid format enum value.
          * @note format **must not** be Undefined.
          * @note if tiling is set to Linear then format **must not** be D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.
         */
-        texture_format format;
+        format format;
         /**
          * @brief Describes how the texture's texels are stored.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note tiling **must** be a valid texture_tiling enum value.
+         * @note tiling **must** be a valid tiling enum value.
          * @note if type is not Texture2D then tiling **must** be set to Optimal.
          * @note if depthOrArrayLayers is not 1 then tiling **must** be set to Optimal.
         */
-        texture_tiling tiling;
+        tiling tiling;
 
         /**
          * @brief Convenience function for creating a buffer resource_desc.
         */
-        static constexpr resource_desc buffer(resource_usage_flags usage, resource_memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask = 0, uint32_t visibleNodeMask = 0) noexcept;
+        static constexpr resource_desc buffer(resource_usage_flags usage, memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask = 0, uint32_t visibleNodeMask = 0) noexcept;
     };
 
     class Resource

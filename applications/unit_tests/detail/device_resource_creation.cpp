@@ -33,9 +33,9 @@ TEST_CASE("Device::createResource()")
                 {
                     desc.usage = usage;
 
-                    for (uint8_t memType = 0; memType <= static_cast<uint8_t>(llri::resource_memory_type::MaxEnum); memType++)
+                    for (uint8_t memType = 0; memType <= static_cast<uint8_t>(llri::memory_type::MaxEnum); memType++)
                     {
-                        desc.memoryType = static_cast<llri::resource_memory_type>(memType);
+                        desc.memoryType = static_cast<llri::memory_type>(memType);
 
                         for (uint8_t resourceState = 0; resourceState <= static_cast<uint8_t>(llri::resource_state::MaxEnum); resourceState++)
                         {
@@ -74,17 +74,17 @@ TEST_CASE("Device::createResource()")
                                         {
                                             desc.mipLevels = static_cast<uint16_t>(mip);
 
-                                            for (uint32_t sample = 1; sample <= static_cast<uint32_t>(llri::texture_sample_count::MaxEnum); sample = sample << 1)
+                                            for (uint32_t sample = 1; sample <= static_cast<uint32_t>(llri::sample_count::MaxEnum); sample = sample << 1)
                                             {
-                                                desc.sampleCount = static_cast<llri::texture_sample_count>(sample);
+                                                desc.sampleCount = static_cast<llri::sample_count>(sample);
 
-                                                for (uint32_t format = 0; format <= static_cast<uint32_t>(llri::texture_format::MaxEnum); format++)
+                                                for (uint32_t f = 0; f <= static_cast<uint32_t>(llri::format::MaxEnum); f++)
                                                 {
-                                                    desc.format = static_cast<llri::texture_format>(format);
+                                                    desc.format = static_cast<llri::format>(f);
 
-                                                    for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::texture_tiling::MaxEnum); tiling++)
+                                                    for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::tiling::MaxEnum); tiling++)
                                                     {
-                                                        desc.tiling = static_cast<llri::texture_tiling>(tiling);
+                                                        desc.tiling = static_cast<llri::tiling>(tiling);
 
                                                         llri::Resource* resource = nullptr;
                                                         llri::result result = device->createResource(desc, &resource);

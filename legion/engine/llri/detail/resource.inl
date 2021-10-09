@@ -59,131 +59,131 @@ namespace LLRI_NAMESPACE
         return "Invalid resource_type value";
     }
 
-    inline std::string to_string(texture_format format)
+    inline std::string to_string(format f)
     {
-        switch (format)
+        switch (f)
         {
-            case texture_format::Undefined:
+            case format::Undefined:
                 return "Undefined";
-            case texture_format::R8UNorm:
+            case format::R8UNorm:
                 return "R8UNorm";
-            case texture_format::R8Norm:
+            case format::R8Norm:
                 return "R8Norm";
-            case texture_format::R8UInt:
+            case format::R8UInt:
                 return "R8UInt";
-            case texture_format::R8Int:
+            case format::R8Int:
                 return "R8Int";
-            case texture_format::RG8UNorm:
+            case format::RG8UNorm:
                 return "RG8UNorm";
-            case texture_format::RG8Norm:
+            case format::RG8Norm:
                 return "RG8Norm";
-            case texture_format::RG8UInt:
+            case format::RG8UInt:
                 return "RG8UInt";
-            case texture_format::RG8Int:
+            case format::RG8Int:
                 return "RG8Int";
-            case texture_format::RGBA8UNorm:
+            case format::RGBA8UNorm:
                 return "RGBA8Unorm";
-            case texture_format::RGBA8Norm:
+            case format::RGBA8Norm:
                 return "RGBA8Norm";
-            case texture_format::RGBA8UInt:
+            case format::RGBA8UInt:
                 return "RGBA8UInt";
-            case texture_format::RGBA8Int:
+            case format::RGBA8Int:
                 return "RGBA8Int";
-            case texture_format::RGBA8sRGB:
+            case format::RGBA8sRGB:
                 return "RGBA8sRGB";
-            case texture_format::BGRA8UNorm:
+            case format::BGRA8UNorm:
                 return "BGRA8Unorm";
-            case texture_format::BGRA8sRGB:
+            case format::BGRA8sRGB:
                 return "BGRA8sRGB";
-            case texture_format::RGB10A2UNorm:
+            case format::RGB10A2UNorm:
                 return "RGB10A2UNorm";
-            case texture_format::RGB10A2UInt:
+            case format::RGB10A2UInt:
                 return "RGB10A2UInt";
-            case texture_format::R16UNorm:
+            case format::R16UNorm:
                 return "R16UNorm";
-            case texture_format::R16Norm:
+            case format::R16Norm:
                 return "R16Norm";
-            case texture_format::R16UInt:
+            case format::R16UInt:
                 return "R16UInt";
-            case texture_format::R16Int:
+            case format::R16Int:
                 return "R16Int";
-            case texture_format::R16Float:
+            case format::R16Float:
                 return "R16Float";
-            case texture_format::RG16UNorm:
+            case format::RG16UNorm:
                 return "RG16UNorm";
-            case texture_format::RG16Norm:
+            case format::RG16Norm:
                 return "RG16Norm";
-            case texture_format::RG16UInt:
+            case format::RG16UInt:
                 return "RG16UInt";
-            case texture_format::RG16Int:
+            case format::RG16Int:
                 return "RG16Int";
-            case texture_format::RG16Float:
+            case format::RG16Float:
                 return "RG16Float";
-            case texture_format::RGBA16UNorm:
+            case format::RGBA16UNorm:
                 return "RGBA16UNorm";
-            case texture_format::RGBA16Norm:
+            case format::RGBA16Norm:
                 return "RGBA16Norm";
-            case texture_format::RGBA16UInt:
+            case format::RGBA16UInt:
                 return "RGBA16UInt";
-            case texture_format::RGBA16Int:
+            case format::RGBA16Int:
                 return "RGBA16Int";
-            case texture_format::RGBA16Float:
+            case format::RGBA16Float:
                 return "RGBA16Float";
-            case texture_format::R32UInt:
+            case format::R32UInt:
                 return "R32UInt";
-            case texture_format::R32Int:
+            case format::R32Int:
                 return "R32Int";
-            case texture_format::R32Float:
+            case format::R32Float:
                 return "R32Float";
-            case texture_format::RG32UInt:
+            case format::RG32UInt:
                 return "RG32UInt";
-            case texture_format::RG32Int:
+            case format::RG32Int:
                 return "RG32Int";
-            case texture_format::RG32Float:
+            case format::RG32Float:
                 return "RG32Float";
-            case texture_format::RGB32UInt:
+            case format::RGB32UInt:
                 return "RGB32UInt";
-            case texture_format::RGB32Int:
+            case format::RGB32Int:
                 return "RGB32Int";
-            case texture_format::RGB32Float:
+            case format::RGB32Float:
                 return "RGB32Float";
-            case texture_format::RGBA32UInt:
+            case format::RGBA32UInt:
                 return "RGBA32UInt";
-            case texture_format::RGBA32Int:
+            case format::RGBA32Int:
                 return "RGBA32Int";
-            case texture_format::RGBA32Float:
+            case format::RGBA32Float:
                 return "RGBA32Float";
-            case texture_format::D16UNorm:
+            case format::D16UNorm:
                 return "D16UNorm";
-            case texture_format::D24UNormS8UInt:
+            case format::D24UNormS8UInt:
                 return "D24UNormS8UInt";
-            case texture_format::D32Float:
+            case format::D32Float:
                 return "D32Float";
-            case texture_format::D32FloatS8X24UInt:
+            case format::D32FloatS8X24UInt:
                 return "D32FloatS8X24UInt";
         }
 
-        return "Invalid texture_format value";
+        return "Invalid format value";
     }
 
-    inline std::string to_string(texture_sample_count count)
+    inline std::string to_string(sample_count count)
     {
         switch(count)
         {
-            case texture_sample_count::Count1:
+            case sample_count::Count1:
                 return "Count1";
-            case texture_sample_count::Count2:
+            case sample_count::Count2:
                 return "Count2";
-            case texture_sample_count::Count4:
+            case sample_count::Count4:
                 return "Count4";
-            case texture_sample_count::Count8:
+            case sample_count::Count8:
                 return "Count8";
-            case texture_sample_count::Count16:
+            case sample_count::Count16:
                 return "Count16";
-            case texture_sample_count::Count32:
+            case sample_count::Count32:
                 return "Count32";
         }
-        return "Invalid texture_sample_count value";
+        return "Invalid sample_count value";
     }
 
     inline std::string to_string(resource_usage_flag_bits bits)
@@ -245,22 +245,22 @@ namespace LLRI_NAMESPACE
         return out;
     }
 
-    inline std::string to_string(resource_memory_type type)
+    inline std::string to_string(memory_type type)
     {
         switch(type)
         {
-            case resource_memory_type::Local:
+            case memory_type::Local:
                 return "Local";
-            case resource_memory_type::Upload:
+            case memory_type::Upload:
                 return "Upload";
-            case resource_memory_type::Read:
+            case memory_type::Read:
                 return "Read";
         }
 
-        return "Invalid resource_memory_type value";
+        return "Invalid memory_type value";
     }
 
-    constexpr resource_desc resource_desc::buffer(resource_usage_flags usage, resource_memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask, uint32_t visibleNodeMask) noexcept
+    constexpr resource_desc resource_desc::buffer(resource_usage_flags usage, memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask, uint32_t visibleNodeMask) noexcept
     {
         return {
             createNodeMask, visibleNodeMask,
@@ -268,7 +268,7 @@ namespace LLRI_NAMESPACE
             usage, memoryType, initialState,
             sizeInBytes, // width = size
             1, 1, 1, // texture sizes defaulted to 1
-            texture_sample_count::Count1, texture_format::Undefined, texture_tiling::Optimal, // these parameters are ignored but we set them to reasonable defaults
+            sample_count::Count1, format::Undefined, tiling::Optimal, // these parameters are ignored but we set them to reasonable defaults
         };
     }
 }

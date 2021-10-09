@@ -6,15 +6,14 @@
 
 #pragma once
 #include <string>
-
-//detail includes should be kept to a minimum but
-//are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
-#include <llri/detail/instance.hpp>
+#include <unordered_map>
+#include <llri/llri.hpp> // unnecessary but helps with intellisense
 
 namespace LLRI_NAMESPACE
 {
     enum struct adapter_extension_type : uint8_t;
     enum struct queue_type : uint8_t;
+    enum struct format : uint8_t;
 
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
@@ -85,12 +84,31 @@ namespace LLRI_NAMESPACE
     };
 
     /**
+     * @brief Describes a format's properties.
+    */
+    struct format_properties
+    {
+        /**
+         * @brief If the format is supported by the selected adapter at all.
+        */
+        bool supported;
+        /**
+         * @brief If the format supports resource_usage_flag_bits::ShaderWrite.
+        */
+        bool shaderWrite;
+        /**
+         * @brief If the format supports tiling::Linear.
+        */
+        bool linearTiling;
+    };
+
+    /**
      * @brief Represents a compatible adapter (GPU, APU, IGPU, etc.).
      * This handle is created and owned by the Instance, the user is not responsible for destroying it.
     */
     class Adapter
     {
-        friend Instance;
+        friend class Instance;
         friend class Device;
         friend result detail::impl_createInstance(const instance_desc&, Instance**, bool);
         friend void detail::impl_destroyInstance(Instance*);
@@ -142,6 +160,19 @@ namespace LLRI_NAMESPACE
         result queryQueueCount(queue_type type, uint8_t* count) const;
 
         /**
+         * @brief Query the properties of all formats.
+         * The resulting unordered_map contains a format_properties structure for every format in llri::format.
+         *
+         * The result of queryFormatProperties is cached internally and a reference is returned. Thus calling the function multiple times does not come with an extra cost and calling queryFormatProperties(format) doesn't either.
+        */
+        [[nodiscard]] const std::unordered_map<format, format_properties>& queryFormatProperties() const;
+
+        /**
+         * @brief Query the properties of a single format.
+         */
+        [[nodiscard]] format_properties queryFormatProperties(format f) const;
+
+        /**
          * @brief Query the number of nodes (physical adapters) that this adapter represents. If there are no linked physical adapters, this returns 1.
         */
         [[nodiscard]] uint8_t queryNodeCount() const;
@@ -158,10 +189,15 @@ namespace LLRI_NAMESPACE
 
         void* m_validationCallbackMessenger = nullptr;
 
+        // cached value of queryFormatProperties()
+        mutable std::unordered_map<format, format_properties> m_cachedFormatProperties;
+
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
         result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
 
         result impl_queryQueueCount(queue_type type, uint8_t* count) const;
+
+        [[nodiscard]] std::unordered_map<format, format_properties> impl_queryFormatProperties() const;
     };
 }
