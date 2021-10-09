@@ -214,20 +214,24 @@ namespace LLRI_NAMESPACE
          * @return ErrorInvalidUsage if desc.memoryType was set to Upload but desc.initialState was not resource_state::Upload.
          * @return ErrorInvalidUsage if desc.memoryType was set to Read but desc.initialState was not set to resource_state::TransferDst.
          * @return ErrorInvalidUsage if desc.width was not at least 1.
+         * @return ErrorInvalidUsage if desc.width was more than 16384.
+         * @return ErrorInvalidUsage if desc.height was more than 16384.
+         * @return ErrorInvalidUsage if desc.depthOrArrayLayers was more than 2048.
          * @return ErrorInvalidUsage if desc.type was Texture1D but desc.height was not 1.
          * @return ErrorInvalidUsage if desc.type was Texture2D but desc.height was not at least 1.
          * @return ErrorInvalidUsage if desc.type was Texture3D but desc.height was not at least 1.
-         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D but desc.depthOrArrayLayers was not at least 1.
-         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.mipLevels was not at least 1.
-         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.width was 1 and desc.mipLevels was not exactly 1.
-         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.sampleCount was not a valid enum value.
-         * @return ErrorInvalidUsage if desc.type was Texture1D or 3D and desc.sampleCount was not Count1.
-         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.mipLevels was more than 1 and desc.sampleCount was not texture_sample_count::Count1.
-         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.usage had the ShaderWrite bit set but desc.sampleCount was not Count1.
-         * @return ErrorInvalidUsage if desc.type was Texture1D/2D/3D and desc.format was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.depthOrArrayLayers was not at least 1.
+         * @return ErrorInvalidUsage if desc.mipLevels was not at least 1.
+         * @return ErrorInvalidUsage if desc.width was 1 and desc.mipLevels was not exactly 1.
+         * @return ErrorInvalidUsage if desc.sampleCount was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.sampleCount was not Count1.
+         * @return ErrorInvalidUsage if desc.mipLevels was more than 1 and desc.sampleCount was not texture_sample_count::Count1.
+         * @return ErrorInvalidUsage if desc.usage had the ShaderWrite bit set but desc.sampleCount was not Count1.
+         * @return ErrorInvalidUsage if desc.format was not a valid enum value.
+         * @return ErrorInvalidUsage if desc.format was texture_format::Undefined.
          * @return ErrorInvalidUsage if desc.tiling was not a valid enum value.
          * @return ErrorInvalidUsage if desc.tiling was Linear but desc.type was not Texture2D.
-         * @return ErrorInvalidUsage desc.tiling was Linear but was not compatible with desc.format. desc.format **can not** be: D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.
+         * @return ErrorInvalidUsage if desc.tiling was Linear but was not compatible with desc.format. desc.format **can not** be: D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.
          * @return ErrorInvalidUsage if desc.tiling was Linear but desc.depthOrArrayLayers was not 1.
          * @return ErrorInvalidUsage if desc.tiling was Linear but desc.samples was not Count1.
          * @return ErrorInvalidUsage if desc.tiling was Linear but desc.usage had bits set that were not TransferSrc and/or TransferDst.

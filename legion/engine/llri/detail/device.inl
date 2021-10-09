@@ -403,7 +403,7 @@ namespace LLRI_NAMESPACE
             {
                 constexpr auto invalidFlags = resource_usage_flag_bits::ShaderWrite | resource_usage_flag_bits::ColorAttachment | resource_usage_flag_bits::DepthStencilAttachment | resource_usage_flag_bits::DenyShaderResource;
 
-                if (desc.usage.contains(invalidFlags))
+                if (desc.usage.any(invalidFlags))
                 {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is resource_memory_type::Upload but desc.usage has one of the following flags set: " + to_string(invalidFlags));
                     return result::ErrorInvalidUsage;
@@ -414,7 +414,7 @@ namespace LLRI_NAMESPACE
             {
                 constexpr auto invalidFlags = resource_usage_flag_bits::ShaderWrite | resource_usage_flag_bits::ColorAttachment | resource_usage_flag_bits::DepthStencilAttachment | resource_usage_flag_bits::DenyShaderResource;
 
-                if (desc.usage.contains(invalidFlags))
+                if (desc.usage.any(invalidFlags))
                 {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.memoryType is resource_memory_type::Read but desc.usage has one of the following flags set: " + to_string(invalidFlags));
                     return result::ErrorInvalidUsage;
@@ -562,6 +562,12 @@ namespace LLRI_NAMESPACE
             return result::ErrorInvalidUsage;
         }
 
+        if (desc.width > 16348)
+        {
+            detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.width was more than 16348.");
+            return result::ErrorInvalidUsage;
+        }
+
         // width, height, depth against desc.type
         switch(desc.type)
         {
@@ -633,6 +639,18 @@ namespace LLRI_NAMESPACE
         // desc.mipLevels is a valid value
         if (isTexture)
         {
+            if (desc.height > 2048)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.height was more than 16348.");
+                return result::ErrorInvalidUsage;
+            }
+
+            if (desc.depthOrArrayLayers > 16348)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.depthOrArrayLayers was more than 2048.");
+                return result::ErrorInvalidUsage;
+            }
+
             if (desc.mipLevels < 1)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.mipLevels was not at least 1.");
@@ -677,6 +695,12 @@ namespace LLRI_NAMESPACE
             if (desc.format > texture_format::MaxEnum)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format was not a valid enum value.");
+                return result::ErrorInvalidUsage;
+            }
+
+            if (desc.format == texture_format::Undefined)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format was texture_format::Undefined.");
                 return result::ErrorInvalidUsage;
             }
 

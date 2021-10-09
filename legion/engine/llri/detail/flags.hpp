@@ -47,8 +47,9 @@ namespace LLRI_NAMESPACE
         constexpr flags operator ~() const noexcept { return flags{ ~value }; }
 
         [[nodiscard]] constexpr bool contains(E bit) const noexcept { return (value & bit) == bit; }
-        [[nodiscard]] constexpr bool contains(flags f) const noexcept { return (value & f.value) == f.value; }
-        constexpr void remove(E flag) noexcept { value = value & ~flag; }
+        [[nodiscard]] constexpr bool all(flags f) const noexcept { return (value & f.value) == f.value; }
+        [[nodiscard]] constexpr bool any(flags f) const noexcept { return (value & f.value) != static_cast<E>(0); }
+        constexpr void remove(E bit) noexcept { value = value & ~bit; }
     };
 
     template<typename E>
