@@ -8,6 +8,7 @@
 #include <llri/llri.hpp>
 #define INITGUID
 #include <graphics/directx/d3d12.h>
+#include <graphics/directx/d3dx12.h>
 #include <dxgi1_6.h>
 #include <dxgidebug.h>
 

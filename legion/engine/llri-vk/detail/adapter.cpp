@@ -121,4 +121,48 @@ namespace LLRI_NAMESPACE
 
         return result::Success;
     }
+
+    std::unordered_map<format, format_properties> Adapter::impl_queryFormatProperties() const
+    {
+        std::unordered_map<format, format_properties> result;
+
+        for (uint8_t f = 0; f < static_cast<uint8_t>(format::MaxEnum); f++)
+        {
+            const auto form = static_cast<format>(f);
+            const auto vkFormat = internal::mapTextureFormat(form);
+
+            VkFormatProperties properties;
+            vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &properties);
+
+            const bool supported = properties.bufferFeatures == 0 && properties.optimalTilingFeatures == 0;
+
+            resource_usage_flags usageFlags = resource_usage_flag_bits::None;
+
+            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT) == VK_FORMAT_FEATURE_TRANSFER_SRC_BIT)
+                usageFlags |= resource_usage_flag_bits::TransferSrc;
+
+            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_DST_BIT) == VK_FORMAT_FEATURE_TRANSFER_DST_BIT)
+                usageFlags |= resource_usage_flag_bits::TransferDst;
+
+            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
+                usageFlags |= resource_usage_flag_bits::Sampled;
+
+            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT)
+                usageFlags |= resource_usage_flag_bits::ShaderWrite;
+
+            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT)
+                usageFlags |= resource_usage_flag_bits::ColorAttachment;
+
+            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+                usageFlags |= resource_usage_flag_bits::DepthStencilAttachment;
+
+            result.insert({ form, format_properties {
+                supported,
+                (properties.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+                properties.linearTilingFeatures != 0
+            } });
+        }
+
+        return result;
+    }
 }

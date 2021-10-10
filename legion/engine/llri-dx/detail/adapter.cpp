@@ -88,4 +88,51 @@ namespace LLRI_NAMESPACE
 ;
         return result::Success;
     }
+
+    std::unordered_map<format, format_properties> Adapter::impl_queryFormatProperties() const
+    {
+        std::unordered_map<format, format_properties> result;
+
+        ID3D12Device* device;
+        directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device));
+
+        CD3DX12FeatureSupport features;
+        features.Init(device);
+
+        for (uint8_t f = 0; f < static_cast<uint8_t>(format::MaxEnum); f++)
+        {
+            const auto form = static_cast<format>(f);
+            const DXGI_FORMAT dxFormat = directx::mapTextureFormat(form);
+
+            D3D12_FORMAT_SUPPORT1 sup1;
+            D3D12_FORMAT_SUPPORT2 sup2;
+            features.FormatSupport(dxFormat, sup1, sup2);
+
+            resource_usage_flags usageFlags = resource_usage_flag_bits::TransferSrc | resource_usage_flag_bits::TransferDst; // always supported
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE) == D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE)
+                usageFlags |= resource_usage_flag_bits::Sampled;
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_TYPED_UNORDERED_ACCESS_VIEW) == D3D12_FORMAT_SUPPORT1_TYPED_UNORDERED_ACCESS_VIEW)
+                usageFlags |= resource_usage_flag_bits::ShaderWrite;
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_RENDER_TARGET) == D3D12_FORMAT_SUPPORT1_RENDER_TARGET)
+                usageFlags |= resource_usage_flag_bits::ColorAttachment;
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_DEPTH_STENCIL) == D3D12_FORMAT_SUPPORT1_DEPTH_STENCIL)
+            {
+                usageFlags |= resource_usage_flag_bits::DepthStencilAttachment;
+                usageFlags |= resource_usage_flag_bits::DenyShaderResource;
+            }
+
+            result.insert({ form, format_properties { 
+                sup1 != D3D12_FORMAT_SUPPORT1_NONE,
+                usageFlags,
+                true
+            } });
+        }
+
+        device->Release();
+        return result;
+    }
 }

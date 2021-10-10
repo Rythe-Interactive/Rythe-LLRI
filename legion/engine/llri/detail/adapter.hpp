@@ -15,6 +15,9 @@ namespace LLRI_NAMESPACE
     enum struct queue_type : uint8_t;
     enum struct format : uint8_t;
 
+    enum struct resource_usage_flag_bits : uint16_t;
+    using resource_usage_flags = flags<resource_usage_flag_bits>;
+
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
     */
@@ -93,9 +96,9 @@ namespace LLRI_NAMESPACE
         */
         bool supported;
         /**
-         * @brief If the format supports resource_usage_flag_bits::ShaderWrite.
+         * @brief The resource usage flag bits that are supported when this format is used.
         */
-        bool shaderWrite;
+        resource_usage_flags usage;
         /**
          * @brief If the format supports tiling::Linear.
         */
