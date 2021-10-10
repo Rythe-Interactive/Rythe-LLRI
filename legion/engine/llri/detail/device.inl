@@ -730,7 +730,7 @@ namespace LLRI_NAMESPACE
                 return result::ErrorInvalidUsage;
             }
 
-            if (!props.sampleCounts[desc.sampleCount])
+            if (props.sampleCounts.at(desc.sampleCount) == false)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format doesn't support desc.sampleCount. Query sample count support per format using Adapter::queryFormatProperties().");
                 return result::ErrorInvalidUsage;
