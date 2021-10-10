@@ -380,6 +380,7 @@ namespace LLRI_NAMESPACE
          * @note if usage has the DenyShaderResource bit set then the only other compatible bits are TransferSrc, TransferDst, and DepthStencilAttachment.
          * @note if type is Buffer then usage **can only** have the following bits set: TransferSrc, TransferDst, ShaderWrite.
          * @note if tiling is set to Linear then usage **can only** have the following bits set: TransferSrc, TransferDst.
+         * @note if type is not Buffer then all enabled usage flags **must** be supported for the set format. Format resource_usage support can be checked through Adapter::queryFormatProperties(format).
         */
         resource_usage_flags usage;
         /**

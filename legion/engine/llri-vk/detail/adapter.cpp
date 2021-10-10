@@ -126,7 +126,7 @@ namespace LLRI_NAMESPACE
     {
         std::unordered_map<format, format_properties> result;
 
-        for (uint8_t f = 0; f < static_cast<uint8_t>(format::MaxEnum); f++)
+        for (uint8_t f = 0; f <= static_cast<uint8_t>(format::MaxEnum); f++)
         {
             const auto form = static_cast<format>(f);
             const auto vkFormat = internal::mapTextureFormat(form);

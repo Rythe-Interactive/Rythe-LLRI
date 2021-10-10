@@ -721,22 +721,11 @@ namespace LLRI_NAMESPACE
             // no current checks
 
             // desc.format against desc.usage
-            // TODO desc.format validity against desc.usage
-            if (desc.usage.contains(resource_usage_flag_bits::Sampled))
+            const format_properties props = m_adapter->queryFormatProperties(desc.format);
+            if (props.usage.all(desc.usage) == false)
             {
-                std::set<format> supportedFormats;
-            }
-            if (desc.usage.contains(resource_usage_flag_bits::ShaderWrite))
-            {
-                std::set<format> supportedFormats;
-            }
-            if (desc.usage.contains(resource_usage_flag_bits::ColorAttachment))
-            {
-                std::set<format> supportedFormats;
-            }
-            if (desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment))
-            {
-                std::set<format> supportedFormats;
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format does not support some (or any) of the resource_usage_flag_bits set in desc.usage. desc.format (" + to_string(desc.format) + ") supports the usage flags: " + to_string(props.usage));
+                return result::ErrorInvalidUsage;
             }
 
             // desc.tiling is a valid enum value

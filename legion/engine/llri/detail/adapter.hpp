@@ -193,7 +193,7 @@ namespace LLRI_NAMESPACE
         void* m_validationCallbackMessenger = nullptr;
 
         // cached value of queryFormatProperties()
-        mutable std::unordered_map<format, format_properties> m_cachedFormatProperties;
+        mutable std::unordered_map<format, format_properties> m_cachedFormatProperties {};
 
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;

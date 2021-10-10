@@ -99,7 +99,7 @@ namespace LLRI_NAMESPACE
         CD3DX12FeatureSupport features;
         features.Init(device);
 
-        for (uint8_t f = 0; f < static_cast<uint8_t>(format::MaxEnum); f++)
+        for (uint8_t f = 0; f <= static_cast<uint8_t>(format::MaxEnum); f++)
         {
             const auto form = static_cast<format>(f);
             const DXGI_FORMAT dxFormat = directx::mapTextureFormat(form);

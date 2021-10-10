@@ -27,7 +27,7 @@ namespace LLRI_NAMESPACE
         constexpr flags& operator =(E val) noexcept { value = val; return *this; }
 
         [[nodiscard]] constexpr flags operator |(E rhs) const noexcept { return value | rhs; }
-        constexpr flags& operator |=(E rhs) noexcept { value |= rhs; return *this; }
+        constexpr flags& operator |=(E rhs) noexcept { value = value | rhs; return *this; }
 
         [[nodiscard]] constexpr flags operator &(E rhs) const noexcept { return value & rhs; }
         constexpr flags& operator &=(E rhs) noexcept { value = value & rhs; return *this; }
