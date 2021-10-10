@@ -14,6 +14,7 @@ namespace LLRI_NAMESPACE
     enum struct adapter_extension_type : uint8_t;
     enum struct queue_type : uint8_t;
     enum struct format : uint8_t;
+    enum struct sample_count : uint8_t;
 
     enum struct resource_usage_flag_bits : uint16_t;
     using resource_usage_flags = flags<resource_usage_flag_bits>;
@@ -103,6 +104,10 @@ namespace LLRI_NAMESPACE
          * @brief If the format supports tiling::Linear.
         */
         bool linearTiling;
+        /**
+         * @brief If the format supports multi-sampling for each sample_count value.
+        */
+        std::unordered_map<sample_count, bool> sampleCounts;
     };
 
     /**

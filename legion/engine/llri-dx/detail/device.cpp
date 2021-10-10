@@ -155,7 +155,7 @@ namespace LLRI_NAMESPACE
         dx12Desc.DepthOrArraySize = isTexture ? static_cast<UINT16>(desc.depthOrArrayLayers) : 1;
         dx12Desc.MipLevels = isTexture ? static_cast<UINT16>(desc.mipLevels) : 1;
         dx12Desc.Format = directx::mapTextureFormat(desc.format);
-        dx12Desc.SampleDesc = isTexture ? DXGI_SAMPLE_DESC{ static_cast<UINT>(desc.sampleCount), 0 } : DXGI_SAMPLE_DESC{ 1, 0 };
+        dx12Desc.SampleDesc = isTexture ? DXGI_SAMPLE_DESC{ static_cast<UINT>(desc.sampleCount), D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE } : DXGI_SAMPLE_DESC{ 1, 0 };
         dx12Desc.Layout = isTexture ? directx::mapTextureTiling(desc.tiling) : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         dx12Desc.Flags = directx::mapResourceUsage(desc.usage);
 
@@ -165,8 +165,12 @@ namespace LLRI_NAMESPACE
             D3D12_CPU_PAGE_PROPERTY_UNKNOWN, D3D12_MEMORY_POOL_UNKNOWN,
             desc.createNodeMask, desc.visibleNodeMask };
 
+        D3D12_HEAP_FLAGS flags = D3D12_HEAP_FLAG_NONE;
+        if (isTexture && desc.tiling == tiling::Linear)
+            flags |= D3D12_HEAP_FLAG_SHARED_CROSS_ADAPTER; // required for linear tiling
+
         ID3D12Resource* dx12Resource = nullptr;
-        const auto result = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));
+        const auto result = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, flags, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));
 
         if (FAILED(result))
             return directx::mapHRESULT(result);

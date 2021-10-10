@@ -448,7 +448,9 @@ namespace LLRI_NAMESPACE
          *
          * @note Ignored if type is resource_type::Buffer.
          * @note sampleCount **must** be a valid texture_sample_count enum value.
+         * @note sampleCount **must** be supported for the format value. Use Adapter::queryFormatProperties().
          * @note if mipLevels is more than 1 then sampleCount **must** be Count1.
+         * @note if sampleCount is more than Count1 then usage **must** have ColorAttachment and/or DepthStencilAttachment set.
          * @note if usage has the ShaderWrite bit set then sampleCount **must** be Count1.
          * @note if tiling is set to Linear then sampleCount **must** be set to Count1.
         */
@@ -459,6 +461,7 @@ namespace LLRI_NAMESPACE
          * @note Ignored if type is resource_type::Buffer.
          * @note format **must** be a valid format enum value.
          * @note format **must not** be Undefined.
+         * @note format **must** be supported. Query support through Adapter::queryFormatProperties().
          * @note if tiling is set to Linear then format **must not** be D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.
         */
         format format;

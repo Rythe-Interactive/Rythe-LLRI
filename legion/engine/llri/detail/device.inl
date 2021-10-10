@@ -691,6 +691,12 @@ namespace LLRI_NAMESPACE
                 return result::ErrorInvalidUsage;
             }
 
+            if (desc.sampleCount > sample_count::Count1 && (!desc.usage.contains(resource_usage_flag_bits::ColorAttachment) && !desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment)))
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "if desc.sampleCount is more than Count1 then desc.usage must have the ColorAttachment or DepthStencilAttachment bit set.");
+                return result::ErrorInvalidUsage;
+            }
+
             // desc.sampleCount against desc.mipLevels
             if (desc.mipLevels > 1 && desc.sampleCount > sample_count::Count1)
             {
@@ -716,12 +722,24 @@ namespace LLRI_NAMESPACE
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format was format::Undefined.");
                 return result::ErrorInvalidUsage;
             }
+            const format_properties props = m_adapter->queryFormatProperties(desc.format);
+
+            if (!props.supported)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format must be supported. Query support through Adapter::queryFormatProperties().");
+                return result::ErrorInvalidUsage;
+            }
+
+            if (!props.sampleCounts[desc.sampleCount])
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format doesn't support desc.sampleCount. Query sample count support per format using Adapter::queryFormatProperties().");
+                return result::ErrorInvalidUsage;
+            }
 
             // desc.format against desc.type
             // no current checks
 
             // desc.format against desc.usage
-            const format_properties props = m_adapter->queryFormatProperties(desc.format);
             if (props.usage.all(desc.usage) == false)
             {
                 detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format does not support some (or any) of the resource_usage_flag_bits set in desc.usage. desc.format (" + to_string(desc.format) + ") supports the usage flags: " + to_string(props.usage));

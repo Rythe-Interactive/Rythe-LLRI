@@ -108,6 +108,23 @@ namespace LLRI_NAMESPACE
             D3D12_FORMAT_SUPPORT2 sup2;
             features.FormatSupport(dxFormat, sup1, sup2);
 
+            std::unordered_map<sample_count, bool> sampleCounts {
+                { sample_count::Count1, false },
+                { sample_count::Count2, false },
+                { sample_count::Count4, false },
+                { sample_count::Count8, false },
+                { sample_count::Count16, false },
+                { sample_count::Count32, false }
+            };
+
+            for (auto& pair : sampleCounts)
+            {
+                UINT count;
+                features.MultisampleQualityLevels(dxFormat, static_cast<UINT>(pair.first), D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE, count);
+
+                pair.second = count;
+            }
+
             resource_usage_flags usageFlags = resource_usage_flag_bits::TransferSrc | resource_usage_flag_bits::TransferDst; // always supported
 
             if ((sup1 & D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE) == D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE)
@@ -128,7 +145,8 @@ namespace LLRI_NAMESPACE
             result.insert({ form, format_properties { 
                 sup1 != D3D12_FORMAT_SUPPORT1_NONE,
                 usageFlags,
-                true
+                true,
+                sampleCounts
             } });
         }
 

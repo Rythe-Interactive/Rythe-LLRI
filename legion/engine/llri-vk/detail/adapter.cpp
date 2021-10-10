@@ -131,35 +131,50 @@ namespace LLRI_NAMESPACE
             const auto form = static_cast<format>(f);
             const auto vkFormat = internal::mapTextureFormat(form);
 
-            VkFormatProperties properties;
-            vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &properties);
+            VkFormatProperties formatProps;
+            vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &formatProps);
 
-            const bool supported = properties.bufferFeatures == 0 && properties.optimalTilingFeatures == 0;
+            // get supported
+            const bool supported = formatProps.bufferFeatures == 0 && formatProps.optimalTilingFeatures == 0;
 
+            // get flags
             resource_usage_flags usageFlags = resource_usage_flag_bits::None;
-
-            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT) == VK_FORMAT_FEATURE_TRANSFER_SRC_BIT)
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT) == VK_FORMAT_FEATURE_TRANSFER_SRC_BIT)
                 usageFlags |= resource_usage_flag_bits::TransferSrc;
 
-            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_DST_BIT) == VK_FORMAT_FEATURE_TRANSFER_DST_BIT)
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_DST_BIT) == VK_FORMAT_FEATURE_TRANSFER_DST_BIT)
                 usageFlags |= resource_usage_flag_bits::TransferDst;
 
-            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
                 usageFlags |= resource_usage_flag_bits::Sampled;
 
-            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT)
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT)
                 usageFlags |= resource_usage_flag_bits::ShaderWrite;
 
-            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT)
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT)
                 usageFlags |= resource_usage_flag_bits::ColorAttachment;
 
-            if ((properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
                 usageFlags |= resource_usage_flag_bits::DepthStencilAttachment;
+
+            // get sample counts
+            VkPhysicalDeviceProperties deviceProps;
+            vkGetPhysicalDeviceProperties(static_cast<VkPhysicalDevice>(m_ptr), &deviceProps);
+            const VkSampleCountFlags counts = deviceProps.limits.framebufferColorSampleCounts & deviceProps.limits.framebufferDepthSampleCounts;
+            const std::unordered_map<sample_count, bool> sampleCounts {
+                { sample_count::Count1, counts & VK_SAMPLE_COUNT_1_BIT },
+                { sample_count::Count2, counts & VK_SAMPLE_COUNT_2_BIT },
+                { sample_count::Count4, counts & VK_SAMPLE_COUNT_4_BIT },
+                { sample_count::Count8, counts & VK_SAMPLE_COUNT_8_BIT },
+                { sample_count::Count16, counts & VK_SAMPLE_COUNT_16_BIT },
+                { sample_count::Count32, counts & VK_SAMPLE_COUNT_32_BIT }
+            };
 
             result.insert({ form, format_properties {
                 supported,
-                (properties.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
-                properties.linearTilingFeatures != 0
+                (formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+                formatProps.linearTilingFeatures != 0,
+                sampleCounts
             } });
         }
 
