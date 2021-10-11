@@ -737,7 +737,11 @@ namespace LLRI_NAMESPACE
             }
 
             // desc.format against desc.type
-            // no current checks
+            if (props.types.at(desc.type) == false)
+            {
+                detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.format doesn't support desc.type. Query support for resource_types per format using Adapter::queryFormatProperties().");
+                return result::ErrorInvalidUsage;
+            }
 
             // desc.format against desc.usage
             if (props.usage.all(desc.usage) == false)
@@ -763,11 +767,9 @@ namespace LLRI_NAMESPACE
                 }
 
                 // desc.tiling against desc.format
-                std::unordered_set<format> unsupportedFormats = { format::D16UNorm, format::D24UNormS8UInt, format::D32Float, format::D32FloatS8X24UInt };
-
-                if (unsupportedFormats.find(desc.format) != unsupportedFormats.end())
+                if (!props.linearTiling)
                 {
-                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear but was not compatible with desc.format. desc.format **can not** be: D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.");
+                    detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.tiling was Linear but desc.format does not support linear tiling.");
                     return result::ErrorInvalidUsage;
                 }
 

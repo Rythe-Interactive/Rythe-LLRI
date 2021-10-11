@@ -462,7 +462,7 @@ namespace LLRI_NAMESPACE
          * @note format **must** be a valid format enum value.
          * @note format **must not** be Undefined.
          * @note format **must** be supported. Query support through Adapter::queryFormatProperties().
-         * @note if tiling is set to Linear then format **must not** be D16UNorm, D24UNormS8UInt, D32Float, D32FloatS8X24UInt.
+         * @note format **must** support type. Query support for resource types per format using Adapter::queryFormatProperties().
         */
         format format;
         /**
@@ -472,6 +472,7 @@ namespace LLRI_NAMESPACE
          * @note tiling **must** be a valid tiling enum value.
          * @note if type is not Texture2D then tiling **must** be set to Optimal.
          * @note if depthOrArrayLayers is not 1 then tiling **must** be set to Optimal.
+         * @note if tiling is set to Linear then format **must** support format_properties::linearTiling. Query support through Adapter::queryFormatProperties().
         */
         tiling tiling;
 

@@ -104,10 +104,18 @@ namespace LLRI_NAMESPACE
             const auto form = static_cast<format>(f);
             const DXGI_FORMAT dxFormat = directx::mapTextureFormat(form);
 
+            // query support from DX12
             D3D12_FORMAT_SUPPORT1 sup1;
             D3D12_FORMAT_SUPPORT2 sup2;
             features.FormatSupport(dxFormat, sup1, sup2);
 
+            // get support
+            const bool supported = sup1 != D3D12_FORMAT_SUPPORT1_NONE;
+
+            // linear support
+            const bool linearTiling = (sup1 & D3D12_FORMAT_SUPPORT1_DISPLAY) == D3D12_FORMAT_SUPPORT1_DISPLAY;
+
+            // get sample counts
             std::unordered_map<sample_count, bool> sampleCounts {
                 { sample_count::Count1, false },
                 { sample_count::Count2, false },
@@ -125,6 +133,7 @@ namespace LLRI_NAMESPACE
                 pair.second = count;
             }
 
+            // get usage flags
             resource_usage_flags usageFlags = resource_usage_flag_bits::TransferSrc | resource_usage_flag_bits::TransferDst; // always supported
 
             if ((sup1 & D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE) == D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE)
@@ -142,11 +151,21 @@ namespace LLRI_NAMESPACE
                 usageFlags |= resource_usage_flag_bits::DenyShaderResource;
             }
 
+            // get types
+            const std::unordered_map<resource_type, bool> types {
+                { resource_type::Buffer, false },
+                { resource_type::Texture1D, (sup1 & D3D12_FORMAT_SUPPORT1_TEXTURE1D) == D3D12_FORMAT_SUPPORT1_TEXTURE1D },
+                { resource_type::Texture2D, (sup1 & D3D12_FORMAT_SUPPORT1_TEXTURE2D) == D3D12_FORMAT_SUPPORT1_TEXTURE2D },
+                { resource_type::Texture3D, (sup1 & D3D12_FORMAT_SUPPORT1_TEXTURE3D) == D3D12_FORMAT_SUPPORT1_TEXTURE3D }
+            };
+
+            // gather results
             result.insert({ form, format_properties { 
-                sup1 != D3D12_FORMAT_SUPPORT1_NONE,
+                supported,
+                types,
                 usageFlags,
-                true,
-                sampleCounts
+                sampleCounts,
+                linearTiling
             } });
         }
 

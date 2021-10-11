@@ -170,11 +170,20 @@ namespace LLRI_NAMESPACE
                 { sample_count::Count32, counts & VK_SAMPLE_COUNT_32_BIT }
             };
 
+            // get types
+            const std::unordered_map<resource_type, bool> types {
+                { resource_type::Buffer, false },
+                { resource_type::Texture1D, true },
+                { resource_type::Texture2D, true },
+                { resource_type::Texture3D, true }
+            };
+
             result.insert({ form, format_properties {
                 supported,
-                (formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT,
+                types,
+                usageFlags,
+                sampleCounts,
                 formatProps.linearTilingFeatures != 0,
-                sampleCounts
             } });
         }
 

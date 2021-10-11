@@ -15,6 +15,7 @@ namespace LLRI_NAMESPACE
     enum struct queue_type : uint8_t;
     enum struct format : uint8_t;
     enum struct sample_count : uint8_t;
+    enum struct resource_type : uint8_t;
 
     enum struct resource_usage_flag_bits : uint16_t;
     using resource_usage_flags = flags<resource_usage_flag_bits>;
@@ -97,17 +98,22 @@ namespace LLRI_NAMESPACE
         */
         bool supported;
         /**
+         * @brief If the format is supported for each resource_type.
+         * @note resource_type::Buffer is present in this map for completeness but is always set to false.
+        */
+        std::unordered_map<resource_type, bool> types;
+        /**
          * @brief The resource usage flag bits that are supported when this format is used.
         */
         resource_usage_flags usage;
         /**
-         * @brief If the format supports tiling::Linear.
-        */
-        bool linearTiling;
-        /**
          * @brief If the format supports multi-sampling for each sample_count value.
         */
         std::unordered_map<sample_count, bool> sampleCounts;
+        /**
+         * @brief If the format supports tiling::Linear.
+        */
+        bool linearTiling;
     };
 
     /**
