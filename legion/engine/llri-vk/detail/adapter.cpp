@@ -59,6 +59,19 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
+    adapter_limits Adapter::impl_queryLimits() const
+    {
+        VkPhysicalDeviceMemoryProperties properties;
+        vkGetPhysicalDeviceMemoryProperties(static_cast<VkPhysicalDevice>(m_ptr), &properties);
+        uint64_t mem = 0;
+        for (size_t i = 0; i < properties.memoryTypeCount; i++)
+            mem = std::max(mem, properties.memoryHeaps[properties.memoryTypes[i].heapIndex].size);
+
+        adapter_limits output{};
+        output.totalMemory = mem;
+        return output;
+    }
+
     result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
         switch (type)

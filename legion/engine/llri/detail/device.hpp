@@ -189,6 +189,7 @@ namespace LLRI_NAMESPACE
          * @param resource A pointer to the resulting resource variable.
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if resource was nullptr.
+         * @return ErrorOutOfDeviceMemory if the total memory needed for the Resource is more than Adapter::queryLimits().totalMemory.
          * @return ErrorInvalidUsage if any of the conditions in resource_desc are not met.
         */
         result createResource(const resource_desc& desc, Resource** resource);

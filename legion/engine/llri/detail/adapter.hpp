@@ -89,6 +89,17 @@ namespace LLRI_NAMESPACE
     };
 
     /**
+     * @brief Adapter limits describes the limits of the Adapter.
+    */
+    struct adapter_limits
+    {
+        /**
+         * @brief The total memory (usually VRAM) available to the Adapter, in bytes.
+        */
+        uint64_t totalMemory;
+    };
+
+    /**
      * @brief Describes a format's properties.
     */
     struct format_properties
@@ -147,6 +158,11 @@ namespace LLRI_NAMESPACE
          * @return ErrorDeviceLost if the adapter was removed or lost.
         */
         result queryFeatures(adapter_features* features) const;
+
+        /**
+         * @brief Query a structure with information about the Adapter's limits.
+        */
+        [[nodiscard]] adapter_limits queryLimits() const;
 
         /**
          * @brief Query the support of a given adapter extension.
@@ -208,6 +224,7 @@ namespace LLRI_NAMESPACE
 
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
+        [[nodiscard]] adapter_limits impl_queryLimits() const;
         result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
 
         result impl_queryQueueCount(queue_type type, uint8_t* count) const;

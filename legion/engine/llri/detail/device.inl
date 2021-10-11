@@ -270,6 +270,80 @@ namespace LLRI_NAMESPACE
 #endif
     }
 
+    namespace detail
+    {
+        constexpr size_t getFormatSizeInBytes(format f) noexcept
+        {
+            switch (f)
+            {
+                case format::Undefined: return 0;
+                case format::R8UNorm:
+                case format::R8Norm: 
+                case format::R8UInt: 
+                case format::R8Int:
+                    return 1;
+                case format::RG8UNorm:
+                case format::RG8Norm:
+                case format::RG8UInt:
+                case format::RG8Int:
+                    return 2;
+                case format::RGBA8UNorm:
+                case format::RGBA8Norm:
+                case format::RGBA8UInt:
+                case format::RGBA8Int:
+                case format::RGBA8sRGB:
+                case format::BGRA8UNorm:
+                case format::BGRA8sRGB:
+                case format::RGB10A2UNorm:
+                case format::RGB10A2UInt:
+                    return 4;
+                case format::R16UNorm:
+                case format::R16Norm:
+                case format::R16UInt:
+                case format::R16Int:
+                case format::R16Float:
+                    return 2;
+                case format::RG16UNorm:
+                case format::RG16Norm:
+                case format::RG16UInt:
+                case format::RG16Int:
+                case format::RG16Float:
+                    return 4;
+                case format::RGBA16UNorm:
+                case format::RGBA16Norm:
+                case format::RGBA16UInt:
+                case format::RGBA16Int:
+                case format::RGBA16Float:
+                    return 8;
+                case format::R32UInt:
+                case format::R32Int:
+                case format::R32Float:
+                    return 4;
+                case format::RG32UInt:
+                case format::RG32Int:
+                case format::RG32Float:
+                    return 8;
+                case format::RGB32UInt:
+                case format::RGB32Int:
+                case format::RGB32Float:
+                case format::RGBA32UInt:
+                case format::RGBA32Int:
+                case format::RGBA32Float:
+                    return 16;
+                case format::D16UNorm:
+                    return 2;
+                case format::D24UNormS8UInt:
+                    return 4;
+                case format::D32Float:
+                    return 4;
+                case format::D32FloatS8X24UInt:
+                    return 8;
+            }
+
+            return 0;
+        }
+    }
+
     inline result Device::createResource(const resource_desc& desc, Resource** resource)
     {
 #ifndef LLRI_DISABLE_VALIDATION
@@ -796,6 +870,33 @@ namespace LLRI_NAMESPACE
                 }
             }
         }
+
+        // finally we should check against adapter limits
+        const adapter_limits limits = m_adapter->queryLimits();
+
+        size_t totalSize = desc.width;
+        switch(desc.type)
+        {
+            case resource_type::Buffer: break;
+            case resource_type::Texture1D:
+            case resource_type::Texture2D:
+            case resource_type::Texture3D:
+            {
+                totalSize *= detail::getFormatSizeInBytes(desc.format);
+                totalSize *= desc.height;
+                totalSize *= desc.depthOrArrayLayers;
+                if (desc.mipLevels > 1)
+                    totalSize *= 2; // maximum needed for a mipmapped texture is an extra copy of itself.
+                break;
+            }
+        }
+
+        if (totalSize > limits.totalMemory)
+        {
+            detail::apiError("Device::createResource()", result::ErrorOutOfDeviceMemory, "the total size in bytes needed for the resource was larger than Adapter::queryLimits().totalMemory.");
+            return result::ErrorOutOfDeviceMemory;
+        }
+
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
