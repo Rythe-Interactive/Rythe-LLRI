@@ -8,6 +8,7 @@
 #include <doctest/doctest.h>
 #include <helpers.hpp>
 #include <array>
+#include <future>
 
 TEST_CASE("Device::createResource()")
 {
@@ -25,73 +26,77 @@ TEST_CASE("Device::createResource()")
         {
             desc.visibleNodeMask = mask;
 
+            std::vector<std::future<void>> futures;
             for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::resource_type::MaxEnum); type++)
             {
                 desc.type = static_cast<llri::resource_type>(type);
 
-                for (uint16_t usage = 0; usage < 128; usage++)
+                futures.push_back(std::async(std::launch::async, [](llri::Device* device, llri::resource_desc desc)
                 {
-                    desc.usage = usage;
-
-                    for (uint8_t memType = 0; memType <= static_cast<uint8_t>(llri::memory_type::MaxEnum); memType++)
+                    for (uint16_t usage = 0; usage < 128; usage++)
                     {
-                        desc.memoryType = static_cast<llri::memory_type>(memType);
+                        desc.usage = usage;
 
-                        for (uint8_t resourceState = 0; resourceState <= static_cast<uint8_t>(llri::resource_state::MaxEnum); resourceState++)
+                        for (uint8_t memType = 0; memType <= static_cast<uint8_t>(llri::memory_type::MaxEnum); memType++)
                         {
-                            desc.initialState = static_cast<llri::resource_state>(resourceState);
+                            desc.memoryType = static_cast<llri::memory_type>(memType);
 
-                            // note: 0, 1, 1024, and UINT_MAX are arbitrary test values, 2048 is the default max depthOrArrayLayers value and 16384 is the default max width/height value.
-                            const std::set<uint32_t> possibleSizeValues = { 0, 1, 1024, 2048, 16384, UINT_MAX };
-                            for (auto width : possibleSizeValues)
+                            for (uint8_t resourceState = 0; resourceState <= static_cast<uint8_t>(llri::resource_state::MaxEnum); resourceState++)
                             {
-                                desc.width = width;
+                                desc.initialState = static_cast<llri::resource_state>(resourceState);
 
-                                if (desc.type == llri::resource_type::Buffer)
+                                // note: 0, 1, 1024, and UINT_MAX are arbitrary test values, 2048 is the default max depthOrArrayLayers value and 16384 is the default max width/height value.
+                                const std::set<uint32_t> possibleSizeValues = { 0, 1, 1024, 2048, 16384, UINT_MAX };
+                                for (auto width : possibleSizeValues)
                                 {
-                                    desc.height = 1;
-                                    desc.depthOrArrayLayers = 1;
+                                    desc.width = width;
 
-                                    llri::Resource* resource = nullptr;
-                                    llri::result result = device->createResource(desc, &resource);
-                                    auto str = to_string(result);
-                                    INFO("result = ", to_string(result).c_str());
-                                    CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
-                                    device->destroyResource(resource);
-
-                                    continue;
-                                }
-
-                                for (auto height : possibleSizeValues)
-                                {
-                                    desc.height = height;
-
-                                    for (auto depth : possibleSizeValues)
+                                    if (desc.type == llri::resource_type::Buffer)
                                     {
-                                        desc.depthOrArrayLayers = static_cast<uint16_t>(depth);
+                                        desc.height = 1;
+                                        desc.depthOrArrayLayers = 1;
 
-                                        for (auto mip : possibleSizeValues)
+                                        llri::Resource* resource = nullptr;
+                                        llri::result result = device->createResource(desc, &resource);
+                                        auto str = to_string(result);
+                                        INFO("result = ", to_string(result).c_str());
+                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
+                                        device->destroyResource(resource);
+
+                                        continue;
+                                    }
+
+                                    for (auto height : possibleSizeValues)
+                                    {
+                                        desc.height = height;
+
+                                        for (auto depth : possibleSizeValues)
                                         {
-                                            desc.mipLevels = static_cast<uint16_t>(mip);
+                                            desc.depthOrArrayLayers = static_cast<uint16_t>(depth);
 
-                                            for (uint32_t sample = 1; sample <= static_cast<uint32_t>(llri::sample_count::MaxEnum); sample = sample << 1)
+                                            for (auto mip : possibleSizeValues)
                                             {
-                                                desc.sampleCount = static_cast<llri::sample_count>(sample);
+                                                desc.mipLevels = static_cast<uint16_t>(mip);
 
-                                                for (uint32_t f = 0; f <= static_cast<uint32_t>(llri::format::MaxEnum); f++)
+                                                for (uint32_t sample = 1; sample <= static_cast<uint32_t>(llri::sample_count::MaxEnum); sample = sample << 1)
                                                 {
-                                                    desc.format = static_cast<llri::format>(f);
+                                                    desc.sampleCount = static_cast<llri::sample_count>(sample);
 
-                                                    for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::tiling::MaxEnum); tiling++)
+                                                    for (uint32_t f = 0; f <= static_cast<uint32_t>(llri::format::MaxEnum); f++)
                                                     {
-                                                        desc.tiling = static_cast<llri::tiling>(tiling);
+                                                        desc.format = static_cast<llri::format>(f);
 
-                                                        llri::Resource* resource = nullptr;
-                                                        llri::result result = device->createResource(desc, &resource);
-                                                        auto str = to_string(result);
-                                                        INFO("result = ", to_string(result).c_str());
-                                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
-                                                        device->destroyResource(resource);
+                                                        for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::tiling::MaxEnum); tiling++)
+                                                        {
+                                                            desc.tiling = static_cast<llri::tiling>(tiling);
+
+                                                            llri::Resource* resource = nullptr;
+                                                            llri::result result = device->createResource(desc, &resource);
+                                                            auto str = to_string(result);
+                                                            INFO("result = ", to_string(result).c_str());
+                                                            CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
+                                                            device->destroyResource(resource);
+                                                        }
                                                     }
                                                 }
                                             }
@@ -101,8 +106,11 @@ TEST_CASE("Device::createResource()")
                             }
                         }
                     }
-                }
+                }, device, desc));
             }
+
+            for (auto& future : futures)
+                future.wait();
         }
     }
 
