@@ -173,10 +173,10 @@ namespace LLRI_NAMESPACE
         }
 
         ID3D12Resource* dx12Resource = nullptr;
-        const auto result = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, flags, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));
 
-        if (FAILED(result))
-            return directx::mapHRESULT(result);
+        const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, flags, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));
+        if (FAILED(r))
+            return directx::mapHRESULT(r);
 
         auto* output = new Resource();
         output->m_type = desc.type;

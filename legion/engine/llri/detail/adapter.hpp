@@ -93,10 +93,7 @@ namespace LLRI_NAMESPACE
     */
     struct adapter_limits
     {
-        /**
-         * @brief The total memory (usually VRAM) available to the Adapter, in bytes.
-        */
-        uint64_t totalMemory;
+
     };
 
     /**

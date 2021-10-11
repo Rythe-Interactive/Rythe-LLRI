@@ -53,11 +53,7 @@ namespace LLRI_NAMESPACE
 
     adapter_limits Adapter::impl_queryLimits() const
     {
-        DXGI_ADAPTER_DESC desc;
-        static_cast<IDXGIAdapter*>(m_ptr)->GetDesc(&desc);
-
         adapter_limits output{};
-        output.totalMemory = max(desc.DedicatedVideoMemory, desc.SharedSystemMemory);
         return output;
     }
 

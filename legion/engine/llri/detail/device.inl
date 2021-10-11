@@ -870,33 +870,6 @@ namespace LLRI_NAMESPACE
                 }
             }
         }
-
-        // finally we should check against adapter limits
-        const adapter_limits limits = m_adapter->queryLimits();
-
-        size_t totalSize = desc.width;
-        switch(desc.type)
-        {
-            case resource_type::Buffer: break;
-            case resource_type::Texture1D:
-            case resource_type::Texture2D:
-            case resource_type::Texture3D:
-            {
-                totalSize *= detail::getFormatSizeInBytes(desc.format);
-                totalSize *= desc.height;
-                totalSize *= desc.depthOrArrayLayers;
-                if (desc.mipLevels > 1)
-                    totalSize *= 2; // maximum needed for a mipmapped texture is an extra copy of itself.
-                break;
-            }
-        }
-
-        if (totalSize > limits.totalMemory)
-        {
-            detail::apiError("Device::createResource()", result::ErrorOutOfDeviceMemory, "the total size in bytes needed for the resource was larger than Adapter::queryLimits().totalMemory.");
-            return result::ErrorOutOfDeviceMemory;
-        }
-
 #endif
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING

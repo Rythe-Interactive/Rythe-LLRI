@@ -172,15 +172,18 @@ namespace LLRI_NAMESPACE
                 for (UINT64 i = 0; i < numMsg; ++i)
                 {
                     SIZE_T messageLength = 0;
-                    iq->GetMessage(i, NULL, &messageLength);
+                    if (FAILED(iq->GetMessage(i, NULL, &messageLength)))
+                        continue;
 
                     if (messageLength == 0)
                         continue;
 
                     auto* pMessage = static_cast<D3D12_MESSAGE*>(malloc(messageLength));
-                    iq->GetMessage(i, pMessage, &messageLength);
+                    if (FAILED(iq->GetMessage(i, pMessage, &messageLength)))
+                        continue;
 
-                    detail::callUserCallback(internal::mapSeverity(pMessage->Severity), message_source::Implementation, pMessage->pDescription);
+                    if (pMessage->pDescription != nullptr)
+                        detail::callUserCallback(internal::mapSeverity(pMessage->Severity), message_source::Implementation, pMessage->pDescription);
 
                     free(pMessage);
                 }

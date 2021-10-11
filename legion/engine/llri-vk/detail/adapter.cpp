@@ -61,14 +61,7 @@ namespace LLRI_NAMESPACE
 
     adapter_limits Adapter::impl_queryLimits() const
     {
-        VkPhysicalDeviceMemoryProperties properties;
-        vkGetPhysicalDeviceMemoryProperties(static_cast<VkPhysicalDevice>(m_ptr), &properties);
-        uint64_t mem = 0;
-        for (size_t i = 0; i < properties.memoryTypeCount; i++)
-            mem = std::max(mem, properties.memoryHeaps[properties.memoryTypes[i].heapIndex].size);
-
         adapter_limits output{};
-        output.totalMemory = mem;
         return output;
     }
 
