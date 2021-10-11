@@ -174,6 +174,9 @@ namespace LLRI_NAMESPACE
                     SIZE_T messageLength = 0;
                     iq->GetMessage(i, NULL, &messageLength);
 
+                    if (messageLength == 0)
+                        continue;
+
                     auto* pMessage = static_cast<D3D12_MESSAGE*>(malloc(messageLength));
                     iq->GetMessage(i, pMessage, &messageLength);
 

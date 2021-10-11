@@ -92,7 +92,7 @@ namespace LLRI_NAMESPACE
                 case E_INVALIDARG:
                     return result::ErrorInvalidUsage;
                 case E_OUTOFMEMORY:
-                    return result::ErrorOutOfHostMemory;
+                    return result::ErrorOutOfDeviceMemory;
                 case E_NOTIMPL:
                     return result::ErrorFeatureNotSupported;
                 case S_FALSE:
