@@ -26,97 +26,93 @@ TEST_CASE("Device::createResource()")
         {
             desc.visibleNodeMask = mask;
 
-            std::vector<std::future<void>> futures;
             for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::resource_type::MaxEnum); type++)
             {
                 desc.type = static_cast<llri::resource_type>(type);
 
-                futures.push_back(std::async(std::launch::async, [](llri::Device* device, llri::resource_desc desc)
+                // we don't test all combinations here because it increases the number of iterations too significantly
+                std::array<llri::resource_usage_flags, 5> flags = {
+                    llri::resource_usage_flag_bits::TransferSrc | llri::resource_usage_flag_bits::TransferDst,
+                    llri::resource_usage_flag_bits::Sampled, llri::resource_usage_flag_bits::ShaderWrite,
+                    llri::resource_usage_flag_bits::ColorAttachment,
+                    llri::resource_usage_flag_bits::DepthStencilAttachment | llri::resource_usage_flag_bits::DenyShaderResource
+                };
+
+                for (auto usageFlag : flags)
                 {
-                    // we don't test all combinations here because it increases the number of iterations too significantly
-                    std::array<llri::resource_usage_flags, 5> flags = {
-                        llri::resource_usage_flag_bits::TransferSrc | llri::resource_usage_flag_bits::TransferDst,
-                        llri::resource_usage_flag_bits::Sampled, llri::resource_usage_flag_bits::ShaderWrite,
-                        llri::resource_usage_flag_bits::ColorAttachment,
-                        llri::resource_usage_flag_bits::DepthStencilAttachment | llri::resource_usage_flag_bits::DenyShaderResource
-                    };
+                    desc.usage = usageFlag;
 
-                    for (auto usageFlag : flags)
+                    for (uint8_t memType = 0; memType <= static_cast<uint8_t>(llri::memory_type::MaxEnum); memType++)
                     {
-                        desc.usage = usageFlag;
+                        desc.memoryType = static_cast<llri::memory_type>(memType);
 
-                        for (uint8_t memType = 0; memType <= static_cast<uint8_t>(llri::memory_type::MaxEnum); memType++)
+                        for (uint8_t resourceState = 0; resourceState <= static_cast<uint8_t>(llri::resource_state::MaxEnum); resourceState++)
                         {
-                            desc.memoryType = static_cast<llri::memory_type>(memType);
+                            desc.initialState = static_cast<llri::resource_state>(resourceState);
 
-                            for (uint8_t resourceState = 0; resourceState <= static_cast<uint8_t>(llri::resource_state::MaxEnum); resourceState++)
+                            const std::set<uint32_t> possibleSizeValues = { 0, 1, UINT_MAX };
+                            for (auto width : possibleSizeValues)
                             {
-                                desc.initialState = static_cast<llri::resource_state>(resourceState);
+                                desc.width = width;
 
-                                const std::set<uint32_t> possibleSizeValues = { 0, 1, UINT_MAX };
-                                for (auto width : possibleSizeValues)
+                                if (desc.type == llri::resource_type::Buffer)
                                 {
-                                    desc.width = width;
+                                    desc.height = 1;
+                                    desc.depthOrArrayLayers = 1;
 
-                                    if (desc.type == llri::resource_type::Buffer)
+                                    llri::Resource* resource = nullptr;
+                                    llri::result result = device->createResource(desc, &resource);
+                                    auto str = to_string(result);
+                                    INFO("result = ", to_string(result).c_str());
+                                    CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
+                                    device->destroyResource(resource);
+
+                                    continue;
+                                }
+
+                                for (auto height : possibleSizeValues)
+                                {
+                                    desc.height = height;
+
+                                    for (auto depth : possibleSizeValues)
                                     {
-                                        desc.height = 1;
-                                        desc.depthOrArrayLayers = 1;
+                                        desc.depthOrArrayLayers = static_cast<uint16_t>(depth);
 
-                                        llri::Resource* resource = nullptr;
-                                        llri::result result = device->createResource(desc, &resource);
-                                        auto str = to_string(result);
-                                        INFO("result = ", to_string(result).c_str());
-                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
-                                        device->destroyResource(resource);
-
-                                        continue;
-                                    }
-
-                                    for (auto height : possibleSizeValues)
-                                    {
-                                        desc.height = height;
-
-                                        for (auto depth : possibleSizeValues)
+                                        for (auto mip : possibleSizeValues)
                                         {
-                                            desc.depthOrArrayLayers = static_cast<uint16_t>(depth);
+                                            desc.mipLevels = static_cast<uint16_t>(mip);
 
-                                            for (auto mip : possibleSizeValues)
+                                            std::array<llri::sample_count, 3> sampleCounts {
+                                                llri::sample_count::Count1, llri::sample_count::Count8, llri::sample_count::Count32
+                                            };
+
+                                            for (auto sample : sampleCounts)
                                             {
-                                                desc.mipLevels = static_cast<uint16_t>(mip);
+                                                desc.sampleCount = sample;
 
-                                                std::array<llri::sample_count, 3> sampleCounts {
-                                                    llri::sample_count::Count1, llri::sample_count::Count8, llri::sample_count::Count32
+                                                // taking a couple of variations to cover the most relevant cases
+                                                std::array<llri::format, 17> formats {
+                                                    llri::format::R8UNorm, llri::format::RG8Norm, llri::format::RGBA8UInt, llri::format::RGBA8sRGB, llri::format::BGRA8UNorm,
+                                                    llri::format::RGB10A2UNorm,
+                                                    llri::format::R16Int, llri::format::RG16UNorm, llri::format::RGBA16UNorm,
+                                                    llri::format::R32UInt, llri::format::RG32UInt, llri::format::RGB32UInt, llri::format::RGBA32UInt,
+                                                    llri::format::D16UNorm, llri::format::D24UNormS8UInt, llri::format::D32Float, llri::format::D32FloatS8X24UInt
                                                 };
 
-                                                for (auto sample : sampleCounts)
+                                                for (auto f : formats)
                                                 {
-                                                    desc.sampleCount = sample;
+                                                    desc.format = f;
 
-                                                    // taking a couple of variations to cover the most relevant cases
-                                                    std::array<llri::format, 17> formats {
-                                                        llri::format::R8UNorm, llri::format::RG8Norm, llri::format::RGBA8UInt, llri::format::RGBA8sRGB, llri::format::BGRA8UNorm,
-                                                        llri::format::RGB10A2UNorm,
-                                                        llri::format::R16Int, llri::format::RG16UNorm, llri::format::RGBA16UNorm,
-                                                        llri::format::R32UInt, llri::format::RG32UInt, llri::format::RGB32UInt, llri::format::RGBA32UInt,
-                                                        llri::format::D16UNorm, llri::format::D24UNormS8UInt, llri::format::D32Float, llri::format::D32FloatS8X24UInt
-                                                    };
-
-                                                    for (auto f : formats)
+                                                    for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::tiling::MaxEnum); tiling++)
                                                     {
-                                                        desc.format = f;
+                                                        desc.tiling = static_cast<llri::tiling>(tiling);
 
-                                                        for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::tiling::MaxEnum); tiling++)
-                                                        {
-                                                            desc.tiling = static_cast<llri::tiling>(tiling);
-
-                                                            llri::Resource* resource = nullptr;
-                                                            llri::result result = device->createResource(desc, &resource);
-                                                            auto str = to_string(result);
-                                                            INFO("result = ", to_string(result).c_str());
-                                                            CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
-                                                            device->destroyResource(resource);
-                                                        }
+                                                        llri::Resource* resource = nullptr;
+                                                        llri::result result = device->createResource(desc, &resource);
+                                                        auto str = to_string(result);
+                                                        INFO("result = ", to_string(result).c_str());
+                                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
+                                                        device->destroyResource(resource);
                                                     }
                                                 }
                                             }
@@ -126,11 +122,8 @@ TEST_CASE("Device::createResource()")
                             }
                         }
                     }
-                }, device, desc));
+                }
             }
-
-            for (auto& future : futures)
-                future.wait();
         }
     }
 

@@ -190,6 +190,7 @@ namespace LLRI_NAMESPACE
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if resource was nullptr.
          * @return ErrorInvalidUsage if any of the conditions in resource_desc are not met.
+         * @return ErrorOutOfDeviceMemory implementations may return this if the resource does not fit in the Device's memory.
         */
         result createResource(const resource_desc& desc, Resource** resource);
 
