@@ -33,9 +33,17 @@ TEST_CASE("Device::createResource()")
 
                 futures.push_back(std::async(std::launch::async, [](llri::Device* device, llri::resource_desc desc)
                 {
-                    for (uint16_t usage = 0; usage < 128; usage++)
+                    // we don't test all combinations here because it increases the number of iterations too significantly
+                    std::array<llri::resource_usage_flags, 5> flags = {
+                        llri::resource_usage_flag_bits::TransferSrc | llri::resource_usage_flag_bits::TransferDst,
+                        llri::resource_usage_flag_bits::Sampled, llri::resource_usage_flag_bits::ShaderWrite,
+                        llri::resource_usage_flag_bits::ColorAttachment,
+                        llri::resource_usage_flag_bits::DepthStencilAttachment | llri::resource_usage_flag_bits::DenyShaderResource
+                    };
+
+                    for (auto usageFlag : flags)
                     {
-                        desc.usage = usage;
+                        desc.usage = usageFlag;
 
                         for (uint8_t memType = 0; memType <= static_cast<uint8_t>(llri::memory_type::MaxEnum); memType++)
                         {
@@ -45,8 +53,7 @@ TEST_CASE("Device::createResource()")
                             {
                                 desc.initialState = static_cast<llri::resource_state>(resourceState);
 
-                                // note: 0, 1, 1024, and UINT_MAX are arbitrary test values, 2048 is the default max depthOrArrayLayers value and 16384 is the default max width/height value.
-                                const std::set<uint32_t> possibleSizeValues = { 0, 1, 1024, 2048, 16384, UINT_MAX };
+                                const std::set<uint32_t> possibleSizeValues = { 0, 1, UINT_MAX };
                                 for (auto width : possibleSizeValues)
                                 {
                                     desc.width = width;
@@ -78,13 +85,26 @@ TEST_CASE("Device::createResource()")
                                             {
                                                 desc.mipLevels = static_cast<uint16_t>(mip);
 
-                                                for (uint32_t sample = 1; sample <= static_cast<uint32_t>(llri::sample_count::MaxEnum); sample = sample << 1)
-                                                {
-                                                    desc.sampleCount = static_cast<llri::sample_count>(sample);
+                                                std::array<llri::sample_count, 3> sampleCounts {
+                                                    llri::sample_count::Count1, llri::sample_count::Count8, llri::sample_count::Count32
+                                                };
 
-                                                    for (uint32_t f = 0; f <= static_cast<uint32_t>(llri::format::MaxEnum); f++)
+                                                for (auto sample : sampleCounts)
+                                                {
+                                                    desc.sampleCount = sample;
+
+                                                    // taking a couple of variations to cover the most relevant cases
+                                                    std::array<llri::format, 17> formats {
+                                                        llri::format::R8UNorm, llri::format::RG8Norm, llri::format::RGBA8UInt, llri::format::RGBA8sRGB, llri::format::BGRA8UNorm,
+                                                        llri::format::RGB10A2UNorm,
+                                                        llri::format::R16Int, llri::format::RG16UNorm, llri::format::RGBA16UNorm,
+                                                        llri::format::R32UInt, llri::format::RG32UInt, llri::format::RGB32UInt, llri::format::RGBA32UInt,
+                                                        llri::format::D16UNorm, llri::format::D24UNormS8UInt, llri::format::D32Float, llri::format::D32FloatS8X24UInt
+                                                    };
+
+                                                    for (auto f : formats)
                                                     {
-                                                        desc.format = static_cast<llri::format>(f);
+                                                        desc.format = f;
 
                                                         for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::tiling::MaxEnum); tiling++)
                                                         {
