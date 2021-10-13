@@ -64,7 +64,7 @@ TEST_CASE("Device::createResource()")
                                     llri::result result = device->createResource(desc, &resource);
                                     auto str = to_string(result);
                                     INFO("result = ", to_string(result).c_str());
-                                    CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
+                                    CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory || result == llri::result::ErrorInvalidNodeMask);
                                     device->destroyResource(resource);
 
                                     continue;
@@ -111,7 +111,7 @@ TEST_CASE("Device::createResource()")
                                                         llri::result result = device->createResource(desc, &resource);
                                                         auto str = to_string(result);
                                                         INFO("result = ", to_string(result).c_str());
-                                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory);
+                                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory || result == llri::result::ErrorInvalidNodeMask);
                                                         device->destroyResource(resource);
                                                     }
                                                 }
