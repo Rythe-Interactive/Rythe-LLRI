@@ -59,6 +59,8 @@ namespace LLRI_NAMESPACE
                 return "ErrorNotSignaled";
             case result::ErrorAlreadySignaled:
                 return "ErrorAlreadySignaled";
+            case result::ErrorInvalidFormat:
+                return "ErrorInvalidFormat";
         }
 
         return "Invalid result value";
@@ -82,8 +84,11 @@ namespace LLRI_NAMESPACE
 
 #include <llri/detail/instance.inl>
 #include <llri/detail/adapter.inl>
+
 #include <llri/detail/queue.inl>
 #include <llri/detail/device.inl>
+
+#include <llri/detail/resource.inl>
 
 #include <llri/detail/command_group.inl>
 #include <llri/detail/command_list.inl>

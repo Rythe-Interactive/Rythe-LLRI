@@ -142,4 +142,55 @@ namespace LLRI_NAMESPACE
 
         delete semaphore;
     }
+
+    result Device::impl_createResource(const resource_desc& desc, Resource** resource)
+    {
+        const bool isTexture = desc.type != resource_type::Buffer;
+
+        D3D12_RESOURCE_DESC dx12Desc;
+        dx12Desc.Dimension = directx::mapResourceType(desc.type);
+        dx12Desc.Alignment = 0;
+        dx12Desc.Width = static_cast<UINT64>(desc.width);
+        dx12Desc.Height = isTexture ? desc.height : 1;
+        dx12Desc.DepthOrArraySize = isTexture ? static_cast<UINT16>(desc.depthOrArrayLayers) : 1;
+        dx12Desc.MipLevels = isTexture ? static_cast<UINT16>(desc.mipLevels) : 1;
+        dx12Desc.Format = isTexture ? directx::mapTextureFormat(desc.format) : DXGI_FORMAT_UNKNOWN;
+        dx12Desc.SampleDesc = isTexture ? DXGI_SAMPLE_DESC{ static_cast<UINT>(desc.sampleCount), D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE } : DXGI_SAMPLE_DESC{ 1, 0 };
+        dx12Desc.Layout = isTexture ? directx::mapTextureTiling(desc.tiling) : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+        dx12Desc.Flags = directx::mapResourceUsage(desc.usage);
+
+        const D3D12_RESOURCE_STATES initialState = directx::mapResourceState(desc.initialState);
+
+        D3D12_HEAP_PROPERTIES heapProperties { directx::mapResourceMemoryType(desc.memoryType),
+            D3D12_CPU_PAGE_PROPERTY_UNKNOWN, D3D12_MEMORY_POOL_UNKNOWN,
+            desc.createNodeMask, desc.visibleNodeMask };
+
+        D3D12_HEAP_FLAGS flags = D3D12_HEAP_FLAG_NONE;
+        if (isTexture && desc.tiling == tiling::Linear)
+        {
+            flags |= D3D12_HEAP_FLAG_SHARED_CROSS_ADAPTER | D3D12_HEAP_FLAG_SHARED; // required for linear tiling
+            dx12Desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER;
+        }
+
+        ID3D12Resource* dx12Resource = nullptr;
+
+        const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, flags, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));
+        if (FAILED(r))
+            return directx::mapHRESULT(r);
+
+        auto* output = new Resource();
+        output->m_type = desc.type;
+        output->m_resource = dx12Resource;
+        output->m_state = desc.initialState;
+        output->m_implementationState = initialState;
+
+        *resource = output;
+        return result::Success;
+    }
+
+    void Device::impl_destroyResource(Resource* resource)
+    {
+        static_cast<ID3D12Resource*>(resource->m_resource)->Release();
+        delete resource;
+    }
 }

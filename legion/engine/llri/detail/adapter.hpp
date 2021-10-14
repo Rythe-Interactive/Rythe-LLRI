@@ -6,15 +6,19 @@
 
 #pragma once
 #include <string>
-
-//detail includes should be kept to a minimum but
-//are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
-#include <llri/detail/instance.hpp>
+#include <unordered_map>
+#include <llri/llri.hpp> // unnecessary but helps with intellisense
 
 namespace LLRI_NAMESPACE
 {
     enum struct adapter_extension_type : uint8_t;
     enum struct queue_type : uint8_t;
+    enum struct format : uint8_t;
+    enum struct sample_count : uint8_t;
+    enum struct resource_type : uint8_t;
+
+    enum struct resource_usage_flag_bits : uint16_t;
+    using resource_usage_flags = flags<resource_usage_flag_bits>;
 
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
@@ -85,12 +89,48 @@ namespace LLRI_NAMESPACE
     };
 
     /**
+     * @brief Adapter limits describes the limits of the Adapter.
+    */
+    struct adapter_limits
+    {
+
+    };
+
+    /**
+     * @brief Describes a format's properties.
+    */
+    struct format_properties
+    {
+        /**
+         * @brief If the format is supported by the selected adapter at all.
+        */
+        bool supported;
+        /**
+         * @brief If the format is supported for each resource_type.
+         * @note resource_type::Buffer is present in this map for completeness but is always set to false.
+        */
+        std::unordered_map<resource_type, bool> types;
+        /**
+         * @brief The resource usage flag bits that are supported when this format is used.
+        */
+        resource_usage_flags usage;
+        /**
+         * @brief If the format supports multi-sampling for each sample_count value.
+        */
+        std::unordered_map<sample_count, bool> sampleCounts;
+        /**
+         * @brief If the format supports tiling::Linear.
+        */
+        bool linearTiling;
+    };
+
+    /**
      * @brief Represents a compatible adapter (GPU, APU, IGPU, etc.).
      * This handle is created and owned by the Instance, the user is not responsible for destroying it.
     */
     class Adapter
     {
-        friend Instance;
+        friend class Instance;
         friend class Device;
         friend result detail::impl_createInstance(const instance_desc&, Instance**, bool);
         friend void detail::impl_destroyInstance(Instance*);
@@ -115,6 +155,11 @@ namespace LLRI_NAMESPACE
          * @return ErrorDeviceLost if the adapter was removed or lost.
         */
         result queryFeatures(adapter_features* features) const;
+
+        /**
+         * @brief Query a structure with information about the Adapter's limits.
+        */
+        [[nodiscard]] adapter_limits queryLimits() const;
 
         /**
          * @brief Query the support of a given adapter extension.
@@ -142,6 +187,19 @@ namespace LLRI_NAMESPACE
         result queryQueueCount(queue_type type, uint8_t* count) const;
 
         /**
+         * @brief Query the properties of all formats.
+         * The resulting unordered_map contains a format_properties structure for every format in llri::format.
+         *
+         * The result of queryFormatProperties is cached internally and a reference is returned. Thus calling the function multiple times does not come with an extra cost and calling queryFormatProperties(format) doesn't either.
+        */
+        [[nodiscard]] const std::unordered_map<format, format_properties>& queryFormatProperties() const;
+
+        /**
+         * @brief Query the properties of a single format.
+         */
+        [[nodiscard]] format_properties queryFormatProperties(format f) const;
+
+        /**
          * @brief Query the number of nodes (physical adapters) that this adapter represents. If there are no linked physical adapters, this returns 1.
         */
         [[nodiscard]] uint8_t queryNodeCount() const;
@@ -158,10 +216,16 @@ namespace LLRI_NAMESPACE
 
         void* m_validationCallbackMessenger = nullptr;
 
+        // cached value of queryFormatProperties()
+        mutable std::unordered_map<format, format_properties> m_cachedFormatProperties {};
+
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
+        [[nodiscard]] adapter_limits impl_queryLimits() const;
         result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
 
         result impl_queryQueueCount(queue_type type, uint8_t* count) const;
+
+        [[nodiscard]] std::unordered_map<format, format_properties> impl_queryFormatProperties() const;
     };
 }

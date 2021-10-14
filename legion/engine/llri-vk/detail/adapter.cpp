@@ -59,6 +59,12 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
+    adapter_limits Adapter::impl_queryLimits() const
+    {
+        adapter_limits output{};
+        return output;
+    }
+
     result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
         switch (type)
@@ -120,5 +126,73 @@ namespace LLRI_NAMESPACE
         }
 
         return result::Success;
+    }
+
+    std::unordered_map<format, format_properties> Adapter::impl_queryFormatProperties() const
+    {
+        std::unordered_map<format, format_properties> result;
+
+        for (uint8_t f = 0; f <= static_cast<uint8_t>(format::MaxEnum); f++)
+        {
+            const auto form = static_cast<format>(f);
+            const auto vkFormat = internal::mapTextureFormat(form);
+
+            VkFormatProperties formatProps;
+            vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &formatProps);
+
+            // get supported
+            const bool supported = formatProps.optimalTilingFeatures != 0;
+
+            // get flags
+            resource_usage_flags usageFlags = resource_usage_flag_bits::None;
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_SRC_BIT) == VK_FORMAT_FEATURE_TRANSFER_SRC_BIT)
+                usageFlags |= resource_usage_flag_bits::TransferSrc;
+
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_TRANSFER_DST_BIT) == VK_FORMAT_FEATURE_TRANSFER_DST_BIT)
+                usageFlags |= resource_usage_flag_bits::TransferDst;
+
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) == VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
+                usageFlags |= resource_usage_flag_bits::Sampled;
+
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) == VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT)
+                usageFlags |= resource_usage_flag_bits::ShaderWrite;
+
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT)
+                usageFlags |= resource_usage_flag_bits::ColorAttachment;
+
+            if ((formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+                usageFlags |= resource_usage_flag_bits::DepthStencilAttachment;
+
+            // get sample counts
+            VkPhysicalDeviceProperties deviceProps;
+            vkGetPhysicalDeviceProperties(static_cast<VkPhysicalDevice>(m_ptr), &deviceProps);
+            const VkSampleCountFlags counts = deviceProps.limits.framebufferColorSampleCounts & deviceProps.limits.framebufferDepthSampleCounts;
+            const std::unordered_map<sample_count, bool> sampleCounts {
+                { sample_count::Count1, counts & VK_SAMPLE_COUNT_1_BIT },
+                { sample_count::Count2, counts & VK_SAMPLE_COUNT_2_BIT },
+                { sample_count::Count4, counts & VK_SAMPLE_COUNT_4_BIT },
+                { sample_count::Count8, counts & VK_SAMPLE_COUNT_8_BIT },
+                { sample_count::Count16, counts & VK_SAMPLE_COUNT_16_BIT },
+                { sample_count::Count32, counts & VK_SAMPLE_COUNT_32_BIT }
+            };
+
+            // get types
+            const std::unordered_map<resource_type, bool> types {
+                { resource_type::Buffer, false },
+                { resource_type::Texture1D, true },
+                { resource_type::Texture2D, true },
+                { resource_type::Texture3D, true }
+            };
+
+            result.insert({ form, format_properties {
+                supported,
+                types,
+                usageFlags,
+                sampleCounts,
+                formatProps.linearTilingFeatures != 0,
+            } });
+        }
+
+        return result;
     }
 }

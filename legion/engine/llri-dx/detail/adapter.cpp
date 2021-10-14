@@ -51,6 +51,12 @@ namespace LLRI_NAMESPACE
         return result::Success;
     }
 
+    adapter_limits Adapter::impl_queryLimits() const
+    {
+        adapter_limits output{};
+        return output;
+    }
+
     result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
         switch (type)
@@ -87,5 +93,89 @@ namespace LLRI_NAMESPACE
         }
 ;
         return result::Success;
+    }
+
+    std::unordered_map<format, format_properties> Adapter::impl_queryFormatProperties() const
+    {
+        std::unordered_map<format, format_properties> result;
+
+        ID3D12Device* device;
+        directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device));
+
+        CD3DX12FeatureSupport features;
+        features.Init(device);
+
+        for (uint8_t f = 0; f <= static_cast<uint8_t>(format::MaxEnum); f++)
+        {
+            const auto form = static_cast<format>(f);
+            const DXGI_FORMAT dxFormat = directx::mapTextureFormat(form);
+
+            // query support from DX12
+            D3D12_FORMAT_SUPPORT1 sup1;
+            D3D12_FORMAT_SUPPORT2 sup2;
+            features.FormatSupport(dxFormat, sup1, sup2);
+
+            // get support
+            const bool supported = sup1 != D3D12_FORMAT_SUPPORT1_NONE;
+
+            // linear support
+            const bool linearTiling = (sup1 & D3D12_FORMAT_SUPPORT1_DISPLAY) == D3D12_FORMAT_SUPPORT1_DISPLAY;
+
+            // get sample counts
+            std::unordered_map<sample_count, bool> sampleCounts {
+                { sample_count::Count1, false },
+                { sample_count::Count2, false },
+                { sample_count::Count4, false },
+                { sample_count::Count8, false },
+                { sample_count::Count16, false },
+                { sample_count::Count32, false }
+            };
+
+            for (auto& pair : sampleCounts)
+            {
+                UINT count;
+                features.MultisampleQualityLevels(dxFormat, static_cast<UINT>(pair.first), D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE, count);
+
+                pair.second = count;
+            }
+
+            // get usage flags
+            resource_usage_flags usageFlags = resource_usage_flag_bits::TransferSrc | resource_usage_flag_bits::TransferDst; // always supported
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE) == D3D12_FORMAT_SUPPORT1_SHADER_SAMPLE)
+                usageFlags |= resource_usage_flag_bits::Sampled;
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_TYPED_UNORDERED_ACCESS_VIEW) == D3D12_FORMAT_SUPPORT1_TYPED_UNORDERED_ACCESS_VIEW)
+                usageFlags |= resource_usage_flag_bits::ShaderWrite;
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_RENDER_TARGET) == D3D12_FORMAT_SUPPORT1_RENDER_TARGET)
+                usageFlags |= resource_usage_flag_bits::ColorAttachment;
+
+            if ((sup1 & D3D12_FORMAT_SUPPORT1_DEPTH_STENCIL) == D3D12_FORMAT_SUPPORT1_DEPTH_STENCIL)
+            {
+                usageFlags |= resource_usage_flag_bits::DepthStencilAttachment;
+                usageFlags |= resource_usage_flag_bits::DenyShaderResource;
+            }
+
+            // get types
+            const std::unordered_map<resource_type, bool> types {
+                { resource_type::Buffer, false },
+                { resource_type::Texture1D, (sup1 & D3D12_FORMAT_SUPPORT1_TEXTURE1D) == D3D12_FORMAT_SUPPORT1_TEXTURE1D },
+                { resource_type::Texture2D, (sup1 & D3D12_FORMAT_SUPPORT1_TEXTURE2D) == D3D12_FORMAT_SUPPORT1_TEXTURE2D },
+                { resource_type::Texture3D, (sup1 & D3D12_FORMAT_SUPPORT1_TEXTURE3D) == D3D12_FORMAT_SUPPORT1_TEXTURE3D }
+            };
+
+            // gather results
+            result.insert({ form, format_properties { 
+                supported,
+                types,
+                usageFlags,
+                sampleCounts,
+                linearTiling
+            } });
+        }
+
+        device->Release();
+        return result;
     }
 }

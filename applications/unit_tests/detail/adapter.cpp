@@ -105,6 +105,18 @@ TEST_CASE("Adapter")
                 }
             }
         }
+
+        SUBCASE("Adapter::queryFormatProperties()")
+        {
+            auto props = adapter->queryFormatProperties();
+            CHECK_FALSE(props.empty());
+            CHECK_EQ(props.size(), static_cast<size_t>(llri::format::MaxEnum) + 1);
+
+            for (uint8_t f = 0; f <= static_cast<uint8_t>(llri::format::MaxEnum); f++)
+            {
+                CHECK_NE(props.find(static_cast<llri::format>(f)), props.end());
+            }
+        }
     }
 
     llri::destroyInstance(instance);

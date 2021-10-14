@@ -32,18 +32,20 @@ private:
     llri::Device* m_device = nullptr;
 
     llri::Queue* m_graphicsQueue = nullptr;
-    llri::Queue* m_computeQueue = nullptr;
-    llri::Queue* m_transferQueue = nullptr;
 
     llri::CommandGroup* m_commandGroup = nullptr;
     llri::CommandList* m_commandList = nullptr;
 
     llri::Fence* m_fence = nullptr;
     llri::Semaphore* m_semaphore = nullptr;
-    
+
+    llri::Resource* m_buffer = nullptr;
+    llri::Resource* m_texture = nullptr;
+
     void createInstance();
     void selectAdapter();
     void createDevice();
     void createCommandLists();
     void createSynchronization();
+    void createResources();
 };

@@ -26,6 +26,9 @@ namespace LLRI_NAMESPACE
 
     class Semaphore;
 
+    class Resource;
+    struct resource_desc;
+
     /**
      * @brief Device description to be used in Instance::createDevice().
     */
@@ -180,6 +183,22 @@ namespace LLRI_NAMESPACE
         */
         void destroySemaphore(Semaphore* semaphore);
 
+        /**
+         * @brief Create a resource (a buffer or texture) and allocate the memory for it.
+         * @param desc The description of the resource.
+         * @param resource A pointer to the resulting resource variable.
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage if resource was nullptr.
+         * @return ErrorInvalidUsage if any of the conditions in resource_desc are not met.
+         * @return ErrorOutOfDeviceMemory implementations may return this if the resource does not fit in the Device's memory.
+        */
+        result createResource(const resource_desc& desc, Resource** resource);
+
+        /**
+         * @brief Destroy the given resource.
+         * @param resource A pointer to a valid Resource, or nullptr.
+        */
+        void destroyResource(Resource* resource);
     private:
         //Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
@@ -204,5 +223,8 @@ namespace LLRI_NAMESPACE
 
         result impl_createSemaphore(Semaphore** semaphore);
         void impl_destroySemaphore(Semaphore* semaphore);
+
+        result impl_createResource(const resource_desc& desc, Resource** resource);
+        void impl_destroyResource(Resource* resource);
     };
 }

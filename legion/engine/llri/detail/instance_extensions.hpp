@@ -88,8 +88,8 @@ namespace LLRI_NAMESPACE
         };
 
         instance_extension() = default;
-        instance_extension(instance_extension_type type, const driver_validation_ext& ext) : type(type), driverValidation(ext) { }
-        instance_extension(instance_extension_type type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
+        constexpr instance_extension(instance_extension_type type, const driver_validation_ext& ext) : type(type), driverValidation(ext) { }
+        constexpr instance_extension(instance_extension_type type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
     };
 
     namespace detail

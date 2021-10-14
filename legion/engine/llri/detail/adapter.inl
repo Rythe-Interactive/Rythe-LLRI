@@ -76,6 +76,17 @@ namespace LLRI_NAMESPACE
 #endif
     }
 
+    inline adapter_limits Adapter::queryLimits() const
+    {
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        const auto output = impl_queryLimits();
+        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
+        return output;
+#else
+        return impl_queryLimits();
+#endif
+    }
+
     inline result Adapter::queryExtensionSupport(adapter_extension_type type, bool* supported) const
     {
 #ifndef LLRI_DISABLE_VALIDATION
@@ -134,6 +145,25 @@ namespace LLRI_NAMESPACE
 #else
         return impl_queryQueueCount(type, count);
 #endif
+    }
+
+    inline const std::unordered_map<format, format_properties>& Adapter::queryFormatProperties() const
+    {
+        if (m_cachedFormatProperties.empty())
+        {
+            m_cachedFormatProperties = impl_queryFormatProperties();
+
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+            detail::impl_pollAPIMessages(m_validationCallbackMessenger);
+#endif
+        }
+
+        return m_cachedFormatProperties;
+    }
+
+    inline format_properties Adapter::queryFormatProperties(format f) const
+    {
+        return queryFormatProperties().at(f);
     }
 
     inline uint8_t Adapter::queryNodeCount() const
