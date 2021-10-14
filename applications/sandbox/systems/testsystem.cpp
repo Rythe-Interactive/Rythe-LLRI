@@ -19,7 +19,7 @@ using namespace legion;
     auto r = operation; \
     if (r != llri::result::Success) \
     { \
-        log::error("LLRI Operation {} returned: {}, operation: {}", #operation, llri::to_string(r)); \
+        log::error("LLRI Operation {} returned: {}", #operation, llri::to_string(r)); \
         throw std::runtime_error("LLRI Operation failed"); \
     } \
 } \
