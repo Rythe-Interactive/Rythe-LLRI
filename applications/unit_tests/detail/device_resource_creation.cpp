@@ -50,7 +50,7 @@ TEST_CASE("Device::createResource()")
                         {
                             desc.initialState = static_cast<llri::resource_state>(resourceState);
 
-                            const std::set<uint32_t> possibleSizeValues = { 0, 1, UINT_MAX };
+                            const std::unordered_set<uint32_t> possibleSizeValues = { 0, 1, UINT_MAX };
                             for (auto width : possibleSizeValues)
                             {
                                 desc.width = width;

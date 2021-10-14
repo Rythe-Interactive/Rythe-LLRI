@@ -516,7 +516,7 @@ namespace LLRI_NAMESPACE
         {
             case resource_type::Buffer:
             {
-                const std::set<resource_state> validStates { resource_state::General, resource_state::Upload, resource_state::ShaderReadOnly, resource_state::ShaderReadWrite, resource_state::TransferSrc, resource_state::TransferDst, resource_state::VertexBuffer, resource_state::IndexBuffer, resource_state::ConstantBuffer };
+                const std::unordered_set<resource_state> validStates { resource_state::General, resource_state::Upload, resource_state::ShaderReadOnly, resource_state::ShaderReadWrite, resource_state::TransferSrc, resource_state::TransferDst, resource_state::VertexBuffer, resource_state::IndexBuffer, resource_state::ConstantBuffer };
                 if (validStates.find(desc.initialState) == validStates.end())
                 {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type was set to Buffer but desc.initialState wasn't one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.");
@@ -528,7 +528,7 @@ namespace LLRI_NAMESPACE
             case resource_type::Texture2D:
             case resource_type::Texture3D:
             {
-                const std::set<resource_state> validStates { resource_state::General, resource_state::Upload, resource_state::ColorAttachment, resource_state::DepthStencilAttachment, resource_state::DepthStencilAttachmentReadOnly, resource_state::ShaderReadOnly, resource_state::ShaderReadWrite, resource_state::TransferSrc, resource_state::TransferDst };
+                const std::unordered_set<resource_state> validStates { resource_state::General, resource_state::Upload, resource_state::ColorAttachment, resource_state::DepthStencilAttachment, resource_state::DepthStencilAttachmentReadOnly, resource_state::ShaderReadOnly, resource_state::ShaderReadWrite, resource_state::TransferSrc, resource_state::TransferDst };
                 if (validStates.find(desc.initialState) == validStates.end())
                 {
                     detail::apiError("Device::createResource()", result::ErrorInvalidUsage, "desc.type was set to Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.");
