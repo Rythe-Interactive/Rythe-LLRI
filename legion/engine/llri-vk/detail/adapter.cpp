@@ -141,7 +141,7 @@ namespace LLRI_NAMESPACE
             vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &formatProps);
 
             // get supported
-            const bool supported = formatProps.bufferFeatures == 0 && formatProps.optimalTilingFeatures == 0;
+            const bool supported = formatProps.optimalTilingFeatures != 0;
 
             // get flags
             resource_usage_flags usageFlags = resource_usage_flag_bits::None;
