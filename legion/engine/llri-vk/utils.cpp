@@ -143,7 +143,7 @@ namespace LLRI_NAMESPACE
                     return static_cast<uint32_t>(i);
             }
 
-            return -1;
+            return static_cast<uint32_t>(-1);
         }
 
         /**
