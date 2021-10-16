@@ -13,8 +13,8 @@ namespace helpers
     inline llri::Instance* defaultInstance()
     {
         llri::Instance* instance;
-        llri::instance_extension ext{ llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { true } };
-        const llri::instance_desc desc{ 1, &ext, ""};
+        auto ext = llri::instance_extension::DriverValidation;
+        const llri::instance_desc desc{ 1, &ext, "unit test instance"};
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         return instance;
     }

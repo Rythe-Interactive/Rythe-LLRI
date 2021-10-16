@@ -11,13 +11,13 @@ namespace llri
 {
     namespace detail
     {
-        bool queryInstanceExtensionSupport(instance_extension_type type)
+        bool queryInstanceExtensionSupport(instance_extension ext)
         {
             directx::lazyInitializeDirectX();
 
-            switch (type)
+            switch (ext)
             {
-                case instance_extension_type::DriverValidation:
+                case instance_extension::DriverValidation:
                 {
                     ID3D12Debug* temp = nullptr;
                     const bool succeeded = SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
@@ -25,7 +25,7 @@ namespace llri
                         temp->Release();
                     return succeeded;
                 }
-                case instance_extension_type::GPUValidation:
+                case instance_extension::GPUValidation:
                 {
                     ID3D12Debug1* temp = nullptr;
                     const bool succeeded = SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
@@ -42,47 +42,38 @@ namespace llri
     namespace internal
     {
         /**
-         * @brief Enables D3D12 validation layers where requested.
+         * @brief Enables D3D12 validation layers.
          * @return If the needed debug interface is not found/supported, the function returns result::ErrorExtensionNotSupported.
         */
-        result createDriverValidationEXT(const driver_validation_ext& ext, void** output)
+        result enableDriverValidationEXT()
         {
-            if (ext.enable)
+            ID3D12Debug* debugAPI = nullptr;
+            if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugAPI))))
             {
-                ID3D12Debug* debugAPI = nullptr;
-                if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugAPI))))
-                {
-                    debugAPI->EnableDebugLayer();
-                    *output = debugAPI;
-                }
-                else
-                    return result::ErrorExtensionNotSupported;
+                debugAPI->EnableDebugLayer();
+                debugAPI->Release();
+                return result::Success;
             }
-            return result::Success;
+
+            return result::ErrorExtensionNotSupported;
         }
 
         /**
-         * @brief Enables D3D12 GPU validation layers where requested.
+         * @brief Enables D3D12 GPU validation layers.
          * @return If the needed debug interface is not found/supported, the function returns result::ErrorExtensionNotSupported.
         */
-        result createGPUValidationEXT(const gpu_validation_ext& ext, void** output)
+        result enableGPUValidationEXT()
         {
-            if (ext.enable)
+            ID3D12Debug1* debugGPU = nullptr;
+            if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
             {
-                ID3D12Debug1* debugGPU = nullptr;
-                if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
-                {
-                    debugGPU->SetEnableGPUBasedValidation(true);
-                    debugGPU->SetEnableSynchronizedCommandQueueValidation(true);
-                    *output = debugGPU;
-                }
-                else
-                {
-                    return result::ErrorExtensionNotSupported;
-                }
+                debugGPU->SetEnableGPUBasedValidation(true);
+                debugGPU->SetEnableSynchronizedCommandQueueValidation(true);
+                debugGPU->Release();
+                return result::Success;
             }
 
-            return result::Success;
+            return result::ErrorExtensionNotSupported;
         }
     }
 }

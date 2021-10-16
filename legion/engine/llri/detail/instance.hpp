@@ -10,7 +10,7 @@
 namespace llri
 {
     enum struct result : uint8_t;
-    struct instance_extension;
+    enum struct instance_extension : uint8_t;
     class Instance;
     class Adapter;
 

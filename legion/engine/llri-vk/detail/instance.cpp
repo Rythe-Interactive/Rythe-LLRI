@@ -79,31 +79,24 @@ namespace llri
             for (size_t i = 0; i < desc.numExtensions; i++)
             {
                 auto& extension = desc.extensions[i];
-                switch (extension.type)
+                switch (extension)
                 {
-                    case instance_extension_type::DriverValidation:
+                    case instance_extension::DriverValidation:
                     {
-                        if (extension.driverValidation.enable)
-                            layers.push_back("VK_LAYER_KHRONOS_validation");
+                        layers.push_back("VK_LAYER_KHRONOS_validation");
                         break;
                     }
-                    case instance_extension_type::GPUValidation:
+                    case instance_extension::GPUValidation:
                     {
-                        if (extension.gpuValidation.enable)
-                        {
-                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
-                            enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
+                        extensions.emplace_back("VK_EXT_validation_features");
 
-                            features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
-                            features.pNext = pNext; // Always apply pNext backwards to simplify optional chaining
-                            pNext = &features;
-                        }
+                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
+                        enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
+
+                        features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
+                        features.pNext = pNext; // Always apply pNext backwards to simplify optional chaining
+                        pNext = &features;
                         break;
-                    }
-                    default:
-                    {
-                        llri::destroyInstance(result);
-                        return result::ErrorExtensionNotSupported;
                     }
                 }
             }

@@ -31,9 +31,9 @@ TEST_SUITE("Instance")
 
         SUBCASE("[Correct usage] numExtensions > 0 && extensions != nullptr")
         {
-            llri::instance_extension extension{ llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { false } };
+            auto ext = llri::instance_extension::DriverValidation;
             desc.numExtensions = 1;
-            desc.extensions = &extension;
+            desc.extensions = &ext;
 
             auto result = llri::createInstance(desc, &instance);
             CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorExtensionNotSupported);
@@ -41,7 +41,7 @@ TEST_SUITE("Instance")
         
         SUBCASE("[Incorrect usage] invalid extension type")
         {
-            llri::instance_extension extension{ (llri::instance_extension_type)UINT_MAX, llri::driver_validation_ext { false } };
+            auto extension = static_cast<llri::instance_extension>(UINT_MAX);
 
             desc.numExtensions = 1;
             desc.extensions = &extension;
