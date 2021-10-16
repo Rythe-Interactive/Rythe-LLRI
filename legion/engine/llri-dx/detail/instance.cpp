@@ -139,13 +139,11 @@ namespace llri
                 delete adapter;
             }
 
-            if (instance->m_debugAPI)
-                static_cast<ID3D12Debug*>(instance->m_debugAPI)->Release();
-
-            if (instance->m_debugGPU)
+            ID3D12Debug1* debugGPU = nullptr;
+            if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
             {
-                static_cast<ID3D12Debug1*>(instance->m_debugGPU)->SetEnableGPUBasedValidation(false);
-                static_cast<ID3D12Debug1*>(instance->m_debugGPU)->Release();
+                debugGPU->SetEnableGPUBasedValidation(false);
+                debugGPU->Release();
             }
 
             if (instance->m_ptr)
