@@ -119,7 +119,7 @@ void TestSystem::selectAdapter()
     THROW_IF_FAILED(m_instance->enumerateAdapters(&adapters));
     assert(!adapters.empty());
 
-    std::map<int, llri::Adapter*> sortedAdapters;
+    std::unordered_map<int, llri::Adapter*> sortedAdapters;
     for (llri::Adapter* adapter : adapters)
     {
         //Log adapter info

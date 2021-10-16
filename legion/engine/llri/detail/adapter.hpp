@@ -5,11 +5,9 @@
  */
 
 #pragma once
-#include <string>
-#include <unordered_map>
-#include <llri/llri.hpp> // unnecessary but helps with intellisense
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     enum struct adapter_extension_type : uint8_t;
     enum struct queue_type : uint8_t;

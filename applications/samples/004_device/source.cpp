@@ -6,7 +6,6 @@
 
 #include <llri/llri.hpp>
 #include <iostream>
-#include <array>
 
 //See 001_validation.
 void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
@@ -85,7 +84,7 @@ llri::Adapter* selectAdapter(llri::Instance* instance)
     if (r != llri::result::Success)
         return nullptr;
 
-    std::map<int, llri::Adapter*> sortedAdapters;
+    std::unordered_map<int, llri::Adapter*> sortedAdapters;
     for (auto* adapter : adapters)
     {
         llri::adapter_info info;

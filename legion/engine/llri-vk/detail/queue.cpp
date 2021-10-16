@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     result Queue::impl_submit(const submit_desc& desc)
     {

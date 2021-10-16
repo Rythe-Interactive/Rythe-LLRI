@@ -5,11 +5,9 @@
  */
 
 #pragma once
-#include <llri/detail/flags.hpp>
-#include <cstdint>
-#include <string>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Fence flag bits describe how the fence should be created.

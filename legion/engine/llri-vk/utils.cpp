@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     namespace internal
     {
@@ -161,9 +161,9 @@ namespace LLRI_NAMESPACE
             return hasher(name);
         }
 
-        std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice)
+        std::unordered_map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice)
         {
-            std::map<queue_type, uint32_t> output
+            std::unordered_map<queue_type, uint32_t> output
             {
                 { queue_type::Graphics, UINT_MAX },
                 { queue_type::Compute, UINT_MAX },

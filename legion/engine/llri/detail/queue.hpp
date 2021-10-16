@@ -5,14 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
-#include <vector>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-//detail includes should be kept to a minimum but
-//are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
-#include <llri/detail/instance.hpp>
-
-namespace LLRI_NAMESPACE
+namespace llri
 {
     class CommandList;
     class Fence;

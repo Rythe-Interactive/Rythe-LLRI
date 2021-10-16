@@ -5,9 +5,9 @@
  */
 
 #pragma once
-#include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     inline std::string to_string(instance_extension_type type)
     {
@@ -137,7 +137,7 @@ namespace LLRI_NAMESPACE
         }
 
         //Get max queues
-        std::map<queue_type, uint8_t> maxQueueCounts {
+        std::unordered_map<queue_type, uint8_t> maxQueueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }
@@ -147,7 +147,7 @@ namespace LLRI_NAMESPACE
         desc.adapter->queryQueueCount(queue_type::Transfer, &maxQueueCounts[queue_type::Transfer]);
 
         //Validate all queue descs and their relation to max queue counts
-        std::map<queue_type, uint8_t> queueCounts {
+        std::unordered_map<queue_type, uint8_t> queueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }

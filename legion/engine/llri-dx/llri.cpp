@@ -6,7 +6,7 @@
 
 #include <llri/llri.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     [[nodiscard]] implementation queryImplementation()
     {

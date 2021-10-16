@@ -60,7 +60,7 @@ llri::Adapter* selectAdapter(llri::Instance* instance)
         return nullptr;
 
     //Then these adapters may be iterated over and their properties may be read to try and find the best fit
-    std::map<int, llri::Adapter*> sortedAdapters;
+    std::unordered_map<int, llri::Adapter*> sortedAdapters;
     for (auto* adapter : adapters)
     {
         //An adapter's information (product, vendor, name, type, etc) can be queried through queryInfo()

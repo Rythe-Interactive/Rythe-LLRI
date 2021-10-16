@@ -268,7 +268,7 @@ TEST_SUITE("Instance")
             {
                 std::vector<llri::queue_desc> queues;
 
-                std::map<llri::queue_type, uint8_t> maxQueueCounts{
+                std::unordered_map<llri::queue_type, uint8_t> maxQueueCounts{
                     { llri::queue_type::Graphics, 0 },
                     { llri::queue_type::Compute, 0 },
                     { llri::queue_type::Transfer, 0 }

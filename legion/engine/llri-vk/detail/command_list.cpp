@@ -8,7 +8,7 @@
 #include <llri-vk/utils.hpp>
 #include <graphics/vulkan/volk.h>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     result CommandList::impl_begin(const command_list_begin_desc& desc)
     {

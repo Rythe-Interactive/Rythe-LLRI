@@ -5,9 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Semaphore is a synchronization structure that enables synchronization between GPU events.

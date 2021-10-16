@@ -5,11 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
-#include <string>
-#include <llri/detail/flags.hpp>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Describes the current state of a Resource. Resources are assigned a state upon creation using the resource_desc::initialState field. Afterwards they can transition to other states using resource barriers.

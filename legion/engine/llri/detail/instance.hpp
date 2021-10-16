@@ -5,11 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
-#include <vector>
-#include <map>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     enum struct result : uint8_t;
     struct instance_extension;
@@ -148,7 +146,7 @@ namespace LLRI_NAMESPACE
         bool m_shouldConstructValidationCallbackMessenger;
         void* m_validationCallbackMessenger = nullptr; //Allows API to store their callback messenger if needed
 
-        std::map<void*, Adapter*> m_cachedAdapters;
+        std::unordered_map<void*, Adapter*> m_cachedAdapters;
 
         result impl_enumerateAdapters(std::vector<Adapter*>* adapters);
         result impl_createDevice(const device_desc& desc, Device** device);

@@ -5,9 +5,9 @@
  */
 
 #pragma once
-#include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     inline std::string to_string(queue_priority priority)
     {

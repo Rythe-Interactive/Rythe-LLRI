@@ -12,7 +12,7 @@
 #include <dxgi1_6.h>
 #include <dxgidebug.h>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     namespace directx
     {

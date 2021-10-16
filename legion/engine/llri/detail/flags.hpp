@@ -5,9 +5,9 @@
  */
 
 #pragma once
-#include <type_traits>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief wrapper structure for flags of type E, used to distinguish between x_flag_bits and x_flags.
@@ -82,11 +82,11 @@ namespace LLRI_NAMESPACE
 namespace std
 {
     template<typename E>
-    struct hash<LLRI_NAMESPACE::flags<E>>
+    struct hash<llri::flags<E>>
     {
-        std::size_t operator()(const LLRI_NAMESPACE::flags<E>& f) const
+        std::size_t operator()(const llri::flags<E>& f) const
         {
-            return hash<typename LLRI_NAMESPACE::flags<E>::underlying_t>()(static_cast<typename LLRI_NAMESPACE::flags<E>::underlying_t>(f.value));
+            return hash<typename llri::flags<E>::underlying_t>()(static_cast<typename llri::flags<E>::underlying_t>(f.value));
         }
     };
 }

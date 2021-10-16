@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     namespace internal
     {
@@ -380,7 +380,7 @@ namespace LLRI_NAMESPACE
         output->m_functionTable = table;
 
         //Get created queues
-        std::map<queue_type, uint8_t> queueCounts {
+        std::unordered_map<queue_type, uint8_t> queueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }

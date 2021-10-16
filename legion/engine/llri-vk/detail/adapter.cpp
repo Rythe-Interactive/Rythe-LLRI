@@ -8,7 +8,7 @@
 #include <llri-vk/utils.hpp>
 #include <graphics/vulkan/volk.h>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     namespace internal
     {

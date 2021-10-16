@@ -7,7 +7,6 @@
 #include <llri/llri.hpp>
 #include <helpers.hpp>
 #include <doctest/doctest.h>
-#include <array>
 
 struct queue_wrapper
 {

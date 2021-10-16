@@ -7,7 +7,6 @@
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
 #include <helpers.hpp>
-#include <array>
 #include <future>
 
 TEST_CASE("Device::createResource()")

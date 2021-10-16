@@ -5,10 +5,9 @@
  */
 
 #pragma once
-#include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
-#include <set>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     inline result Device::queryQueue(queue_type type, uint8_t index, Queue** queue)
     {

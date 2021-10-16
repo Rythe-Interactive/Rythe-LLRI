@@ -5,12 +5,9 @@
  */
 
 #pragma once
-//detail includes should be kept to a minimum but
-//are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
-#include <llri/detail/instance.hpp>
-#include <cstdint>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     class CommandGroup;
 

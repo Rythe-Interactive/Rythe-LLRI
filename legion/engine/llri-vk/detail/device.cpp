@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     result Device::impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
     {

@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <llri-dx/directx.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     namespace detail
     {
