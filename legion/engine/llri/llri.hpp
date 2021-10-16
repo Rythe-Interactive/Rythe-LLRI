@@ -6,9 +6,12 @@
 
 #pragma once
 #include <cstdint>
-#include <map>
 #include <string>
-#include <vector>
+#include <array>
+
+#include <unordered_set>
+#include <unordered_map>
+
 #include <type_traits>
 
 #if defined(DOXY_EXCLUDE)
@@ -30,27 +33,6 @@
   * @note Disabling implementation message polling is not guaranteed to prevent implementations from sending messages through other means. Drivers often have their own way of forwarding messages and it's very possible that messages end up in stdout or visual studio's output window.
   */
 #define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-
-/**
- * @def LLRI_ENABLE_LEGION_NAMESPACING
- * @brief Defining LLRI_ENABLE_LEGION_NAMESPACING changes LLRI's namespace from llri to legion::graphics::llri.
- */
-#define LLRI_ENABLE_LEGION_NAMESPACING
-#undef LLRI_ENABLE_LEGION_NAMESPACING //only defined for the doxygen comments
-#endif
-
-#if defined(LLRI_ENABLE_LEGION_NAMESPACING)
-/**
- * @def LLRI_NAMESPACE
- * @brief The LLRI namespace. This is usually set to "llri", but if LLRI_ENABLE_LEGION_NAMESPACING is defined then the namespace is "legion::graphics::llri".
- */
-#define LLRI_NAMESPACE legion::graphics::llri
-#else
-/**
- * @def LLRI_NAMESPACE
- * @brief The LLRI namespace. This is usually set to "llri", but if LLRI_ENABLE_LEGION_NAMESPACING is defined then the namespace is "legion::graphics::llri".
- */
-#define LLRI_NAMESPACE llri
 #endif
 
 /**
@@ -64,7 +46,7 @@
  */
 #define LLRI_TIMEOUT_MAX 0xFFFFFFFFu
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Result codes for LLRI operations.
@@ -226,24 +208,24 @@ namespace LLRI_NAMESPACE
 
 // ReSharper disable CppUnusedIncludeDirective
 
-#include <llri/detail/flags.hpp>
-#include <llri/detail/callback.hpp>
+#include "detail/flags.hpp"
+#include "detail/callback.hpp"
 
-#include <llri/detail/instance.hpp>
-#include <llri/detail/instance_extensions.hpp>
+#include "detail/instance.hpp"
+#include "detail/instance_extensions.hpp"
 
-#include <llri/detail/adapter.hpp>
-#include <llri/detail/adapter_extensions.hpp>
+#include "detail/adapter.hpp"
+#include "detail/adapter_extensions.hpp"
 
-#include <llri/detail/queue.hpp>
-#include <llri/detail/device.hpp>
+#include "detail/queue.hpp"
+#include "detail/device.hpp"
 
-#include <llri/detail/resource.hpp>
+#include "detail/resource.hpp"
 
-#include <llri/detail/command_group.hpp>
-#include <llri/detail/command_list.hpp>
+#include "detail/command_group.hpp"
+#include "detail/command_list.hpp"
 
-#include <llri/detail/fence.hpp>
-#include <llri/detail/semaphore.hpp>
+#include "detail/fence.hpp"
+#include "detail/semaphore.hpp"
 
-#include <llri/detail/llri.inl>
+#include "detail/llri.inl"

@@ -5,9 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Describes the kind of instance extension. This value is used in instance_extension and is used in createInstance() to recognize which value to pick from instance_extension's union.

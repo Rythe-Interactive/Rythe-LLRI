@@ -5,9 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Semaphore is a synchronization structure that enables synchronization between GPU events.
@@ -19,7 +19,7 @@ namespace LLRI_NAMESPACE
         friend class Queue;
 
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Semaphore() = default;
         ~Semaphore() = default;
 

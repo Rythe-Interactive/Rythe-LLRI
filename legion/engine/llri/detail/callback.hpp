@@ -5,10 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
-#include <string>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Describes the severity of a callback message.

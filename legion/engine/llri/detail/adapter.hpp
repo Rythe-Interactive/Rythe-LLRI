@@ -5,11 +5,9 @@
  */
 
 #pragma once
-#include <string>
-#include <unordered_map>
-#include <llri/llri.hpp> // unnecessary but helps with intellisense
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     enum struct adapter_extension_type : uint8_t;
     enum struct queue_type : uint8_t;
@@ -205,7 +203,7 @@ namespace LLRI_NAMESPACE
         [[nodiscard]] uint8_t queryNodeCount() const;
 
     private:
-        //Force private constructor/deconstructor so that only instance can manage lifetime
+        // Force private constructor/deconstructor so that only instance can manage lifetime
         Adapter() = default;
         ~Adapter() = default;
 

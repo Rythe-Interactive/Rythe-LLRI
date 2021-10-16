@@ -7,12 +7,12 @@
 #include <llri/llri.hpp>
 #include <llri-dx/directx.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     result CommandList::impl_begin(const command_list_begin_desc& desc)
     {
-        //TODO: Handle node mask
-        //TODO: Handle inheritance/indirect
+        // TODO: Handle node mask
+        // TODO: Handle inheritance/indirect
         const auto r = static_cast<ID3D12GraphicsCommandList*>(m_ptr)->Reset(static_cast<ID3D12CommandAllocator*>(m_group->m_ptr), nullptr);
         if (FAILED(r))
             return directx::mapHRESULT(r);

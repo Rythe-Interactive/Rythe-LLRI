@@ -5,12 +5,9 @@
  */
 
 #pragma once
-//detail includes should be kept to a minimum but
-//are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
-#include <llri/detail/instance.hpp>
-#include <cstdint>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     class CommandGroup;
 
@@ -154,7 +151,7 @@ namespace LLRI_NAMESPACE
         */
         [[nodiscard]] command_list_state queryState() const { return m_state; }
     private:
-        //Force private constructor/deconstructor so that only alloc/free can manage lifetime
+        // Force private constructor/deconstructor so that only alloc/free can manage lifetime
         CommandList() = default;
         ~CommandList() = default;
 

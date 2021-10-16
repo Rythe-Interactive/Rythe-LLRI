@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     namespace internal
     {
@@ -72,7 +72,7 @@ namespace LLRI_NAMESPACE
 
             void* pNext = nullptr;
 
-            //Variables that need to be stored outside of scope
+            // Variables that need to be stored outside of scope
             VkValidationFeaturesEXT features;
             std::vector<VkValidationFeatureEnableEXT> enables;
 
@@ -95,7 +95,7 @@ namespace LLRI_NAMESPACE
                             enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
 
                             features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
-                            features.pNext = pNext; //Always apply pNext backwards to simplify optional chaining
+                            features.pNext = pNext; // Always apply pNext backwards to simplify optional chaining
                             pNext = &features;
                         }
                         break;
@@ -108,13 +108,13 @@ namespace LLRI_NAMESPACE
                 }
             }
 
-            //Add the debug utils extension for the API callback
+            // Add the debug utils extension for the API callback
             result->m_shouldConstructValidationCallbackMessenger = false;
             result->m_validationCallbackMessenger = nullptr;
             if (enableImplementationMessagePolling)
             {
-                //Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
-                //so instead the check is implicit, implementation callbacks aren't guaranteed
+                // Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
+                // so instead the check is implicit, implementation callbacks aren't guaranteed
                 if (availableExtensions.find(internal::nameHash("VK_EXT_debug_utils")) != availableExtensions.end())
                 {
                     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -136,14 +136,14 @@ namespace LLRI_NAMESPACE
             }
             result->m_ptr = vulkanInstance;
 
-            //Load instance functions 
+            // Load instance functions 
             volkLoadInstanceOnly(vulkanInstance);
 
-            //Create debug utils callback
+            // Create debug utils callback
             if (result->m_shouldConstructValidationCallbackMessenger)
             {
-                //Attempt to create the debug utils messenger
-                if (vkCreateDebugUtilsMessengerEXT) //The extension function may not have been loaded successfully
+                // Attempt to create the debug utils messenger
+                if (vkCreateDebugUtilsMessengerEXT) // The extension function may not have been loaded successfully
                 {
                     const VkDebugUtilsMessageSeverityFlagsEXT severity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
                         VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
@@ -175,7 +175,7 @@ namespace LLRI_NAMESPACE
         {
             const VkInstance vkInstance = static_cast<VkInstance>(instance->m_ptr);
 
-            //Destroy debug messenger if possible
+            // Destroy debug messenger if possible
             if (instance->m_validationCallbackMessenger)
             {
                 if (vkDestroyDebugUtilsMessengerEXT)
@@ -185,7 +185,7 @@ namespace LLRI_NAMESPACE
             for (auto& [ptr, adapter] : instance->m_cachedAdapters)
                 delete adapter;
 
-            //vk validation layers aren't tangible objects and don't need manual destruction
+            // vk validation layers aren't tangible objects and don't need manual destruction
 
             vkDestroyInstance(vkInstance, nullptr);
 
@@ -194,8 +194,8 @@ namespace LLRI_NAMESPACE
 
         void impl_pollAPIMessages(messenger_type* messenger)
         {
-            //Empty because vulkan uses a callback system
-            //suppress unused parameter warnings
+            // Empty because vulkan uses a callback system
+            // suppress unused parameter warnings
             (void)messenger;
         }
     }
@@ -257,7 +257,7 @@ namespace LLRI_NAMESPACE
             if (r != VK_SUCCESS)
                 return internal::mapVkResult(r);
 
-            //Get actual physical devices
+            // Get actual physical devices
             physicalDevices.resize(physicalDeviceCount);
             r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, physicalDevices.data());
             if (r != VK_SUCCESS)
@@ -267,7 +267,7 @@ namespace LLRI_NAMESPACE
             {
                 if (m_cachedAdapters.find(physicalDevice) != m_cachedAdapters.end())
                 {
-                    //Re-assign pointer to found adapters
+                    // Re-assign pointer to found adapters
                     m_cachedAdapters[physicalDevice]->m_ptr = physicalDevice;
                     adapters->push_back(m_cachedAdapters[physicalDevice]);
                 }
@@ -292,7 +292,7 @@ namespace LLRI_NAMESPACE
         output->m_adapter = desc.adapter;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
-        //Queue creation
+        // Queue creation
         auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
 
         std::vector<float> graphicsPriorities;
@@ -345,22 +345,22 @@ namespace LLRI_NAMESPACE
                 families[queue_type::Transfer],
                 static_cast<uint32_t>(transferPriorities.size()), transferPriorities.data() });
 
-        //Extensions
+        // Extensions
         std::vector<const char*> extensions;
 
         if (desc.adapter->m_nodeCount > 1)
             extensions.push_back("VK_KHR_device_group");
 
-        //Features
+        // Features
         VkPhysicalDeviceFeatures features{};
 
-        //Create device
+        // Create device
         VkDeviceCreateInfo ci{
             VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
             nullptr,
             {},
             (uint32_t)queues.size(), queues.data(),
-            0, nullptr, //Vulkan device layers are deprecated
+            0, nullptr, // Vulkan device layers are deprecated
             (uint32_t)extensions.size(), extensions.data(),
             &features
         };
@@ -374,13 +374,13 @@ namespace LLRI_NAMESPACE
         }
         output->m_ptr = vkDevice;
 
-        //Load function table
+        // Load function table
         auto* table = new VolkDeviceTable();
         volkLoadDeviceTable(table, vkDevice);
         output->m_functionTable = table;
 
-        //Get created queues
-        std::map<queue_type, uint8_t> queueCounts {
+        // Get created queues
+        std::unordered_map<queue_type, uint8_t> queueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }
@@ -420,7 +420,7 @@ namespace LLRI_NAMESPACE
 
     void Instance::impl_destroyDevice(Device* device)
     {
-        //Cleanup queue wrappers
+        // Cleanup queue wrappers
         for (auto* graphics : device->m_graphicsQueues)
             delete graphics;
 
@@ -430,14 +430,14 @@ namespace LLRI_NAMESPACE
         for (auto* transfer : device->m_transferQueues)
             delete transfer;
 
-        //Delete device
+        // Delete device
         if (device->m_ptr)
             static_cast<VolkDeviceTable*>(device->m_functionTable)->vkDestroyDevice(static_cast<VkDevice>(device->m_ptr), nullptr);
 
-        //Delete function table
+        // Delete function table
         delete static_cast<VolkDeviceTable*>(device->m_functionTable);
 
-        //Delete device wrapper
+        // Delete device wrapper
         delete device;
     }
 }

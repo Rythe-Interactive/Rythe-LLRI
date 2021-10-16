@@ -29,7 +29,7 @@ TEST_SUITE("Instance Extensions")
             desc.numExtensions = 1;
             desc.extensions = &extension;
 
-            //By checking for support first, we can determine the expected llri::createInstance result
+            // By checking for support first, we can determine the expected llri::createInstance result
             const bool supported = llri::queryInstanceExtensionSupport(llri::instance_extension_type::DriverValidation);
             std::string msg = std::string("driver_validation_ext is ") + (supported ? std::string("supported") : std::string("not supported"));
             INFO(msg.data());
@@ -48,7 +48,7 @@ TEST_SUITE("Instance Extensions")
             desc.numExtensions = 1;
             desc.extensions = &extension;
 
-            //By checking for support first, we can determine the expected llri::createInstance result
+            // By checking for support first, we can determine the expected llri::createInstance result
             const bool supported = llri::queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation);
             std::string msg = std::string("gpu_validation_ext is ") + (supported ? std::string("supported") : std::string("not supported"));
             INFO(msg.data());

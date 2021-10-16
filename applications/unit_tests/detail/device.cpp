@@ -7,7 +7,6 @@
 #include <llri/llri.hpp>
 #include <doctest/doctest.h>
 #include <helpers.hpp>
-#include <array>
 
 TEST_CASE("Device")
 {

@@ -96,7 +96,7 @@ TEST_SUITE("Instance")
         {
             std::vector<llri::Adapter*> adapters;
             const llri::result result = instance->enumerateAdapters(&adapters);
-            //Any of the following is a valid result value for enumerateAdapters
+            // Any of the following is a valid result value for enumerateAdapters
             CHECK_UNARY(
                 result == llri::result::Success ||
                 result == llri::result::ErrorOutOfHostMemory ||
@@ -127,7 +127,7 @@ TEST_SUITE("Instance")
                 result == llri::result::ErrorInitializationFailed
             );
 
-            //Adapter count should stay consistent
+            // Adapter count should stay consistent
             CHECK_EQ(count, adapters.size());
         }
 
@@ -186,12 +186,12 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Correct usage] numExtensions > 0 && extensions != nullptr")
             {
-                //Reserved for future use (no current extensions supported to test this)
+                // Reserved for future use (no current extensions supported to test this)
             }
 
             SUBCASE("[Incorrect usage] invalid extension type")
             {
-                //Check reserved for future use. Since there are no adapter extensions, createDevice is currently not expected to iterate over extensions and check for their support, so this remains commented out for now.
+                // Check reserved for future use. Since there are no adapter extensions, createDevice is currently not expected to iterate over extensions and check for their support, so this remains commented out for now.
                 
                 //llri::adapter_extension extension{};
                 //extension.type = static_cast<llri::adapter_extension_type>(UINT_MAX);
@@ -250,16 +250,16 @@ TEST_SUITE("Instance")
             {
                 for (size_t type = 0; type < static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
-                    //Get max number of queues
+                    // Get max number of queues
                     uint8_t count;
                     REQUIRE_EQ(adapter->queryQueueCount((llri::queue_type)type, &count), llri::result::Success);
 
-                    //Create more queues than supported
+                    // Create more queues than supported
                     std::vector<llri::queue_desc> queues(count + 1, llri::queue_desc{ static_cast<llri::queue_type>(type), llri::queue_priority::Normal });
                     ddesc.numQueues = (uint32_t)queues.size();
                     ddesc.queues = queues.data();
 
-                    //Should be invalid
+                    // Should be invalid
                     CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
                 }
             }
@@ -268,7 +268,7 @@ TEST_SUITE("Instance")
             {
                 std::vector<llri::queue_desc> queues;
 
-                std::map<llri::queue_type, uint8_t> maxQueueCounts{
+                std::unordered_map<llri::queue_type, uint8_t> maxQueueCounts{
                     { llri::queue_type::Graphics, 0 },
                     { llri::queue_type::Compute, 0 },
                     { llri::queue_type::Transfer, 0 }
@@ -310,7 +310,7 @@ TEST_SUITE("Instance")
             SUBCASE("[Correct usage] device != nullptr")
             {
                 llri::Device* device = nullptr;
-                llri::queue_desc queue { llri::queue_type::Graphics, llri::queue_priority::Normal }; //at least one graphics queue is practically always available
+                llri::queue_desc queue { llri::queue_type::Graphics, llri::queue_priority::Normal }; // at least one graphics queue is practically always available
                 llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 1, &queue};
 
                 REQUIRE_EQ(instance->createDevice(ddesc, &device), llri::result::Success);

@@ -7,7 +7,7 @@
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     result CommandGroup::impl_reset()
     {
@@ -90,36 +90,36 @@ namespace LLRI_NAMESPACE
 
     result CommandGroup::impl_free(CommandList* cmdList)
     {
-        //Free internal pointer
+        // Free internal pointer
         auto buffer = static_cast<VkCommandBuffer>(cmdList->m_ptr);
         static_cast<VolkDeviceTable*>(m_deviceFunctionTable)
             ->vkFreeCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), static_cast<VkCommandPool>(m_ptr), 1, &buffer);
 
-        //Remove from commandlist list
+        // Remove from commandlist list
         m_cmdLists.erase(cmdList);
 
-        //Delete wrapper
+        // Delete wrapper
         delete cmdList;
         return result::Success;
     }
 
     result CommandGroup::impl_free(uint8_t numCommandLists, CommandList** cmdLists)
     {
-        //Gather vk handles
+        // Gather vk handles
         std::vector<VkCommandBuffer> buffers(numCommandLists);
         for (size_t i = 0; i < numCommandLists; i++)
             buffers[i] = static_cast<VkCommandBuffer>(cmdLists[i]->m_ptr);
 
-        //Free internal pointers
+        // Free internal pointers
         static_cast<VolkDeviceTable*>(m_deviceFunctionTable)
             ->vkFreeCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), static_cast<VkCommandPool>(m_ptr), static_cast<uint32_t>(buffers.size()), buffers.data());
 
         for (size_t i = 0; i < numCommandLists; i++)
         {
-            //Remove from commandlist list
+            // Remove from commandlist list
             m_cmdLists.erase(cmdLists[i]);
 
-            //Delete wrapper
+            // Delete wrapper
             delete cmdLists[i];
         }
 

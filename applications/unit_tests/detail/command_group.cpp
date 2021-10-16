@@ -5,7 +5,6 @@
  */
 
 #include <llri/llri.hpp>
-#include <array>
 #include <doctest/doctest.h>
 #include <helpers.hpp>
 

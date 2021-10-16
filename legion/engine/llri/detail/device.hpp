@@ -5,12 +5,9 @@
  */
 
 #pragma once
-//detail includes should be kept to a minimum but
-//are allowed as long as dependencies are upwards (e.g. device may include adapter but not vice versa)
-#include <llri/detail/flags.hpp>
-#include <llri/detail/adapter.hpp>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     struct adapter_extension;
     struct queue_desc;
@@ -200,7 +197,7 @@ namespace LLRI_NAMESPACE
         */
         void destroyResource(Resource* resource);
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
         ~Device() = default;
 

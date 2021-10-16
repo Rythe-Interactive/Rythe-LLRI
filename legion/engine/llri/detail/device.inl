@@ -5,10 +5,9 @@
  */
 
 #pragma once
-#include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
-#include <set>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     inline result Device::queryQueue(queue_type type, uint8_t index, Queue** queue)
     {
@@ -371,7 +370,7 @@ namespace LLRI_NAMESPACE
         // our rule will be to only check against previously checked variables. e.g. if we check desc.type first, we only need to check that its valid,
         // but if we check desc.usage we must check if its valid with desc.type
 
-        //determines if the node mask is not a power of two -> if it isn't then multiple bits are set
+        // determines if the node mask is not a power of two -> if it isn't then multiple bits are set
         if ((createNodeMask & (createNodeMask - 1)) != 0)
         {
             detail::apiError("Device::createResource()", result::ErrorInvalidNodeMask, "desc.createNodeMask " + std::to_string(createNodeMask) + " has multiple bits set.");

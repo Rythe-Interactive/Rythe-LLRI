@@ -7,9 +7,8 @@
 #pragma once
 #include <llri/llri.hpp>
 #include <graphics/vulkan/volk.h>
-#include <unordered_map>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     namespace internal
     {
@@ -286,6 +285,6 @@ namespace LLRI_NAMESPACE
         /**
          * @brief Finds LLRI standard queue families (Graphics, Compute, Transfer)
         */
-        std::map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice);
+        std::unordered_map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice);
     }
 }

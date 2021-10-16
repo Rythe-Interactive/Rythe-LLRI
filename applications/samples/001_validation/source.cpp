@@ -8,7 +8,7 @@
 // Validation can be an incredibly useful tool, but runtime checks don't come without a performance cost.
 // To prevent validation from causing overhead on builds, you can #define LLRI_DISABLE_VALIDATION.
 // Read the documentation to learn more about its exact behaviour.
-//
+// 
 // In this example we disable validation in release builds, which is something you may or may not want to do depending on your use case.
 #define LLRI_DISABLE_VALIDATION
 #endif

@@ -5,9 +5,9 @@
  */
 
 #pragma once
-#include <cstdint>
+#include <llri/llri.hpp> // unnecessary but helps intellisense
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     /**
      * @brief Describes the kind of adapter extension. This value is used in adapter_extension and is used in Instance::createDevice() to recognize the extension type and select the correct value from the adapter_extension's union.
@@ -62,7 +62,7 @@ namespace LLRI_NAMESPACE
         */
         union
         {
-            //Empty until adapter extensions are added
+            // Empty until adapter extensions are added
         };
 
         adapter_extension() = default;

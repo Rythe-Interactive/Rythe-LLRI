@@ -9,7 +9,7 @@
 #define VOLK_IMPLEMENTATION
 #include <graphics/vulkan/volk.h>
 
-namespace LLRI_NAMESPACE
+namespace llri
 {
     [[nodiscard]] implementation queryImplementation()
     {
