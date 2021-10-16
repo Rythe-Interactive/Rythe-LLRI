@@ -57,15 +57,15 @@ namespace llri
         return output;
     }
 
-    result Adapter::impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const
+    bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
     {
-        switch (type)
+        switch (ext)
         {
             default:
                 break;
         }
 
-        return result::Success;
+        return false;
     }
 
     result Adapter::impl_queryQueueCount(queue_type type, uint8_t* count) const

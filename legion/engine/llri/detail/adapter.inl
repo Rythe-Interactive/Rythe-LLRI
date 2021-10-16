@@ -87,30 +87,14 @@ namespace llri
 #endif
     }
 
-    inline result Adapter::queryExtensionSupport(adapter_extension_type type, bool* supported) const
+    inline bool Adapter::queryExtensionSupport(adapter_extension ext) const
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (supported == nullptr)
-        {
-            detail::apiError("Adapter::queryExtensionSupport()", result::ErrorInvalidUsage, "the passed supported parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
-
-        if (m_ptr == nullptr)
-        {
-            detail::apiError("Adapter::queryExtensionSupport()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
-            return result::ErrorDeviceLost;
-        }
-#endif
-
-        *supported = false;
-
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_queryExtensionSupport(type, supported);
+        const auto r = impl_queryExtensionSupport(ext);
         detail::impl_pollAPIMessages(m_validationCallbackMessenger);
         return r;
 #else
-        return impl_queryExtensionSupport(type, supported);
+        return impl_queryExtensionSupport(ext);
 #endif
     }
 

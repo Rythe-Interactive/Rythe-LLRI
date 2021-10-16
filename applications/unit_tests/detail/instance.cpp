@@ -191,14 +191,11 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Incorrect usage] invalid extension type")
             {
-                // Check reserved for future use. Since there are no adapter extensions, createDevice is currently not expected to iterate over extensions and check for their support, so this remains commented out for now.
-                
-                //llri::adapter_extension extension{};
-                //extension.type = static_cast<llri::adapter_extension_type>(UINT_MAX);
+                auto extension = static_cast<llri::adapter_extension>(UINT_MAX);
 
-                //ddesc.numExtensions = 1;
-                //ddesc.extensions = &extension;
-                //CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorExtensionNotSupported);
+                ddesc.numExtensions = 1;
+                ddesc.extensions = &extension;
+                CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorExtensionNotSupported);
             }
 
             SUBCASE("[Incorrect usage] numQueues == 0")

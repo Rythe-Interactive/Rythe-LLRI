@@ -50,10 +50,16 @@ namespace llri
         for (size_t e = 0; e < desc.numExtensions; e++)
         {
             if (desc.extensions[e] > instance_extension::MaxEnum)
+            {
+                detail::apiError("createInstance()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] was set to " + std::to_string(static_cast<uint8_t>(desc.extensions[e])) + " but this is not a valid instance_extension value.");
                 return result::ErrorExtensionNotSupported;
+            }
 
             if (!queryInstanceExtensionSupport(desc.extensions[e]))
+            {
+                detail::apiError("createInstance()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] (" + to_string(desc.extensions[e]) + ") is not supported. Query support for instance extensions using llri::queryInstanceExtensionSupport() prior to instance creation.");
                 return result::ErrorExtensionNotSupported;
+            }
         }
 #endif
 
@@ -125,6 +131,21 @@ namespace llri
         {
             detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.numExtensions was more than 0 but desc.extensions was nullptr.");
             return result::ErrorInvalidUsage;
+        }
+
+        for (size_t e = 0; e < desc.numExtensions; e++)
+        {
+            if (desc.extensions[e] > adapter_extension::MaxEnum)
+            {
+                detail::apiError("Instance::createDevice()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] was set to " + std::to_string(static_cast<uint8_t>(desc.extensions[e])) + " but this is not a valid adapter_extension value.");
+                return result::ErrorExtensionNotSupported;
+            }
+
+            if (!desc.adapter->queryExtensionSupport(desc.extensions[e]))
+            {
+                detail::apiError("Instance::createDevice()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] (" + to_string(desc.extensions[e]) + ") is not supported by desc.adapter.");
+                return result::ErrorExtensionNotSupported;
+            }
         }
 
         if (desc.adapter->m_ptr == nullptr)
