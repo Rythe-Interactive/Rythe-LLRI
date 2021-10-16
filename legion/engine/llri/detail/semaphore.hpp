@@ -19,7 +19,7 @@ namespace llri
         friend class Queue;
 
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Semaphore() = default;
         ~Semaphore() = default;
 

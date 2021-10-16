@@ -58,7 +58,7 @@ TEST_CASE("Adapter")
 
             SUBCASE("[Correct usage] adapter_features data")
             {
-                //Reserved for future use
+                // Reserved for future use
             }
         }
 
@@ -78,7 +78,7 @@ TEST_CASE("Adapter")
 
             SUBCASE("[Correct usage] supported != nullptr and extension type is valid")
             {
-                //Reserved for future use
+                // Reserved for future use
             }
         }
 

@@ -197,7 +197,7 @@ namespace llri
         */
         void destroyResource(Resource* resource);
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
         ~Device() = default;
 

@@ -104,27 +104,27 @@ namespace llri
                 }
             }
 
-            //DirectX creates validation callbacks upon device creation so we just need to store information about this right now.
+            // DirectX creates validation callbacks upon device creation so we just need to store information about this right now.
             output->m_validationCallbackMessenger = nullptr;
             output->m_shouldConstructValidationCallbackMessenger = enableImplementationMessagePolling;
 
-            //Attempt to create factory
+            // Attempt to create factory
             IDXGIFactory* factory = nullptr;
             HRESULT factoryCreateResult = directx::CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
 
-            //DXGI_CREATE_FACTORY_DEBUG may not be a supported flag if the graphics tools aren't installed
-            //so if this the previous call fails, use default factory flags
+            // DXGI_CREATE_FACTORY_DEBUG may not be a supported flag if the graphics tools aren't installed
+            // so if this the previous call fails, use default factory flags
             if (FAILED(factoryCreateResult))
                 factoryCreateResult = directx::CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
 
-            //Check for failure
+            // Check for failure
             if (FAILED(factoryCreateResult))
             {
                 llri::destroyInstance(output);
                 return directx::mapHRESULT(factoryCreateResult);
             }
 
-            //Store factory and return result
+            // Store factory and return result
             output->m_ptr = factory;
             *instance = output;
             return result::Success;
@@ -204,9 +204,9 @@ namespace llri
             if (result == DXGI_ERROR_NOT_FOUND)
                 break;
 
-            //Ignore Microsoft Basic Render Driver
+            // Ignore Microsoft Basic Render Driver
             DXGI_ADAPTER_DESC1 desc;
-            static_cast<IDXGIAdapter1*>(dxgiAdapter)->GetDesc1(&desc); //DirectX casts should always be static
+            static_cast<IDXGIAdapter1*>(dxgiAdapter)->GetDesc1(&desc); // DirectX casts should always be static
             const uint64_t luid = desc.AdapterLuid.LowPart + desc.AdapterLuid.HighPart;
             if (desc.Flags == DXGI_ADAPTER_FLAG_SOFTWARE)
             {
@@ -217,7 +217,7 @@ namespace llri
 
             if (m_cachedAdapters.find((void*)luid) != m_cachedAdapters.end())
             {
-                //Re-assign pointer to found adapters
+                // Re-assign pointer to found adapters
                 m_cachedAdapters[(void*)luid]->m_ptr = dxgiAdapter;
                 adapters->push_back(m_cachedAdapters[(void*)luid]);
             }
@@ -228,7 +228,7 @@ namespace llri
                 adapter->m_instanceHandle = m_ptr;
                 adapter->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
-                //Attempt to query node count
+                // Attempt to query node count
                 ID3D12Device* device = nullptr;
                 if (SUCCEEDED(directx::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device))))
                 {
@@ -248,7 +248,7 @@ namespace llri
 
     result Instance::impl_createDevice(const device_desc& desc, Device** device)
     {
-        const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; //12.0 is the bare minimum
+        const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; // 12.0 is the bare minimum
 
         ID3D12Device* dx12Device = nullptr;
         HRESULT r = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));

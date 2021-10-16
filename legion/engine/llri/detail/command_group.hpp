@@ -116,7 +116,7 @@ namespace llri
         result free(uint8_t numCommandLists, CommandList** cmdLists);
 
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         CommandGroup() = default;
         ~CommandGroup() = default;
 

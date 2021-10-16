@@ -36,7 +36,7 @@ TEST_CASE("CommandList")
                 {
                     llri::command_list_begin_desc desc{};
                     CHECK_EQ(list->begin(desc), llri::result::Success);
-                    //already recording
+                    // already recording
                     CHECK_EQ(list->begin(desc), llri::result::ErrorInvalidState);
                     REQUIRE_EQ(list->end(), llri::result::Success);
                 }
@@ -47,7 +47,7 @@ TEST_CASE("CommandList")
                     CHECK_EQ(list->begin(desc), llri::result::Success);
                     REQUIRE_EQ(list->end(), llri::result::Success);
 
-                    //previously recorded
+                    // previously recorded
                     CHECK_EQ(list->begin(desc), llri::result::ErrorInvalidState);
                 }
 

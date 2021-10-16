@@ -12,8 +12,8 @@ namespace llri
 {
     result CommandList::impl_begin(const command_list_begin_desc& desc)
     {
-        //TODO: Handle nodemask
-        //TODO: Handle inheritance/indirect
+        // TODO: Handle nodemask
+        // TODO: Handle inheritance/indirect
         VkCommandBufferBeginInfo info { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, nullptr, {}, nullptr };
         
         const auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkBeginCommandBuffer(static_cast<VkCommandBuffer>(m_ptr), &info);

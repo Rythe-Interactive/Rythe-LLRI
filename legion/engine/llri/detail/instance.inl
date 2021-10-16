@@ -37,7 +37,7 @@ namespace llri
         }
 #endif
 
-        //default instance output to nullptr
+        // default instance output to nullptr
         * instance = nullptr;
 
 #ifndef LLRI_DISABLE_VALIDATION
@@ -64,7 +64,7 @@ namespace llri
             return;
         
         detail::impl_destroyInstance(instance);
-        //Can't do any polling after the instance is destroyed
+        // Can't do any polling after the instance is destroyed
     }
 
     inline result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
@@ -79,7 +79,7 @@ namespace llri
 
         adapters->clear();
 
-        //Clear internal pointers, lost adapters will have a nullptr m_ptr
+        // Clear internal pointers, lost adapters will have a nullptr m_ptr
         for (auto& [ptr, adapter] : m_cachedAdapters)
             adapter->m_ptr = nullptr;
 
@@ -102,7 +102,7 @@ namespace llri
         }
 #endif
 
-        //default device output to nullptr
+        // default device output to nullptr
         *device = nullptr;
 
 #ifndef LLRI_DISABLE_VALIDATION
@@ -136,7 +136,7 @@ namespace llri
             return result::ErrorInvalidUsage;
         }
 
-        //Get max queues
+        // Get max queues
         std::unordered_map<queue_type, uint8_t> maxQueueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
@@ -146,7 +146,7 @@ namespace llri
         desc.adapter->queryQueueCount(queue_type::Compute, &maxQueueCounts[queue_type::Compute]);
         desc.adapter->queryQueueCount(queue_type::Transfer, &maxQueueCounts[queue_type::Transfer]);
 
-        //Validate all queue descs and their relation to max queue counts
+        // Validate all queue descs and their relation to max queue counts
         std::unordered_map<queue_type, uint8_t> queueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
@@ -157,14 +157,14 @@ namespace llri
         {
             auto& queue = desc.queues[i];
 
-            //Queue type must be valid
+            // Queue type must be valid
             if (queue.type > queue_type::MaxEnum)
             {
                 detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::type " + std::to_string((uint8_t)queue.type) + " is not a valid queue type.");
                 return result::ErrorInvalidUsage;
             }
 
-            //Make sure that the requested number of queues of this given type aren't more than the max number of queues of that type.
+            // Make sure that the requested number of queues of this given type aren't more than the max number of queues of that type.
             queueCounts[queue.type]++;
             if (queueCounts[queue.type] > maxQueueCounts[queue.type])
             {
@@ -173,7 +173,7 @@ namespace llri
                 return result::ErrorInvalidUsage;
             }
 
-            //Queue priority must be valid
+            // Queue priority must be valid
             if (queue.priority > queue_priority::MaxEnum)
             {
                 detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::priority " + std::to_string((uint8_t)queue.priority) + " is not a valid priority value");
@@ -200,7 +200,7 @@ namespace llri
         impl_destroyDevice(device);
 
 #ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        //Can't use device messenger here because the device is destroyed
+        // Can't use device messenger here because the device is destroyed
         detail::impl_pollAPIMessages(m_validationCallbackMessenger);
 #endif
     }

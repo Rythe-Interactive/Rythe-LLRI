@@ -135,7 +135,7 @@ namespace llri
         void destroyDevice(Device* device);
 
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Instance() = default;
         ~Instance() = default;
 
@@ -144,7 +144,7 @@ namespace llri
         void* m_debugGPU = nullptr;
 
         bool m_shouldConstructValidationCallbackMessenger;
-        void* m_validationCallbackMessenger = nullptr; //Allows API to store their callback messenger if needed
+        void* m_validationCallbackMessenger = nullptr; // Allows API to store their callback messenger if needed
 
         std::unordered_map<void*, Adapter*> m_cachedAdapters;
 

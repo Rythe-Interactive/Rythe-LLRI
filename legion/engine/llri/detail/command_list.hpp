@@ -151,7 +151,7 @@ namespace llri
         */
         [[nodiscard]] command_list_state queryState() const { return m_state; }
     private:
-        //Force private constructor/deconstructor so that only alloc/free can manage lifetime
+        // Force private constructor/deconstructor so that only alloc/free can manage lifetime
         CommandList() = default;
         ~CommandList() = default;
 

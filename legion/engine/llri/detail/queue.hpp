@@ -190,7 +190,7 @@ namespace llri
         */
         result waitIdle();
     private:
-        //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Queue() = default;
         ~Queue() = default;
 

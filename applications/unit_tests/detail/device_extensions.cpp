@@ -9,5 +9,5 @@
 
 TEST_SUITE("Device Extensions")
 {
-    //Reserved for future use
+    // Reserved for future use
 }

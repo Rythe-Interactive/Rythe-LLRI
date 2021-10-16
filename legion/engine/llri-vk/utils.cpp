@@ -170,7 +170,7 @@ namespace llri
                 { queue_type::Transfer, UINT_MAX }
             };
 
-            //Get queue family info
+            // Get queue family info
             uint32_t propertyCount;
             vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, nullptr);
             std::vector<VkQueueFamilyProperties> properties(propertyCount);
@@ -180,16 +180,16 @@ namespace llri
             {
                 auto& p = properties[i];
 
-                //Only the graphics queue has the graphics bit set
-                //it usually also has compute & transfer set, because graphics queue tends to be general purpose
+                // Only the graphics queue has the graphics bit set
+                // it usually also has compute & transfer set, because graphics queue tends to be general purpose
                 if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
                     output[queue_type::Graphics] = i;
 
-                //Dedicated compute family has no graphics bit but does have a compute bit
+                // Dedicated compute family has no graphics bit but does have a compute bit
                 else if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 && (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == VK_QUEUE_COMPUTE_BIT)
                     output[queue_type::Compute] = i;
 
-                //Dedicated transfer family has no graphics bit, no compute bit, but does have a transfer bit
+                // Dedicated transfer family has no graphics bit, no compute bit, but does have a transfer bit
                 else if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
                     (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0 &&
                     (p.queueFlags & VK_QUEUE_TRANSFER_BIT) == VK_QUEUE_TRANSFER_BIT)

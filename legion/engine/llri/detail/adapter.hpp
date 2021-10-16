@@ -203,7 +203,7 @@ namespace llri
         [[nodiscard]] uint8_t queryNodeCount() const;
 
     private:
-        //Force private constructor/deconstructor so that only instance can manage lifetime
+        // Force private constructor/deconstructor so that only instance can manage lifetime
         Adapter() = default;
         ~Adapter() = default;
 

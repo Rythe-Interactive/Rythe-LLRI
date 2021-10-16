@@ -56,7 +56,7 @@ namespace llri
             return result::ErrorExceededLimit;
         }
 
-        //determines if the node mask is not a power of two -> if it isn't then multiple bits are set
+        // determines if the node mask is not a power of two -> if it isn't then multiple bits are set
         if ((desc.nodeMask & (desc.nodeMask - 1)) != 0)
         {
             detail::apiError("CommandGroup::allocate()", result::ErrorInvalidNodeMask, "the node mask " + std::to_string(desc.nodeMask) + "has multiple bits set which is not valid for CommandList allocation.");

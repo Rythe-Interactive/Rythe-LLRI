@@ -42,7 +42,7 @@ namespace llri
         if (FAILED(r))
             return directx::mapHRESULT(r);
 
-        //Dx12 command lists are opened by default, close to comply with our system
+        // Dx12 command lists are opened by default, close to comply with our system
         dx12CommandList->Close();
 
         auto* output = new CommandList();
@@ -89,13 +89,13 @@ namespace llri
 
             if (FAILED(r))
             {
-                //Free already allocated command lists
+                // Free already allocated command lists
                 this->free(static_cast<uint8_t>(cmdLists->size()), cmdLists->data());
                 cmdLists->clear();
                 return directx::mapHRESULT(r);
             }
 
-            //Dx12 command lists are opened by default, close to comply with our system
+            // Dx12 command lists are opened by default, close to comply with our system
             dx12CommandList->Close();
 
             auto* cmdList = new CommandList();
@@ -120,13 +120,13 @@ namespace llri
 
     result CommandGroup::impl_free(CommandList* cmdList)
     {
-        //Free internal pointer
+        // Free internal pointer
         static_cast<IUnknown*>(cmdList->m_ptr)->Release();
 
-        //Remove from commandlist list
+        // Remove from commandlist list
         m_cmdLists.erase(cmdList);
 
-        //Delete wrapper
+        // Delete wrapper
         delete cmdList;
         return result::Success;
     }

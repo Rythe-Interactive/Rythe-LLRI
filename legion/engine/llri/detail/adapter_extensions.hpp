@@ -62,7 +62,7 @@ namespace llri
         */
         union
         {
-            //Empty until adapter extensions are added
+            // Empty until adapter extensions are added
         };
 
         adapter_extension() = default;

@@ -33,7 +33,7 @@ void callback(llri::message_severity severity, llri::message_source source, cons
             sev = log::severity_trace;
             break;
         case llri::message_severity::Info:
-            //Even though this semantically maps to info, we'd recommend running this on the trace severity to avoid the excessive info logs that some APIs output
+            // Even though this semantically maps to info, we'd recommend running this on the trace severity to avoid the excessive info logs that some APIs output
             sev = log::severity_trace;
             break;
         case llri::message_severity::Warning:
@@ -99,7 +99,7 @@ TestSystem::~TestSystem()
 
 void TestSystem::createInstance()
 {
-    //Select Instance Extensions
+    // Select Instance Extensions
     std::vector<llri::instance_extension> instanceExtensions;
     if (queryInstanceExtensionSupport(llri::instance_extension_type::DriverValidation))
         instanceExtensions.emplace_back(llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { true });
@@ -108,13 +108,13 @@ void TestSystem::createInstance()
 
     const llri::instance_desc instanceDesc{ (uint32_t)instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
 
-    //Create instance
+    // Create instance
     THROW_IF_FAILED(llri::createInstance(instanceDesc, &m_instance));
 }
 
 void TestSystem::selectAdapter()
 {
-    //Iterate over adapters
+    // Iterate over adapters
     std::vector<llri::Adapter*> adapters;
     THROW_IF_FAILED(m_instance->enumerateAdapters(&adapters));
     assert(!adapters.empty());
@@ -122,7 +122,7 @@ void TestSystem::selectAdapter()
     std::unordered_map<int, llri::Adapter*> sortedAdapters;
     for (llri::Adapter* adapter : adapters)
     {
-        //Log adapter info
+        // Log adapter info
         llri::adapter_info info;
         THROW_IF_FAILED(adapter->queryInfo(&info));
 
@@ -146,7 +146,7 @@ void TestSystem::selectAdapter()
 
         uint32_t score = 0;
 
-        //Discrete adapters tend to be more powerful and have more resources so we can decide to pick them
+        // Discrete adapters tend to be more powerful and have more resources so we can decide to pick them
         if (info.adapterType == llri::adapter_type::Discrete)
             score += 1000;
 
@@ -163,10 +163,10 @@ void TestSystem::createDevice()
     std::vector<llri::adapter_extension> adapterExtensions;
 
     std::array<llri::queue_desc, 1> adapterQueues {
-        llri::queue_desc { llri::queue_type::Graphics, llri::queue_priority::High } //We can give one or more queues a higher priority
+        llri::queue_desc { llri::queue_type::Graphics, llri::queue_priority::High } // We can give one or more queues a higher priority
     };
 
-    //Create device
+    // Create device
     const llri::device_desc deviceDesc{
         m_adapter, selectedFeatures,
         (uint32_t)adapterExtensions.size(), adapterExtensions.data(),
