@@ -11,8 +11,8 @@ namespace llri
 {
     namespace internal
     {
-        result createDriverValidationEXT(const driver_validation_ext& ext, void** output);
-        result createGPUValidationEXT(const gpu_validation_ext& ext, void** output);
+        result enableDriverValidationEXT();
+        result enableGPUValidationEXT();
 
         message_severity mapSeverity(D3D12_MESSAGE_SEVERITY sev)
         {
@@ -76,18 +76,18 @@ namespace llri
                 auto& extension = desc.extensions[i];
                 result extensionCreateResult;
 
-                switch (extension.type)
+                switch (extension)
                 {
-                    case instance_extension_type::DriverValidation:
+                    case instance_extension::DriverValidation:
                     {
-                        extensionCreateResult = internal::createDriverValidationEXT(extension.driverValidation, &output->m_debugAPI);
+                        extensionCreateResult = internal::enableDriverValidationEXT();
                         if (extensionCreateResult == result::Success)
                             factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
                         break;
                     }
-                    case instance_extension_type::GPUValidation:
+                    case instance_extension::GPUValidation:
                     {
-                        extensionCreateResult = internal::createGPUValidationEXT(extension.gpuValidation, &output->m_debugGPU);
+                        extensionCreateResult = internal::enableGPUValidationEXT();
                         break;
                     }
                     default:
@@ -139,13 +139,11 @@ namespace llri
                 delete adapter;
             }
 
-            if (instance->m_debugAPI)
-                static_cast<ID3D12Debug*>(instance->m_debugAPI)->Release();
-
-            if (instance->m_debugGPU)
+            ID3D12Debug1* debugGPU = nullptr;
+            if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
             {
-                static_cast<ID3D12Debug1*>(instance->m_debugGPU)->SetEnableGPUBasedValidation(false);
-                static_cast<ID3D12Debug1*>(instance->m_debugGPU)->Release();
+                debugGPU->SetEnableGPUBasedValidation(false);
+                debugGPU->Release();
             }
 
             if (instance->m_ptr)

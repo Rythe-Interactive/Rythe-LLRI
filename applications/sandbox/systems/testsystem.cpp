@@ -101,10 +101,10 @@ void TestSystem::createInstance()
 {
     // Select Instance Extensions
     std::vector<llri::instance_extension> instanceExtensions;
-    if (queryInstanceExtensionSupport(llri::instance_extension_type::DriverValidation))
-        instanceExtensions.emplace_back(llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { true });
-    if (queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation))
-        instanceExtensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true });
+    if (queryInstanceExtensionSupport(llri::instance_extension::DriverValidation))
+        instanceExtensions.emplace_back(llri::instance_extension::DriverValidation);
+    if (queryInstanceExtensionSupport(llri::instance_extension::GPUValidation))
+        instanceExtensions.emplace_back(llri::instance_extension::GPUValidation);
 
     const llri::instance_desc instanceDesc{ (uint32_t)instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
 

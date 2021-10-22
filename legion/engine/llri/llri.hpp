@@ -208,24 +208,24 @@ namespace llri
 
 // ReSharper disable CppUnusedIncludeDirective
 
-#include "detail/flags.hpp"
-#include "detail/callback.hpp"
+#include <llri/detail/flags.hpp>
+#include <llri/detail/callback.hpp>
 
-#include "detail/instance.hpp"
-#include "detail/instance_extensions.hpp"
+#include <llri/detail/instance.hpp>
+#include <llri/detail/instance_extensions.hpp>
 
-#include "detail/adapter.hpp"
-#include "detail/adapter_extensions.hpp"
+#include <llri/detail/adapter.hpp>
+#include <llri/detail/adapter_extensions.hpp>
 
-#include "detail/queue.hpp"
-#include "detail/device.hpp"
+#include <llri/detail/queue.hpp>
+#include <llri/detail/device.hpp>
 
-#include "detail/resource.hpp"
+#include <llri/detail/resource.hpp>
 
-#include "detail/command_group.hpp"
-#include "detail/command_list.hpp"
+#include <llri/detail/command_group.hpp>
+#include <llri/detail/command_list.hpp>
 
-#include "detail/fence.hpp"
-#include "detail/semaphore.hpp"
+#include <llri/detail/fence.hpp>
+#include <llri/detail/semaphore.hpp>
 
-#include "detail/llri.inl"
+#include <llri/detail/llri.inl>

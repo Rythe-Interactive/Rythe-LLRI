@@ -11,22 +11,19 @@ namespace llri
 {
     namespace detail
     {
-        [[nodiscard]] bool queryInstanceExtensionSupport(instance_extension_type type)
+        [[nodiscard]] bool queryInstanceExtensionSupport(instance_extension ext)
         {
             internal::lazyInitializeVolk();
 
-            auto& layers = internal::queryAvailableLayers();
+            const auto& layers = internal::queryAvailableLayers();
+            const auto& extensions = internal::queryAvailableExtensions();
 
-            switch (type)
+            switch (ext)
             {
-                case instance_extension_type::DriverValidation:
-                {
+                case instance_extension::DriverValidation:
                     return layers.find(internal::nameHash("VK_LAYER_KHRONOS_validation")) != layers.end();
-                }
-                case instance_extension_type::GPUValidation:
-                {
-                    return true;
-                }
+                case instance_extension::GPUValidation:
+                    return extensions.find(internal::nameHash("VK_EXT_validation_features")) != extensions.end();
             }
 
             return false;

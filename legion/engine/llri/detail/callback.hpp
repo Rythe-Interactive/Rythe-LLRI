@@ -58,7 +58,7 @@ namespace llri
         API,
         /**
          * @brief The message came from the implementation.
-         * Implementation validation needs to be enabled through driver_validation_ext and/or gpu_validation_ext for this kind of message to appear.
+         * Implementation validation needs to be enabled through instance_extension::DriverValidation and/or GPUValidation for this kind of message to appear.
          *
          * @note This value never occurs if LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING is defined.
         */
@@ -108,7 +108,7 @@ namespace llri
      *
      * The callback contains contextual information about the message, like for example its severity.
      *
-     * @note Implementation messages only occur if driver_validation_ext and/or gpu_validation_ext are enabled. If no message callback is set, some implementations might still output messages (Vulkan tends to print to stdout, whereas DirectX tends to print to the "Output" window in Visual Studio).
+     * @note Implementation messages only occur if instance_extension::DriverValidation and/or GPUValidation are enabled. If no message callback is set, some implementations might still output messages (Vulkan tends to print to stdout, whereas DirectX tends to print to the "Output" window in Visual Studio).
      *
      * @param callback The callback, the function passed must conform to the message_callback definition. You **may** set this value to nullptr, in which case no messages are sent.
      * @param userData Optional user data pointer. Not used by LLRI but it's passed around and sent along the callback.

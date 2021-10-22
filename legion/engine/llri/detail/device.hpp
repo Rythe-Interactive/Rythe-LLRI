@@ -9,7 +9,7 @@
 
 namespace llri
 {
-    struct adapter_extension;
+    enum struct adapter_extension : uint8_t;
     struct queue_desc;
     enum struct queue_type : uint8_t;
     class Queue;

@@ -9,7 +9,7 @@
 
 namespace llri
 {
-    enum struct adapter_extension_type : uint8_t;
+    enum struct adapter_extension : uint8_t;
     enum struct queue_type : uint8_t;
     enum struct format : uint8_t;
     enum struct sample_count : uint8_t;
@@ -161,14 +161,9 @@ namespace llri
 
         /**
          * @brief Query the support of a given adapter extension.
-         * @param type The type of adapter extension to check against.
-         * @param supported A pointer to the boolean that describes if the extension is supported.
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if supported is nullptr.
-         * @return ErrorDeviceLost if the adapter was removed or lost.
+         * @param ext The type of adapter extension to check against.
          */
-        result queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+        bool queryExtensionSupport(adapter_extension ext) const;
 
         /**
          * @brief Query the maximum number of available queues for a given queue type.
@@ -220,7 +215,7 @@ namespace llri
         result impl_queryInfo(adapter_info* info) const;
         result impl_queryFeatures(adapter_features* features) const;
         [[nodiscard]] adapter_limits impl_queryLimits() const;
-        result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+        [[nodiscard]] bool impl_queryExtensionSupport(adapter_extension ext) const;
 
         result impl_queryQueueCount(queue_type type, uint8_t* count) const;
 

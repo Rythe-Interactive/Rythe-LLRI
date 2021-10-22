@@ -14,7 +14,7 @@ TEST_SUITE("Instance Extensions")
     {
         SUBCASE("[Correct usage] invalid extension type")
         {
-            CHECK_EQ(llri::queryInstanceExtensionSupport(static_cast<llri::instance_extension_type>(UINT_MAX)), false);
+            CHECK_EQ(llri::queryInstanceExtensionSupport(static_cast<llri::instance_extension>(UINT_MAX)), false);
         }
     }
 
@@ -23,43 +23,37 @@ TEST_SUITE("Instance Extensions")
         llri::Instance* instance = nullptr;
         llri::instance_desc desc{ };
 
-        SUBCASE("driver_validation_ext")
+        SUBCASE("instance_extension::DriverValidation")
         {
-            llri::instance_extension extension{ llri::instance_extension_type::DriverValidation, llri::driver_validation_ext { true } };
+            auto ext = llri::instance_extension::DriverValidation;
             desc.numExtensions = 1;
-            desc.extensions = &extension;
+            desc.extensions = &ext;
 
             // By checking for support first, we can determine the expected llri::createInstance result
-            const bool supported = llri::queryInstanceExtensionSupport(llri::instance_extension_type::DriverValidation);
-            std::string msg = std::string("driver_validation_ext is ") + (supported ? std::string("supported") : std::string("not supported"));
+            const bool supported = llri::queryInstanceExtensionSupport(llri::instance_extension::DriverValidation);
+            std::string msg = std::string("instance_extension::DriverValidation is ") + (supported ? std::string("supported") : std::string("not supported"));
             INFO(msg.data());
 
-            SUBCASE("[Correct usage] enabling driver_validation_ext")
-            {
-                if (supported)
-                    CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-                else
-                    CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExtensionNotSupported);
-            }
+            if (supported)
+                CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+            else
+                CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExtensionNotSupported);
         }
-        SUBCASE("gpu_validation_ext")
+        SUBCASE("instance_extension::GPUValidation")
         {
-            llri::instance_extension extension{ llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true } };
+            auto ext = llri::instance_extension::GPUValidation;
             desc.numExtensions = 1;
-            desc.extensions = &extension;
+            desc.extensions = &ext;
 
             // By checking for support first, we can determine the expected llri::createInstance result
-            const bool supported = llri::queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation);
-            std::string msg = std::string("gpu_validation_ext is ") + (supported ? std::string("supported") : std::string("not supported"));
+            const bool supported = llri::queryInstanceExtensionSupport(llri::instance_extension::GPUValidation);
+            std::string msg = std::string("instance_extension::GPUValidation is ") + (supported ? std::string("supported") : std::string("not supported"));
             INFO(msg.data());
 
-            SUBCASE("[Correct usage] enabling gpu_validation_ext")
-            {
-                if (supported)
-                    CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-                else
-                    CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExtensionNotSupported);
-            }
+            if (supported)
+                CHECK_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+            else
+                CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExtensionNotSupported);
         }
 
         llri::destroyInstance(instance);

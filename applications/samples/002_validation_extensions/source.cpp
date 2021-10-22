@@ -22,20 +22,14 @@ int main()
 
     // We can query for an extension's support using llri::queryInstanceExtensionSupport()
     // if an extension isn't supported but it is added to the extension list anyways, createInstance() will return result::ErrorExtensionNotSupported.
-    if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::DriverValidation))
-    {
-        llri::instance_extension extension{};
-        extension.type = llri::instance_extension_type::DriverValidation;
-        extension.driverValidation = llri::driver_validation_ext { true };
-        extensions.push_back(extension);
-    }
+    if (llri::queryInstanceExtensionSupport(llri::instance_extension::DriverValidation))
+        extensions.push_back(llri::instance_extension::DriverValidation);
 
-    // The much shorter constructor for instance_extension may also be used.
-    if (llri::queryInstanceExtensionSupport(llri::instance_extension_type::GPUValidation))
-        extensions.emplace_back(llri::instance_extension_type::GPUValidation, llri::gpu_validation_ext { true });
+    if (llri::queryInstanceExtensionSupport(llri::instance_extension::GPUValidation))
+        extensions.emplace_back(llri::instance_extension::GPUValidation);
 
     const llri::instance_desc instanceDesc = { static_cast<uint32_t>(extensions.size()), extensions.data(), // We can pass the extensions through the instance_desc
-        "validation_ext",
+        "validation_extensions",
     };
 
     llri::Instance* instance;

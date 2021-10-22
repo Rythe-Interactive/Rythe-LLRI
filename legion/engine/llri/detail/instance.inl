@@ -9,22 +9,22 @@
 
 namespace llri
 {
-    inline std::string to_string(instance_extension_type type)
+    inline std::string to_string(instance_extension ext)
     {
-        switch (type)
+        switch (ext)
         {
-            case instance_extension_type::DriverValidation:
+            case instance_extension::DriverValidation:
                 return "DriverValidation";
-            case instance_extension_type::GPUValidation:
+            case instance_extension::GPUValidation:
                 return "GPUValidation";
         }
 
-        return "Invalid instance_extension_type value";
+        return "Invalid instance_extension value";
     }
 
-    [[nodiscard]] inline bool queryInstanceExtensionSupport(instance_extension_type type)
+    [[nodiscard]] inline bool queryInstanceExtensionSupport(instance_extension ext)
     {
-        return detail::queryInstanceExtensionSupport(type);
+        return detail::queryInstanceExtensionSupport(ext);
     }
 
     inline result createInstance(const instance_desc& desc, Instance** instance)
@@ -45,6 +45,21 @@ namespace llri
         {
             detail::apiError("createInstance()", result::ErrorInvalidUsage, "desc.numExtensions was more than 0 but desc.extensions was nullptr.");
             return result::ErrorInvalidUsage;
+        }
+
+        for (size_t e = 0; e < desc.numExtensions; e++)
+        {
+            if (desc.extensions[e] > instance_extension::MaxEnum)
+            {
+                detail::apiError("createInstance()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] was set to " + std::to_string(static_cast<uint8_t>(desc.extensions[e])) + " but this is not a valid instance_extension value.");
+                return result::ErrorExtensionNotSupported;
+            }
+
+            if (!queryInstanceExtensionSupport(desc.extensions[e]))
+            {
+                detail::apiError("createInstance()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] (" + to_string(desc.extensions[e]) + ") is not supported. Query support for instance extensions using llri::queryInstanceExtensionSupport() prior to instance creation.");
+                return result::ErrorExtensionNotSupported;
+            }
         }
 #endif
 
@@ -116,6 +131,21 @@ namespace llri
         {
             detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.numExtensions was more than 0 but desc.extensions was nullptr.");
             return result::ErrorInvalidUsage;
+        }
+
+        for (size_t e = 0; e < desc.numExtensions; e++)
+        {
+            if (desc.extensions[e] > adapter_extension::MaxEnum)
+            {
+                detail::apiError("Instance::createDevice()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] was set to " + std::to_string(static_cast<uint8_t>(desc.extensions[e])) + " but this is not a valid adapter_extension value.");
+                return result::ErrorExtensionNotSupported;
+            }
+
+            if (!desc.adapter->queryExtensionSupport(desc.extensions[e]))
+            {
+                detail::apiError("Instance::createDevice()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] (" + to_string(desc.extensions[e]) + ") is not supported by desc.adapter.");
+                return result::ErrorExtensionNotSupported;
+            }
         }
 
         if (desc.adapter->m_ptr == nullptr)

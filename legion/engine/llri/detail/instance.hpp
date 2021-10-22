@@ -10,7 +10,7 @@
 namespace llri
 {
     enum struct result : uint8_t;
-    struct instance_extension;
+    enum struct instance_extension : uint8_t;
     class Instance;
     class Adapter;
 
@@ -140,8 +140,6 @@ namespace llri
         ~Instance() = default;
 
         void* m_ptr = nullptr;
-        void* m_debugAPI = nullptr;
-        void* m_debugGPU = nullptr;
 
         bool m_shouldConstructValidationCallbackMessenger;
         void* m_validationCallbackMessenger = nullptr; // Allows API to store their callback messenger if needed

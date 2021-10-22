@@ -64,16 +64,9 @@ TEST_CASE("Adapter")
 
         SUBCASE("Adapter::queryExtensionSupport()")
         {
-            SUBCASE("[Incorrect usage] supported == nullptr")
-            {
-                CHECK_EQ(adapter->queryExtensionSupport(llri::adapter_extension_type::MaxEnum, nullptr), llri::result::ErrorInvalidUsage);
-            }
-
             SUBCASE("[Correct usage] invalid extension type")
             {
-                bool supported = false;
-                CHECK_EQ(adapter->queryExtensionSupport(static_cast<llri::adapter_extension_type>(UINT_MAX), &supported), llri::result::Success);
-                CHECK_EQ(supported, false);
+                CHECK_EQ(adapter->queryExtensionSupport(static_cast<llri::adapter_extension>(UINT_MAX)), false);
             }
 
             SUBCASE("[Correct usage] supported != nullptr and extension type is valid")
