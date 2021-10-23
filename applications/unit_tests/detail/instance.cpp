@@ -229,7 +229,7 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Incorrect usage] invalid queue_type")
             {
-                llri::queue_desc queueDesc { (llri::queue_type)UINT_MAX, llri::queue_priority::Normal };
+                llri::queue_desc queueDesc { static_cast<llri::queue_type>(UINT_MAX), llri::queue_priority::Normal };
                 ddesc.numQueues = 1;
                 ddesc.queues = &queueDesc;
                 CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
@@ -237,7 +237,7 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Incorrect usage] invalid queue_priority")
             {
-                llri::queue_desc queueDesc { llri::queue_type::Graphics, (llri::queue_priority)UINT_MAX };
+                llri::queue_desc queueDesc { llri::queue_type::Graphics, static_cast<llri::queue_priority>(UINT_MAX) };
                 ddesc.numQueues = 1;
                 ddesc.queues = &queueDesc;
                 CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
@@ -249,11 +249,11 @@ TEST_SUITE("Instance")
                 {
                     // Get max number of queues
                     uint8_t count;
-                    REQUIRE_EQ(adapter->queryQueueCount((llri::queue_type)type, &count), llri::result::Success);
+                    REQUIRE_EQ(adapter->queryQueueCount(static_cast<llri::queue_type>(type), &count), llri::result::Success);
 
                     // Create more queues than supported
                     std::vector<llri::queue_desc> queues(count + 1, llri::queue_desc{ static_cast<llri::queue_type>(type), llri::queue_priority::Normal });
-                    ddesc.numQueues = (uint32_t)queues.size();
+                    ddesc.numQueues = static_cast<uint32_t>(queues.size());
                     ddesc.queues = queues.data();
 
                     // Should be invalid

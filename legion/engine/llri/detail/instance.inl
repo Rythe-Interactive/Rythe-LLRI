@@ -190,7 +190,7 @@ namespace llri
             // Queue type must be valid
             if (queue.type > queue_type::MaxEnum)
             {
-                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::type " + std::to_string((uint8_t)queue.type) + " is not a valid queue type.");
+                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::type " + std::to_string(static_cast<uint8_t>(queue.type)) + " is not a valid queue type.");
                 return result::ErrorInvalidUsage;
             }
 
@@ -206,7 +206,7 @@ namespace llri
             // Queue priority must be valid
             if (queue.priority > queue_priority::MaxEnum)
             {
-                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::priority " + std::to_string((uint8_t)queue.priority) + " is not a valid priority value");
+                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::priority " + std::to_string(static_cast<uint8_t>(queue.priority)) + " is not a valid priority value");
                 return result::ErrorInvalidUsage;
             }
         }

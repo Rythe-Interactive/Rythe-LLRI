@@ -80,7 +80,7 @@ TEST_CASE("Adapter")
             SUBCASE("[Incorrect usage] invalid queue_type value")
             {
                 uint8_t count;
-                CHECK_EQ(adapter->queryQueueCount((llri::queue_type)UINT_MAX, &count), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(adapter->queryQueueCount(static_cast<llri::queue_type>(UINT_MAX), &count), llri::result::ErrorInvalidUsage);
             }
 
             SUBCASE("[Incorrect usage] count == nullptr")
@@ -90,10 +90,10 @@ TEST_CASE("Adapter")
 
             SUBCASE("[Correct usage] type is a valid queue_type value and count != nullptr")
             {
-                for (uint8_t type = 0; type <= (uint8_t)llri::queue_type::MaxEnum; type++)
+                for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
                     uint8_t count;
-                    auto r = adapter->queryQueueCount((llri::queue_type)type, &count);
+                    auto r = adapter->queryQueueCount(static_cast<llri::queue_type>(type), &count);
                     CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
                 }
             }

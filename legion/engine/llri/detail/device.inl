@@ -24,7 +24,7 @@ namespace llri
 #ifndef LLRI_DISABLE_VALIDATION
         if (type > queue_type::MaxEnum)
         {
-            detail::apiError("Device::queryQueue()", result::ErrorInvalidUsage, "the passed type parameter " + std::to_string((uint8_t)type) + " is not a valid queue_type value.");
+            detail::apiError("Device::queryQueue()", result::ErrorInvalidUsage, "the passed type parameter " + std::to_string(static_cast<uint8_t>(type)) + " is not a valid queue_type value.");
             return result::ErrorInvalidUsage;
         }
 #endif
