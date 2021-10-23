@@ -106,7 +106,7 @@ void TestSystem::createInstance()
     if (queryInstanceExtensionSupport(llri::instance_extension::GPUValidation))
         instanceExtensions.emplace_back(llri::instance_extension::GPUValidation);
 
-    const llri::instance_desc instanceDesc{ (uint32_t)instanceExtensions.size(), instanceExtensions.data(), "sandbox" };
+    const llri::instance_desc instanceDesc{ static_cast<uint32_t>(instanceExtensions.size()), instanceExtensions.data(), "sandbox" };
 
     // Create instance
     THROW_IF_FAILED(llri::createInstance(instanceDesc, &m_instance));
@@ -169,8 +169,8 @@ void TestSystem::createDevice()
     // Create device
     const llri::device_desc deviceDesc{
         m_adapter, selectedFeatures,
-        (uint32_t)adapterExtensions.size(), adapterExtensions.data(),
-        (uint32_t)adapterQueues.size(), adapterQueues.data()
+        static_cast<uint32_t>(adapterExtensions.size()), adapterExtensions.data(),
+        static_cast<uint32_t>(adapterQueues.size()), adapterQueues.data()
     };
 
     THROW_IF_FAILED(m_instance->createDevice(deviceDesc, &m_device));

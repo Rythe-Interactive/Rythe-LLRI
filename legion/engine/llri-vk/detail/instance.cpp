@@ -93,7 +93,7 @@ namespace llri
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
 
-                        features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, (uint32_t)enables.size(), enables.data(), 0, nullptr };
+                        features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, static_cast<uint32_t>(enables.size()), enables.data(), 0, nullptr };
                         features.pNext = pNext; // Always apply pNext backwards to simplify optional chaining
                         pNext = &features;
                         break;
@@ -116,7 +116,7 @@ namespace llri
             }
 
             VkApplicationInfo appInfo{ VK_STRUCTURE_TYPE_APPLICATION_INFO, nullptr, desc.applicationName, VK_MAKE_VERSION(0, 0, 0), "Legion::LLRI", VK_MAKE_VERSION(0, 0, 1), VK_HEADER_VERSION_COMPLETE };
-            VkInstanceCreateInfo instanceCi{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, nullptr, {}, &appInfo, (uint32_t)layers.size(), layers.data(), (uint32_t)extensions.size(), extensions.data() };
+            VkInstanceCreateInfo instanceCi{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, nullptr, {}, &appInfo, static_cast<uint32_t>(layers.size()), layers.data(), static_cast<uint32_t>(extensions.size()), extensions.data() };
             instanceCi.pNext = pNext;
 
             VkInstance vulkanInstance = nullptr;
@@ -352,9 +352,9 @@ namespace llri
             VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
             nullptr,
             {},
-            (uint32_t)queues.size(), queues.data(),
+            static_cast<uint32_t>(queues.size()), queues.data(),
             0, nullptr, // Vulkan device layers are deprecated
-            (uint32_t)extensions.size(), extensions.data(),
+            static_cast<uint32_t>(extensions.size()), extensions.data(),
             &features
         };
 
