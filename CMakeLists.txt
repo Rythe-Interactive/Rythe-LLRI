@@ -39,11 +39,11 @@ if(WIN32)
 	set_property(CACHE LLRI_SELECTED_APP_IMPLEMENTATION PROPERTY STRINGS ${LLRI_IMPLEMENTATION_OPTIONS})
 
 elseif(APPLE)
-	# TODO: apple might also support vulkan builds through moltenvk
 	add_subdirectory(${LLRI_DIR_SRC}/llri-mtl)
-	set_property(TARGET llri-mtl PROPERTY FOLDER "llri")
+	add_subdirectory(${LLRI_DIR_SRC}/llri-vk)
+	set_property(TARGET llri-mtl llri-vk PROPERTY FOLDER "llri")
 
-	set(LLRI_IMPLEMENTATION_OPTIONS "llri-mtl")
+	set(LLRI_IMPLEMENTATION_OPTIONS "llri-mtl;llri-vk")
 	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-mtl" CACHE STRING "Implementation build for samples/unit tests chosen by the user at CMake configure time.")
 	set_property(CACHE LLRI_SELECTED_APP_IMPLEMENTATION PROPERTY STRINGS ${LLRI_IMPLEMENTATION_OPTIONS})
 
