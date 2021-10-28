@@ -139,7 +139,7 @@ namespace llri
 
             VkFormatProperties formatProps;
             vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &formatProps);
-
+            
             // get supported
             const bool supported = formatProps.optimalTilingFeatures != 0;
 
@@ -177,12 +177,22 @@ namespace llri
             };
 
             // get types
-            const std::unordered_map<resource_type, bool> types {
+            std::unordered_map<resource_type, bool> types {
                 { resource_type::Buffer, false },
                 { resource_type::Texture1D, true },
                 { resource_type::Texture2D, true },
                 { resource_type::Texture3D, true }
             };
+            
+#ifdef __APPLE__
+            // molten VK doesnt support non-2D depth textures
+            if (form == format::D16UNorm || form == format::D24UNormS8UInt ||
+                form == format::D32Float || form == format::D32FloatS8X24UInt)
+            {
+                types[resource_type::Texture1D] = false;
+                types[resource_type::Texture3D] = false;
+            }
+#endif
 
             result.insert({ form, format_properties {
                 supported,
