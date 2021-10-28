@@ -10,6 +10,7 @@ LLRI is designed as a low overhead API that helps developers write graphics API 
 ## Supported APIs
 - Vulkan
 - DirectX 12
+- MoltenVK
 
 ## Documentation
 Learn more about how to get started, or about how the API works in-depth through our docs: https://docs.legion-engine.com/llri/.
