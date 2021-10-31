@@ -1,0 +1,100 @@
+
+.. _file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp:
+
+File instance.hpp
+=================
+
+|exhale_lsh| :ref:`Parent directory <dir__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/instance.hpp``)
+-------------------------------------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp.rst
+
+
+
+Detailed Description
+--------------------
+
+2021-2021 Leon Brands. All rights served. @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``map``
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp`
+
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_llri.hpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_llri`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structllri_1_1instance__desc`
+
+- :ref:`exhale_struct_structllri_1_1validation__callback__desc`
+
+- :ref:`exhale_class_classllri_1_1_instance`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec`
+
+- :ref:`exhale_enum_instance_8hpp_1a5725e80e52418460957649853c101b2b`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_instance_8hpp_1a11b4f32dde18edcc96e2c0ea1dd09b90`
+
+- :ref:`exhale_function_instance_8hpp_1abb862b375183a6001c70b1c6367e26ed`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_instance_8hpp_1affecbee93163edc1f6ac8d67ba900a90`
+

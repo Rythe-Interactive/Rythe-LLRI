@@ -1,0 +1,59 @@
+
+.. _program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp:
+
+Program Listing for File instance_extensions.hpp
+================================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/instance_extensions.hpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   #include <cstdint>
+   
+   namespace LLRI_NAMESPACE
+   {
+       enum struct instance_extension_type : uint8_t
+       {
+           DriverValidation,
+           GPUValidation,
+           MaxEnum = GPUValidation
+       };
+   
+       constexpr const char* to_string(instance_extension_type type);
+   
+       struct driver_validation_ext
+       {
+           bool enable : 1;
+       };
+   
+       struct gpu_validation_ext
+       {
+           bool enable : 1;
+       };
+   
+       struct instance_extension
+       {
+           instance_extension_type type;
+   
+           union
+           {
+               driver_validation_ext driverValidation;
+               gpu_validation_ext gpuValidation;
+           };
+   
+           instance_extension() = default;
+           instance_extension(instance_extension_type type, const driver_validation_ext& ext) : type(type), driverValidation(ext) { }
+           instance_extension(instance_extension_type type, const gpu_validation_ext& ext) : type(type), gpuValidation(ext) { }
+       };
+   
+       namespace detail
+       {
+           [[nodiscard]] bool queryInstanceExtensionSupport(instance_extension_type type);
+       }
+   
+       [[nodiscard]] bool queryInstanceExtensionSupport(instance_extension_type type);
+   }

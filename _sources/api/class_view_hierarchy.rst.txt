@@ -1,0 +1,25 @@
+
+Class Hierarchy
+---------------
+
+- :ref:`namespace_llri`
+    - :ref:`exhale_enum_adapter_8hpp_1ab9db737391a5274e8f42626982a42e75`
+    - :ref:`exhale_enum_llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104`
+    - :ref:`exhale_struct_structllri_1_1adapter__extension`
+    - :ref:`exhale_struct_structllri_1_1adapter__features`
+    - :ref:`exhale_struct_structllri_1_1adapter__info`
+    - :ref:`exhale_struct_structllri_1_1device__desc`
+    - :ref:`exhale_struct_structllri_1_1driver__validation__ext`
+    - :ref:`exhale_struct_structllri_1_1gpu__validation__ext`
+    - :ref:`exhale_struct_structllri_1_1instance__desc`
+    - :ref:`exhale_struct_structllri_1_1instance__extension`
+    - :ref:`exhale_struct_structllri_1_1validation__callback__desc`
+    - :ref:`exhale_class_classllri_1_1_adapter`
+    - :ref:`exhale_class_classllri_1_1_device`
+    - :ref:`exhale_class_classllri_1_1_instance`
+    - :ref:`exhale_enum_adapter__extensions_8hpp_1a0b70dbbfd7013e0a878b3708f30a5926`
+    - :ref:`exhale_enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79`
+    - :ref:`exhale_enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec`
+    - :ref:`exhale_enum_instance_8hpp_1a5725e80e52418460957649853c101b2b`
+
+

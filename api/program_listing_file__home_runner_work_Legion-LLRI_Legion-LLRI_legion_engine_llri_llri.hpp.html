@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File llri.hpp &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File llri.hpp</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-llri-hpp">
+<span id="program-listing-file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-llri-hpp"></span><h1>Program Listing for File llri.hpp<a class="headerlink" href="#program-listing-for-file-llri-hpp" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_llri.hpp.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-llri-hpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/llri.hpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+<span class="cp">#include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;map&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+
+<span class="cp">#if defined(DOXY_EXCLUDE)</span>
+
+<span class="cp">#define LLRI_DISABLE_VALIDATION</span>
+
+<span class="cp">#define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING</span>
+
+<span class="cp">#define LLRI_ENABLE_LEGION_NAMESPACING</span>
+<span class="cp">#undef LLRI_ENABLE_LEGION_NAMESPACING </span><span class="c1">//only defined for the doxygen comments</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#if defined(LLRI_ENABLE_LEGION_NAMESPACING)</span>
+
+<span class="cp">#define LLRI_NAMESPACE legion::graphics::llri</span>
+<span class="cp">#else</span>
+
+<span class="cp">#define LLRI_NAMESPACE llri</span>
+<span class="cp">#endif</span>
+
+<span class="k">namespace</span> <span class="nn">LLRI_NAMESPACE</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="k">struct</span> <span class="nc">result</span> <span class="o">:</span> <span class="kt">uint8_t</span>
+    <span class="p">{</span>
+        <span class="n">Success</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">Timeout</span><span class="p">,</span>
+        <span class="n">NotReady</span><span class="p">,</span>
+        <span class="n">ErrorUnknown</span><span class="p">,</span>
+        <span class="n">ErrorInvalidUsage</span><span class="p">,</span>
+        <span class="n">ErrorFeatureNotSupported</span><span class="p">,</span>
+        <span class="n">ErrorExtensionNotSupported</span><span class="p">,</span>
+        <span class="n">ErrorDeviceHung</span><span class="p">,</span>
+        <span class="n">ErrorDeviceLost</span><span class="p">,</span>
+        <span class="n">ErrorDeviceRemoved</span><span class="p">,</span>
+        <span class="n">ErrorDriverFailure</span><span class="p">,</span>
+        <span class="n">ErrorOutOfHostMemory</span><span class="p">,</span>
+        <span class="n">ErrorOutOfDeviceMemory</span><span class="p">,</span>
+        <span class="n">ErrorInitializationFailed</span><span class="p">,</span>
+        <span class="n">ErrorIncompatibleDriver</span><span class="p">,</span>
+        <span class="n">MaxEnum</span> <span class="o">=</span> <span class="n">ErrorIncompatibleDriver</span>
+    <span class="p">};</span>
+
+    <span class="k">constexpr</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="nf">to_string</span><span class="p">(</span><span class="n">result</span> <span class="n">r</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// ReSharper disable CppUnusedIncludeDirective</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/instance.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/instance_extensions.hpp&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/adapter.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/adapter_extensions.hpp&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/device.hpp&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/llri.inl&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_llri.hpp.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

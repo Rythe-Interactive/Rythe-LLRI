@@ -1,0 +1,13 @@
+.. _exhale_typedef_instance_8hpp_1affecbee93163edc1f6ac8d67ba900a90:
+
+Typedef llri::validation_callback
+=================================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: llri::validation_callback

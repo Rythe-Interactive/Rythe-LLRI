@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File llri.inl &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File llri.inl</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-llri-inl">
+<span id="program-listing-file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-llri-inl"></span><h1>Program Listing for File llri.inl<a class="headerlink" href="#program-listing-for-file-llri-inl" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_llri.inl.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-llri-inl"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/llri.inl</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+<span class="cp">#include</span> <span class="cpf">&lt;llri/llri.hpp&gt;</span><span class="c1"> //Recursive include technically not necessary but helps with intellisense</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="nn">LLRI_NAMESPACE</span>
+<span class="p">{</span>
+    <span class="k">constexpr</span> <span class="kr">inline</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="nf">to_string</span><span class="p">(</span><span class="n">result</span> <span class="n">r</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="p">{</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">Success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Success&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">Timeout</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Timeout&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorUnknown</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorUnknown&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorInvalidUsage</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorInvalidUsage&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorFeatureNotSupported</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorFeatureNotSupported&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorExtensionNotSupported</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorExtensionNotSupported&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorDeviceHung</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorDeviceHung&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorDeviceLost</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorDeviceLost&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorDeviceRemoved</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorDeviceRemoved&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorDriverFailure</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorDriverFailure&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">NotReady</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;NotReady&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorOutOfHostMemory</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorOutOfHostMemory&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorOutOfDeviceMemory</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorOutOfDeviceMemory&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorInitializationFailed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorInitializationFailed&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">result</span><span class="o">::</span><span class="nl">ErrorIncompatibleDriver</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;ErrorIncompatibleDriver&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="s">&quot;Invalid result value&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/instance.inl&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/adapter.inl&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;llri/detail/device.inl&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_llri.inl.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

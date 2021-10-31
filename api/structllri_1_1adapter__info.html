@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Struct adapter_info &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Struct device_desc" href="structllri_1_1device__desc.html" />
+    <link rel="prev" title="Struct adapter_features" href="structllri_1_1adapter__features.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="structllri_1_1device__desc.html" title="Struct device_desc"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="structllri_1_1adapter__features.html" title="Struct adapter_features"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="library.html" accesskey="U">LLRI API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Struct adapter_info</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="struct-adapter-info">
+<span id="exhale-struct-structllri-1-1adapter-info"></span><h1>Struct adapter_info<a class="headerlink" href="#struct-adapter-info" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-adapter-hpp"><span class="std std-ref">File adapter.hpp</span></a></p></li>
+</ul>
+<section id="struct-documentation">
+<h2>Struct Documentation<a class="headerlink" href="#struct-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri12adapter_infoE">
+<span id="_CPPv3N4llri12adapter_infoE"></span><span id="_CPPv2N4llri12adapter_infoE"></span><span id="llri::adapter_info"></span><span class="target" id="structllri_1_1adapter__info"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">llri</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">adapter_info</span></span></span><a class="headerlink" href="#_CPPv4N4llri12adapter_infoE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Basic information about an adapter. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri12adapter_info8vendorIdE">
+<span id="_CPPv3N4llri12adapter_info8vendorIdE"></span><span id="_CPPv2N4llri12adapter_info8vendorIdE"></span><span id="llri::adapter_info::vendorId__uint32_t"></span><span class="target" id="structllri_1_1adapter__info_1a615e047a5bfe7c18a8fa9cf368490ab8"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vendorId</span></span></span><a class="headerlink" href="#_CPPv4N4llri12adapter_info8vendorIdE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The unique ID of the hardware vendor. This ID is guaranteed to be the same for all adapters from a given vendor. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri12adapter_info9adapterIdE">
+<span id="_CPPv3N4llri12adapter_info9adapterIdE"></span><span id="_CPPv2N4llri12adapter_info9adapterIdE"></span><span id="llri::adapter_info::adapterId__uint32_t"></span><span class="target" id="structllri_1_1adapter__info_1ab4fc4bbe32648d42a1469ae4717dadac"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adapterId</span></span></span><a class="headerlink" href="#_CPPv4N4llri12adapter_info9adapterIdE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The ID of the adapter. This ID refers to the product type/version, meaning that if multiple of the same kind of adapters were to be present, this ID would be the same among all of them. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri12adapter_info11adapterNameE">
+<span id="_CPPv3N4llri12adapter_info11adapterNameE"></span><span id="_CPPv2N4llri12adapter_info11adapterNameE"></span><span id="llri::adapter_info::adapterName__ss"></span><span class="target" id="structllri_1_1adapter__info_1a7658fd6ce71681a3addfbf735aeec4b0"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adapterName</span></span></span><a class="headerlink" href="#_CPPv4N4llri12adapter_info11adapterNameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The name of the adapter. This string describes the adapter and usually includes the vendor name and the product type/version. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri12adapter_info11adapterTypeE">
+<span id="_CPPv3N4llri12adapter_info11adapterTypeE"></span><span id="_CPPv2N4llri12adapter_info11adapterTypeE"></span><span id="llri::adapter_info::adapterType__adapter_type"></span><span class="target" id="structllri_1_1adapter__info_1ad07fa4430e60a0d4f7fd7aeb62be8bac"></span><a class="reference internal" href="enum_adapter_8hpp_1ab9db737391a5274e8f42626982a42e75.html#_CPPv4N4llri12adapter_typeE" title="llri::adapter_type"><span class="n"><span class="pre">adapter_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adapterType</span></span></span><a class="headerlink" href="#_CPPv4N4llri12adapter_info11adapterTypeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>An informational value describing the type of <a class="reference internal" href="classllri_1_1_adapter.html#classllri_1_1_adapter"><span class="std std-ref">Adapter</span></a>. The type does not directly affect how the related adapter operates, but it <strong>may</strong> correlate with the availability of various features. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Struct adapter_info</a><ul>
+<li><a class="reference internal" href="#struct-documentation">Struct Documentation</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="library.html">LLRI API</a><ul>
+      <li>Previous: <a href="structllri_1_1adapter__features.html" title="previous chapter">Struct adapter_features</a></li>
+      <li>Next: <a href="structllri_1_1device__desc.html" title="next chapter">Struct device_desc</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/structllri_1_1adapter__info.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

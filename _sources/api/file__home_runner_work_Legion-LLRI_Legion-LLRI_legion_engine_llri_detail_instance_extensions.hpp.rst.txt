@@ -1,0 +1,76 @@
+
+.. _file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp:
+
+File instance_extensions.hpp
+============================
+
+|exhale_lsh| :ref:`Parent directory <dir__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/instance_extensions.hpp``)
+------------------------------------------------------------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp.rst
+
+
+
+Detailed Description
+--------------------
+
+2021-2021 Leon Brands. All rights served. @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE 
+
+
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_llri.hpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_llri`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_struct_structllri_1_1driver__validation__ext`
+
+- :ref:`exhale_struct_structllri_1_1gpu__validation__ext`
+
+- :ref:`exhale_struct_structllri_1_1instance__extension`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79`
+

@@ -1,0 +1,13 @@
+.. _exhale_enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec:
+
+Enum validation_callback_severity
+=================================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: llri::validation_callback_severity

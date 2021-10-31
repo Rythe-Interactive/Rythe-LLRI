@@ -1,0 +1,16 @@
+.. _exhale_struct_structllri_1_1adapter__features:
+
+Struct adapter_features
+=======================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: llri::adapter_features
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Class Adapter &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class Device" href="classllri_1_1_device.html" />
+    <link rel="prev" title="Struct validation_callback_desc" href="structllri_1_1validation__callback__desc.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="classllri_1_1_device.html" title="Class Device"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="structllri_1_1validation__callback__desc.html" title="Struct validation_callback_desc"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="library.html" accesskey="U">LLRI API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Class Adapter</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="class-adapter">
+<span id="exhale-class-classllri-1-1-adapter"></span><h1>Class Adapter<a class="headerlink" href="#class-adapter" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-adapter-hpp"><span class="std std-ref">File adapter.hpp</span></a></p></li>
+</ul>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri7AdapterE">
+<span id="_CPPv3N4llri7AdapterE"></span><span id="_CPPv2N4llri7AdapterE"></span><span id="llri::Adapter"></span><span class="target" id="classllri_1_1_adapter"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">llri</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Adapter</span></span></span><a class="headerlink" href="#_CPPv4N4llri7AdapterE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Represents a compatible adapter (GPU, APU, IGPU, etc.). This handle is created and owned by the <a class="reference internal" href="classllri_1_1_instance.html#classllri_1_1_instance"><span class="std std-ref">Instance</span></a>, the user is not responsible for destroying it. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4llri7Adapter9queryInfoEP12adapter_info">
+<span id="_CPPv3NK4llri7Adapter9queryInfoEP12adapter_info"></span><span id="_CPPv2NK4llri7Adapter9queryInfoEP12adapter_info"></span><span id="llri::Adapter::queryInfo__adapter_infoPC"></span><span class="target" id="classllri_1_1_adapter_1ada203de3745e69cf8e8050cac034978f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="enum_llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104.html#_CPPv4N4llri6resultE" title="llri::result"><span class="n"><span class="pre">result</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">queryInfo</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="structllri_1_1adapter__info.html#_CPPv4N4llri12adapter_infoE" title="llri::adapter_info"><span class="n"><span class="pre">adapter_info</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">info</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4llri7Adapter9queryInfoEP12adapter_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Query basic information about the <a class="reference internal" href="#classllri_1_1_adapter"><span class="std std-ref">Adapter</span></a>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>info</strong> – A pointer to the <a class="reference internal" href="structllri_1_1adapter__info.html#structllri_1_1adapter__info"><span class="std std-ref">adapter_info</span></a> structure that needs to be filled.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ErrorInvalidUsage if info is nullptr. </p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ErrorDeviceLost If the adapter was removed or lost. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4llri7Adapter13queryFeaturesEP16adapter_features">
+<span id="_CPPv3NK4llri7Adapter13queryFeaturesEP16adapter_features"></span><span id="_CPPv2NK4llri7Adapter13queryFeaturesEP16adapter_features"></span><span id="llri::Adapter::queryFeatures__adapter_featuresPC"></span><span class="target" id="classllri_1_1_adapter_1a57075c466654bdcfa54bbdcef81eacb7"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="enum_llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104.html#_CPPv4N4llri6resultE" title="llri::result"><span class="n"><span class="pre">result</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">queryFeatures</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="structllri_1_1adapter__features.html#_CPPv4N4llri16adapter_featuresE" title="llri::adapter_features"><span class="n"><span class="pre">adapter_features</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">features</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4llri7Adapter13queryFeaturesEP16adapter_features" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Query a structure with all supported driver/hardware features. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>features</strong> – A pointer to the <a class="reference internal" href="structllri_1_1adapter__features.html#structllri_1_1adapter__features"><span class="std std-ref">adapter_features</span></a> structure that needs to be filled.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Success upon correct execution of the operation. </p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ErrorInvalidUsage if features is nullptr. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ErrorIncompatibleDriver if the <a class="reference internal" href="#classllri_1_1_adapter"><span class="std std-ref">Adapter</span></a> doesn’t support the implementation’s requested graphics API. </p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ErrorDeviceLost If the adapter was removed or lost. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4llri7Adapter21queryExtensionSupportE22adapter_extension_typePb">
+<span id="_CPPv3NK4llri7Adapter21queryExtensionSupportE22adapter_extension_typePb"></span><span id="_CPPv2NK4llri7Adapter21queryExtensionSupportE22adapter_extension_typePb"></span><span id="llri::Adapter::queryExtensionSupport__adapter_extension_type.bPC"></span><span class="target" id="classllri_1_1_adapter_1ab3db5be1d607106827bbd43c2e9c733f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="enum_llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104.html#_CPPv4N4llri6resultE" title="llri::result"><span class="n"><span class="pre">result</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">queryExtensionSupport</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="enum_adapter__extensions_8hpp_1a0b70dbbfd7013e0a878b3708f30a5926.html#_CPPv4N4llri22adapter_extension_typeE" title="llri::adapter_extension_type"><span class="n"><span class="pre">adapter_extension_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">supported</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4llri7Adapter21queryExtensionSupportE22adapter_extension_typePb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Query the support of a given adapter extension. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The type of adapter extension to check against. </p></li>
+<li><p><strong>supported</strong> – A pointer to the boolean that describes if the extension is supported.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Success upon correct execution of the operation. </p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ErrorInvalidUsage If supported is nullptr. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ErrorDeviceLost If the adapter was removed or lost. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Class Adapter</a><ul>
+<li><a class="reference internal" href="#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="library.html">LLRI API</a><ul>
+      <li>Previous: <a href="structllri_1_1validation__callback__desc.html" title="previous chapter">Struct validation_callback_desc</a></li>
+      <li>Next: <a href="classllri_1_1_device.html" title="next chapter">Class Device</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/classllri_1_1_adapter.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

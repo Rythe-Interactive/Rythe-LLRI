@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Class Instance &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Enum adapter_extension_type" href="enum_adapter__extensions_8hpp_1a0b70dbbfd7013e0a878b3708f30a5926.html" />
+    <link rel="prev" title="Class Device" href="classllri_1_1_device.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="enum_adapter__extensions_8hpp_1a0b70dbbfd7013e0a878b3708f30a5926.html" title="Enum adapter_extension_type"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="classllri_1_1_device.html" title="Class Device"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="library.html" accesskey="U">LLRI API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Class Instance</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="class-instance">
+<span id="exhale-class-classllri-1-1-instance"></span><h1>Class Instance<a class="headerlink" href="#class-instance" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-instance-hpp"><span class="std std-ref">File instance.hpp</span></a></p></li>
+</ul>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri8InstanceE">
+<span id="_CPPv3N4llri8InstanceE"></span><span id="_CPPv2N4llri8InstanceE"></span><span id="llri::Instance"></span><span class="target" id="classllri_1_1_instance"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">llri</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Instance</span></span></span><a class="headerlink" href="#_CPPv4N4llri8InstanceE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classllri_1_1_instance"><span class="std std-ref">Instance</span></a> is the central resource of the application and is used to create most other API objects. Only a single instance of <a class="reference internal" href="#classllri_1_1_instance"><span class="std std-ref">Instance</span></a> <strong>may</strong> exist within an application. Creating more instances is not officially supported. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri8Instance17enumerateAdaptersEPNSt6vectorIP7AdapterEE">
+<span id="_CPPv3N4llri8Instance17enumerateAdaptersEPNSt6vectorIP7AdapterEE"></span><span id="_CPPv2N4llri8Instance17enumerateAdaptersEPNSt6vectorIP7AdapterEE"></span><span id="llri::Instance::enumerateAdapters__std::vector:AdapterP:P"></span><span class="target" id="classllri_1_1_instance_1a3b6781ef3755cffa9376170777bd4d8d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="enum_llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104.html#_CPPv4N4llri6resultE" title="llri::result"><span class="n"><span class="pre">result</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enumerateAdapters</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classllri_1_1_adapter.html#_CPPv4N4llri7AdapterE" title="llri::Adapter"><span class="n"><span class="pre">Adapter</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">adapters</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4llri8Instance17enumerateAdaptersEPNSt6vectorIP7AdapterEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieve a vector of adapters available to this application. Adapters usually represent PCIe devices such as GPUs. </p>
+<p>Using this function, you can select one or more adapters for <a class="reference internal" href="classllri_1_1_device.html#classllri_1_1_device"><span class="std std-ref">Device</span></a> creation. The adapters returned by this function are individual adapters and are listed separately regardless of SLI/Crossfire/Multi-GPU configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>adapters</strong> – The vector to fill with available adapters. The vector is cleared at the start of the operation and is only filled if the operation succeeds.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Success upon correct execution of the operation. </p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ErrorInvalidUsage if adapters is nullptr. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4llri8Instance12createDeviceERK11device_descPP6Device">
+<span id="_CPPv3NK4llri8Instance12createDeviceERK11device_descPP6Device"></span><span id="_CPPv2NK4llri8Instance12createDeviceERK11device_descPP6Device"></span><span id="llri::Instance::createDevice__device_descCR.DevicePPC"></span><span class="target" id="classllri_1_1_instance_1ad12854bcda00ec04da63ee8eddb87e4d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="enum_llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104.html#_CPPv4N4llri6resultE" title="llri::result"><span class="n"><span class="pre">result</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">createDevice</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="structllri_1_1device__desc.html#_CPPv4N4llri11device_descE" title="llri::device_desc"><span class="n"><span class="pre">device_desc</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">desc</span></span>, <a class="reference internal" href="classllri_1_1_device.html#_CPPv4N4llri6DeviceE" title="llri::Device"><span class="n"><span class="pre">Device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">device</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4llri8Instance12createDeviceERK11device_descPP6Device" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a virtual LLRI device. <a class="reference internal" href="classllri_1_1_device.html#classllri_1_1_device"><span class="std std-ref">Device</span></a> represents one or multiple adapters and is used to allocate memory, create resources, or send commands to the adapter. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>desc</strong> – The description of the device. </p></li>
+<li><p><strong>device</strong> – A pointer to a device pointer variable. The pointer variable will be set to the resulting device upon successful execution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Success upon correct execution of the operation. </p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>ErrorInvalidUsage if the instance is nullptr, if device is nullptr, if desc.adapter is nullptr, or if desc.numExtensions is more than 0 and desc.extensions is nullptr. </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ErrorDeviceLost if the adapter was lost. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4llri8Instance13destroyDeviceEP6Device">
+<span id="_CPPv3NK4llri8Instance13destroyDeviceEP6Device"></span><span id="_CPPv2NK4llri8Instance13destroyDeviceEP6Device"></span><span id="llri::Instance::destroyDevice__DevicePC"></span><span class="target" id="classllri_1_1_instance_1a2b5f0ea6b0606fd6411e31b56ed3d371"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">destroyDevice</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classllri_1_1_device.html#_CPPv4N4llri6DeviceE" title="llri::Device"><span class="n"><span class="pre">Device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">device</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4llri8Instance13destroyDeviceEP6Device" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy the LLRI device. </p>
+<p>All resources created through the device <strong>must</strong> be destroyed prior to calling this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>device</strong> – The device, <strong>must</strong> be a valid device pointer or nullptr. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Class Instance</a><ul>
+<li><a class="reference internal" href="#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="library.html">LLRI API</a><ul>
+      <li>Previous: <a href="classllri_1_1_device.html" title="previous chapter">Class Device</a></li>
+      <li>Next: <a href="enum_adapter__extensions_8hpp_1a0b70dbbfd7013e0a878b3708f30a5926.html" title="next chapter">Enum adapter_extension_type</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/classllri_1_1_instance.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

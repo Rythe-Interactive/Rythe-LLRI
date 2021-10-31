@@ -1,0 +1,74 @@
+
+.. _program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp:
+
+Program Listing for File adapter.hpp
+====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/adapter.hpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   #include <string>
+   
+   //detail includes should be kept to a minimum but
+   //are allowed as long as dependencies are upwards (e.g. adapter may include instance but not vice versa)
+   #include <llri/detail/instance.hpp>
+   
+   namespace LLRI_NAMESPACE
+   {
+       enum struct adapter_extension_type : uint8_t;
+   
+       enum struct adapter_type : uint8_t
+       {
+           Other,
+           Integrated,
+           Discrete,
+           Virtual,
+           MaxEnum = Virtual
+       };
+   
+       constexpr const char* to_string(adapter_type type);
+   
+       struct adapter_info
+       {
+           uint32_t vendorId;
+           uint32_t adapterId;
+           std::string adapterName;
+           adapter_type adapterType;
+       };
+   
+       struct adapter_features
+       {
+   
+       };
+   
+       class Adapter
+       {
+           friend Instance;
+           friend result detail::impl_createInstance(const instance_desc&, Instance**, bool);
+           friend void detail::impl_destroyInstance(Instance*);
+   
+       public:
+           result queryInfo(adapter_info* info) const;
+   
+           result queryFeatures(adapter_features* features) const;
+   
+           result queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+       private:
+           //Force private constructor/deconstructor so that only instance can manage lifetime
+           Adapter() = default;
+           ~Adapter() = default;
+   
+           void* m_ptr = nullptr;
+           validation_callback_desc m_validationCallback;
+           void* m_validationCallbackMessenger = nullptr;
+   
+           result impl_queryInfo(adapter_info* info) const;
+           result impl_queryFeatures(adapter_features* features) const;
+           result impl_queryExtensionSupport(adapter_extension_type type, bool* supported) const;
+       };
+   }

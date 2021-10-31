@@ -1,0 +1,13 @@
+.. _exhale_function_instance_8inl_1a2af1479e39e158d70dddc4f1674b49ea:
+
+Function llri::queryInstanceExtensionSupport
+============================================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.inl`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: llri::queryInstanceExtensionSupport(instance_extension_type)

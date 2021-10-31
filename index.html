@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Legion-LLRI &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nameko.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="getting-started.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+  <div class="indexwrapper">
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="getting-started.html" title="Getting Started"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Legion-LLRI</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="legion-llri">
+<h1>Legion-LLRI<a class="headerlink" href="#legion-llri" title="Permalink to this headline">¶</a></h1>
+<p>Legion-LLRI, or “Legion Low Level Rendering Interface” is a rendering API that aims to provide a graphics API agnostic approach to graphics development.</p>
+<p>LLRI is designed as a low overhead API that helps developers write graphics API / platform agnostic code without the typical limitations of higher level abstractions.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The API and its wiki pages are still under heavy development. If you find yourself stuck with a problem, do not hesitate to approach the legion graphics team!</p>
+</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>LLRI accomplishes its low overhead graphics API agnostic code by providing a shared public API through its headers, and API specific implementations through its static library variations. Users simply use the API through the headers and statically link to whichever implementation they’d prefer to use.</p>
+<p>A user’s implementation of choice may depend on preference or platform requirements. Regardless of the user’s choice, implementations of the LLRI specification are obliged to adhere to the API specification. LLRI is designed with modern graphics APIs (Vulkan, DirectX 12) in mind and tries to be as inclusive to these APIs’ features as possible, providing maximum feature compatibility with as little overhead as possible.</p>
+</section>
+<section id="pages">
+<h2>Pages<a class="headerlink" href="#pages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#platforms">Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#samples">Samples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html#names">Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html#keywords">Keywords</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fundamentals.html">Fundamentals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#objects">Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#extensions">Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#validation">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#threading">Threading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/library.html">LLRI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/library.html#class-diagram">Class diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/library.html#full-api">Full API</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Legion-LLRI</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#pages">Pages</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation index</a><ul>
+      <li>Next: <a href="getting-started.html" title="next chapter">Getting Started</a></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </div>
+  
+  </body>
+</html>

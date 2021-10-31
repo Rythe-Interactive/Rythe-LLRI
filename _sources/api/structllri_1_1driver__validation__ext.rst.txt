@@ -1,0 +1,16 @@
+.. _exhale_struct_structllri_1_1driver__validation__ext:
+
+Struct driver_validation_ext
+============================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: llri::driver_validation_ext
+   :members:
+   :protected-members:
+   :undoc-members:

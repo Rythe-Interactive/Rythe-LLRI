@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Struct instance_extension &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Struct validation_callback_desc" href="structllri_1_1validation__callback__desc.html" />
+    <link rel="prev" title="Struct instance_desc" href="structllri_1_1instance__desc.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="structllri_1_1validation__callback__desc.html" title="Struct validation_callback_desc"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="structllri_1_1instance__desc.html" title="Struct instance_desc"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="library.html" accesskey="U">LLRI API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Struct instance_extension</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="struct-instance-extension">
+<span id="exhale-struct-structllri-1-1instance-extension"></span><h1>Struct instance_extension<a class="headerlink" href="#struct-instance-extension" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-instance-extensions-hpp"><span class="std std-ref">File instance_extensions.hpp</span></a></p></li>
+</ul>
+<section id="struct-documentation">
+<h2>Struct Documentation<a class="headerlink" href="#struct-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extensionE">
+<span id="_CPPv3N4llri18instance_extensionE"></span><span id="_CPPv2N4llri18instance_extensionE"></span><span id="llri::instance_extension"></span><span class="target" id="structllri_1_1instance__extension"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">llri</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">instance_extension</span></span></span><a class="headerlink" href="#_CPPv4N4llri18instance_extensionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Describes an instance extension with its type. </p>
+<p><a class="reference internal" href="classllri_1_1_instance.html#classllri_1_1_instance"><span class="std std-ref">Instance</span></a> extensions are additional features that are injected into the instance. They <strong>may</strong> activate custom behaviour in the instance, or they <strong>may</strong> enable the user to use functions or structures related to the extension.</p>
+<p>The support for each available <a class="reference internal" href="#structllri_1_1instance__extension"><span class="std std-ref">instance_extension</span></a> is fully <strong>optional</strong> (hence their name, extension), and thus before enabling any <a class="reference internal" href="#structllri_1_1instance__extension"><span class="std std-ref">instance_extension</span></a>, you should first query its support with queryInstanceExtensionSupport(). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extension18instance_extensionEv">
+<span id="_CPPv3N4llri18instance_extension18instance_extensionEv"></span><span id="_CPPv2N4llri18instance_extension18instance_extensionEv"></span><span id="llri::instance_extension::instance_extension"></span><span class="target" id="structllri_1_1instance__extension_1af4e9cac06f5e73a987bc5713d3ebc84e"></span><span class="sig-name descname"><span class="n"><span class="pre">instance_extension</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N4llri18instance_extension18instance_extensionEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extension18instance_extensionE23instance_extension_typeRK21driver_validation_ext">
+<span id="_CPPv3N4llri18instance_extension18instance_extensionE23instance_extension_typeRK21driver_validation_ext"></span><span id="_CPPv2N4llri18instance_extension18instance_extensionE23instance_extension_typeRK21driver_validation_ext"></span><span id="llri::instance_extension::instance_extension__instance_extension_type.driver_validation_extCR"></span><span class="target" id="structllri_1_1instance__extension_1a8dbcaa17269550844f6ccc3199d41898"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">instance_extension</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79.html#_CPPv4N4llri23instance_extension_typeE" title="llri::instance_extension_type"><span class="n"><span class="pre">instance_extension_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="structllri_1_1driver__validation__ext.html#_CPPv4N4llri21driver_validation_extE" title="llri::driver_validation_ext"><span class="n"><span class="pre">driver_validation_ext</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ext</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4llri18instance_extension18instance_extensionE23instance_extension_typeRK21driver_validation_ext" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extension18instance_extensionE23instance_extension_typeRK18gpu_validation_ext">
+<span id="_CPPv3N4llri18instance_extension18instance_extensionE23instance_extension_typeRK18gpu_validation_ext"></span><span id="_CPPv2N4llri18instance_extension18instance_extensionE23instance_extension_typeRK18gpu_validation_ext"></span><span id="llri::instance_extension::instance_extension__instance_extension_type.gpu_validation_extCR"></span><span class="target" id="structllri_1_1instance__extension_1ac425f41fa496eb3c7e1cb1c612eae081"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">instance_extension</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79.html#_CPPv4N4llri23instance_extension_typeE" title="llri::instance_extension_type"><span class="n"><span class="pre">instance_extension_type</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="structllri_1_1gpu__validation__ext.html#_CPPv4N4llri18gpu_validation_extE" title="llri::gpu_validation_ext"><span class="n"><span class="pre">gpu_validation_ext</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">ext</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4llri18instance_extension18instance_extensionE23instance_extension_typeRK18gpu_validation_ext" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extension4typeE">
+<span id="_CPPv3N4llri18instance_extension4typeE"></span><span id="_CPPv2N4llri18instance_extension4typeE"></span><span id="llri::instance_extension::type__instance_extension_type"></span><span class="target" id="structllri_1_1instance__extension_1aa6e523bf27557a75807aa069d64c8485"></span><a class="reference internal" href="enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79.html#_CPPv4N4llri23instance_extension_typeE" title="llri::instance_extension_type"><span class="n"><span class="pre">instance_extension_type</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><a class="headerlink" href="#_CPPv4N4llri18instance_extension4typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The type of instance extension. </p>
+<p>As instance extensions must be passed in an array, they need some way of storing varying data contiguously. instance_extensions do so through an unnamed union. When createInstance() attempts to implement the extension, it uses this enum value to determine which union member to pick from.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Accessing incorrect union members is UB, so the union member set <strong>must</strong> match with the instance_extension_type passed. </p>
+</div>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extension16driverValidationE">
+<span id="_CPPv3N4llri18instance_extension16driverValidationE"></span><span id="_CPPv2N4llri18instance_extension16driverValidationE"></span><span id="llri::instance_extension::driverValidation__driver_validation_ext"></span><span class="target" id="structllri_1_1instance__extension_1a71194c678ca554587de3e7f7a6b11a89"></span><a class="reference internal" href="structllri_1_1driver__validation__ext.html#_CPPv4N4llri21driver_validation_extE" title="llri::driver_validation_ext"><span class="n"><span class="pre">driver_validation_ext</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">driverValidation</span></span></span><a class="headerlink" href="#_CPPv4N4llri18instance_extension16driverValidationE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extension13gpuValidationE">
+<span id="_CPPv3N4llri18instance_extension13gpuValidationE"></span><span id="_CPPv2N4llri18instance_extension13gpuValidationE"></span><span id="llri::instance_extension::gpuValidation__gpu_validation_ext"></span><span class="target" id="structllri_1_1instance__extension_1ad7faa295ae5690d33783a3576808b0ee"></span><a class="reference internal" href="structllri_1_1gpu__validation__ext.html#_CPPv4N4llri18gpu_validation_extE" title="llri::gpu_validation_ext"><span class="n"><span class="pre">gpu_validation_ext</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gpuValidation</span></span></span><a class="headerlink" href="#_CPPv4N4llri18instance_extension13gpuValidationE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri18instance_extensionUt1_3E">
+<span id="_CPPv3N4llri18instance_extensionUt1_3E"></span><span class="target" id="structllri_1_1instance__extension_1a4f81fd978dd9ef030e9df85d9cdb176c"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">llri</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N4llri18instance_extensionE" title="llri::instance_extension"><span class="n"><span class="pre">instance_extension</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">[anonymous]</span></span></span><a class="headerlink" href="#_CPPv4N4llri18instance_extensionUt1_3E" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The instance extension’s information. </p>
+<p>One of the values in this union must be set, and that value must be the same value as the given type.</p>
+<p>Passing a different structure than expected causes undefined behaviour and may result in unexplainable result values or implementation errors.</p>
+<p>All instance extensions are named after their enum entry, followed with _ext (e.g. instance_extension_type::DriverValidation is represented by <a class="reference internal" href="structllri_1_1driver__validation__ext.html#structllri_1_1driver__validation__ext"><span class="std std-ref">driver_validation_ext</span></a>). </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Struct instance_extension</a><ul>
+<li><a class="reference internal" href="#struct-documentation">Struct Documentation</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="library.html">LLRI API</a><ul>
+      <li>Previous: <a href="structllri_1_1instance__desc.html" title="previous chapter">Struct instance_desc</a></li>
+      <li>Next: <a href="structllri_1_1validation__callback__desc.html" title="next chapter">Struct validation_callback_desc</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/structllri_1_1instance__extension.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

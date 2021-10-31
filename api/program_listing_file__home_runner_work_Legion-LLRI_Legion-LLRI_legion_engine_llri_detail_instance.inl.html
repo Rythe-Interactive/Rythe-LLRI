@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File instance.inl &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File instance.inl</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-instance-inl">
+<span id="program-listing-file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-instance-inl"></span><h1>Program Listing for File instance.inl<a class="headerlink" href="#program-listing-for-file-instance-inl" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.inl.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-instance-inl"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/instance.inl</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+<span class="cp">#include</span> <span class="cpf">&lt;llri/llri.hpp&gt;</span><span class="c1"> //Recursive include technically not necessary but helps with intellisense</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="nn">LLRI_NAMESPACE</span>
+<span class="p">{</span>
+    <span class="k">constexpr</span> <span class="kr">inline</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="nf">to_string</span><span class="p">(</span><span class="n">validation_callback_severity</span> <span class="n">severity</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">severity</span><span class="p">)</span>
+        <span class="p">{</span>
+        <span class="k">case</span> <span class="n">validation_callback_severity</span><span class="o">::</span><span class="nl">Verbose</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Verbose&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">validation_callback_severity</span><span class="o">::</span><span class="nl">Info</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Info&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">validation_callback_severity</span><span class="o">::</span><span class="nl">Warning</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Warning&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">validation_callback_severity</span><span class="o">::</span><span class="nl">Error</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Error&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">validation_callback_severity</span><span class="o">::</span><span class="nl">Corruption</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Corruption&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="s">&quot;Invalid validation_callback_severity value&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">constexpr</span> <span class="kr">inline</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="nf">to_string</span><span class="p">(</span><span class="n">validation_callback_source</span> <span class="n">source</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="p">{</span>
+        <span class="k">case</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="nl">Validation</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Validation&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="nl">Implementation</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;Implementation&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="s">&quot;Invalid validation_callback_source value&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">constexpr</span> <span class="kr">inline</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="nf">to_string</span><span class="p">(</span><span class="n">instance_extension_type</span> <span class="n">type</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">type</span><span class="p">)</span>
+        <span class="p">{</span>
+        <span class="k">case</span> <span class="n">instance_extension_type</span><span class="o">::</span><span class="nl">DriverValidation</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;DriverValidation&quot;</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">instance_extension_type</span><span class="o">::</span><span class="nl">GPUValidation</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;GPUValidation&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="s">&quot;Invalid instance_extension_type value&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span> <span class="kr">inline</span> <span class="kt">bool</span> <span class="n">queryInstanceExtensionSupport</span><span class="p">(</span><span class="n">instance_extension_type</span> <span class="n">type</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">detail</span><span class="o">::</span><span class="n">queryInstanceExtensionSupport</span><span class="p">(</span><span class="n">type</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kr">inline</span> <span class="n">result</span> <span class="n">createInstance</span><span class="p">(</span><span class="k">const</span> <span class="n">instance_desc</span><span class="o">&amp;</span> <span class="n">desc</span><span class="p">,</span> <span class="n">Instance</span><span class="o">**</span> <span class="n">instance</span><span class="p">)</span>
+    <span class="p">{</span>
+<span class="cp">#ifndef LLRI_DISABLE_VALIDATION</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">instance</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="p">.</span><span class="n">callbackDesc</span><span class="p">.</span><span class="n">callback</span><span class="p">)</span>
+                <span class="n">desc</span><span class="p">.</span><span class="n">callbackDesc</span><span class="p">(</span><span class="n">validation_callback_severity</span><span class="o">::</span><span class="n">Error</span><span class="p">,</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="n">Validation</span><span class="p">,</span> <span class="s">&quot;createInstance() returned ErrorInvalidUsage because the passed instance parameter was nullptr.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">::</span><span class="n">ErrorInvalidUsage</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="cp">#endif</span>
+
+        <span class="c1">//default instance output to nullptr</span>
+        <span class="o">*</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+
+<span class="cp">#ifndef LLRI_DISABLE_VALIDATION</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="p">.</span><span class="n">numExtensions</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">desc</span><span class="p">.</span><span class="n">extensions</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="p">.</span><span class="n">callbackDesc</span><span class="p">.</span><span class="n">callback</span><span class="p">)</span>
+                <span class="n">desc</span><span class="p">.</span><span class="n">callbackDesc</span><span class="p">(</span><span class="n">validation_callback_severity</span><span class="o">::</span><span class="n">Error</span><span class="p">,</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="n">Validation</span><span class="p">,</span> <span class="s">&quot;createInstance() returned ErrorInvalidUsage because desc.numExtensions was more than 0 but desc.extensions was nullptr.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">::</span><span class="n">ErrorInvalidUsage</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING</span>
+        <span class="k">const</span> <span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">detail</span><span class="o">::</span><span class="n">impl_createInstance</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">instance</span><span class="p">)</span>
+            <span class="n">detail</span><span class="o">::</span><span class="n">impl_pollAPIMessages</span><span class="p">((</span><span class="o">*</span><span class="n">instance</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">m_validationCallback</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">instance</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">m_validationCallbackMessenger</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="cp">#else</span>
+        <span class="k">return</span> <span class="n">detail</span><span class="o">::</span><span class="n">impl_createInstance</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+<span class="cp">#endif</span>
+    <span class="p">}</span>
+
+    <span class="kr">inline</span> <span class="kt">void</span> <span class="n">destroyInstance</span><span class="p">(</span><span class="n">Instance</span><span class="o">*</span> <span class="n">instance</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">detail</span><span class="o">::</span><span class="n">impl_destroyInstance</span><span class="p">(</span><span class="n">instance</span><span class="p">);</span>
+        <span class="c1">//Can&#39;t do any polling after the instance is destroyed</span>
+    <span class="p">}</span>
+
+    <span class="kr">inline</span> <span class="n">result</span> <span class="n">Instance</span><span class="o">::</span><span class="n">enumerateAdapters</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Adapter</span><span class="o">*&gt;*</span> <span class="n">adapters</span><span class="p">)</span>
+    <span class="p">{</span>
+<span class="cp">#ifndef LLRI_DISABLE_VALIDATION</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">adapters</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">m_validationCallback</span><span class="p">(</span><span class="n">validation_callback_severity</span><span class="o">::</span><span class="n">Error</span><span class="p">,</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="n">Validation</span><span class="p">,</span> <span class="s">&quot;Instance::enumerateAdapters() returned ErrorInvalidUsage because the passed adapters parameter was nullptr.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">::</span><span class="n">ErrorInvalidUsage</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING</span>
+        <span class="k">const</span> <span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">impl_enumerateAdapters</span><span class="p">(</span><span class="n">adapters</span><span class="p">);</span>
+        <span class="n">detail</span><span class="o">::</span><span class="n">impl_pollAPIMessages</span><span class="p">(</span><span class="n">m_validationCallback</span><span class="p">,</span> <span class="n">m_validationCallbackMessenger</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="cp">#else</span>
+        <span class="k">return</span> <span class="n">impl_enumerateAdapters</span><span class="p">(</span><span class="n">adapters</span><span class="p">);</span>
+<span class="cp">#endif</span>
+    <span class="p">}</span>
+
+    <span class="kr">inline</span> <span class="n">result</span> <span class="n">Instance</span><span class="o">::</span><span class="n">createDevice</span><span class="p">(</span><span class="k">const</span> <span class="n">device_desc</span><span class="o">&amp;</span> <span class="n">desc</span><span class="p">,</span> <span class="n">Device</span><span class="o">**</span> <span class="n">device</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+<span class="cp">#ifndef LLRI_DISABLE_VALIDATION</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">device</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">m_validationCallback</span><span class="p">(</span><span class="n">validation_callback_severity</span><span class="o">::</span><span class="n">Error</span><span class="p">,</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="n">Validation</span><span class="p">,</span> <span class="s">&quot;Instance::createDevice() returned ErrorInvalidUsage because the passed device parameter was nullptr.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">::</span><span class="n">ErrorInvalidUsage</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="cp">#endif</span>
+
+        <span class="c1">//default device output to nullptr</span>
+        <span class="o">*</span> <span class="n">device</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+
+<span class="cp">#ifndef LLRI_DISABLE_VALIDATION</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="p">.</span><span class="n">adapter</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">m_validationCallback</span><span class="p">(</span><span class="n">validation_callback_severity</span><span class="o">::</span><span class="n">Error</span><span class="p">,</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="n">Validation</span><span class="p">,</span> <span class="s">&quot;Instance::createDevice() returned ErrorInvalidUsage because desc.adapter was nullptr.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">::</span><span class="n">ErrorInvalidUsage</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="p">.</span><span class="n">numExtensions</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">desc</span><span class="p">.</span><span class="n">extensions</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">m_validationCallback</span><span class="p">(</span><span class="n">validation_callback_severity</span><span class="o">::</span><span class="n">Error</span><span class="p">,</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="n">Validation</span><span class="p">,</span> <span class="s">&quot;Instance::createDevice() returned ErrorInvalidUsage because desc.numExtensions was more than 0 but desc.extensions was nullptr.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">::</span><span class="n">ErrorInvalidUsage</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">desc</span><span class="p">.</span><span class="n">adapter</span><span class="o">-&gt;</span><span class="n">m_ptr</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">m_validationCallback</span><span class="p">(</span><span class="n">validation_callback_severity</span><span class="o">::</span><span class="n">Error</span><span class="p">,</span> <span class="n">validation_callback_source</span><span class="o">::</span><span class="n">Validation</span><span class="p">,</span> <span class="s">&quot;Instance::createDevice() returned ErrorDeviceLost because the passed adapter has a nullptr internal handle which usually indicates a lost device.&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">::</span><span class="n">ErrorDeviceLost</span><span class="p">;</span>
+        <span class="p">}</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING</span>
+        <span class="k">const</span> <span class="k">auto</span> <span class="n">r</span> <span class="o">=</span> <span class="n">impl_createDevice</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">device</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">detail</span><span class="o">::</span><span class="n">impl_pollAPIMessages</span><span class="p">((</span><span class="o">*</span><span class="n">device</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">m_validationCallback</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">device</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">m_validationCallbackMessenger</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+<span class="cp">#else</span>
+        <span class="k">return</span> <span class="n">impl_createDevice</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">device</span><span class="p">);</span>
+<span class="cp">#endif</span>
+    <span class="p">}</span>
+
+    <span class="kr">inline</span> <span class="kt">void</span> <span class="n">Instance</span><span class="o">::</span><span class="n">destroyDevice</span><span class="p">(</span><span class="n">Device</span><span class="o">*</span> <span class="n">device</span><span class="p">)</span> <span class="k">const</span>
+    <span class="p">{</span>
+        <span class="n">impl_destroyDevice</span><span class="p">(</span><span class="n">device</span><span class="p">);</span>
+
+<span class="cp">#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING</span>
+        <span class="c1">//Can&#39;t use device messenger here because the device is destroyed</span>
+        <span class="n">detail</span><span class="o">::</span><span class="n">impl_pollAPIMessages</span><span class="p">(</span><span class="n">m_validationCallback</span><span class="p">,</span> <span class="n">m_validationCallbackMessenger</span><span class="p">);</span>
+<span class="cp">#endif</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.inl.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

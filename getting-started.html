@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Getting Started &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nameko.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Terminology" href="terminology.html" />
+    <link rel="prev" title="Legion-LLRI" href="index.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="terminology.html" title="Terminology"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Legion-LLRI"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Getting Started</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>LLRI stands for “Low Level Rendering Interface” and refers to the LLRI API. The LLRI specification describes the expected behaviour of the LLRI API.</p>
+<section id="platforms">
+<h2>Platforms<a class="headerlink" href="#platforms" title="Permalink to this headline">¶</a></h2>
+<p>LLRI is built with C++17, and currently only builds for Windows. It supports the following graphics APIs:</p>
+<ul class="simple">
+<li><p>Vulkan</p></li>
+<li><p>DirectX 12</p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>LLRI is built using Visual Studio 19 using the Clang++ compiler and C++17. For linux we currently don’t provide any default IDE support.</p>
+<p>The default LLRI setup requires no dependencies or special configuration. Additional features may require system configuration; to enable debugging extensions on DirectX builds, install “Graphics Tools” in Windows’ optional features. To enable validation layers on Vulkan builds, install the Vulkan SDK from the LunarG website.</p>
+</section>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>Download the headers, library files and dlls from the latest GitHub release to get started immediately. To use the API, simply include the headers in include/, link your program to a .lib file of your choice from lib/, and copy the DLLs in dll/ into your executable folder.</p>
+<section id="includes">
+<h3>Includes<a class="headerlink" href="#includes" title="Permalink to this headline">¶</a></h3>
+<p>All include files necessary for LLRI are found in include/llri/. You <strong>must</strong> only ever include llri.hpp, as all header files in the detail/ folder are included through llri.hpp and expect llri.hpp to be included first.</p>
+</section>
+<section id="library-files">
+<h3>Library files<a class="headerlink" href="#library-files" title="Permalink to this headline">¶</a></h3>
+<p>The following library files are provided:</p>
+<ul class="simple">
+<li><p><strong>legion-llri-dx.lib</strong> release build of the DirectX 12 implementation.</p></li>
+<li><p><strong>legion-llri-dx-d.lib</strong> debug build of the DirectX 12 implementation.</p></li>
+<li><p><strong>legion-llri-vk.lib</strong> release build of the Vulkan implementation.</p></li>
+<li><p><strong>legion-llri-vk-d.lib</strong> debug build of the Vulkan implementation.</p></li>
+</ul>
+</section>
+<section id="dlls">
+<h3>DLLs<a class="headerlink" href="#dlls" title="Permalink to this headline">¶</a></h3>
+<p>The dll/ folder contains all DLL files that LLRI <strong>may</strong> use. The list below describes which DLLs <strong>must</strong> be added and which DLLs <strong>can</strong> be included. Naturally, if a DLL comes with a matching .pdb file, this file <strong>may</strong> be included to provide additional debugging, but this is never required.</p>
+<section id="mandatory">
+<h4>Mandatory<a class="headerlink" href="#mandatory" title="Permalink to this headline">¶</a></h4>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>DLL Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dxcompiler.dll</p></td>
+<td><p>HLSL compiler</p></td>
+</tr>
+<tr class="row-odd"><td><p>dxil.dll</p></td>
+<td><p>HLSL compiler (required for modern HLSL versions)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional">
+<h4>Optional<a class="headerlink" href="#optional" title="Permalink to this headline">¶</a></h4>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 89%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>DLL Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>WinPixEventRuntime.dll</p></td>
+<td><p>[DirectX] Enables CommandList markers which are visible in debugging applications such as Microsoft PIX and NVIDIA’s Nsight.</p></td>
+</tr>
+<tr class="row-odd"><td><p>D3D12/D3D12Core.dll</p></td>
+<td><p>[DirectX] Upgrades the local DirectX version to the latest DirectX Agility SDK which provides access to the latest DX12 features. If included, this DLL <strong>must</strong> be in the D3D12/ folder next to the executable.</p></td>
+</tr>
+<tr class="row-even"><td><p>D3D12/d3d12SDKLayers.dll</p></td>
+<td><p>[DirectX] Upgrades the local DirectX version to the latest DirectX Agility SDK which provides more robust debug features. If included, this DLL <strong>must</strong> be in the D3D12/ folder next to the executable.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="samples">
+<h2>Samples<a class="headerlink" href="#samples" title="Permalink to this headline">¶</a></h2>
+<p>LLRI comes with numerous code samples included. These samples are thoroughly commented and provide a great starting point to learning the API. They are found in /applications/samples/.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 81%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>DLL Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>000_hello_llri</p></td>
+<td><p>An introduction to instance creation in LLRI.</p></td>
+</tr>
+<tr class="row-odd"><td><p>001_validation</p></td>
+<td><p>Introduces the LLRI validation callback and the validation optimization flags that come along with it.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#platforms">Platforms</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#install">Install</a><ul>
+<li><a class="reference internal" href="#includes">Includes</a></li>
+<li><a class="reference internal" href="#library-files">Library files</a></li>
+<li><a class="reference internal" href="#dlls">DLLs</a><ul>
+<li><a class="reference internal" href="#mandatory">Mandatory</a></li>
+<li><a class="reference internal" href="#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#samples">Samples</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation index</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Legion-LLRI</a></li>
+      <li>Next: <a href="terminology.html" title="next chapter">Terminology</a></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/getting-started.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

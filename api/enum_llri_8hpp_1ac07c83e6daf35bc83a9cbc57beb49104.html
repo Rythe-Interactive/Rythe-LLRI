@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Enum result &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Enum validation_callback_severity" href="enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec.html" />
+    <link rel="prev" title="Enum instance_extension_type" href="enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec.html" title="Enum validation_callback_severity"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79.html" title="Enum instance_extension_type"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="library.html" accesskey="U">LLRI API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Enum result</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="enum-result">
+<span id="exhale-enum-llri-8hpp-1ac07c83e6daf35bc83a9cbc57beb49104"></span><h1>Enum result<a class="headerlink" href="#enum-result" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_llri.hpp.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-llri-hpp"><span class="std std-ref">File llri.hpp</span></a></p></li>
+</ul>
+<section id="enum-documentation">
+<h2>Enum Documentation<a class="headerlink" href="#enum-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6resultE">
+<span id="_CPPv3N4llri6resultE"></span><span id="_CPPv2N4llri6resultE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">llri</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">result</span></span></span><a class="headerlink" href="#_CPPv4N4llri6resultE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Result codes for LLRI operations. </p>
+<p>Most LLRI operations return result codes. These result codes provide information about the operation’s execution status. Operations that execute properly <strong>can</strong> return result::Success, but they <strong>may</strong> return any of the other non-error result codes. If an operation fails, it <strong>must</strong> return a failing result value, which <strong>may</strong> be result::ErrorUnknown or a more specific appropriate failing result value.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Codes prefixed with “Error” imply that the operation failed fatally. This <strong>may</strong> mean that further action to recover the application’s state is required by the user.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Result codes may not provide enough information, so consider using the validation callback to get additional information. </p>
+</div>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result7SuccessE">
+<span id="_CPPv3N4llri6result7SuccessE"></span><span id="_CPPv2N4llri6result7SuccessE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a505a83f220c02df2f85c3810cd9ceb38"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Success</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result7SuccessE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The operation executed properly. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result7TimeoutE">
+<span id="_CPPv3N4llri6result7TimeoutE"></span><span id="_CPPv2N4llri6result7TimeoutE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104ac85a251cc457840f1e032f1b733e9398"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Timeout</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result7TimeoutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The operation’s execution time exceeded a user-defined timeout. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result8NotReadyE">
+<span id="_CPPv3N4llri6result8NotReadyE"></span><span id="_CPPv2N4llri6result8NotReadyE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104add353567e8118a2b8df4e822e59084ab"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">NotReady</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result8NotReadyE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A fence has not yet completed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result12ErrorUnknownE">
+<span id="_CPPv3N4llri6result12ErrorUnknownE"></span><span id="_CPPv2N4llri6result12ErrorUnknownE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a3cabc605300c5d86602e943fcf77672b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorUnknown</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result12ErrorUnknownE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The operation failed fatally, but no error was specified. The implementation <strong>may</strong> return this value if it can’t map an error code to an LLRI result code. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result17ErrorInvalidUsageE">
+<span id="_CPPv3N4llri6result17ErrorInvalidUsageE"></span><span id="_CPPv2N4llri6result17ErrorInvalidUsageE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a1e3122c7668882550b26a6f8a0459275"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorInvalidUsage</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result17ErrorInvalidUsageE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The usage of the operation was invalid. LLRI validation returns this result code whenever its validation fails, but implementations <strong>can</strong> return the code too. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result24ErrorFeatureNotSupportedE">
+<span id="_CPPv3N4llri6result24ErrorFeatureNotSupportedE"></span><span id="_CPPv2N4llri6result24ErrorFeatureNotSupportedE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a4e8e449a91439703ea6a02f91e24a918"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorFeatureNotSupported</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result24ErrorFeatureNotSupportedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The requested feature is not supported. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result26ErrorExtensionNotSupportedE">
+<span id="_CPPv3N4llri6result26ErrorExtensionNotSupportedE"></span><span id="_CPPv2N4llri6result26ErrorExtensionNotSupportedE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a6d408a7926284f44d109ece272d326dd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorExtensionNotSupported</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result26ErrorExtensionNotSupportedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The requested extension is not supported. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result15ErrorDeviceHungE">
+<span id="_CPPv3N4llri6result15ErrorDeviceHungE"></span><span id="_CPPv2N4llri6result15ErrorDeviceHungE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a20293cecfcf11c6ef9feb38c4a0bfa3f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorDeviceHung</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result15ErrorDeviceHungE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The operation caused the device to become non-responsive for a long period of time. This is often caused by badly formed commands sent by the application. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result15ErrorDeviceLostE">
+<span id="_CPPv3N4llri6result15ErrorDeviceLostE"></span><span id="_CPPv2N4llri6result15ErrorDeviceLostE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a3ed118a051de85558545652f99642fbb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorDeviceLost</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result15ErrorDeviceLostE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A device <strong>may</strong> be lost after invalid API usage causes fatal errors that the device can not recover from. The device becomes invalid and must be destroyed and recreated. </p>
+<p>After a device loss, the application <strong>should</strong> reiterate over available Adapters as the previously used <a class="reference internal" href="classllri_1_1_adapter.html#classllri_1_1_adapter"><span class="std std-ref">Adapter</span></a> <strong>may</strong> have become invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result18ErrorDeviceRemovedE">
+<span id="_CPPv3N4llri6result18ErrorDeviceRemovedE"></span><span id="_CPPv2N4llri6result18ErrorDeviceRemovedE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a559e46fc7228e4b3abb724df0caf3ef5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorDeviceRemoved</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result18ErrorDeviceRemovedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The video card has been physically removed from the system. The device becomes invalid and must be destroyed and recreated. For this, the application <strong>should</strong> reiterate over available Adapters as the previously used <a class="reference internal" href="classllri_1_1_adapter.html#classllri_1_1_adapter"><span class="std std-ref">Adapter</span></a> <strong>may</strong> have become invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result18ErrorDriverFailureE">
+<span id="_CPPv3N4llri6result18ErrorDriverFailureE"></span><span id="_CPPv2N4llri6result18ErrorDriverFailureE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a0271833a85c4cedbc9c6d9db914a9c55"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorDriverFailure</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result18ErrorDriverFailureE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A driver error occurred. After this, the device will be put into the device lost state and will become invalid. See result::ErrorDeviceLost for more information on device loss. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result20ErrorOutOfHostMemoryE">
+<span id="_CPPv3N4llri6result20ErrorOutOfHostMemoryE"></span><span id="_CPPv2N4llri6result20ErrorOutOfHostMemoryE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104ab5428114fb5346cc2e92f306ade2ee06"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorOutOfHostMemory</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result20ErrorOutOfHostMemoryE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A CPU side allocation failed because the system ran out of memory. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result22ErrorOutOfDeviceMemoryE">
+<span id="_CPPv3N4llri6result22ErrorOutOfDeviceMemoryE"></span><span id="_CPPv2N4llri6result22ErrorOutOfDeviceMemoryE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104ab5d12a9c801daac2a1294cae82821faa"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorOutOfDeviceMemory</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result22ErrorOutOfDeviceMemoryE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A GPU side allocation failed because the GPU ran out of memory. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result25ErrorInitializationFailedE">
+<span id="_CPPv3N4llri6result25ErrorInitializationFailedE"></span><span id="_CPPv2N4llri6result25ErrorInitializationFailedE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a25ba223ccb14b78f2ac5b1d78d61f402"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorInitializationFailed</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result25ErrorInitializationFailedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initialization of an object failed because of implementation specific reasons. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result23ErrorIncompatibleDriverE">
+<span id="_CPPv3N4llri6result23ErrorIncompatibleDriverE"></span><span id="_CPPv2N4llri6result23ErrorIncompatibleDriverE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a6c88837f50c1462aa92a859855f150a5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ErrorIncompatibleDriver</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result23ErrorIncompatibleDriverE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The implementation is not supported by the driver. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri6result7MaxEnumE">
+<span id="_CPPv3N4llri6result7MaxEnumE"></span><span id="_CPPv2N4llri6result7MaxEnumE"></span><span class="target" id="llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104a81499f9d20fc7eb14873a7acf10d53bd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MaxEnum</span></span></span><a class="headerlink" href="#_CPPv4N4llri6result7MaxEnumE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The highest value in this enum. </p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enum result</a><ul>
+<li><a class="reference internal" href="#enum-documentation">Enum Documentation</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="library.html">LLRI API</a><ul>
+      <li>Previous: <a href="enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79.html" title="previous chapter">Enum instance_extension_type</a></li>
+      <li>Next: <a href="enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec.html" title="next chapter">Enum validation_callback_severity</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/enum_llri_8hpp_1ac07c83e6daf35bc83a9cbc57beb49104.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

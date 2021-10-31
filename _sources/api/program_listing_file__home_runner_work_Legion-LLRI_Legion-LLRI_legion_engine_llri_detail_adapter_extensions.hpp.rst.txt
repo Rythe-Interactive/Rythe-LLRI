@@ -1,0 +1,46 @@
+
+.. _program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter_extensions.hpp:
+
+Program Listing for File adapter_extensions.hpp
+===============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter_extensions.hpp>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/adapter_extensions.hpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   #include <cstdint>
+   
+   namespace LLRI_NAMESPACE
+   {
+       enum struct adapter_extension_type : uint8_t
+       {
+           MaxEnum = 0
+       };
+   
+       constexpr const char* to_string(adapter_extension_type type)
+       {
+           switch (type)
+           {
+               default:
+                   break;
+           }
+   
+           return "Invalid adapter_extension_type value";
+       }
+   
+       struct adapter_extension
+       {
+           adapter_extension_type type;
+   
+           union
+           {
+               //Empty until adapter extensions are added
+           };
+   
+           adapter_extension() = default;
+       };
+   }

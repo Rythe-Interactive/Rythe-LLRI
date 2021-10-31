@@ -1,0 +1,13 @@
+.. _exhale_define_llri_8hpp_1a10c22f0cc6e147803adb19dc6457f8da:
+
+Define LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+==================================================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_llri.hpp`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING

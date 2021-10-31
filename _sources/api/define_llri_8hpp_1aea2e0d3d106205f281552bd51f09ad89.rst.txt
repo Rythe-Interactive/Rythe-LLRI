@@ -1,0 +1,13 @@
+.. _exhale_define_llri_8hpp_1aea2e0d3d106205f281552bd51f09ad89:
+
+Define LLRI_NAMESPACE
+=====================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_llri.hpp`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: LLRI_NAMESPACE

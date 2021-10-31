@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Enum validation_callback_source &#8212; Legion-LLRI v0.0.1 alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nameko.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Function llri::createInstance" href="function_instance_8hpp_1a11b4f32dde18edcc96e2c0ea1dd09b90.html" />
+    <link rel="prev" title="Enum validation_callback_severity" href="enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec.html" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Lora:400' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  </head><body>
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="function_instance_8hpp_1a11b4f32dde18edcc96e2c0ea1dd09b90.html" title="Function llri::createInstance"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec.html" title="Enum validation_callback_severity"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Legion-LLRI v0.0.1 alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="library.html" accesskey="U">LLRI API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Enum validation_callback_source</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="enum-validation-callback-source">
+<span id="exhale-enum-instance-8hpp-1a5725e80e52418460957649853c101b2b"></span><h1>Enum validation_callback_source<a class="headerlink" href="#enum-validation-callback-source" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp.html#file-home-runner-work-legion-llri-legion-llri-legion-engine-llri-detail-instance-hpp"><span class="std std-ref">File instance.hpp</span></a></p></li>
+</ul>
+<section id="enum-documentation">
+<h2>Enum Documentation<a class="headerlink" href="#enum-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri26validation_callback_sourceE">
+<span id="_CPPv3N4llri26validation_callback_sourceE"></span><span id="_CPPv2N4llri26validation_callback_sourceE"></span><span class="target" id="instance_8hpp_1a5725e80e52418460957649853c101b2b"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">llri</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">validation_callback_source</span></span></span><a class="headerlink" href="#_CPPv4N4llri26validation_callback_sourceE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Describes the source of the validation callback message. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri26validation_callback_source10ValidationE">
+<span id="_CPPv3N4llri26validation_callback_source10ValidationE"></span><span id="_CPPv2N4llri26validation_callback_source10ValidationE"></span><span class="target" id="instance_8hpp_1a5725e80e52418460957649853c101b2ba13148717f8faa9037f37d28971dfc219"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Validation</span></span></span><a class="headerlink" href="#_CPPv4N4llri26validation_callback_source10ValidationE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The message came from the LLRI API. API validation does basic parameter checks to make sure that the API doesn’t crash. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This value never occurs if LLRI_DISABLE_VALIDATION is defined. </p>
+</div>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri26validation_callback_source14ImplementationE">
+<span id="_CPPv3N4llri26validation_callback_source14ImplementationE"></span><span id="_CPPv2N4llri26validation_callback_source14ImplementationE"></span><span class="target" id="instance_8hpp_1a5725e80e52418460957649853c101b2bab672f52ade975e864ae6b58722c03689"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Implementation</span></span></span><a class="headerlink" href="#_CPPv4N4llri26validation_callback_source14ImplementationE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The message came from the implementation. Implementation validation needs to be enabled through <a class="reference internal" href="structllri_1_1driver__validation__ext.html#structllri_1_1driver__validation__ext"><span class="std std-ref">driver_validation_ext</span></a> and/or <a class="reference internal" href="structllri_1_1gpu__validation__ext.html#structllri_1_1gpu__validation__ext"><span class="std std-ref">gpu_validation_ext</span></a> for this kind of message to appear. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This value never occurs if LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING is defined. </p>
+</div>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N4llri26validation_callback_source7MaxEnumE">
+<span id="_CPPv3N4llri26validation_callback_source7MaxEnumE"></span><span id="_CPPv2N4llri26validation_callback_source7MaxEnumE"></span><span class="target" id="instance_8hpp_1a5725e80e52418460957649853c101b2ba81499f9d20fc7eb14873a7acf10d53bd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MaxEnum</span></span></span><a class="headerlink" href="#_CPPv4N4llri26validation_callback_source7MaxEnumE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The highest value in this enum. </p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Enum validation_callback_source</a><ul>
+<li><a class="reference internal" href="#enum-documentation">Enum Documentation</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation index</a><ul>
+  <li><a href="library.html">LLRI API</a><ul>
+      <li>Previous: <a href="enum_instance_8hpp_1a11c3d8b872aea2bea18758535aed41ec.html" title="previous chapter">Enum validation_callback_severity</a></li>
+      <li>Next: <a href="function_instance_8hpp_1a11b4f32dde18edcc96e2c0ea1dd09b90.html" title="next chapter">Function llri::createInstance</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/enum_instance_8hpp_1a5725e80e52418460957649853c101b2b.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+  </body>
+</html>

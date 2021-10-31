@@ -1,0 +1,61 @@
+
+.. _program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_llri.inl:
+
+Program Listing for File llri.inl
+=================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_llri.inl>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/llri.inl``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   #include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
+   
+   namespace LLRI_NAMESPACE
+   {
+       constexpr inline const char* to_string(result r)
+       {
+           switch (r)
+           {
+           case result::Success:
+               return "Success";
+           case result::Timeout:
+               return "Timeout";
+           case result::ErrorUnknown:
+               return "ErrorUnknown";
+           case result::ErrorInvalidUsage:
+               return "ErrorInvalidUsage";
+           case result::ErrorFeatureNotSupported:
+               return "ErrorFeatureNotSupported";
+           case result::ErrorExtensionNotSupported:
+               return "ErrorExtensionNotSupported";
+           case result::ErrorDeviceHung:
+               return "ErrorDeviceHung";
+           case result::ErrorDeviceLost:
+               return "ErrorDeviceLost";
+           case result::ErrorDeviceRemoved:
+               return "ErrorDeviceRemoved";
+           case result::ErrorDriverFailure:
+               return "ErrorDriverFailure";
+           case result::NotReady:
+               return "NotReady";
+           case result::ErrorOutOfHostMemory:
+               return "ErrorOutOfHostMemory";
+           case result::ErrorOutOfDeviceMemory:
+               return "ErrorOutOfDeviceMemory";
+           case result::ErrorInitializationFailed:
+               return "ErrorInitializationFailed";
+           case result::ErrorIncompatibleDriver:
+               return "ErrorIncompatibleDriver";
+           }
+   
+           return "Invalid result value";
+       }
+   }
+   
+   #include <llri/detail/instance.inl>
+   #include <llri/detail/adapter.inl>
+   #include <llri/detail/device.inl>

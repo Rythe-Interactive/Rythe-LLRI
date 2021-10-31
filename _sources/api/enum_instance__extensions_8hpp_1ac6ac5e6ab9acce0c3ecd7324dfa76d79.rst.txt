@@ -1,0 +1,13 @@
+.. _exhale_enum_instance__extensions_8hpp_1ac6ac5e6ab9acce0c3ecd7324dfa76d79:
+
+Enum instance_extension_type
+============================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: llri::instance_extension_type

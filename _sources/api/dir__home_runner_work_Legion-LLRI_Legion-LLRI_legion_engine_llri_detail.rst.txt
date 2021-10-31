@@ -1,0 +1,28 @@
+.. _dir__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail:
+
+
+Directory detail
+================
+
+
+|exhale_lsh| :ref:`Parent directory <dir__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail``
+
+
+Files
+-----
+
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.inl`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter_extensions.hpp`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_device.hpp`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_device.inl`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.inl`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance_extensions.hpp`
+- :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_llri.inl`
+
+

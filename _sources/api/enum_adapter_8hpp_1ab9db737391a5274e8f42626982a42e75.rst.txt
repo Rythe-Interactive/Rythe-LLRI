@@ -1,0 +1,13 @@
+.. _exhale_enum_adapter_8hpp_1ab9db737391a5274e8f42626982a42e75:
+
+Enum adapter_type
+=================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_adapter.hpp`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: llri::adapter_type

@@ -1,0 +1,20 @@
+
+.. _program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_device.inl:
+
+Program Listing for File device.inl
+===================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_device.inl>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/device.inl``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   #include <llri/llri.hpp> //Recursive include technically not necessary but helps with intellisense
+   
+   namespace LLRI_NAMESPACE
+   {
+   
+   }

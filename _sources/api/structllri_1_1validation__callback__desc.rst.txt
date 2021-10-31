@@ -1,0 +1,16 @@
+.. _exhale_struct_structllri_1_1validation__callback__desc:
+
+Struct validation_callback_desc
+===============================
+
+- Defined in :ref:`file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_instance.hpp`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: llri::validation_callback_desc
+   :members:
+   :protected-members:
+   :undoc-members:

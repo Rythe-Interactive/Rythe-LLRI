@@ -1,0 +1,45 @@
+
+.. _program_listing_file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_device.hpp:
+
+Program Listing for File device.hpp
+===================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file__home_runner_work_Legion-LLRI_Legion-LLRI_legion_engine_llri_detail_device.hpp>` (``/home/runner/work/Legion-LLRI/Legion-LLRI/legion/engine/llri/detail/device.hpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #pragma once
+   //detail includes should be kept to a minimum but
+   //are allowed as long as dependencies are upwards (e.g. device may include adapter but not vice versa)
+   #include <llri/detail/adapter.hpp>
+   
+   namespace LLRI_NAMESPACE
+   {
+       struct device_desc
+       {
+           Adapter* adapter;
+           adapter_features features;
+           uint32_t numExtensions;
+           adapter_extension* extensions;
+       };
+   
+       class Device
+       {
+           friend Instance;
+       public:
+   
+       private:
+           //Force private constructor/deconstructor so that only create/destroy can manage lifetime
+           Device() = default;
+           ~Device() = default;
+   
+           void* m_ptr = nullptr;
+           void* m_functionTable = nullptr;
+   
+           validation_callback_desc m_validationCallback;
+           void* m_validationCallbackMessenger = nullptr;
+       };
+   }
