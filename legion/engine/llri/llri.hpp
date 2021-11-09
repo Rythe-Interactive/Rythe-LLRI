@@ -209,6 +209,7 @@ namespace llri
 
 // ReSharper disable CppUnusedIncludeDirective
 
+#include <llri/detail/validation.hpp>
 #include <llri/detail/flags.hpp>
 #include <llri/detail/callback.hpp>
 
