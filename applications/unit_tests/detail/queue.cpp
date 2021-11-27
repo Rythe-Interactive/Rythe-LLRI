@@ -45,7 +45,7 @@ TEST_CASE("Queue")
             for (auto& wrapper : queues)
             {
                 auto* queue = wrapper.queue;
-                auto* group = helpers::defaultCommandGroup(device, wrapper.type, 10);
+                auto* group = helpers::defaultCommandGroup(device, wrapper.type);
 
                 // premade cmd lists: ready for submit, empty, and recording
                 auto* readyCmdList = helpers::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);

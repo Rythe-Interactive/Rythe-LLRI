@@ -102,17 +102,12 @@ TEST_CASE("Device::createResource()")
                                                 {
                                                     desc.format = f;
 
-                                                    for (uint8_t tiling = 0; tiling <= static_cast<uint8_t>(llri::tiling::MaxEnum); tiling++)
-                                                    {
-                                                        desc.tiling = static_cast<llri::tiling>(tiling);
-
-                                                        llri::Resource* resource = nullptr;
-                                                        llri::result result = device->createResource(desc, &resource);
-                                                        auto str = to_string(result);
-                                                        INFO("result = ", to_string(result).c_str());
-                                                        CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory || result == llri::result::ErrorInvalidNodeMask);
-                                                        device->destroyResource(resource);
-                                                    }
+                                                    llri::Resource* resource = nullptr;
+                                                    llri::result result = device->createResource(desc, &resource);
+                                                    auto str = to_string(result);
+                                                    INFO("result = ", to_string(result).c_str());
+                                                    CHECK_UNARY(result == llri::result::Success || result == llri::result::ErrorInvalidUsage || result == llri::result::ErrorOutOfDeviceMemory || result == llri::result::ErrorInvalidNodeMask);
+                                                    device->destroyResource(resource);
                                                 }
                                             }
                                         }

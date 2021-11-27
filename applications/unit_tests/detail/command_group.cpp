@@ -13,7 +13,7 @@ TEST_CASE("CommandGroup")
     auto* instance = helpers::defaultInstance();
     auto* adapter = helpers::selectAdapter(instance);
     auto* device = helpers::defaultDevice(instance, adapter);
-    auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 10);
+    auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
 
     const auto nodeCount = adapter->queryNodeCount();
     for (uint8_t i = 0; i < nodeCount; i++)
@@ -68,20 +68,6 @@ TEST_CASE("CommandGroup")
                     CHECK_EQ(group->allocate(desc, &cmdList), llri::result::ErrorInvalidUsage);
                 }
 
-                SUBCASE("[Incorrect usage] More CommandLists than available")
-                {
-                    auto* smallGroup = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 1);
-
-                    llri::CommandList* cmdList;
-                    llri::command_list_alloc_desc desc { nodeMask, llri::command_list_usage::Direct };
-                    REQUIRE_EQ(smallGroup->allocate(desc, &cmdList), llri::result::Success);
-
-                    llri::CommandList* cmdList2;
-                    CHECK_EQ(smallGroup->allocate(desc, &cmdList2), llri::result::ErrorExceededLimit);
-
-                    device->destroyCommandGroup(smallGroup);
-                }
-
                 SUBCASE("[Incorrect usage] Nodemask for non-existing node")
                 {
                     uint32_t incorrectNodeMask = 1 << nodeCount;
@@ -120,17 +106,6 @@ TEST_CASE("CommandGroup")
                     llri::command_list_alloc_desc desc { nodeMask, static_cast<llri::command_list_usage>(UINT_MAX) };
                     CHECK_EQ(group->allocate(desc, 2, &cmdLists), llri::result::ErrorInvalidUsage);
                 }
-
-                SUBCASE("[Incorrect usage] More CommandLists than available")
-                {
-                    auto* smallGroup = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 5);
-
-                    std::vector<llri::CommandList*> cmdLists;
-                    llri::command_list_alloc_desc desc { nodeMask, llri::command_list_usage::Direct };
-                    REQUIRE_EQ(smallGroup->allocate(desc, 6, &cmdLists), llri::result::ErrorExceededLimit);
-
-                    device->destroyCommandGroup(smallGroup);
-                }
             }
 
             SUBCASE("CommandGroup::free() (single)")
@@ -163,7 +138,7 @@ TEST_CASE("CommandGroup")
 
                 SUBCASE("[Incorrect usage] CommandList wasn't created through group")
                 {
-                    llri::CommandGroup* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 1);
+                    llri::CommandGroup* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
                     llri::CommandList* cmdList;
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdList), llri::result::Success);
 
@@ -198,7 +173,7 @@ TEST_CASE("CommandGroup")
                 {
                     std::array<llri::CommandList*, 2> cmdLists;
 
-                    auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 1);
+                    auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
 
                     REQUIRE_EQ(group->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdLists[0]), llri::result::Success);
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdLists[1]), llri::result::Success);
@@ -212,7 +187,7 @@ TEST_CASE("CommandGroup")
                 {
                     std::vector<llri::CommandList*> cmdLists;
 
-                    auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 2);
+                    auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, 2, &cmdLists), llri::result::Success);
 
                     CHECK_EQ(group->free(cmdLists.size(), cmdLists.data()), llri::result::ErrorInvalidUsage);

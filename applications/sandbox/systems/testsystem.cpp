@@ -180,7 +180,7 @@ void TestSystem::createDevice()
 
 void TestSystem::createCommandLists()
 {
-    const llri::command_group_desc groupDesc { llri::queue_type::Graphics, 1 };
+    const llri::command_group_desc groupDesc { llri::queue_type::Graphics };
     THROW_IF_FAILED(m_device->createCommandGroup(groupDesc, &m_commandGroup));
 
     const llri::command_list_alloc_desc listDesc { 0, llri::command_list_usage::Direct };
@@ -212,7 +212,6 @@ void TestSystem::createResources()
     textureDesc.mipLevels = 1;
     textureDesc.sampleCount = llri::sample_count::Count1;
     textureDesc.format = llri::format::RGBA8sRGB;
-    textureDesc.tiling = llri::tiling::Optimal;
 
     THROW_IF_FAILED(m_device->createResource(textureDesc, &m_texture));
 }

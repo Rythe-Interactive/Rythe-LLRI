@@ -139,7 +139,7 @@ namespace llri
 
             VkFormatProperties formatProps;
             vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &formatProps);
-            
+
             // get supported
             const bool supported = formatProps.optimalTilingFeatures != 0;
 
@@ -198,8 +198,7 @@ namespace llri
                 supported,
                 types,
                 usageFlags,
-                sampleCounts,
-                formatProps.linearTilingFeatures != 0,
+                sampleCounts
             } });
         }
 

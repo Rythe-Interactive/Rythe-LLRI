@@ -11,189 +11,66 @@ namespace llri
 {
     inline result CommandGroup::reset()
     {
-#ifndef LLRI_DISABLE_VALIDATION
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
         for (auto* cmdList : m_cmdLists)
         {
-            if (cmdList->queryState() == command_list_state::Recording)
-            {
-                detail::apiError("CommandGroup::reset()", result::ErrorInvalidState, "CommandList " + std::to_string((uint64_t)cmdList) + " was in the command_list_state::Recording state.");
-                return result::ErrorInvalidState;
-            }
+            LLRI_DETAIL_VALIDATION_REQUIRE(cmdList->queryState() != command_list_state::Recording, result::ErrorInvalidState)
         }
 #endif
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_reset();
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_reset();
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_reset(), m_validationCallbackMessenger)
     }
 
     inline result CommandGroup::allocate(const command_list_alloc_desc& desc, CommandList** cmdList)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (cmdList == nullptr)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorInvalidUsage, "the passed cmdList parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
-#endif
+        LLRI_DETAIL_VALIDATION_REQUIRE(cmdList != nullptr, result::ErrorInvalidUsage)
 
         *cmdList = nullptr;
 
-#ifndef LLRI_DISABLE_VALIDATION
-        if (desc.usage > command_list_usage::MaxEnum)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorInvalidUsage, "desc.usage is not a valid enum value.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.usage <= command_list_usage::MaxEnum, result::ErrorInvalidUsage)
 
-        if (m_cmdLists.size() + 1 > m_maxCount)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorExceededLimit, "allocating 1 CommandList from the group would exceed the CommandGroup's maximum number of allocated CommandLists.");
-            return result::ErrorExceededLimit;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(detail::hasSingleBit(desc.nodeMask), result::ErrorInvalidNodeMask)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.nodeMask < (1 << m_device->m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
 
-        // determines if the node mask is not a power of two -> if it isn't then multiple bits are set
-        if ((desc.nodeMask & (desc.nodeMask - 1)) != 0)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorInvalidNodeMask, "the node mask " + std::to_string(desc.nodeMask) + "has multiple bits set which is not valid for CommandList allocation.");
-            return result::ErrorInvalidNodeMask;
-        }
-
-        if (desc.nodeMask >= (1 << m_device->m_adapter->queryNodeCount()))
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorInvalidNodeMask, "the node mask " + std::to_string(desc.nodeMask) + " has a bit set that is more than or at Adapter::queryNodeCount().");
-            return result::ErrorInvalidNodeMask;
-        }
-#endif
-
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_allocate(desc, cmdList);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_allocate(desc, cmdList);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_allocate(desc, cmdList), m_validationCallbackMessenger)
     }
 
     inline result CommandGroup::allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (cmdLists == nullptr)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorInvalidUsage, "the passed cmdLists parameter was nullptr");
-            return result::ErrorInvalidUsage;
-        }
-#endif
+        LLRI_DETAIL_VALIDATION_REQUIRE(cmdLists != nullptr, result::ErrorInvalidUsage)
 
         cmdLists->clear();
 
-#ifndef LLRI_DISABLE_VALIDATION
-        if (desc.usage > command_list_usage::MaxEnum)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorInvalidUsage, "desc.usage is not a valid enum value");
-            return result::ErrorInvalidUsage;
-        }
-        
-        if (count == 0)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorInvalidUsage, "count was 0");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.usage <= command_list_usage::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(count > 0, result::ErrorInvalidUsage)
 
-        if (m_cmdLists.size() + count > m_maxCount)
-        {
-            detail::apiError("CommandGroup::allocate()", result::ErrorExceededLimit, "the CommandGroup currently has " + std::to_string(m_cmdLists.size()) + " CommandLists allocated, and allocating " + std::to_string(count) + " more CommandLists from the group would exceed the CommandGroup's maximum number of allocated CommandLists (" + std::to_string(m_maxCount) + ").");
-            return result::ErrorExceededLimit;
-        }
-#endif
-
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_allocate(desc, count, cmdLists);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_allocate(desc, count, cmdLists);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_allocate(desc, count, cmdLists), m_validationCallbackMessenger)
     }
 
     inline result CommandGroup::free(CommandList* cmdList)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (cmdList == nullptr)
-        {
-            detail::apiError("CommandGroup::free()", result::ErrorInvalidUsage, "the passed cmdList parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(cmdList != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(detail::contains(m_cmdLists, cmdList), result::ErrorInvalidUsage)
 
-        if (std::find(m_cmdLists.begin(), m_cmdLists.end(), cmdList) == m_cmdLists.end())
-        {
-            detail::apiError("CommandGroup::free()", result::ErrorInvalidUsage, "the passed CommandList wasn't allocated through the passed CommandGroup.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(cmdList->queryState() != command_list_state::Recording, result::ErrorInvalidState)
 
-        if (cmdList->m_state == command_list_state::Recording)
-        {
-            detail::apiError("CommandGroup::free()", result::ErrorInvalidState, "the passed CommandList is in a recording state.");
-            return result::ErrorInvalidState;
-        }
-#endif
-
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_free(cmdList);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_free(cmdList);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_free(cmdList), m_validationCallbackMessenger)
     }
 
     inline result CommandGroup::free(uint8_t numCommandLists, CommandList** cmdLists)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (numCommandLists == 0)
-        {
-            detail::apiError("CommandGroup::free()", result::ErrorInvalidUsage, "numCommandLists was 0");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(cmdLists != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(numCommandLists > 0, result::ErrorInvalidUsage)
 
-        if (cmdLists == nullptr)
-        {
-            detail::apiError("CommandGroup::free()", result::ErrorInvalidUsage, "the passed cmdLists parameter was nullptr");
-            return result::ErrorInvalidUsage;
-        }
-
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
         for (size_t i = 0; i < numCommandLists; i++)
         {
-            if (cmdLists[i] == nullptr)
-            {
-                detail::apiError("CommandGroup::free()", result::ErrorInvalidUsage, "cmdLists member " + std::to_string(i) + " was nullptr");
-                return result::ErrorInvalidUsage;
-            }
-
-            if (std::find(m_cmdLists.begin(), m_cmdLists.end(), cmdLists[i]) == m_cmdLists.end())
-            {
-                detail::apiError("CommandGroup::free()", result::ErrorInvalidUsage, "cmdLists member " + std::to_string(i) + " wasn't allocated through the CommandGroup");
-                return result::ErrorInvalidUsage;
-            }
-
-            if (cmdLists[i]->m_state == command_list_state::Recording)
-            {
-                detail::apiError("CommandGroup::free()", result::ErrorInvalidState, "one of the CommandLists is in a recording state.");
-                return result::ErrorInvalidState;
-            }
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(cmdLists[i] != nullptr, i, result::ErrorInvalidUsage)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(detail::contains(m_cmdLists, cmdLists[i]), i, result::ErrorInvalidUsage)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(cmdLists[i]->queryState() != command_list_state::Recording, i, result::ErrorInvalidState)
         }
 #endif
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_free(numCommandLists, cmdLists);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_free(numCommandLists, cmdLists);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_free(numCommandLists, cmdLists), m_validationCallbackMessenger)
     }
 }

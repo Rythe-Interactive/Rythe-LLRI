@@ -39,113 +39,45 @@ namespace llri
     inline result Queue::submit(const submit_desc& desc)
     {
 #ifndef LLRI_DISABLE_VALIDATION
-        if ((desc.nodeMask & (desc.nodeMask - 1)) != 0)
-        {
-            detail::apiError("Queue::submit()", result::ErrorInvalidNodeMask, "desc.nodeMask " + std::to_string(desc.nodeMask) + "has multiple bits set which is not valid for submitting CommandLists.");
-            return result::ErrorInvalidNodeMask;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(detail::hasSingleBit(desc.nodeMask), result::ErrorInvalidNodeMask)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.nodeMask < (1 << m_device->m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
 
-        if (desc.nodeMask >= (1 << m_device->m_adapter->queryNodeCount()))
-        {
-            detail::apiError("Queue::submit()", result::ErrorInvalidNodeMask, "desc.nodeMask " + std::to_string(desc.nodeMask) + " has a bit set that is more than or at Adapter::queryNodeCount().");
-            return result::ErrorInvalidNodeMask;
-        }
-
-        if (desc.numCommandLists == 0)
-        {
-            detail::apiError("Queue::submit()", result::ErrorInvalidUsage, "desc.numCommandLists is 0.");
-            return result::ErrorInvalidUsage;
-        }
-
-        if (desc.commandLists == nullptr)
-        {
-            detail::apiError("Queue::submit()", result::ErrorInvalidUsage, "desc.commandLists is nullptr.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.numCommandLists != 0, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.commandLists != nullptr, result::ErrorInvalidUsage)
 
         for (size_t i = 0; i < desc.numCommandLists; i++)
         {
-            if (desc.commandLists[i] == nullptr)
-            {
-                detail::apiError("Queue::submit()", result::ErrorInvalidUsage, "desc.commandLists[" + std::to_string(i) + "] is nullptr.");
-                return result::ErrorInvalidUsage;
-            }
-
-            if (desc.commandLists[i]->m_state != llri::command_list_state::Ready)
-            {
-                detail::apiError("Queue::submit()", result::ErrorInvalidState, "desc.commandLists[" + std::to_string(i) + "] is in the " + llri::to_string(desc.commandLists[i]->m_state) + " state");
-                return result::ErrorInvalidState;
-            }
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.commandLists[i] != nullptr, i, result::ErrorInvalidUsage)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.commandLists[i]->queryState() == llri::command_list_state::Ready, i, result::ErrorInvalidState)
 
             const uint32_t descNodeMask = desc.nodeMask == 0 ? 1 : desc.nodeMask;
             const uint32_t cmdListNodeMask = desc.commandLists[i]->m_nodeMask == 0 ? 1 : desc.commandLists[i]->m_nodeMask;
-            if (descNodeMask != cmdListNodeMask)
-            {
-                detail::apiError("Queue::submit()", result::ErrorIncompatibleNodeMask, "desc.commandLists[" + std::to_string(i) + "]'s nodeMask (" + std::to_string(cmdListNodeMask) + ") is not the same as desc.nodeMask " + std::to_string(descNodeMask));
-                return result::ErrorIncompatibleNodeMask;
-            }
+
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(descNodeMask == cmdListNodeMask, i, result::ErrorIncompatibleNodeMask)
         }
 
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.numWaitSemaphores > 0, desc.waitSemaphores != nullptr, result::ErrorInvalidUsage)
         if (desc.numWaitSemaphores > 0)
         {
-            if (desc.waitSemaphores == nullptr)
-            {
-                detail::apiError("Queue::submit()", result::ErrorInvalidUsage, "desc.numWaitSemaphores is more than 0, but desc.waitSemaphores is nullptr.");
-                return result::ErrorInvalidUsage;
-            }
-
             for (size_t i = 0; i < desc.numWaitSemaphores; i++)
-            {
-                if (desc.waitSemaphores[i] == nullptr)
-                {
-                    detail::apiError("Queue::submit()", result::ErrorInvalidUsage, "desc.numWaitSemaphores is more than 0, but desc.waitSemaphores[" + std::to_string(i) + "] is nullptr.");
-                    return result::ErrorInvalidUsage;
-                }
-            }
+                LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.waitSemaphores[i] != nullptr, i, result::ErrorInvalidUsage)
         }
 
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.numSignalSemaphores > 0, desc.signalSemaphores != nullptr, result::ErrorInvalidUsage)
         if (desc.numSignalSemaphores > 0)
         {
-            if (desc.signalSemaphores == nullptr)
-            {
-                detail::apiError("Queue::submit()", result::ErrorInvalidUsage, "desc.numSignalSemaphores is more than 0, but desc.signalSemaphores is nullptr.");
-                return result::ErrorInvalidUsage;
-            }
-
             for (size_t i = 0; i < desc.numSignalSemaphores; i++)
-            {
-                if (desc.signalSemaphores[i] == nullptr)
-                {
-                    detail::apiError("Queue::submit()", result::ErrorInvalidUsage, "desc.numSignalSemaphores is more than 0, but desc.signalSemaphores[" + std::to_string(i) + "] is nullptr.");
-                    return result::ErrorInvalidUsage;
-                }
-            }
+                LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.signalSemaphores[i] != nullptr, i, result::ErrorInvalidUsage)
         }
 
-        if (desc.fence && desc.fence->m_signaled)
-        {
-            detail::apiError("Queue::submit()", result::ErrorAlreadySignaled, "desc.fence was already signaled and must be waited on first.");
-            return result::ErrorAlreadySignaled;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.fence != nullptr, desc.fence->m_signaled == false, result::ErrorAlreadySignaled)
 #endif
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_submit(desc);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_submit(desc);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_submit(desc), m_validationCallbackMessenger)
     }
 
     inline result Queue::waitIdle()
     {
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_waitIdle();
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_waitIdle();
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_waitIdle(), m_validationCallbackMessenger)
     }
 }

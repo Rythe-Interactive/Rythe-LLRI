@@ -64,10 +64,10 @@ namespace helpers
         return llri::queue_type::MaxEnum;
     }
 
-    inline llri::CommandGroup* defaultCommandGroup(llri::Device* device, llri::queue_type type, uint8_t count)
+    inline llri::CommandGroup* defaultCommandGroup(llri::Device* device, llri::queue_type type)
     {
         llri::CommandGroup* cmdGroup;
-        const llri::command_group_desc desc { type, count };
+        const llri::command_group_desc desc { type };
         REQUIRE_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
         return cmdGroup;
     }

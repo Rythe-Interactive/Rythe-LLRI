@@ -28,107 +28,39 @@ namespace llri
 
     inline result Adapter::queryInfo(adapter_info* info) const
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (info == nullptr)
-        {
-            detail::apiError("Adapter::queryInfo()", result::ErrorInvalidUsage, "the passed info parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(info != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_ptr != nullptr, result::ErrorDeviceLost)
 
-        if (m_ptr == nullptr)
-        {
-            detail::apiError("Adapter::queryInfo()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
-            return result::ErrorDeviceLost;
-        }
-#endif
-
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_queryInfo(info);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_queryInfo(info);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_queryInfo(info), m_validationCallbackMessenger)
     }
 
     inline result Adapter::queryFeatures(adapter_features* features) const
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (features == nullptr)
-        {
-            detail::apiError("Adapter::queryFeatures()", result::ErrorInvalidUsage, "the passed features parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(features != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_ptr != nullptr, result::ErrorDeviceLost)
 
-        if (m_ptr == nullptr)
-        {
-            detail::apiError("Adapter::queryFeatures()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
-            return result::ErrorDeviceLost;
-        }
-#endif
-
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_queryFeatures(features);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_queryFeatures(features);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_queryFeatures(features), m_validationCallbackMessenger)
     }
 
     inline adapter_limits Adapter::queryLimits() const
     {
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto output = impl_queryLimits();
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return output;
-#else
-        return impl_queryLimits();
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_queryLimits(), m_validationCallbackMessenger)
     }
 
     inline bool Adapter::queryExtensionSupport(adapter_extension ext) const
     {
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_queryExtensionSupport(ext);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_queryExtensionSupport(ext);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_queryExtensionSupport(ext), m_validationCallbackMessenger)
     }
 
     inline result Adapter::queryQueueCount(queue_type type, uint8_t* count) const
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (count == nullptr)
-        {
-            detail::apiError("Adapter::queryQueueCount()", result::ErrorInvalidUsage, "the passed count parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
-
-        if (type > queue_type::MaxEnum)
-        {
-            detail::apiError("Adapter::queryQueueCount()", result::ErrorInvalidUsage, "the passed type parameter was not a valid queue_type value");
-            return result::ErrorInvalidUsage;
-        }
-
-        if (m_ptr == nullptr)
-        {
-            detail::apiError("Adapter::queryQueueCount()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
-            return result::ErrorDeviceLost;
-        }
-#endif
+        LLRI_DETAIL_VALIDATION_REQUIRE(count != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_ptr != nullptr, result::ErrorDeviceLost)
 
         *count = 0;
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_queryQueueCount(type, count);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_queryQueueCount(type, count);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_queryQueueCount(type, count), m_validationCallbackMessenger)
     }
 
     inline const std::unordered_map<format, format_properties>& Adapter::queryFormatProperties() const
@@ -136,10 +68,7 @@ namespace llri
         if (m_cachedFormatProperties.empty())
         {
             m_cachedFormatProperties = impl_queryFormatProperties();
-
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-            detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-#endif
+            LLRI_DETAIL_POLL_API_MESSAGES(m_validationCallbackMessenger)
         }
 
         return m_cachedFormatProperties;

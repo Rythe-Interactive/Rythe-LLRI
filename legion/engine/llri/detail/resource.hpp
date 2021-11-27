@@ -231,25 +231,6 @@ namespace llri
     std::string to_string(sample_count count);
 
     /**
-     * @brief Specify how a texture's data is stored.
-    */
-    enum struct tiling : uint8_t
-    {
-        /**
-         * @brief Optimal tiling allows implementation-dependent arrangement, which results in the most efficient memory access.
-        */
-        Optimal,
-        /**
-         * @brief Texels are laid out linearly, in a row-major order.
-        */
-        Linear,
-        /**
-         * @brief The highest value in this enum.
-        */
-        MaxEnum = Linear
-    };
-
-    /**
      * @brief Flag bits that describe how the resource will be allowed to be used. Each bit describes an enabled (or explicitly disabled) usage.
     */
     enum struct resource_usage_flag_bits : uint16_t
@@ -377,7 +358,6 @@ namespace llri
          * @note if usage has the DenyShaderResource bit set then it **must** also have the DepthStencilAttachment bit set.
          * @note if usage has the DenyShaderResource bit set then the only other compatible bits are TransferSrc, TransferDst, and DepthStencilAttachment.
          * @note if type is Buffer then usage **can only** have the following bits set: TransferSrc, TransferDst, ShaderWrite.
-         * @note if tiling is set to Linear then usage **can only** have the following bits set: TransferSrc, TransferDst.
          * @note if type is not Buffer then all enabled usage flags **must** be supported for the set format. Format resource_usage support can be checked through Adapter::queryFormatProperties(format).
         */
         resource_usage_flags usage;
@@ -421,6 +401,7 @@ namespace llri
          * @note height **must not** be 0.
          * @note height **must not** be more than 16384.
          * @note if type is resource_type::Texture1D then height **must** be 1.
+         * @note if type is resource_type::Texture3D then height **must not** be more than 2048.
         */
         uint32_t height;
         /**
@@ -450,7 +431,6 @@ namespace llri
          * @note if mipLevels is more than 1 then sampleCount **must** be Count1.
          * @note if sampleCount is more than Count1 then usage **must** have ColorAttachment and/or DepthStencilAttachment set.
          * @note if usage has the ShaderWrite bit set then sampleCount **must** be Count1.
-         * @note if tiling is set to Linear then sampleCount **must** be set to Count1.
         */
         sample_count sampleCount;
         /**
@@ -463,16 +443,6 @@ namespace llri
          * @note format **must** support type. Query support for resource types per format using Adapter::queryFormatProperties().
         */
         format format;
-        /**
-         * @brief Describes how the texture's texels are stored.
-         *
-         * @note Ignored if type is resource_type::Buffer.
-         * @note tiling **must** be a valid tiling enum value.
-         * @note if type is not Texture2D then tiling **must** be set to Optimal.
-         * @note if depthOrArrayLayers is not 1 then tiling **must** be set to Optimal.
-         * @note if tiling is set to Linear then format **must** support format_properties::linearTiling. Query support through Adapter::queryFormatProperties().
-        */
-        tiling tiling;
 
         /**
          * @brief Convenience function for creating a buffer resource_desc.

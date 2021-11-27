@@ -33,7 +33,6 @@ int main()
     // CommandLists can only be allocated through a CommandGroup.
     // CommandGroups are responsible for managing the device memory allocated for each CommandList.
     llri::command_group_desc groupDesc{};
-    groupDesc.count = 1; // CommandGroups must know how many CommandLists they can allocate to reserve the appropriate device memory.
     groupDesc.type = llri::queue_type::Graphics; // There **must** be an Adapter queue of this type available for this to be valid.
 
     llri::CommandGroup* group;

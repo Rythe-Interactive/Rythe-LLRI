@@ -206,19 +206,6 @@ namespace llri
             throw;
         }
 
-        constexpr VkImageTiling mapTextureTiling(tiling tiling)
-        {
-            switch (tiling)
-            {
-                case tiling::Optimal:
-                    return VK_IMAGE_TILING_OPTIMAL;
-                case tiling::Linear:
-                    return VK_IMAGE_TILING_LINEAR;
-            }
-
-            throw;
-        }
-
         constexpr VkImageUsageFlags mapTextureUsage(resource_usage_flags usage)
         {
             VkImageUsageFlags output = 0;

@@ -34,11 +34,13 @@ namespace llri
 
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions == 0 || (desc.numExtensions > 0 && desc.extensions != nullptr), result::ErrorInvalidUsage)
 
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
         for (size_t i = 0; i < desc.numExtensions; i++)
         {
-            LLRI_DETAIL_VALIDATION_REQUIRE_IT(desc.extensions[i] <= instance_extension::MaxEnum, i, result::ErrorExtensionNotSupported)
-            LLRI_DETAIL_VALIDATION_REQUIRE_IT(queryInstanceExtensionSupport(desc.extensions[i]), i, result::ErrorExtensionNotSupported)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.extensions[i] <= instance_extension::MaxEnum, i, result::ErrorExtensionNotSupported)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(queryInstanceExtensionSupport(desc.extensions[i]), i, result::ErrorExtensionNotSupported)
         }
+#endif
 
         LLRI_DETAIL_CALL_IMPL(detail::impl_createInstance(desc, instance, true), (*instance)->m_validationCallbackMessenger)
     }
@@ -47,7 +49,7 @@ namespace llri
     {
         if (!instance)
             return;
-        
+
         detail::impl_destroyInstance(instance);
         // Can't do any polling after the instance is destroyed
     }
@@ -71,13 +73,14 @@ namespace llri
 
         *device = nullptr;
 
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.adapter != nullptr, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions == 0 || (desc.numExtensions > 0 && desc.extensions != nullptr), result::ErrorInvalidUsage)
 
         for (size_t i = 0; i < desc.numExtensions; i++)
         {
-            LLRI_DETAIL_VALIDATION_REQUIRE_IT(desc.extensions[i] <= adapter_extension::MaxEnum, i, result::ErrorInvalidUsage)
-            LLRI_DETAIL_VALIDATION_REQUIRE_IT(desc.adapter->queryExtensionSupport(desc.extensions[i]), i, result::ErrorInvalidUsage)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.extensions[i] <= adapter_extension::MaxEnum, i, result::ErrorExtensionNotSupported)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.adapter->queryExtensionSupport(desc.extensions[i]), i, result::ErrorExtensionNotSupported)
         }
 
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.adapter->m_ptr != nullptr, result::ErrorDeviceLost)
@@ -106,14 +109,15 @@ namespace llri
         {
             auto& queue = desc.queues[i];
 
-            LLRI_DETAIL_VALIDATION_REQUIRE_IT(desc.queues[i].type <= queue_type::MaxEnum, i, result::ErrorInvalidUsage)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.queues[i].type <= queue_type::MaxEnum, i, result::ErrorInvalidUsage)
 
             queueCounts[queue.type]++; // count the number of queues of this given type to notexceed the max
             LLRI_DETAIL_VALIDATION_REQUIRE_MESSAGE(queueCounts[queue.type] <= maxQueueCounts[queue.type], "queue_desc " + std::to_string(i) + " is the " + std::to_string(queueCounts[queue.type]) + "th " +
                     to_string(queue.type) + " queue, even though the maximum number of queues of this type is " + std::to_string(maxQueueCounts[queue.type]) + ".", result::ErrorInvalidUsage)
 
-            LLRI_DETAIL_VALIDATION_REQUIRE_IT(queue.priority <= queue_priority::MaxEnum, i, result::ErrorInvalidUsage)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(queue.priority <= queue_priority::MaxEnum, i, result::ErrorInvalidUsage)
         }
+#endif
 
         LLRI_DETAIL_CALL_IMPL(impl_createDevice(desc, device), (*device)->m_validationCallbackMessenger)
     }
@@ -125,9 +129,6 @@ namespace llri
 
         impl_destroyDevice(device);
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        // Can't use device messenger here because the device is destroyed
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-#endif
+        LLRI_DETAIL_POLL_API_MESSAGES(m_validationCallbackMessenger)
     }
 }

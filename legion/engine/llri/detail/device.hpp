@@ -84,7 +84,7 @@ namespace llri
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if type is not a valid enum value
-         * @return ErrorInvalidUsage if index is more than the number of queues created of the given type
+         * @return ErrorExceededLimit if index is more than the number of queues created of the given type
          * @return ErrorInvalidUsage if queue is nullptr.
          *
          * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
@@ -105,7 +105,6 @@ namespace llri
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if cmdGroup is nullptr.
          * @return ErrorInvalidUsage if desc.type is not a valid queue_type enum value.
-         * @return ErrorInvalidUsage if desc.count is 0.
          * @return ErrorInvalidUsage if this device's Device::queryQueueCount(desc.type) returns 0.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */

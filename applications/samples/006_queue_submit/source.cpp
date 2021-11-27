@@ -141,7 +141,6 @@ llri::Device* createDevice(llri::Instance* instance, llri::Adapter* adapter)
 llri::CommandGroup* createCommandGroup(llri::Device* device)
 {
     llri::command_group_desc groupDesc{};
-    groupDesc.count = 1;
     groupDesc.type = llri::queue_type::Graphics;
 
     llri::CommandGroup* group;
