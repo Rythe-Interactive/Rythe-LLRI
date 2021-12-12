@@ -29,68 +29,34 @@ namespace llri
 
     inline result createInstance(const instance_desc& desc, Instance** instance)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (instance == nullptr)
+        LLRI_DETAIL_VALIDATION_REQUIRE(instance != nullptr, result::ErrorInvalidUsage)
+        *instance = nullptr;
+
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions == 0 || (desc.numExtensions > 0 && desc.extensions != nullptr), result::ErrorInvalidUsage)
+
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        for (size_t i = 0; i < desc.numExtensions; i++)
         {
-            detail::apiError("createInstance()", result::ErrorInvalidUsage, "the passed instance parameter was nullptr.");
-            return result::ErrorInvalidUsage;
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.extensions[i] <= instance_extension::MaxEnum, i, result::ErrorExtensionNotSupported)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(queryInstanceExtensionSupport(desc.extensions[i]), i, result::ErrorExtensionNotSupported)
         }
 #endif
 
-        // default instance output to nullptr
-        * instance = nullptr;
-
-#ifndef LLRI_DISABLE_VALIDATION
-        if (desc.numExtensions > 0 && desc.extensions == nullptr)
-        {
-            detail::apiError("createInstance()", result::ErrorInvalidUsage, "desc.numExtensions was more than 0 but desc.extensions was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
-
-        for (size_t e = 0; e < desc.numExtensions; e++)
-        {
-            if (desc.extensions[e] > instance_extension::MaxEnum)
-            {
-                detail::apiError("createInstance()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] was set to " + std::to_string(static_cast<uint8_t>(desc.extensions[e])) + " but this is not a valid instance_extension value.");
-                return result::ErrorExtensionNotSupported;
-            }
-
-            if (!queryInstanceExtensionSupport(desc.extensions[e]))
-            {
-                detail::apiError("createInstance()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] (" + to_string(desc.extensions[e]) + ") is not supported. Query support for instance extensions using llri::queryInstanceExtensionSupport() prior to instance creation.");
-                return result::ErrorExtensionNotSupported;
-            }
-        }
-#endif
-
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = detail::impl_createInstance(desc, instance, true);
-        if (*instance)
-            detail::impl_pollAPIMessages((*instance)->m_validationCallbackMessenger);
-        return r;
-#else
-        return detail::impl_createInstance(desc, instance, false);
-#endif
+        LLRI_DETAIL_CALL_IMPL(detail::impl_createInstance(desc, instance, true), (*instance)->m_validationCallbackMessenger)
     }
 
     inline void destroyInstance(Instance* instance)
     {
         if (!instance)
             return;
-        
+
         detail::impl_destroyInstance(instance);
         // Can't do any polling after the instance is destroyed
     }
 
     inline result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (adapters == nullptr)
-        {
-            detail::apiError("Instance::enumerateAdapters()", result::ErrorInvalidUsage, "the passed adapters parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
-#endif
+        LLRI_DETAIL_VALIDATION_REQUIRE(adapters != nullptr, result::ErrorInvalidUsage)
 
         adapters->clear();
 
@@ -98,73 +64,29 @@ namespace llri
         for (auto& [ptr, adapter] : m_cachedAdapters)
             adapter->m_ptr = nullptr;
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_enumerateAdapters(adapters);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_enumerateAdapters(adapters);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_enumerateAdapters(adapters), m_validationCallbackMessenger)
     }
 
     inline result Instance::createDevice(const device_desc& desc, Device** device)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (device == nullptr)
-        {
-            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "the passed device parameter was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
-#endif
+        LLRI_DETAIL_VALIDATION_REQUIRE(device != nullptr, result::ErrorInvalidUsage)
 
-        // default device output to nullptr
         *device = nullptr;
 
-#ifndef LLRI_DISABLE_VALIDATION
-        if (desc.adapter == nullptr)
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.adapter != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions == 0 || (desc.numExtensions > 0 && desc.extensions != nullptr), result::ErrorInvalidUsage)
+
+        for (size_t i = 0; i < desc.numExtensions; i++)
         {
-            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.adapter was nullptr.");
-            return result::ErrorInvalidUsage;
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.extensions[i] <= adapter_extension::MaxEnum, i, result::ErrorExtensionNotSupported)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.adapter->queryExtensionSupport(desc.extensions[i]), i, result::ErrorExtensionNotSupported)
         }
 
-        if (desc.numExtensions > 0 && desc.extensions == nullptr)
-        {
-            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.numExtensions was more than 0 but desc.extensions was nullptr.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.adapter->m_ptr != nullptr, result::ErrorDeviceLost)
 
-        for (size_t e = 0; e < desc.numExtensions; e++)
-        {
-            if (desc.extensions[e] > adapter_extension::MaxEnum)
-            {
-                detail::apiError("Instance::createDevice()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] was set to " + std::to_string(static_cast<uint8_t>(desc.extensions[e])) + " but this is not a valid adapter_extension value.");
-                return result::ErrorExtensionNotSupported;
-            }
-
-            if (!desc.adapter->queryExtensionSupport(desc.extensions[e]))
-            {
-                detail::apiError("Instance::createDevice()", result::ErrorExtensionNotSupported, "desc.extensions[" + std::to_string(e) + "] (" + to_string(desc.extensions[e]) + ") is not supported by desc.adapter.");
-                return result::ErrorExtensionNotSupported;
-            }
-        }
-
-        if (desc.adapter->m_ptr == nullptr)
-        {
-            detail::apiError("Instance::createDevice()", result::ErrorDeviceLost, "the passed adapter has a nullptr internal handle which usually indicates a lost device.");
-            return result::ErrorDeviceLost;
-        }
-
-        if (desc.numQueues == 0)
-        {
-            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.numQueues is 0 but it must be at least 1.");
-            return result::ErrorInvalidUsage;
-        }
-
-        if (desc.queues == nullptr)
-        {
-            detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "desc.queues is nullptr but it must be a valid pointer to an array of queue_desc of size desc.numQueues.");
-            return result::ErrorInvalidUsage;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.numQueues != 0, result::ErrorInvalidUsage);
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.queues != nullptr, result::ErrorInvalidUsage);
 
         // Get max queues
         std::unordered_map<queue_type, uint8_t> maxQueueCounts {
@@ -187,39 +109,17 @@ namespace llri
         {
             auto& queue = desc.queues[i];
 
-            // Queue type must be valid
-            if (queue.type > queue_type::MaxEnum)
-            {
-                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::type " + std::to_string(static_cast<uint8_t>(queue.type)) + " is not a valid queue type.");
-                return result::ErrorInvalidUsage;
-            }
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.queues[i].type <= queue_type::MaxEnum, i, result::ErrorInvalidUsage)
 
-            // Make sure that the requested number of queues of this given type aren't more than the max number of queues of that type.
-            queueCounts[queue.type]++;
-            if (queueCounts[queue.type] > maxQueueCounts[queue.type])
-            {
-                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc " + std::to_string(i) + " is the " + std::to_string(queueCounts[queue.type]) + "th " +
-                    to_string(queue.type) + " queue, even though the maximum number of queues of this type is " + std::to_string(maxQueueCounts[queue.type]) + ".");
-                return result::ErrorInvalidUsage;
-            }
+            queueCounts[queue.type]++; // count the number of queues of this given type to notexceed the max
+            LLRI_DETAIL_VALIDATION_REQUIRE_MESSAGE(queueCounts[queue.type] <= maxQueueCounts[queue.type], "queue_desc " + std::to_string(i) + " is the " + std::to_string(queueCounts[queue.type]) + "th " +
+                    to_string(queue.type) + " queue, even though the maximum number of queues of this type is " + std::to_string(maxQueueCounts[queue.type]) + ".", result::ErrorInvalidUsage)
 
-            // Queue priority must be valid
-            if (queue.priority > queue_priority::MaxEnum)
-            {
-                detail::apiError("Instance::createDevice()", result::ErrorInvalidUsage, "queue_desc[" + std::to_string(i) + "]::priority " + std::to_string(static_cast<uint8_t>(queue.priority)) + " is not a valid priority value");
-                return result::ErrorInvalidUsage;
-            }
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(queue.priority <= queue_priority::MaxEnum, i, result::ErrorInvalidUsage)
         }
 #endif
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_createDevice(desc, device);
-        if (*device)
-            detail::impl_pollAPIMessages((*device)->m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_createDevice(desc, device);
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_createDevice(desc, device), (*device)->m_validationCallbackMessenger)
     }
 
     inline void Instance::destroyDevice(Device* device)
@@ -229,9 +129,6 @@ namespace llri
 
         impl_destroyDevice(device);
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        // Can't use device messenger here because the device is destroyed
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-#endif
+        LLRI_DETAIL_POLL_API_MESSAGES(m_validationCallbackMessenger)
     }
 }

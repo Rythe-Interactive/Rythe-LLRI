@@ -15,7 +15,6 @@ namespace llri
         output->m_device = this;
         output->m_deviceFunctionTable = m_functionTable;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
-        output->m_maxCount = desc.count;
         output->m_type = desc.type;
 
         auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
@@ -109,6 +108,9 @@ namespace llri
         {
             static_cast<VolkDeviceTable*>(m_functionTable)->
                 vkResetFences(static_cast<VkDevice>(m_ptr), numFences, vkFences.data());
+
+            for (size_t i = 0; i < numFences; i++)
+                fences[i]->m_signaled = false;
         }
 
         return internal::mapVkResult(r);
@@ -184,7 +186,7 @@ namespace llri
             imageCreate.mipLevels = desc.mipLevels;
             imageCreate.arrayLayers = arrayLayers;
             imageCreate.samples = (VkSampleCountFlagBits)desc.sampleCount;
-            imageCreate.tiling = internal::mapTextureTiling(desc.tiling);
+            imageCreate.tiling = VK_IMAGE_TILING_OPTIMAL;
             imageCreate.usage = internal::mapTextureUsage(desc.usage);
             imageCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
             imageCreate.queueFamilyIndexCount = familyIndices.size();

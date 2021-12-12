@@ -23,10 +23,6 @@ namespace llri
          * @brief The type of queue that this CommandGroup allocates for. A CommandList allocated through CommandGroup must only submit to queues of this type.
         */
         queue_type type;
-        /**
-         * @brief The maximum number of CommandLists in the group. Must be more than 0.
-        */
-        uint8_t count;
     };
 
     /**
@@ -65,7 +61,6 @@ namespace llri
          * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set which was not represented by a node in the Device. The node mask **must** always have its positive bit set at a position less than Adapter::queryNodeCount().
          * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set.
          * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
-         * @return ErrorExceededLimit if the CommandGroup doesn't have enough CommandLists to allocate another.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result allocate(const command_list_alloc_desc& desc, CommandList** cmdList);
@@ -85,7 +80,6 @@ namespace llri
          * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set to 1.
          * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
          * @return ErrorInvalidUsage if count was 0.
-         * @return ErrorExceededLimit if the CommandGroup doesn't have enough CommandLists to allocate count CommandLists.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists);
@@ -129,7 +123,6 @@ namespace llri
         void* m_validationCallbackMessenger = nullptr;
 
         queue_type m_type;
-        uint8_t m_maxCount;
         std::unordered_set<CommandList*> m_cmdLists;
 
 #ifndef LLRI_DISABLE_VALIDATION

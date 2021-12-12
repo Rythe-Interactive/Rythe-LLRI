@@ -241,19 +241,6 @@ namespace llri
             throw;
         }
 
-        constexpr D3D12_TEXTURE_LAYOUT mapTextureTiling(tiling tiling)
-        {
-            switch (tiling)
-            {
-                case tiling::Optimal:
-                    return D3D12_TEXTURE_LAYOUT_UNKNOWN;
-                case tiling::Linear:
-                    return D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-            }
-
-            throw;
-        }
-
         constexpr D3D12_RESOURCE_FLAGS mapResourceUsage(resource_usage_flags flags)
         {
             D3D12_RESOURCE_FLAGS output = D3D12_RESOURCE_FLAG_NONE;

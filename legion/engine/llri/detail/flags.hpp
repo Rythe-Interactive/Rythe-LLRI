@@ -41,14 +41,21 @@ namespace llri
         constexpr bool operator >(flags rhs) const noexcept { return value > rhs.value; }
         constexpr bool operator >(E rhs) const noexcept { return value > rhs; }
 
+        constexpr bool operator >=(flags rhs) const noexcept { return value >= rhs.value; }
+        constexpr bool operator >=(E rhs) const noexcept { return value >= rhs; }
+
         constexpr bool operator <(flags rhs) const noexcept { return value < rhs.value; }
         constexpr bool operator <(E rhs) const noexcept { return value < rhs; }
+
+        constexpr bool operator <=(flags rhs) const noexcept { return value <= rhs.value; }
+        constexpr bool operator <=(E rhs) const noexcept { return value <= rhs; }
 
         constexpr flags operator ~() const noexcept { return flags{ ~value }; }
 
         [[nodiscard]] constexpr bool contains(E bit) const noexcept { return (value & bit) == bit; }
         [[nodiscard]] constexpr bool all(flags f) const noexcept { return (value & f.value) == f.value; }
         [[nodiscard]] constexpr bool any(flags f) const noexcept { return (value & f.value) != static_cast<E>(0); }
+        [[nodiscard]] constexpr bool none(flags f) const noexcept { return !any(f); }
         constexpr void remove(E bit) noexcept { value = value & ~bit; }
     };
 

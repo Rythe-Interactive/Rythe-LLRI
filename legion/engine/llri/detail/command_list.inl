@@ -39,49 +39,23 @@ namespace llri
 
     inline result CommandList::begin(const command_list_begin_desc& desc)
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (m_state != command_list_state::Empty)
-        {
-            detail::apiError("CommandList::begin()", result::ErrorInvalidState, "CommandList::queryState() returned " + to_string(m_state) + ". CommandList must be in the command_list_state::Empty state before calling begin().");
-            return result::ErrorInvalidState;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(queryState() == command_list_state::Empty, result::ErrorInvalidState)
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_group->m_currentlyRecording == nullptr, result::ErrorOccupied)
 
-        if (m_group->m_currentlyRecording)
-        {
-            detail::apiError("CommandList::begin()", result::ErrorOccupied, "its parent CommandGroup is already recording a CommandList.");
-            return result::ErrorOccupied;
-        }
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
         m_group->m_currentlyRecording = this;
 #endif
-        
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_begin(desc);
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_begin(desc);
-#endif
+
+        LLRI_DETAIL_CALL_IMPL(impl_begin(desc), m_validationCallbackMessenger)
     }
 
     inline result CommandList::end()
     {
-#ifndef LLRI_DISABLE_VALIDATION
-        if (m_state != command_list_state::Recording)
-        {
-            detail::apiError("CommandList::end()", result::ErrorInvalidState, "CommandList::queryState() returned " + to_string(m_state) + ". CommandList must be in the command_list_state::Recording state before calling end().");
-            return result::ErrorInvalidState;
-        }
+        LLRI_DETAIL_VALIDATION_REQUIRE(queryState() == command_list_state::Recording, result::ErrorInvalidState)
 
         m_group->m_currentlyRecording = nullptr;
-#endif
 
-#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
-        const auto r = impl_end();
-        detail::impl_pollAPIMessages(m_validationCallbackMessenger);
-        return r;
-#else
-        return impl_end();
-#endif
+        LLRI_DETAIL_CALL_IMPL(impl_end(), m_validationCallbackMessenger)
     }
 
     template<typename Func, typename ...Args>

@@ -268,7 +268,7 @@ namespace llri
             usage, memoryType, initialState,
             sizeInBytes, // width = size
             1, 1, 1, // texture sizes defaulted to 1
-            sample_count::Count1, format::Undefined, tiling::Optimal, // these parameters are ignored but we set them to reasonable defaults
+            sample_count::Count1, format::Undefined // these parameters are ignored but we set them to reasonable defaults
         };
     }
 }

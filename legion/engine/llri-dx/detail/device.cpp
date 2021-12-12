@@ -15,7 +15,6 @@ namespace llri
         output->m_device = this;
         output->m_deviceFunctionTable = m_functionTable;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
-        output->m_maxCount = desc.count;
         output->m_type = desc.type;
 
         ID3D12CommandAllocator* allocator;
@@ -114,6 +113,9 @@ namespace llri
                 return result::ErrorUnknown;
         }
 
+        for (size_t i = 0; i < numFences; i++)
+            fences[i]->m_signaled = false;
+
         return result::Success;
     }
 
@@ -156,7 +158,7 @@ namespace llri
         dx12Desc.MipLevels = isTexture ? static_cast<UINT16>(desc.mipLevels) : 1;
         dx12Desc.Format = isTexture ? directx::mapTextureFormat(desc.format) : DXGI_FORMAT_UNKNOWN;
         dx12Desc.SampleDesc = isTexture ? DXGI_SAMPLE_DESC{ static_cast<UINT>(desc.sampleCount), D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE } : DXGI_SAMPLE_DESC{ 1, 0 };
-        dx12Desc.Layout = isTexture ? directx::mapTextureTiling(desc.tiling) : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+        dx12Desc.Layout = isTexture ? D3D12_TEXTURE_LAYOUT_UNKNOWN : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         dx12Desc.Flags = directx::mapResourceUsage(desc.usage);
 
         const D3D12_RESOURCE_STATES initialState = directx::mapResourceState(desc.initialState);
@@ -166,12 +168,6 @@ namespace llri
             desc.createNodeMask, desc.visibleNodeMask };
 
         D3D12_HEAP_FLAGS flags = D3D12_HEAP_FLAG_NONE;
-        if (isTexture && desc.tiling == tiling::Linear)
-        {
-            flags |= D3D12_HEAP_FLAG_SHARED_CROSS_ADAPTER | D3D12_HEAP_FLAG_SHARED; // required for linear tiling
-            dx12Desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER;
-        }
-
         ID3D12Resource* dx12Resource = nullptr;
 
         const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, flags, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));

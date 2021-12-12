@@ -116,10 +116,6 @@ namespace llri
          * @brief If the format supports multi-sampling for each sample_count value.
         */
         std::unordered_map<sample_count, bool> sampleCounts;
-        /**
-         * @brief If the format supports tiling::Linear.
-        */
-        bool linearTiling;
     };
 
     /**

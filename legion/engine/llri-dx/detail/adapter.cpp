@@ -118,9 +118,6 @@ namespace llri
             // get support
             const bool supported = sup1 != D3D12_FORMAT_SUPPORT1_NONE;
 
-            // linear support
-            const bool linearTiling = (sup1 & D3D12_FORMAT_SUPPORT1_DISPLAY) == D3D12_FORMAT_SUPPORT1_DISPLAY;
-
             // get sample counts
             std::unordered_map<sample_count, bool> sampleCounts {
                 { sample_count::Count1, false },
@@ -170,8 +167,7 @@ namespace llri
                 supported,
                 types,
                 usageFlags,
-                sampleCounts,
-                linearTiling
+                sampleCounts
             } });
         }
 

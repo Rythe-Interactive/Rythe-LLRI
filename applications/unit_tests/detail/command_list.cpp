@@ -13,7 +13,7 @@ TEST_CASE("CommandList")
     auto* instance = helpers::defaultInstance();
     auto* adapter = helpers::selectAdapter(instance);
     auto* device = helpers::defaultDevice(instance, adapter);
-    auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter), 10);
+    auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
 
     for (uint8_t i = 0; i < adapter->queryNodeCount(); i++)
     {
