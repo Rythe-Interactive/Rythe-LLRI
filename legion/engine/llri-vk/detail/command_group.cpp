@@ -42,8 +42,7 @@ namespace llri
         output->m_deviceHandle = m_device->m_ptr;
         output->m_deviceFunctionTable = m_deviceFunctionTable;
 
-        output->m_nodeMask = desc.nodeMask;
-        output->m_usage = desc.usage;
+        output->m_desc = desc;
         output->m_state = command_list_state::Empty;
 
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
@@ -75,8 +74,7 @@ namespace llri
             cmdList->m_deviceHandle = m_device->m_ptr;
             cmdList->m_deviceFunctionTable = m_deviceFunctionTable;
 
-            cmdList->m_nodeMask = desc.nodeMask;
-            cmdList->m_usage = desc.usage;
+            cmdList->m_desc = desc;
             cmdList->m_state = command_list_state::Empty;
 
             cmdList->m_validationCallbackMessenger = m_validationCallbackMessenger;

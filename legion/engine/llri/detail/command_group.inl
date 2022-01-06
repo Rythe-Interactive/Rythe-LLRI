@@ -9,6 +9,11 @@
 
 namespace llri
 {
+    inline queue_type CommandGroup::getType() const
+    {
+        return m_type;
+    }
+
     inline result CommandGroup::reset()
     {
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION

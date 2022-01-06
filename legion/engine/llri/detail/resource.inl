@@ -260,6 +260,11 @@ namespace llri
         return "Invalid memory_type value";
     }
 
+    inline resource_desc Resource::getDesc() const
+    {
+        return m_desc;
+    }
+
     constexpr resource_desc resource_desc::buffer(resource_usage_flags usage, memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask, uint32_t visibleNodeMask) noexcept
     {
         return {

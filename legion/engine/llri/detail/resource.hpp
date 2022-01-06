@@ -454,13 +454,14 @@ namespace llri
     {
         friend class Device;
 
+        [[nodiscard]] resource_desc getDesc() const;
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Resource() = default;
         ~Resource() = default;
 
-        resource_type m_type;
-
+        resource_desc m_desc;
+        
         void* m_memory = nullptr;
         void* m_resource = nullptr;
 

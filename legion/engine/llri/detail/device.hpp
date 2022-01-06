@@ -72,6 +72,11 @@ namespace llri
 
     public:
         /**
+         * Get the desc that the Device was created with.
+         */
+        [[nodiscard]] device_desc getDesc() const;
+
+        /**
          * @brief Query a created Queue by type and index.
          *
          * All queues are created upon device creation, and stored for quick access through queryQueue(). Queues are thus owned by the Device, the user **may** query the created queues for use, but the user never obtains ownership over the queue.
@@ -209,6 +214,8 @@ namespace llri
         std::vector<Queue*> m_graphicsQueues;
         std::vector<Queue*> m_computeQueues;
         std::vector<Queue*> m_transferQueues;
+
+        device_desc m_desc;
 
         result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
         void impl_destroyCommandGroup(CommandGroup* cmdGroup);

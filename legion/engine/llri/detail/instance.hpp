@@ -91,6 +91,11 @@ namespace llri
 
     public:
         /**
+         * Get the desc that the Instance was created with.
+         */
+        [[nodiscard]] instance_desc getDesc() const;
+
+        /**
          * @brief Retrieve a vector of adapters available to this application. Adapters usually represent PCIe devices such as GPUs.
          *
          * Using this function, you can select one or more adapters for Device creation.
@@ -138,6 +143,8 @@ namespace llri
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Instance() = default;
         ~Instance() = default;
+
+        instance_desc m_desc;
 
         void* m_ptr = nullptr;
 

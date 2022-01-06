@@ -54,6 +54,11 @@ namespace llri
         // Can't do any polling after the instance is destroyed
     }
 
+    inline instance_desc Instance::getDesc() const
+    {
+        return m_desc;
+    }
+
     inline result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(adapters != nullptr, result::ErrorInvalidUsage)
