@@ -53,10 +53,18 @@ namespace llri
         friend class Device;
         friend class Queue;
 
+    public:
+        /**
+         * Get the flags that the Fence was created with.
+         */
+        [[nodiscard]] fence_flags getFlags() const;
+
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Fence() = default;
         ~Fence() = default;
+
+        fence_flags m_flags;
 
         void* m_ptr = nullptr;
         void* m_event = nullptr;

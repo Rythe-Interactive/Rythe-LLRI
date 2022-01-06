@@ -36,6 +36,11 @@ namespace llri
         return "Invalid queue_type value";
     }
 
+    inline queue_desc Queue::getDesc() const
+    {
+        return m_desc;
+    }
+
     inline result Queue::submit(const submit_desc& desc)
     {
 #ifndef LLRI_DISABLE_VALIDATION
@@ -51,7 +56,7 @@ namespace llri
             LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.commandLists[i]->queryState() == llri::command_list_state::Ready, i, result::ErrorInvalidState)
 
             const uint32_t descNodeMask = desc.nodeMask == 0 ? 1 : desc.nodeMask;
-            const uint32_t cmdListNodeMask = desc.commandLists[i]->m_nodeMask == 0 ? 1 : desc.commandLists[i]->m_nodeMask;
+            const uint32_t cmdListNodeMask = desc.commandLists[i]->m_desc.nodeMask == 0 ? 1 : desc.commandLists[i]->m_desc.nodeMask;
 
             LLRI_DETAIL_VALIDATION_REQUIRE_ITER(descNodeMask == cmdListNodeMask, i, result::ErrorIncompatibleNodeMask)
         }

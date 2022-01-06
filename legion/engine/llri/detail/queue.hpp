@@ -157,6 +157,11 @@ namespace llri
 
     public:
         /**
+         * Get the desc that the Queue has been created with (internally).
+         */
+        [[nodiscard]] queue_desc getDesc() const;
+
+        /**
          * @brief Submit CommandLists to the queue, which means the commands they contain will be executed.
          * @param desc Describes the CommandLists that get executed, and what synchronization they signal or wait upon.
          *
@@ -197,6 +202,7 @@ namespace llri
         std::vector<void*> m_ptrs;
         std::vector<Fence*> m_fences; // optional internal fences for waitIdle()
 
+        queue_desc m_desc;
         Device* m_device = nullptr;
 
         void* m_validationCallbackMessenger = nullptr;

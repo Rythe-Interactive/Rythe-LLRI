@@ -61,6 +61,7 @@ namespace llri
             return directx::mapHRESULT(r);
 
         auto* output = new Fence();
+        output->m_flags = flags;
         output->m_counter = 0;
         output->m_event = CreateEvent(nullptr, false, false, nullptr);
         output->m_ptr = dx12Fence;
@@ -175,7 +176,7 @@ namespace llri
             return directx::mapHRESULT(r);
 
         auto* output = new Resource();
-        output->m_type = desc.type;
+        output->m_desc = desc;
         output->m_resource = dx12Resource;
         output->m_state = desc.initialState;
         output->m_implementationState = initialState;

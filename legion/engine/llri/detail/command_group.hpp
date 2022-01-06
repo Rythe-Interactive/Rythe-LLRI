@@ -37,6 +37,11 @@ namespace llri
 
     public:
         /**
+         * Get the type that CommandGroup was created for.
+         */
+        [[nodiscard]] queue_type getType() const;
+
+        /**
          * @brief Reset the CommandGroup and all of the allocated CommandLists.
          * After this, the CommandLists in this CommandGroup will be ready for recording again.
          *

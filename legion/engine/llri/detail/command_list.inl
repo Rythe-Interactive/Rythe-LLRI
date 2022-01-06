@@ -37,6 +37,11 @@ namespace llri
         return "Invalid command_list_state value";
     }
 
+    inline command_list_alloc_desc CommandList::getDesc() const
+    {
+        return m_desc;
+    }
+
     inline result CommandList::begin(const command_list_begin_desc& desc)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(queryState() == command_list_state::Empty, result::ErrorInvalidState)

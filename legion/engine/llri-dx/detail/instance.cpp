@@ -69,6 +69,7 @@ namespace llri
             directx::lazyInitializeDirectX();
 
             auto* output = new Instance();
+            output->m_desc = desc;
             UINT factoryFlags = 0;
 
             for (size_t i = 0; i < desc.numExtensions; i++)
@@ -254,6 +255,7 @@ namespace llri
             return directx::mapHRESULT(r);
 
         auto* output = new Device();
+        output->m_desc = desc;
         output->m_adapter = desc.adapter;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
         output->m_ptr = dx12Device;
@@ -307,6 +309,7 @@ namespace llri
             }
 
             auto* queue = new Queue();
+            queue->m_desc = queueDesc;
             queue->m_device = output;
             queue->m_ptrs = queues;
             queue->m_fences = fences;

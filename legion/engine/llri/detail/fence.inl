@@ -36,4 +36,9 @@ namespace llri
             return "Invalid fence_flags value";
         return result;
     }
+
+    inline fence_flags Fence::getFlags() const
+    {
+        return m_flags;
+    }
 }

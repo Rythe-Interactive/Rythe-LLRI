@@ -73,6 +73,7 @@ namespace llri
             return internal::mapVkResult(r);
 
         auto* output = new Fence();
+        output->m_flags = flags;
         output->m_ptr = vkFence;
         output->m_signaled = signaled;
 
@@ -266,7 +267,7 @@ namespace llri
         }
 
         auto* output = new Resource();
-        output->m_type = desc.type;
+        output->m_desc = desc;
         output->m_resource = isTexture ? static_cast<void*>(image) : static_cast<void*>(buffer);
         output->m_memory = memory;
 
@@ -279,7 +280,7 @@ namespace llri
 
     void Device::impl_destroyResource(Resource* resource)
     {
-        const bool isTexture = resource->m_type != resource_type::Buffer;
+        const bool isTexture = resource->m_desc.type != resource_type::Buffer;
 
         if (isTexture)
             static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyImage(static_cast<VkDevice>(m_ptr), static_cast<VkImage>(resource->m_resource), nullptr);

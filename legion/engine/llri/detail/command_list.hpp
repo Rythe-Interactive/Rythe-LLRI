@@ -102,6 +102,11 @@ namespace llri
 
     public:
         /**
+         * Get the desc that the CommandList was allocated with.
+         */
+        [[nodiscard]] command_list_alloc_desc getDesc() const;
+
+        /**
          * @brief Set the CommandList in a command_list_state::Recording state.
          *
          * The CommandList **must** be in the command_list_state::Empty state for it to transition into a command_list_state::Recording state.
@@ -161,8 +166,7 @@ namespace llri
         void* m_deviceHandle = nullptr;
         void* m_deviceFunctionTable = nullptr;
 
-        uint32_t m_nodeMask;
-        command_list_usage m_usage;
+        command_list_alloc_desc m_desc;
         command_list_state m_state = command_list_state::Empty;
 
         void* m_validationCallbackMessenger = nullptr;

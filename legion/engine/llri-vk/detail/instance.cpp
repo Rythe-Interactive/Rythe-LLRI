@@ -62,7 +62,8 @@ namespace llri
         {
             internal::lazyInitializeVolk();
 
-            auto* result = new Instance();
+            auto* output = new Instance();
+            output->m_desc = desc;
             const auto& availableExtensions = internal::queryAvailableExtensions();
 
             std::vector<const char*> layers;
@@ -102,8 +103,8 @@ namespace llri
             }
 
             // Add the debug utils extension for the API callback
-            result->m_shouldConstructValidationCallbackMessenger = false;
-            result->m_validationCallbackMessenger = nullptr;
+            output->m_shouldConstructValidationCallbackMessenger = false;
+            output->m_validationCallbackMessenger = nullptr;
             if (enableImplementationMessagePolling)
             {
                 // Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
@@ -111,7 +112,7 @@ namespace llri
                 if (availableExtensions.find(internal::nameHash("VK_EXT_debug_utils")) != availableExtensions.end())
                 {
                     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-                    result->m_shouldConstructValidationCallbackMessenger = true;
+                    output->m_shouldConstructValidationCallbackMessenger = true;
                 }
             }
 
@@ -124,16 +125,16 @@ namespace llri
 
             if (createResult != VK_SUCCESS)
             {
-                llri::destroyInstance(result);
+                llri::destroyInstance(output);
                 return internal::mapVkResult(createResult);
             }
-            result->m_ptr = vulkanInstance;
+            output->m_ptr = vulkanInstance;
 
             // Load instance functions 
             volkLoadInstanceOnly(vulkanInstance);
 
             // Create debug utils callback
-            if (result->m_shouldConstructValidationCallbackMessenger)
+            if (output->m_shouldConstructValidationCallbackMessenger)
             {
                 // Attempt to create the debug utils messenger
                 if (vkCreateDebugUtilsMessengerEXT) // The extension function may not have been loaded successfully
@@ -152,15 +153,15 @@ namespace llri
                     VkDebugUtilsMessengerEXT messenger;
                     vkCreateDebugUtilsMessengerEXT(vulkanInstance, &debugUtilsCi, nullptr, &messenger);
 
-                    result->m_validationCallbackMessenger = messenger;
+                    output->m_validationCallbackMessenger = messenger;
                 }
             }
             else
             {
-                result->m_validationCallbackMessenger = nullptr;
+                output->m_validationCallbackMessenger = nullptr;
             }
 
-            *instance = result;
+            *instance = output;
             return result::Success;
         }
 
@@ -282,6 +283,7 @@ namespace llri
     result Instance::impl_createDevice(const device_desc& desc, Device** device)
     {
         auto* output = new Device();
+        output->m_desc = desc;
         output->m_adapter = desc.adapter;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
@@ -387,6 +389,7 @@ namespace llri
             table->vkGetDeviceQueue(vkDevice, families[queueDesc.type], queueCounts[queueDesc.type], &vkQueue);
 
             auto* queue = new Queue();
+            queue->m_desc = queueDesc;
             queue->m_device = output;
             queue->m_ptrs = std::vector<void*>(desc.adapter->m_nodeCount, vkQueue);
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
