@@ -19,7 +19,7 @@ namespace llri
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION
         for (auto* cmdList : m_cmdLists)
         {
-            LLRI_DETAIL_VALIDATION_REQUIRE(cmdList->queryState() != command_list_state::Recording, result::ErrorInvalidState)
+            LLRI_DETAIL_VALIDATION_REQUIRE(cmdList->getState() != command_list_state::Recording, result::ErrorInvalidState)
         }
 #endif
 
@@ -57,7 +57,7 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE(cmdList != nullptr, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE(detail::contains(m_cmdLists, cmdList), result::ErrorInvalidUsage)
 
-        LLRI_DETAIL_VALIDATION_REQUIRE(cmdList->queryState() != command_list_state::Recording, result::ErrorInvalidState)
+        LLRI_DETAIL_VALIDATION_REQUIRE(cmdList->getState() != command_list_state::Recording, result::ErrorInvalidState)
 
         LLRI_DETAIL_CALL_IMPL(impl_free(cmdList), m_validationCallbackMessenger)
     }
@@ -72,7 +72,7 @@ namespace llri
         {
             LLRI_DETAIL_VALIDATION_REQUIRE_ITER(cmdLists[i] != nullptr, i, result::ErrorInvalidUsage)
             LLRI_DETAIL_VALIDATION_REQUIRE_ITER(detail::contains(m_cmdLists, cmdLists[i]), i, result::ErrorInvalidUsage)
-            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(cmdLists[i]->queryState() != command_list_state::Recording, i, result::ErrorInvalidState)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(cmdLists[i]->getState() != command_list_state::Recording, i, result::ErrorInvalidState)
         }
 #endif
 

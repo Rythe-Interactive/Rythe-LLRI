@@ -154,7 +154,7 @@ namespace llri
          *
          * After creation, CommandList will initially be in the command_list_state::Empty state. Once CommandList::begin() is called, the CommandList will be in the command_list_state::Recording state. After that, when CommandList::end() is called, CommandList will be put in the command_list_state::Ready state, in which it will stay until CommandGroup::reset() is called.
         */
-        [[nodiscard]] command_list_state queryState() const { return m_state; }
+        [[nodiscard]] command_list_state getState() const { return m_state; }
     private:
         // Force private constructor/deconstructor so that only alloc/free can manage lifetime
         CommandList() = default;

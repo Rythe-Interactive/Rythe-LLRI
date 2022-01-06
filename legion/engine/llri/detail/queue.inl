@@ -53,7 +53,7 @@ namespace llri
         for (size_t i = 0; i < desc.numCommandLists; i++)
         {
             LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.commandLists[i] != nullptr, i, result::ErrorInvalidUsage)
-            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.commandLists[i]->queryState() == llri::command_list_state::Ready, i, result::ErrorInvalidState)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.commandLists[i]->getState() == llri::command_list_state::Ready, i, result::ErrorInvalidState)
 
             const uint32_t descNodeMask = desc.nodeMask == 0 ? 1 : desc.nodeMask;
             const uint32_t cmdListNodeMask = desc.commandLists[i]->m_desc.nodeMask == 0 ? 1 : desc.commandLists[i]->m_desc.nodeMask;

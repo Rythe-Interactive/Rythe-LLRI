@@ -175,7 +175,7 @@ void TestSystem::createDevice()
 
     THROW_IF_FAILED(m_instance->createDevice(deviceDesc, &m_device));
 
-    THROW_IF_FAILED(m_device->queryQueue(llri::queue_type::Graphics, 0, &m_graphicsQueue));
+    THROW_IF_FAILED(m_device->getQueue(llri::queue_type::Graphics, 0, &m_graphicsQueue));
 }
 
 void TestSystem::createCommandLists()

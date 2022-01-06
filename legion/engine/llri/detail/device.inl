@@ -14,7 +14,7 @@ namespace llri
         return m_desc;
     }
 
-    inline result Device::queryQueue(queue_type type, uint8_t index, Queue** queue)
+    inline result Device::getQueue(queue_type type, uint8_t index, Queue** queue)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(queue != nullptr, result::ErrorInvalidUsage)
 
