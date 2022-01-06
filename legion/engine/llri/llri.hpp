@@ -204,7 +204,7 @@ namespace llri
     /**
     * @brief Query the currently linked implementation.
     */
-    [[nodiscard]] implementation queryImplementation();
+    [[nodiscard]] implementation getImplementation();
 }
 
 // ReSharper disable CppUnusedIncludeDirective

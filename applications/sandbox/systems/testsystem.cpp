@@ -53,7 +53,7 @@ void TestSystem::setup()
 {
     filter(log::severity_debug);
 
-    log::info("LLRI linked Implementation: {}", llri::to_string(llri::queryImplementation()));
+    log::info("LLRI linked Implementation: {}", llri::to_string(llri::getImplementation()));
 
     llri::setMessageCallback(&callback);
 

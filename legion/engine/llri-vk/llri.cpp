@@ -11,7 +11,7 @@
 
 namespace llri
 {
-    [[nodiscard]] implementation queryImplementation()
+    [[nodiscard]] implementation getImplementation()
     {
         return implementation::Vulkan;
     }
