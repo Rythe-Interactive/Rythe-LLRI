@@ -44,7 +44,7 @@ namespace llri
 
     inline result CommandList::begin(const command_list_begin_desc& desc)
     {
-        LLRI_DETAIL_VALIDATION_REQUIRE(queryState() == command_list_state::Empty, result::ErrorInvalidState)
+        LLRI_DETAIL_VALIDATION_REQUIRE(getState() == command_list_state::Empty, result::ErrorInvalidState)
         LLRI_DETAIL_VALIDATION_REQUIRE(m_group->m_currentlyRecording == nullptr, result::ErrorOccupied)
 
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION
@@ -56,7 +56,7 @@ namespace llri
 
     inline result CommandList::end()
     {
-        LLRI_DETAIL_VALIDATION_REQUIRE(queryState() == command_list_state::Recording, result::ErrorInvalidState)
+        LLRI_DETAIL_VALIDATION_REQUIRE(getState() == command_list_state::Recording, result::ErrorInvalidState)
 
         m_group->m_currentlyRecording = nullptr;
 

@@ -81,7 +81,7 @@ namespace llri
     /**
      * @brief Describes the information needed to create a queue upon device creation.
      *
-     * Queues are never created manually and can only be created through device_desc, after which they **may** be queried through Device::queryQueue().
+     * Queues are never created manually and can only be created through device_desc, after which they **may** be queried through Device::getQueue().
     */
     struct queue_desc
     {

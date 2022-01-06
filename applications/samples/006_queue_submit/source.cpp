@@ -36,7 +36,7 @@ int main()
 
     // We start out by getting the queue from the previously created device
     llri::Queue* queue = nullptr;
-    device->queryQueue(llri::queue_type::Graphics, 0, &queue);
+    device->getQueue(llri::queue_type::Graphics, 0, &queue);
 
     // Commands must be recorded (in the "Ready" state) before being able to be submitted to a queue.
     const llri::command_list_begin_desc begin{};

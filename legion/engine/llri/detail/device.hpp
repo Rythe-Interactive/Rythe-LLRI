@@ -79,7 +79,7 @@ namespace llri
         /**
          * @brief Query a created Queue by type and index.
          *
-         * All queues are created upon device creation, and stored for quick access through queryQueue(). Queues are thus owned by the Device, the user **may** query the created queues for use, but the user never obtains ownership over the queue.
+         * All queues are created upon device creation, and stored for quick access through getQueue(). Queues are thus owned by the Device, the user **may** query the created queues for use, but the user never obtains ownership over the queue.
          *
          * Queues are stored contiguously (but separated by type) in the order of device_desc::queues. Thus if device_desc::queues contained [Graphics, Compute, Graphics, Transfer, Graphics], the graphics queues for that array could be accessed with index 0, 1, 2, and not by their direct index in the array.
          *
@@ -94,7 +94,7 @@ namespace llri
          *
          * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
         */
-        result queryQueue(queue_type type, uint8_t index, Queue** queue);
+        result getQueue(queue_type type, uint8_t index, Queue** queue);
 
         /**
         * @brief Get the number of created queues of a given type.
