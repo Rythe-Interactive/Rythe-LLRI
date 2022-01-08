@@ -6,7 +6,6 @@
 
 #pragma once
 #include <llri/llri.hpp> // unnecessary but helps intellisense
-#include <functional>
 
 namespace llri
 {
