@@ -47,7 +47,7 @@ namespace llri
                     return VK_COMMAND_BUFFER_LEVEL_SECONDARY;
             }
 
-            throw;
+            return {};
         }
 
         constexpr VkImageType mapTextureType(resource_type type)
@@ -63,7 +63,7 @@ namespace llri
                     return VK_IMAGE_TYPE_3D;
             }
 
-            throw;
+            return {};
         }
 
         constexpr VkFormat mapTextureFormat(format format)
@@ -170,7 +170,7 @@ namespace llri
                     return VK_FORMAT_D32_SFLOAT_S8_UINT;
             }
 
-            throw;
+            return VK_FORMAT_UNDEFINED;
         }
 
         constexpr VkImageLayout mapResourceState(resource_state state)
@@ -203,7 +203,7 @@ namespace llri
                     return VK_IMAGE_LAYOUT_GENERAL;
             }
 
-            throw;
+            return VK_IMAGE_LAYOUT_GENERAL;
         }
 
         constexpr VkImageUsageFlags mapTextureUsage(resource_usage_flags usage)
