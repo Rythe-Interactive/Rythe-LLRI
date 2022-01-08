@@ -2,13 +2,16 @@
 # License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
 
 add_subdirectory(unit_tests)
-add_subdirectory(sandbox)
 
-set_target_properties(
-	unit_tests 
-	sandbox 
-	PROPERTIES FOLDER "applications"
-)
+if(NOT DEFINED LLRI_EXCLUDE_RYTHE_APPS)
+	add_subdirectory(sandbox)
+
+	set_target_properties(
+		unit_tests 
+		sandbox 
+		PROPERTIES FOLDER "applications"
+	)
+endif()
 
 add_subdirectory(samples/000_hello_llri)
 add_subdirectory(samples/001_validation)
