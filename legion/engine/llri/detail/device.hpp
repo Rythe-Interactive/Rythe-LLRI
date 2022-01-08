@@ -118,34 +118,40 @@ namespace llri
          * @param type The type of queue that this CommandGroup allocates for. A CommandList allocated through CommandGroup must only submit to queues of this type.
          * @param cmdGroup A pointer to the resulting command group variable.
          *
+         * @note Valid usage (ErrorInvalidUsage): cmdGroup **must** be a valid non-null pointer to a CommandGroup* variable.
+         * @note Valid usage (ErrorInvalidUsage): type **must** be less or equal to queue_type::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): Device::queryQueueCount(type) must return more than 0.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if cmdGroup is nullptr.
-         * @return ErrorInvalidUsage if type is not a valid queue_type enum value.
-         * @return ErrorInvalidUsage if this device's Device::queryQueueCount(type) returns 0.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result createCommandGroup(queue_type type, CommandGroup** cmdGroup);
 
         /**
          * @brief Destroy the command group object.
+         *
+         * CommandLists allocated through the CommandGroup do **not** have to be be freed manually, but users should note that their handles willl become invalid after this, thus they may no longer be used and they should also not be in use by the GPU at the time of destruction.
+         *
          * @param cmdGroup A pointer to a valid CommandGroup, or nullptr.
         */
         void destroyCommandGroup(CommandGroup* cmdGroup);
 
         /**
          * @brief Create a Fence which can be used for cpu-gpu synchronization.
+         *
          * @param flags Flags to describe how the Fence should be created.
          * @param fence A pointer to the resulting fence variable.
          *
+         * @note Valid usage (ErrorInvalidUsage): fence **must** be a valid non-null pointer to a Fence* variable.
+         * @note Valid usage (ErrorInvalidUsage): flags **must** be a valid combination of fence_flag_bits enum values.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if fence is nullptr.
-         * @return ErrorInvalidUsage if flags is not a valid combination of fence_flags enum values.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result createFence(fence_flags flags, Fence** fence);
 
         /**
-         * @brief Destroy the Fence.
+         * @brief Destroy the Fence object.
          * @param fence A pointer to a valid Fence, or nullptr.
         */
         void destroyFence(Fence* fence);
