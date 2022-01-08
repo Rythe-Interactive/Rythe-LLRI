@@ -254,8 +254,7 @@ TEST_SUITE("Instance")
                 for (size_t type = 0; type < static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
                     // Get max number of queues
-                    uint8_t count;
-                    REQUIRE_EQ(adapter->queryQueueCount(static_cast<llri::queue_type>(type), &count), llri::result::Success);
+                    uint8_t count = adapter->queryQueueCount(static_cast<llri::queue_type>(type));
 
                     // Create more queues than supported
                     std::vector<llri::queue_desc> queues(count + 1, llri::queue_desc{ static_cast<llri::queue_type>(type), llri::queue_priority::Normal });
@@ -272,14 +271,11 @@ TEST_SUITE("Instance")
                 std::vector<llri::queue_desc> queues;
 
                 std::unordered_map<llri::queue_type, uint8_t> maxQueueCounts{
-                    { llri::queue_type::Graphics, 0 },
-                    { llri::queue_type::Compute, 0 },
-                    { llri::queue_type::Transfer, 0 }
+                    { llri::queue_type::Graphics, adapter->queryQueueCount(llri::queue_type::Graphics) },
+                    { llri::queue_type::Compute, adapter->queryQueueCount(llri::queue_type::Compute) },
+                    { llri::queue_type::Transfer, adapter->queryQueueCount(llri::queue_type::Transfer) }
                 };
-                adapter->queryQueueCount(llri::queue_type::Graphics, &maxQueueCounts[llri::queue_type::Graphics]);
-                adapter->queryQueueCount(llri::queue_type::Compute, &maxQueueCounts[llri::queue_type::Compute]);
-                adapter->queryQueueCount(llri::queue_type::Transfer, &maxQueueCounts[llri::queue_type::Transfer]);
-
+                
                 for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
                     for (uint8_t i = 0; i < maxQueueCounts[static_cast<llri::queue_type>(type)]; i++)

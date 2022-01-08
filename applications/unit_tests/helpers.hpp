@@ -30,10 +30,9 @@ namespace helpers
     {
         llri::Device* device = nullptr;
 
-        uint8_t graphicsQueueCount, computeQueueCount, transferQueueCount;
-        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Graphics, &graphicsQueueCount), llri::result::Success);
-        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Compute, &computeQueueCount), llri::result::Success);
-        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Transfer, &transferQueueCount), llri::result::Success);
+        uint8_t graphicsQueueCount = adapter->queryQueueCount(llri::queue_type::Graphics);
+        uint8_t computeQueueCount = adapter->queryQueueCount(llri::queue_type::Compute);
+        uint8_t transferQueueCount = adapter->queryQueueCount(llri::queue_type::Transfer);
 
         std::vector<llri::queue_desc> queues;
 
@@ -53,8 +52,7 @@ namespace helpers
     {
         for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
         {
-            uint8_t count = 0;
-            adapter->queryQueueCount(static_cast<llri::queue_type>(type), &count);
+            uint8_t count = adapter->queryQueueCount(static_cast<llri::queue_type>(type));
 
             if (count > 0)
                 return static_cast<llri::queue_type>(type);

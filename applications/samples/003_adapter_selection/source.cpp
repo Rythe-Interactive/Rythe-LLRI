@@ -36,11 +36,7 @@ int main()
     llri::Adapter* selectedAdapter = selectAdapter(instance);
     if (selectedAdapter)
     {
-        llri::adapter_info info;
-        r = selectedAdapter->queryInfo(&info);
-        if (r != llri::result::Success)
-            return -1;
-
+        llri::adapter_info info = selectedAdapter->queryInfo();
         std::cout << "Selected adapter: " << info.adapterName << "\n";
     }
 
@@ -64,16 +60,10 @@ llri::Adapter* selectAdapter(llri::Instance* instance)
     for (auto* adapter : adapters)
     {
         // An adapter's information (product, vendor, name, type, etc) can be queried through queryInfo()
-        llri::adapter_info info;
-        r = adapter->queryInfo(&info);
-        if (r != llri::result::Success)
-            return nullptr;
+        llri::adapter_info info = adapter->queryInfo();
 
         // An adapter's supported features can be queried through queryFeatures()
-        llri::adapter_features features;
-        r = adapter->queryFeatures(&features);
-        if (r != llri::result::Success)
-            return nullptr;
+        llri::adapter_features features = adapter->queryFeatures();
 
         // you may decide to rate the adapter higher for specific features, such as max texture size, vram, etc.
         int score = 0;

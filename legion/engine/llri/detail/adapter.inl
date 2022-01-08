@@ -26,20 +26,14 @@ namespace llri
         return "Invalid adapter_type value";
     }
 
-    inline result Adapter::queryInfo(adapter_info* info) const
+    inline adapter_info Adapter::queryInfo() const
     {
-        LLRI_DETAIL_VALIDATION_REQUIRE(info != nullptr, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE(m_ptr != nullptr, result::ErrorDeviceLost)
-
-        LLRI_DETAIL_CALL_IMPL(impl_queryInfo(info), m_validationCallbackMessenger)
+        LLRI_DETAIL_CALL_IMPL(impl_queryInfo(), m_validationCallbackMessenger)
     }
 
-    inline result Adapter::queryFeatures(adapter_features* features) const
+    inline adapter_features Adapter::queryFeatures() const
     {
-        LLRI_DETAIL_VALIDATION_REQUIRE(features != nullptr, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE(m_ptr != nullptr, result::ErrorDeviceLost)
-
-        LLRI_DETAIL_CALL_IMPL(impl_queryFeatures(features), m_validationCallbackMessenger)
+        LLRI_DETAIL_CALL_IMPL(impl_queryFeatures(), m_validationCallbackMessenger)
     }
 
     inline adapter_limits Adapter::queryLimits() const
@@ -52,15 +46,10 @@ namespace llri
         LLRI_DETAIL_CALL_IMPL(impl_queryExtensionSupport(ext), m_validationCallbackMessenger)
     }
 
-    inline result Adapter::queryQueueCount(queue_type type, uint8_t* count) const
+    inline uint8_t Adapter::queryQueueCount(queue_type type) const
     {
-        LLRI_DETAIL_VALIDATION_REQUIRE(count != nullptr, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE(m_ptr != nullptr, result::ErrorDeviceLost)
-
-        *count = 0;
-
-        LLRI_DETAIL_CALL_IMPL(impl_queryQueueCount(type, count), m_validationCallbackMessenger)
+        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, 0)
+        LLRI_DETAIL_CALL_IMPL(impl_queryQueueCount(type), m_validationCallbackMessenger)
     }
 
     inline const std::unordered_map<format, format_properties>& Adapter::queryFormatProperties() const

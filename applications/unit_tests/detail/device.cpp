@@ -16,11 +16,10 @@ TEST_CASE("Device")
         auto* adapter = helpers::selectAdapter(instance);
         auto* device = helpers::defaultDevice(instance, adapter);
 
-        uint8_t graphicsQueueCount, computeQueueCount, transferQueueCount;
-        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Graphics, &graphicsQueueCount), llri::result::Success);
-        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Compute, &computeQueueCount), llri::result::Success);
-        REQUIRE_EQ(adapter->queryQueueCount(llri::queue_type::Transfer, &transferQueueCount), llri::result::Success);
-
+        uint8_t graphicsQueueCount = adapter->queryQueueCount(llri::queue_type::Graphics);
+        uint8_t computeQueueCount = adapter->queryQueueCount(llri::queue_type::Compute);
+        uint8_t transferQueueCount = adapter->queryQueueCount(llri::queue_type::Transfer);
+        
         SUBCASE("Device::getQueue()")
         {
             SUBCASE("[Incorrect usage] Invalid queue_type value")

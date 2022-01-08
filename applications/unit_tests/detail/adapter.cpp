@@ -19,47 +19,18 @@ TEST_CASE("Adapter")
     {
         SUBCASE("Adapter::queryInfo()")
         {
-            SUBCASE("[Incorrect usage] info == nullptr")
-            {
-                CHECK_EQ(adapter->queryInfo(nullptr), llri::result::ErrorInvalidUsage);
-            }
-
-            SUBCASE("[Correct usage] info != nullptr")
-            {
-                llri::adapter_info info;
-                CHECK_EQ(adapter->queryInfo(&info), llri::result::Success);
-            }
-
-            SUBCASE("[Correct usage] adapter_info data")
-            {
-                llri::adapter_info info;
-                CHECK_EQ(adapter->queryInfo(&info), llri::result::Success);
-
-                CHECK(info.adapterType <= llri::adapter_type::MaxEnum);
-                CHECK_NE(info.vendorId, 0);
-                CHECK_NE(info.adapterId, 0);
-                CHECK_NE(info.adapterName, "");
-            }
+            llri::adapter_info info = adapter->queryInfo();
+            CHECK(info.adapterType <= llri::adapter_type::MaxEnum);
+            CHECK_NE(info.vendorId, 0);
+            CHECK_NE(info.adapterId, 0);
+            CHECK_NE(info.adapterName, "");
         }
 
         SUBCASE("Adapter::queryFeatures()")
         {
-            SUBCASE("[Incorrect usage] features == nullptr")
-            {
-                CHECK_EQ(adapter->queryFeatures(nullptr), llri::result::ErrorInvalidUsage);
-            }
+            llri::adapter_features features = adapter->queryFeatures();
 
-            SUBCASE("[Correct usage] features != nullptr")
-            {
-                llri::adapter_features features;
-                auto r = adapter->queryFeatures(&features);
-                CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorIncompatibleDriver || r == llri::result::ErrorDeviceLost);
-            }
-
-            SUBCASE("[Correct usage] adapter_features data")
-            {
-                // Reserved for future use
-            }
+            // reserved for future use
         }
 
         SUBCASE("Adapter::queryExtensionSupport()")
@@ -79,23 +50,7 @@ TEST_CASE("Adapter")
         {
             SUBCASE("[Incorrect usage] invalid queue_type value")
             {
-                uint8_t count;
-                CHECK_EQ(adapter->queryQueueCount(static_cast<llri::queue_type>(UINT_MAX), &count), llri::result::ErrorInvalidUsage);
-            }
-
-            SUBCASE("[Incorrect usage] count == nullptr")
-            {
-                CHECK_EQ(adapter->queryQueueCount(llri::queue_type::Graphics, nullptr), llri::result::ErrorInvalidUsage);
-            }
-
-            SUBCASE("[Correct usage] type is a valid queue_type value and count != nullptr")
-            {
-                for (uint8_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
-                {
-                    uint8_t count;
-                    auto r = adapter->queryQueueCount(static_cast<llri::queue_type>(type), &count);
-                    CHECK_UNARY(r == llri::result::Success || r == llri::result::ErrorDeviceLost);
-                }
+                CHECK_EQ(adapter->queryQueueCount(static_cast<llri::queue_type>(UINT_MAX)), 0);
             }
         }
 

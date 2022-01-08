@@ -84,16 +84,10 @@ llri::Adapter* selectAdapter(llri::Instance* instance)
     std::unordered_map<int, llri::Adapter*> sortedAdapters;
     for (auto* adapter : adapters)
     {
-        llri::adapter_info info;
-        r = adapter->queryInfo(&info);
-        if (r != llri::result::Success)
-            return nullptr;
+        llri::adapter_info info = adapter->queryInfo();
 
-        uint8_t graphicsQueueCount;
-        r = adapter->queryQueueCount(llri::queue_type::Graphics, &graphicsQueueCount);
-        if (r != llri::result::Success)
-            return nullptr;
-
+        uint8_t graphicsQueueCount = adapter->queryQueueCount(llri::queue_type::Graphics);
+        
         // Skip this Adapter if it has no graphics queue available.
         if (graphicsQueueCount == 0)
             continue;
