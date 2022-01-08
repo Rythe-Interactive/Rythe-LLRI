@@ -15,6 +15,7 @@ jobs:
         platform: [ubuntu-20.04, windows-2019, macos-11]
         compiler: [g++, clang++, msvc]
         build: [Debug, Release]
+        implementation: [llri-dx, llri-vk]
         
         exclude: 
           - platform: ubuntu-20.04
@@ -26,6 +27,12 @@ jobs:
           - platform: windows-2019
             compiler: g++
             
+          - platform: ubuntu-20.04
+            implementation: llri-dx
+
+          - platform: macos-11
+            implementation: llri-dx
+
         include:
           - platform: windows-2019
             compiler: clang++
@@ -55,7 +62,7 @@ jobs:
       # Note the current convention is to use the -S and -B options here to specify source 
       # and build directories, but this is only available with CMake 3.13 and higher.  
       # The CMake binaries on the Github Actions machines are (as of this writing) 3.12      
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build }} -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON -DLLRI_EXCLUDE_RYTHE_APPS=1
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build }} -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON -DLLRI_EXCLUDE_RYTHE_APPS=1 -DLLRI_SELECTED_APP_IMPLEMENTATION=${{ matrix.implementation }}
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
