@@ -12,3 +12,7 @@ include_directories(${LLRI_DIR_SRC})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(003_adapter_selection ${LLRI_SELECTED_APP_IMPLEMENTATION})
+
+if(CMAKE_DL_LIBS)
+    target_link_libraries(003_adapter_selection ${CMAKE_DL_LIBS})
+endif()
