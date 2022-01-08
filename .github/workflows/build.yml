@@ -8,7 +8,7 @@ on:
     
 jobs:
  build:
-    name: ${{matrix.platform}} ${{matrix.compiler}} ${{matrix.build}} -T ${{matrix.toolset}}.
+    name: ${{matrix.platform}} ${{matrix.compiler}} ${{matrix.build}} ${{matrix.toolset}}
     strategy:
       fail-fast: false
       matrix:
