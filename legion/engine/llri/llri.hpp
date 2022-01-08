@@ -9,6 +9,8 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <cmath>
+#include <iostream>
 
 #include <unordered_set>
 #include <unordered_map>
