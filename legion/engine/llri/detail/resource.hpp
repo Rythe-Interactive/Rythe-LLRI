@@ -332,15 +332,15 @@ namespace llri
     struct resource_desc
     {
         /**
-         * @brief The device node on which the resource should be created.
+         * @brief The device node on which the resource should be created. Passing 0 is the equivalent of passing 1.
          *
-         * @note Valid usage (ErrorInvalidNodeMask): Exactly one bit **must** be set, and that bit **must** be less than 1 << Adapter::queryNodeCount(). Passing 0 is the equivalent of passing 1.
+         * @note Valid usage (ErrorInvalidNodeMask): Exactly one bit **must** be set, and that bit **must** be less than 1 << Adapter::queryNodeCount().
         */
         uint32_t createNodeMask;
         /**
-         * @brief A mask with the device nodes on which the resource will be visible.
+         * @brief A mask with the device nodes on which the resource will be visible. Passing 0 is the equivalent of passing 1.
          *
-         * @note Valid usage (ErrorInvalidNodeMask): At least the same bit as createNodeMask **must** be set. Passing 0 is the equivalent of passing 1.
+         * @note Valid usage (ErrorInvalidNodeMask): At least the same bit as createNodeMask **must** be set.
          * @note Valid usage (ErrorInvalidNodeMask): Any bits set to 1 in visibleNodeMask **must** be less than 1 << Adapter::queryNodeCount().
         */
         uint32_t visibleNodeMask;
