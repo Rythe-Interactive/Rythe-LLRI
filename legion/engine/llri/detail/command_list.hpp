@@ -117,8 +117,10 @@ namespace llri
          *
          * @param desc Contains contextual information about how (and on what GPU) the CommandList will be submitted, and what kind of information was previously set if this is an indirect CommandList.
          *
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the command_list_state::Empty state.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidState if the CommandList was not in the command_list_state::Empty state.
+         * @return command_list_begin_desc defined return values: -
          *
          * @note The memory required for CommandList recording is allocated through its CommandGroup. Because of this, commandLists allocated through the same CommandGroup **can not** be recorded simultaneously and are thus not thread-safe. For multi-threaded recording, it is recommended to create at least one separate CommandGroup per thread to prevent this from becoming an issue.
         */
@@ -129,8 +131,9 @@ namespace llri
          *
          * The CommandList **must** be in the command_list_state::Recording state for it to transition into a command_list_state::Ready state.
          *
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the command_list_state::Recording state.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidState if the CommandList was not in the command_list_state::Recording state.
         */
         result end();
 
