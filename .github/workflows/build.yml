@@ -8,7 +8,7 @@ on:
     
 jobs:
  build:
-    name: ${{matrix.platform}}, compiler [${{matrix.compiler}}] config [${{matrix.build}}], toolset [${{matrix.toolset}}].
+    name: ${{matrix.platform}} ${{matrix.compiler}} ${{matrix.build}} -T ${{matrix.toolset}}.
     strategy:
       fail-fast: false
       matrix:
@@ -60,4 +60,4 @@ jobs:
     - name: Build
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: cmake --build . --config $BUILD_TYPE
+      run: cmake --build . --config ${{ matrix.build }}
