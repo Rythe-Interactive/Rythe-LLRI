@@ -33,30 +33,46 @@ namespace llri
     {
         /**
          * @brief The adapter to create the instance for.
+         *
+         * @note Valid usage (ErrorInvalidUsage): adapter **must** be a valid non-null pointer.
         */
         Adapter* adapter;
         /**
          * @brief The enabled adapter features.
          * It is **recommended** to only enable features that will be used because unused enabled features might disable driver optimizations.
+         *
+         * @note Valid usage (ErrorFeatureNotSupported): All enabled features **must** be enabled in Adapter::queryFeatures().
         */
         adapter_features features;
 
         /**
          * @brief The number of device extensions in the device_desc::extensions array.
+         *
+         * @note Valid usage (ErrorExceededLimit):  As device_desc::extensions can only hold unique values, numExtensions can not be more than adapter_extension::MaxEnum.
         */
         uint32_t numExtensions;
         /**
-         * @brief The adapter extensions, if device_desc::numExtensions > 0, then this **must** be a valid pointer to an array of adapter_extension.
-         * If device_desc::numExtensions == 0, then this pointer **may** be nullptr.
+         * @brief An array of adapter extensions, [extensions, extensions + numExtensions - 1].
+         *
+         * @note Valid usage (ErrorInvalidUsage):  if device_desc::numExtensions > 0, then this **must** be a valid pointer to an array of adapter_extension. If device_desc::numExtensions == 0, then this pointer **may** be nullptr.
+         * @note Valid usage (ErrorInvalidUsage): Each value in this array **must** be <= adapter_extension::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): Each value in this array **must** be unique. // TODO: Enforce this
+         * @note Valid usage (ErrorExtensionNotSupported): Adapter::queryExtensionSupport() must return true on each value in this array.
         */
         adapter_extension* extensions;
 
         /**
-         * @brief The number of queues that are in the device_desc::queues array. Device **can not** be created without queues, thus this value **must** be at least 1 or higher.
+         * @brief The number of queues that are in the device_desc::queues array.
+         *
+         * @note Valid usage (ErrorInvalidUsage): Device **can not** be created without queues, thus this value **must** be at least 1 or higher.
         */
         uint32_t numQueues;
         /**
-         * @brief An array of device queue descriptions, which is used to create the queues upon device creation. This value **must** be a valid pointer to an array of queue_desc structures, with a size of at least device_desc::numQueues.
+         * @brief An array of device queue descriptions, which is used to create the queues upon device creation, [queues, queues + numQueues - 1].
+         *
+         * @note Valid usage (ErrorInvalidUsage):This value **must** be a valid non-null pointer to an array of queue_desc structures, with a size of at least device_desc::numQueues.
+         * @note Valid usage (ErrorExceededLimit): The total number of elements with queue_desc::type as a given queue_type **must not** exceed Adapter::queryQueueCount() with that queue_type.
+         * @note All conditions in queue_desc must be met.
         */
         queue_desc* queues;
     };
@@ -77,7 +93,7 @@ namespace llri
         [[nodiscard]] device_desc getDesc() const;
 
         /**
-         * @brief Query a created Queue by type and index.
+         * @brief Get a created Queue by type and index.
          *
          * All queues are created upon device creation, and stored for quick access through getQueue(). Queues are thus owned by the Device, the user **may** query the created queues for use, but the user never obtains ownership over the queue.
          *

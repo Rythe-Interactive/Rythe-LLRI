@@ -24,23 +24,28 @@ namespace llri
     {
         /**
          * @brief The number of instance extensions in the instance_desc::extensions array.
+         *
+         * @note Valid usage (ErrorExceededLimit): As instance_desc::extensions can only hold unique values, numExtensions can not be more than instance_extension::MaxEnum.
         */
         uint32_t numExtensions;
         /**
-         * @brief The instance extensions, if instance_desc::numExtensions > 0, then this **must** be a valid pointer to an array of instance_extension.
-         * If instance_desc::numExtensions == 0, then this pointer **may** be nullptr.
+         * @brief An array of instance extensions, [extensions, extensions + numExtensions - 1].
+         *
+         * @note Valid usage (ErrorInvalidUsage): If instance_desc::numExtensions > 0, then this **must** be a valid pointer to an array of instance_extension. If instance_desc::numExtensions == 0, then this pointer **may** be nullptr.
+         * @note Valid usage (ErrorInvalidUsage): Each value in this array **must** be <= instance_extension::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): Each value in this array **must** be unique.
+         * @note Valid usage (ErrorExtensionNotSupported): queryInstanceExtensionSupport() must return true on each value in this array.
         */
         instance_extension* extensions;
         /**
          * @brief Sets the name of the application in the implementation if applicable.
+         *
          * @note This parameter is not guaranteed to be used but is known to at least apply to Vulkan.
+         * @note Valid usage: Can be nullptr or a valid null-terminated string.
         */
         const char* applicationName;
     };
 
-    /**
-     * @brief Internal functions, don't use outside of the API.
-    */
     namespace detail
     {
         result impl_createInstance(const instance_desc& desc, Instance** instance, bool enableImplementationMessagePolling);
@@ -56,16 +61,18 @@ namespace llri
     }
 
     /**
-     * @brief Create an llri Instance.
+     * @brief Create an llri Instance, which can be used to enumerate adapters and create a few core objects.
      * Like with all API objects, the user is responsible for destroying the Instance again using destroyInstance().
-     * @param desc The description of the instance.
-     * @param instance Must be a valid pointer to an Instance pointer variable. Upon successful execution of the operation the pointer is set to the resulting instance object.
+     *
+     * @param desc A structure describing how the instance should be created.
+     * @param instance A pointer to an Instance* variable. Used to write the resulting instance to.
+     *
+     * @note Valid usage (ErrorInvalidUsage): instance **must**  be a valid non-null pointer.
+     * @note Valid usage (ErrorExceededLimit): Only one Instance object may exist at a time. // TODO: Enforce in validation
      *
      * @return Success upon correct execution of the operation.
-     * @return ErrorInvalidUsage if the instance is nullptr
-     * @return ErrorInvalidUsage if desc.numExtensions > 0 and desc.extensions is nullptr.
-     * @return ErrorExtensionNotSupported if any of the extensions fail to be created.
-     * @return Implementation defined result values: ErrorExtensionNotSupported, ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
+     * @return instance_desc: ErrorInvalidUsage, ErrorExceededLimit, ErrorExtensionNotSupported.
+     * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed, ErrorIncompatibleDriver.
     */
     result createInstance(const instance_desc& desc, Instance** instance);
 
@@ -73,13 +80,15 @@ namespace llri
      * @brief Destroys the given instance and its directly related internal resources.
      * All resources created through the instance **must** be destroyed prior to calling this function.
      *
-     * @param instance The instance to destroy. This value **must** be a valid instance pointer or nullptr.
+     * @param instance The instance object to destroy.
+     *
+     * @note Valid usage: instance **must** be a valid instance pointer or nullptr.
     */
     void destroyInstance(Instance* instance);
 
     /**
-     * @brief Instance is the central resource of the application and is used to create most other API objects.
-     * Only a single instance of Instance **may** exist within an application. Creating more instances is not officially supported.
+     * @brief Instance is the central object of the application and is used to create most other API objects.
+     * Only a single object of Instance **may** exist within an application. Creating more instances is not supported.
     */
     class Instance
     {
@@ -91,7 +100,7 @@ namespace llri
 
     public:
         /**
-         * Get the desc that the Instance was created with.
+         * @brief Get the desc that the Instance was created with.
          */
         [[nodiscard]] instance_desc getDesc() const;
 
@@ -103,8 +112,9 @@ namespace llri
          *
          * @param adapters The vector to fill with available adapters. The vector is cleared at the start of the operation and is only filled if the operation succeeds.
          *
+         * @note Valid usage (ErrorInvalidUsage): adapters **must** be a valid pointer to a std::vector<Adapter*> variable.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if adapters is nullptr.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorInitializationFailed.
         */
         result enumerateAdapters(std::vector<Adapter*>* adapters);
@@ -117,25 +127,22 @@ namespace llri
          * @param desc The description of the device.
          * @param device A pointer to a device pointer variable. The pointer variable will be set to the resulting device upon successful execution.
          *
+         * @note Valid usage (ErrorInvalidUsage): device **must** be a valid pointer to a Device* variable.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if device is nullptr.
-         * @return ErrorInvalidUsage if desc.adapter is nullptr.
-         * @return ErrorInvalidUsage if desc.numExtensions is more than 0 and desc.extensions is nullptr.
-         * @return ErrorInvalidUsage if desc.numQueues is less than 1.
-         * @return ErrorInvalidUsage if desc.queues is nullptr.
-         * @return ErrorInvalidUsage if more queues of a given type are requested than the maximum number of queues for that given type.
-         * @return ErrorInvalidUsage if any of the queue_desc's types was an invalid queue_type value.
-         * @return ErrorInvalidUsage if any of the queue_desc's priorities was an invalid queue_priority value.
          * @return ErrorDeviceLost if the adapter was lost.
+         * @return device_desc defined result values: ErrorInvalidUsage, ErrorFeatureNotSupported, ErrorExceededLimit, ErrorExtensionNotSupported
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result createDevice(const device_desc& desc, Device** device);
 
         /**
-         * @brief Destroy the LLRI device.
-         *
+         * @brief Destroy the device object.
          * All resources created through the device **must** be destroyed prior to calling this function.
          *
-         * @param device The device, **must** be a valid device pointer or nullptr.
+         * @param device The device object to be destroyed.
+         *
+         * @note Valid usage: device **must** be a valid device pointer or nullptr.
         */
         void destroyDevice(Device* device);
 

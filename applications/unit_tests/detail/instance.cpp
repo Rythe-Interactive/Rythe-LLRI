@@ -17,6 +17,12 @@ TEST_SUITE("Instance")
         llri::Instance* instance = nullptr;
         llri::instance_desc desc { 0, nullptr, ""};
 
+        SUBCASE("[Incorrect usage] numExtensions > instance_extensions::MaxEnum")
+        {
+            desc.numExtensions = UINT_MAX;
+            CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExceededLimit);
+        }
+        
         SUBCASE("[Incorrect usage] numExtensions > 0 && extensions == nullptr")
         {
             desc.numExtensions = 1;

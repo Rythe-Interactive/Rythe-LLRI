@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file queue.hpp
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
@@ -87,10 +87,14 @@ namespace llri
     {
         /**
          * @brief The type of queue. This determines the set of commands that the queue can support, and the optimizations it **may** enable for that set of commands.
+         *
+         * @note type must not be more than queue_type::MaxEnum.
         */
         queue_type type;
         /**
          * @brief The priority of the queue. This **may** affect which queues receive more or less adapter computing resources.
+         *
+         * @note priority must not be more than queue_priority::MaxEnum.
         */
         queue_priority priority;
     };

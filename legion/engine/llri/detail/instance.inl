@@ -32,6 +32,8 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE(instance != nullptr, result::ErrorInvalidUsage)
         *instance = nullptr;
 
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions <= static_cast<uint32_t>(instance_extension::MaxEnum), result::ErrorExceededLimit)
+        
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions == 0 || (desc.numExtensions > 0 && desc.extensions != nullptr), result::ErrorInvalidUsage)
 
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION
