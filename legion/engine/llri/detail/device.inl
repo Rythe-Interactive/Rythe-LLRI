@@ -64,16 +64,16 @@ namespace llri
         return 0;
     }
 
-    inline result Device::createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
+    inline result Device::createCommandGroup(queue_type type, CommandGroup** cmdGroup)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(cmdGroup != nullptr, result::ErrorInvalidUsage)
 
         *cmdGroup = nullptr;
 
-        LLRI_DETAIL_VALIDATION_REQUIRE(desc.type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE(queryQueueCount(desc.type) > 0, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(queryQueueCount(type) > 0, result::ErrorInvalidUsage)
 
-        LLRI_DETAIL_CALL_IMPL(impl_createCommandGroup(desc, cmdGroup), m_validationCallbackMessenger)
+        LLRI_DETAIL_CALL_IMPL(impl_createCommandGroup(type, cmdGroup), m_validationCallbackMessenger)
     }
 
     inline void Device::destroyCommandGroup(CommandGroup* cmdGroup)

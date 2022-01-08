@@ -14,7 +14,6 @@ namespace llri
     enum struct queue_type : uint8_t;
     class Queue;
 
-    struct command_group_desc;
     class CommandGroup;
 
     enum struct fence_flag_bits : uint32_t;
@@ -109,26 +108,26 @@ namespace llri
         Queue* getQueue(queue_type type, uint8_t index);
 
         /**
-        * @brief Get the number of created queues of a given type.
+         * @brief Get the number of created queues of a given type.
         */
         uint8_t queryQueueCount(queue_type type);
 
         /**
          * @brief Create a command group. Command groups are responsible for allocating and managing the necessary device memory for command queues.
          *
-         * @param desc The description of the command group.
+         * @param type The type of queue that this CommandGroup allocates for. A CommandList allocated through CommandGroup must only submit to queues of this type.
          * @param cmdGroup A pointer to the resulting command group variable.
          *
          * @return Success upon correct execution of the operation.
          * @return ErrorInvalidUsage if cmdGroup is nullptr.
-         * @return ErrorInvalidUsage if desc.type is not a valid queue_type enum value.
-         * @return ErrorInvalidUsage if this device's Device::queryQueueCount(desc.type) returns 0.
+         * @return ErrorInvalidUsage if type is not a valid queue_type enum value.
+         * @return ErrorInvalidUsage if this device's Device::queryQueueCount(type) returns 0.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
-        result createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
+        result createCommandGroup(queue_type type, CommandGroup** cmdGroup);
 
         /**
-         * @brief Destroy the command group.
+         * @brief Destroy the command group object.
          * @param cmdGroup A pointer to a valid CommandGroup, or nullptr.
         */
         void destroyCommandGroup(CommandGroup* cmdGroup);
@@ -229,7 +228,7 @@ namespace llri
 
         device_desc m_desc;
 
-        result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
+        result impl_createCommandGroup(queue_type type, CommandGroup** cmdGroup);
         void impl_destroyCommandGroup(CommandGroup* cmdGroup);
 
         result impl_createFence(fence_flags flags, Fence** fence);

@@ -47,15 +47,13 @@ TEST_CASE("Device")
         {
             SUBCASE("[Incorrect usage] cmdGroup == nullptr")
             {
-                llri::command_group_desc desc { llri::queue_type::Graphics };
-                CHECK_EQ(device->createCommandGroup(desc, nullptr), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->createCommandGroup(llri::queue_type::Graphics, nullptr), llri::result::ErrorInvalidUsage);
             }
 
-            SUBCASE("[Incorrect usage] desc.type is an invalid enum value")
+            SUBCASE("[Incorrect usage] type is an invalid enum value")
             {
                 llri::CommandGroup* cmdGroup;
-                llri::command_group_desc desc { static_cast<llri::queue_type>(UINT_MAX) };
-                CHECK_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->createCommandGroup(static_cast<llri::queue_type>(UINT_MAX), &cmdGroup), llri::result::ErrorInvalidUsage);
             }
 
             for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
@@ -68,8 +66,7 @@ TEST_CASE("Device")
                     SUBCASE(str.c_str())
                     {
                         llri::CommandGroup* cmdGroup;
-                        llri::command_group_desc desc { static_cast<llri::queue_type>(type) };
-                        CHECK_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::ErrorInvalidUsage);
+                        CHECK_EQ(device->createCommandGroup(static_cast<llri::queue_type>(type), &cmdGroup), llri::result::ErrorInvalidUsage);
                     }
                 }
                 else
@@ -78,8 +75,7 @@ TEST_CASE("Device")
                     SUBCASE(str.c_str())
                     {
                         llri::CommandGroup* cmdGroup;
-                        llri::command_group_desc desc { static_cast<llri::queue_type>(type) };
-                        CHECK_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
+                        CHECK_EQ(device->createCommandGroup(static_cast<llri::queue_type>(type), &cmdGroup), llri::result::Success);
                         device->destroyCommandGroup(cmdGroup);
                     }
                 }
@@ -97,8 +93,7 @@ TEST_CASE("Device")
                 if (count > 0)
                 {
                     llri::CommandGroup* cmdGroup;
-                    llri::command_group_desc desc { static_cast<llri::queue_type>(type) };
-                    REQUIRE_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
+                    REQUIRE_EQ(device->createCommandGroup(static_cast<llri::queue_type>(type), &cmdGroup), llri::result::Success);
 
                     CHECK_NOTHROW(device->destroyCommandGroup(cmdGroup));
                 }

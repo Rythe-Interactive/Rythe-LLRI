@@ -9,20 +9,20 @@
 
 namespace llri
 {
-    result Device::impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
+    result Device::impl_createCommandGroup(queue_type type, CommandGroup** cmdGroup)
     {
         auto* output = new CommandGroup();
         output->m_device = this;
         output->m_deviceFunctionTable = m_functionTable;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
-        output->m_type = desc.type;
+        output->m_type = type;
 
         auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
 
         VkCommandPoolCreateInfo info;
         info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
         info.pNext = nullptr;
-        info.queueFamilyIndex = families[desc.type];
+        info.queueFamilyIndex = families[type];
         info.flags = {};
 
         VkCommandPool pool;

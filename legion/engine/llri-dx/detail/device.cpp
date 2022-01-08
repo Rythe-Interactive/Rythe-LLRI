@@ -9,16 +9,16 @@
 
 namespace llri
 {
-    result Device::impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
+    result Device::impl_createCommandGroup(queue_type type, CommandGroup** cmdGroup)
     {
         auto* output = new CommandGroup();
         output->m_device = this;
         output->m_deviceFunctionTable = m_functionTable;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
-        output->m_type = desc.type;
+        output->m_type = type;
 
         ID3D12CommandAllocator* allocator;
-        auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommandAllocator(directx::mapCommandGroupType(desc.type), IID_PPV_ARGS(&allocator));
+        auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommandAllocator(directx::mapCommandGroupType(type), IID_PPV_ARGS(&allocator));
         if (FAILED(r))
         {
             destroyCommandGroup(output);

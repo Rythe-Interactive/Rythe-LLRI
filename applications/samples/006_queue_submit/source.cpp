@@ -139,11 +139,8 @@ llri::Device* createDevice(llri::Instance* instance, llri::Adapter* adapter)
 // see 005_commands
 llri::CommandGroup* createCommandGroup(llri::Device* device)
 {
-    llri::command_group_desc groupDesc{};
-    groupDesc.type = llri::queue_type::Graphics;
-
     llri::CommandGroup* group;
-    if (device->createCommandGroup(groupDesc, &group) != llri::result::Success)
+    if (device->createCommandGroup(llri::queue_type::Graphics, &group) != llri::result::Success)
         return nullptr;
 
     return group;

@@ -67,8 +67,7 @@ namespace helpers
     inline llri::CommandGroup* defaultCommandGroup(llri::Device* device, llri::queue_type type)
     {
         llri::CommandGroup* cmdGroup;
-        const llri::command_group_desc desc { type };
-        REQUIRE_EQ(device->createCommandGroup(desc, &cmdGroup), llri::result::Success);
+        REQUIRE_EQ(device->createCommandGroup(type, &cmdGroup), llri::result::Success);
         return cmdGroup;
     }
 

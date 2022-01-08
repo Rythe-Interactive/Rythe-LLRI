@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file command_group.hpp
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
@@ -15,18 +15,7 @@ namespace llri
     struct command_list_alloc_desc;
 
     /**
-     * @brief Describes how the CommandGroup should be created.
-    */
-    struct command_group_desc
-    {
-        /**
-         * @brief The type of queue that this CommandGroup allocates for. A CommandList allocated through CommandGroup must only submit to queues of this type.
-        */
-        queue_type type;
-    };
-
-    /**
-     * @brief CommandGroups are responsible for allocating the memory required to record CommandLists. They are used to allocate one or multiple CommandLists but never more than command_group_desc::count.
+     * @brief CommandGroups are responsible for allocating the memory required to record CommandLists. They are used to allocate one or multiple CommandLists.
      *
      * @note CommandGroups are not thread-safe. CommandLists allocated through the same CommandGroup **can not** be recorded from separate threads simultaneously. For multi-threaded recording, it is recommended to create at least one separate CommandGroup per thread to prevent this from becoming an issue.
     */
