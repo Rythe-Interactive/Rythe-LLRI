@@ -6,11 +6,14 @@
 
 #pragma once
 #include <cstdint>
+#include <cmath>
+#include <climits>
+
 #include <string>
 #include <array>
 #include <vector>
-#include <cmath>
-#include <iostream>
+#include <iostream> // including iostream fixes std::string issues on osx
+#include <functional>
 
 #include <unordered_set>
 #include <unordered_map>
