@@ -25,28 +25,21 @@ TEST_CASE("Device")
         {
             SUBCASE("[Incorrect usage] Invalid queue_type value")
             {
-                llri::Queue* queue;
-                CHECK_EQ(device->getQueue(static_cast<llri::queue_type>(UINT_MAX), 0, &queue), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->getQueue(static_cast<llri::queue_type>(UINT_MAX), 0), nullptr);
             }
 
             SUBCASE("[Incorrect usage] index > number of created queues of this type")
             {
                 for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
                 {
-                    llri::Queue* queue;
-                    CHECK_EQ(device->getQueue(static_cast<llri::queue_type>(type), 255, &queue), llri::result::ErrorExceededLimit);
+                    CHECK_EQ(device->getQueue(static_cast<llri::queue_type>(type), 255), nullptr);
                 }
-            }
-
-            SUBCASE("[Incorrect usage] queue == nullptr")
-            {
-                CHECK_EQ(device->getQueue(llri::queue_type::Graphics, 0, nullptr), llri::result::ErrorInvalidUsage);
             }
 
             SUBCASE("[Correct usage] Valid parameters (with queue_descs in mind)")
             {
-                llri::Queue* queue;
-                CHECK_EQ(device->getQueue(llri::queue_type::Graphics, 0, &queue), llri::result::Success);
+                llri::Queue* queue = device->getQueue(llri::queue_type::Graphics, 0);
+                CHECK_NE(queue, nullptr);
             }
         }
 

@@ -99,18 +99,14 @@ namespace llri
          *
          * Queues are stored contiguously (but separated by type) in the order of device_desc::queues. Thus if device_desc::queues contained [Graphics, Compute, Graphics, Transfer, Graphics], the graphics queues for that array could be accessed with index 0, 1, 2, and not by their direct index in the array.
          *
-         * @param type The type of Queue. This value must be a valid queue_type value, and at least one of this queue type must have been requested during device creation.
-         * @param index The Queue array index. Queues are stored per type so this index must be from 0 to n-1 where n is the number of requested queues of this particular type.
-         * @param queue A pointer to the resulting queue variable.
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if type is not a valid enum value
-         * @return ErrorExceededLimit if index is more than the number of queues created of the given type
-         * @return ErrorInvalidUsage if queue is nullptr.
-         *
          * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
+         *
+         * @param type The type of Queue. This value **must** be a valid queue_type value, and at least one of this queue type **must** have been requested during device creation.
+         * @param index The Queue array index. Queues are stored per type so this index **must** be from 0 to n-1 where n is the number of requested queues of this particular type.
+         *
+         * @return The requested Queue if all conditions were met, or nullptr otherwise.
         */
-        result getQueue(queue_type type, uint8_t index, Queue** queue);
+        Queue* getQueue(queue_type type, uint8_t index);
 
         /**
         * @brief Get the number of created queues of a given type.
