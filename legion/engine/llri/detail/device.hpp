@@ -169,12 +169,13 @@ namespace llri
          * @param fences An array of Fence pointers. Each fence must be a valid pointer to a Fence.
          * @param timeout Timeout is the time in milliseconds until the function **must** return. If timeout is more than 0, the function will block as described above. If timeout is 0, then no blocking occurs, but the function returns Success if all fences reach their signal, and returns Timeout if (some of) fences did not.
          *
+         * @note Valid usage (ErrorInvalidUsage): numFences **must** be more than 0.
+         * @note Valid usage (ErrorInvalidUsage): fences **must** be a valid non-null pointer to a Fence* array.
+         * @note Valid usage (ErrorInvalidUsage): each element in the fences array **must** be a valid non-null pointer to a Fence*.
+         * @note Valid usage (ErrorNotSignaled): each fence must have been signaled prior to this call.
+         *
          * @return Success upon correct execution of the operation, if all fences finish within the timeout.
          * @return Timeout if the wait time for the fences was longer than their wait time.
-         * @return ErrorInvalidUsage if numFences was 0.
-         * @return ErrorInvalidUsage if fences was nullptr.
-         * @return ErrorInvalidUsage if any of the Fence pointers in the fences array were nullptr.
-         * @return ErrorNotSignaled if any of the fences have not been signaled and thus can never reach their signal.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorDeviceLost.
         */
         result waitFences(uint32_t numFences, Fence** fences, uint64_t timeout);
@@ -189,14 +190,15 @@ namespace llri
          * @brief Create a Semaphore, which can be used for synchronization between GPU events.
          * @param semaphore A pointer to the resulting Semaphore variable.
          *
+         * @note Valid uage (ErrorInvalidUsage): semaphore **must** be a valid non-null pointer to a Semaphore* variable.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if semaphore was nullptr.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result createSemaphore(Semaphore** semaphore);
 
         /**
-         * @brief Destroy the given semaphore.
+         * @brief Destroy the given Semaphore object.
          * @param semaphore A pointer to a valid Semaphore, or nullptr.
         */
         void destroySemaphore(Semaphore* semaphore);
@@ -205,9 +207,11 @@ namespace llri
          * @brief Create a resource (a buffer or texture) and allocate the memory for it.
          * @param desc The description of the resource.
          * @param resource A pointer to the resulting resource variable.
+         *
+         * @note Valid usage (ErrorInvalidUsage): resource must be a valid non-null pointer to a Resource* variable.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if resource was nullptr.
-         * @return ErrorInvalidUsage if any of the conditions in resource_desc are not met.
+         * @return resource_desc defined result values: ErrorInvalidUsage, ErrorInvalidNodeMask.
          * @return ErrorOutOfDeviceMemory implementations may return this if the resource does not fit in the Device's memory.
         */
         result createResource(const resource_desc& desc, Resource** resource);

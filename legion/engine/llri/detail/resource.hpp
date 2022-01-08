@@ -327,98 +327,98 @@ namespace llri
     std::string to_string(memory_type type);
 
     /**
-     * @brief Describes how a resource should be created (its type, size, allocation, usage, etc.)
+     * @brief Resource description to be used in Device::createResource().
     */
     struct resource_desc
     {
         /**
          * @brief The device node on which the resource should be created.
          *
-         * @note Exactly one bit **must** be set, and that bit **must** be less than 1 << Adapter::queryNodeCount(). Passing 0 is the equivalent of passing 1.
+         * @note Valid usage (ErrorInvalidNodeMask): Exactly one bit **must** be set, and that bit **must** be less than 1 << Adapter::queryNodeCount(). Passing 0 is the equivalent of passing 1.
         */
         uint32_t createNodeMask;
         /**
          * @brief A mask with the device nodes on which the resource will be visible.
          *
-         * @note At least the same bit as createNodeMask **must** be set. Passing 0 is the equivalent of passing 1.
-         * @note Any bits set to 1 in visibleNodeMask **must** be less than 1 << Adapter::queryNodeCount().
+         * @note Valid usage (ErrorInvalidNodeMask): At least the same bit as createNodeMask **must** be set. Passing 0 is the equivalent of passing 1.
+         * @note Valid usage (ErrorInvalidNodeMask): Any bits set to 1 in visibleNodeMask **must** be less than 1 << Adapter::queryNodeCount().
         */
         uint32_t visibleNodeMask;
 
         /**
          * @brief The type of resource.
          *
-         * @note type **must** be a valid resource_type enum value.
+         * @note Valid usage (ErrorInvalidUsage): type **must** be a valid resource_type enum value.
         */
         resource_type type;
         /**
          * @brief Flags that determine how the resource may be used.
          *
-         * @note usage **must** be a valid combination of resource_usage_flag_bits.
-         * @note if usage has the DenyShaderResource bit set then it **must** also have the DepthStencilAttachment bit set.
-         * @note if usage has the DenyShaderResource bit set then the only other compatible bits are TransferSrc, TransferDst, and DepthStencilAttachment.
-         * @note if type is Buffer then usage **can only** have the following bits set: TransferSrc, TransferDst, ShaderWrite.
-         * @note if type is not Buffer then all enabled usage flags **must** be supported for the set format. Format resource_usage support can be checked through Adapter::queryFormatProperties(format).
+         * @note Valid usage (ErrorInvalidUsage): usage **must** be a valid combination of resource_usage_flag_bits.
+         * @note Valid usage (ErrorInvalidUsage): if usage has the DenyShaderResource bit set then it **must** also have the DepthStencilAttachment bit set.
+         * @note Valid usage (ErrorInvalidUsage): if usage has the DenyShaderResource bit set then the only other compatible bits are TransferSrc, TransferDst, and DepthStencilAttachment.
+         * @note Valid usage (ErrorInvalidUsage): if type is Buffer then usage **can only** have the following bits set: TransferSrc, TransferDst, ShaderWrite.
+         * @note Valid usage (ErrorInvalidUsage): if type is not Buffer then all enabled usage flags **must** be supported for the set format. Format resource_usage support can be checked through Adapter::queryFormatProperties(format).
         */
         resource_usage_flags usage;
         /**
          * @brief The type of memory that the resource is created on / optimized for.
          *
          * @note memoryType **must** be a valid resource_memory_type enum value.
-         * @note if type is not Buffer then memoryType **must** be set to Local.
-         * @note if memoryType is set to Upload or Read then usage **must not** have the following bits set: ShaderWrite, ColorAttachment, DepthStencilAttachment, DenyShaderResource.
-         * @note if memoryType is set to local then initialState **must not** be Upload.
-         * @note if memoryType is set to Upload then initialState **must** be Upload.
-         * @note if memoryType is set to Read then initialState **must** be TransferDst.
+         * @note Valid usage (ErrorInvalidUsage): if type is not Buffer then memoryType **must** be set to Local.
+         * @note Valid usage (ErrorInvalidUsage): if memoryType is set to Upload or Read then usage **must not** have the following bits set: ShaderWrite, ColorAttachment, DepthStencilAttachment, DenyShaderResource.
+         * @note Valid usage (ErrorInvalidUsage): if memoryType is set to local then initialState **must not** be Upload.
+         * @note Valid usage (ErrorInvalidUsage): if memoryType is set to Upload then initialState **must** be Upload.
+         * @note Valid usage (ErrorInvalidUsage): if memoryType is set to Read then initialState **must** be TransferDst.
         */
         memory_type memoryType;
         /**
          * @brief The state in which the resource should be first after allocation.
          *
-         * @note initialState must be a valid resource_state enum value.
-         * @note if type is Buffer then initialState **must** be one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.
-         * @note if type is Texture1D, Texture2D or Texture3D then initialState **must** be one of the following states: Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.
-         * @note if usage has the ShaderWrite bit set then initialState **must not** be set to Upload.
-         * @note if initialState is ColorAttachment then usage **must** have the ColorAttachment bit set.
-         * @note if initialState is DepthStencilAttachment or DepthStencilAttachmentReadOnly, then usage **must** have the DepthStencilAttachment bit set.
-         * @note if initialState is ShaderReadWrite then usage **must** have the ShaderWrite bit set.
-         * @note if initialState is TransferSrc then usage **must** have the TransferSrc bit set.
-         * @note if initialState is TransferDst then usage **must** have the TransferDst bit set.
+         * @note Valid usage (ErrorInvalidUsage): initialState must be a valid resource_state enum value.
+         * @note Valid usage (ErrorInvalidUsage): if type is Buffer then initialState **must** be one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.
+         * @note Valid usage (ErrorInvalidUsage): if type is Texture1D, Texture2D or Texture3D then initialState **must** be one of the following states: Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.
+         * @note Valid usage (ErrorInvalidUsage): if usage has the ShaderWrite bit set then initialState **must not** be set to Upload.
+         * @note Valid usage (ErrorInvalidUsage): if initialState is ColorAttachment then usage **must** have the ColorAttachment bit set.
+         * @note Valid usage (ErrorInvalidUsage): if initialState is DepthStencilAttachment or DepthStencilAttachmentReadOnly, then usage **must** have the DepthStencilAttachment bit set.
+         * @note Valid usage (ErrorInvalidUsage): if initialState is ShaderReadWrite then usage **must** have the ShaderWrite bit set.
+         * @note Valid usage (ErrorInvalidUsage): if initialState is TransferSrc then usage **must** have the TransferSrc bit set.
+         * @note Valid usage (ErrorInvalidUsage): if initialState is TransferDst then usage **must** have the TransferDst bit set.
         */
         resource_state initialState;
 
         /**
          * @brief The width of the resource. If the resource is a Buffer then this determines the size of the Buffer in bytes. If the resource is a texture then the width is the number of texels on the x axis.
          *
-         * @note width **must not** be 0.
-         * @note width **must not** be more than 16384.
+         * @note Valid usage (ErrorInvalidUsage): width **must not** be 0.
+         * @note Valid usage (ErrorInvalidUsage): width **must not** be more than 16384.
         */
         uint32_t width;
         /**
          * @brief The number of texels on the y axis of the texture.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note height **must not** be 0.
-         * @note height **must not** be more than 16384.
-         * @note if type is resource_type::Texture1D then height **must** be 1.
-         * @note if type is resource_type::Texture3D then height **must not** be more than 2048.
+         * @note Valid usage (ErrorInvalidUsage): height **must not** be 0.
+         * @note Valid usage (ErrorInvalidUsage): height **must not** be more than 16384.
+         * @note Valid usage (ErrorInvalidUsage): if type is resource_type::Texture1D then height **must** be 1.
+         * @note Valid usage (ErrorInvalidUsage): if type is resource_type::Texture3D then height **must not** be more than 2048.
         */
         uint32_t height;
         /**
          * @brief The number of texels on the z axis of the texture. This either determines the depth of a Texture3D, or the number of array layers for the other Texture types.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note depthOrArrayLayers **must not** be 0.
-         * @note depthOrArrayLayers **must not** be more than 2048.
+         * @note Valid usage (ErrorInvalidUsage): depthOrArrayLayers **must not** be 0.
+         * @note Valid usage (ErrorInvalidUsage): depthOrArrayLayers **must not** be more than 2048.
         */
         uint16_t depthOrArrayLayers;
         /**
          * @brief The number of mipmap levels on the texture.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note mipLevels **must not** be 0.
-         * @note if width is 1 then mipLevels **must** be 1.
-         * @note if mipLevels is more than 1 then width **must** be >= pow(2, mipLevels).
+         * @note Valid usage (ErrorInvalidUsage): mipLevels **must not** be 0.
+         * @note Valid usage (ErrorInvalidUsage): if width is 1 then mipLevels **must** be 1.
+         * @note Valid usage (ErrorInvalidUsage): if mipLevels is more than 1 then width **must** be >= pow(2, mipLevels).
         */
         uint16_t mipLevels;
 
@@ -426,21 +426,21 @@ namespace llri
          * @brief The number of samples per pixel.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note sampleCount **must** be a valid texture_sample_count enum value.
-         * @note sampleCount **must** be supported for the format value. Use Adapter::queryFormatProperties().
-         * @note if mipLevels is more than 1 then sampleCount **must** be Count1.
-         * @note if sampleCount is more than Count1 then usage **must** have ColorAttachment and/or DepthStencilAttachment set.
-         * @note if usage has the ShaderWrite bit set then sampleCount **must** be Count1.
+         * @note Valid usage (ErrorInvalidUsage): sampleCount **must** be a valid texture_sample_count enum value.
+         * @note Valid usage (ErrorInvalidUsage): sampleCount **must** be supported for the format value. Use Adapter::queryFormatProperties().
+         * @note Valid usage (ErrorInvalidUsage): if mipLevels is more than 1 then sampleCount **must** be Count1.
+         * @note Valid usage (ErrorInvalidUsage): if sampleCount is more than Count1 then usage **must** have ColorAttachment and/or DepthStencilAttachment set.
+         * @note Valid usage (ErrorInvalidUsage): if usage has the ShaderWrite bit set then sampleCount **must** be Count1.
         */
         sample_count sampleCount;
         /**
          * @brief The format of the texture.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note textureFormat **must** be a valid format enum value.
-         * @note textureFormat **must not** be Undefined.
-         * @note textureFormat **must** be supported. Query support through Adapter::queryFormatProperties().
-         * @note textureFormat **must** support type. Query support for resource types per format using Adapter::queryFormatProperties().
+         * @note Valid usage (ErrorInvalidUsage): textureFormat **must** be a valid format enum value.
+         * @note Valid usage (ErrorInvalidUsage): textureFormat **must not** be Undefined.
+         * @note Valid usage (ErrorInvalidUsage): textureFormat **must** be supported. Query support through Adapter::queryFormatProperties().
+         * @note Valid usage (ErrorInvalidUsage): textureFormat **must** support type. Query support for resource types per format using Adapter::queryFormatProperties().
         */
         format textureFormat;
 
