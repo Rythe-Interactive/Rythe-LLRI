@@ -182,7 +182,7 @@ namespace llri
             imageCreate.pNext = nullptr;
             imageCreate.flags = 0;
             imageCreate.imageType = internal::mapTextureType(desc.type);
-            imageCreate.format = internal::mapTextureFormat(desc.format);
+            imageCreate.format = internal::mapTextureFormat(desc.textureFormat);
             imageCreate.extent = VkExtent3D{ desc.width, desc.height, depth };
             imageCreate.mipLevels = desc.mipLevels;
             imageCreate.arrayLayers = arrayLayers;
