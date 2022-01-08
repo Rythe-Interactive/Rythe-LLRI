@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file command_list.hpp
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
@@ -49,12 +49,15 @@ namespace llri
          *
          * For convenience, 0 **may** be passed, which is interpreted as 1 and refers to the first/default node.
          *
-         * The node mask **must** not have a bit set if the bit is at a position more than or equals Adapter::queryNodeCount().
+         * @note Valid usage (ErrorInvalidNodeMask): The node mask **must not** have a bit set if the bit is at a position more than or equals Adapter::queryNodeCount().
+         * @note Valid usage (ErrorInvalidNodeMask): The node mask **must not** have more than one bit set to positive.
         */
         uint32_t nodeMask;
 
         /**
          * @brief Describes if the CommandList will be used to be submitted to Queues directly or if they will be submitted indirectly through other CommandLists.
+         *
+         * @note Valid usage (ErrorInvalidUsage): The usage must be less or equal to command_list_usage::MaxEnum.
         */
         command_list_usage usage;
     };
