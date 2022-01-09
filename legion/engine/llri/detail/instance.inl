@@ -32,6 +32,8 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE(instance != nullptr, result::ErrorInvalidUsage)
         *instance = nullptr;
 
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions <= static_cast<uint32_t>(instance_extension::MaxEnum), result::ErrorExceededLimit)
+        
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.numExtensions == 0 || (desc.numExtensions > 0 && desc.extensions != nullptr), result::ErrorInvalidUsage)
 
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION
@@ -95,14 +97,11 @@ namespace llri
 
         // Get max queues
         std::unordered_map<queue_type, uint8_t> maxQueueCounts {
-            { queue_type::Graphics, 0 },
-            { queue_type::Compute, 0 },
-            { queue_type::Transfer, 0 }
+            { queue_type::Graphics, desc.adapter->queryQueueCount(queue_type::Graphics) },
+            { queue_type::Compute, desc.adapter->queryQueueCount(queue_type::Compute) },
+            { queue_type::Transfer, desc.adapter->queryQueueCount(queue_type::Transfer) }
         };
-        desc.adapter->queryQueueCount(queue_type::Graphics, &maxQueueCounts[queue_type::Graphics]);
-        desc.adapter->queryQueueCount(queue_type::Compute, &maxQueueCounts[queue_type::Compute]);
-        desc.adapter->queryQueueCount(queue_type::Transfer, &maxQueueCounts[queue_type::Transfer]);
-
+        
         // Validate all queue descs and their relation to max queue counts
         std::unordered_map<queue_type, uint8_t> queueCounts {
             { queue_type::Graphics, 0 },

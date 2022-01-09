@@ -32,31 +32,29 @@ namespace llri
         }
     }
 
-    result Adapter::impl_queryInfo(adapter_info* info) const
+    adapter_info Adapter::impl_queryInfo() const
     {
         VkPhysicalDeviceProperties properties;
         vkGetPhysicalDeviceProperties(static_cast<VkPhysicalDevice>(m_ptr), &properties);
 
-        adapter_info result;
-        result.vendorId = properties.vendorID;
-        result.adapterId = properties.deviceID;
-        result.adapterName = properties.deviceName;
-        result.adapterType = internal::mapPhysicalDeviceType(properties.deviceType);
-        *info = result;
-        return result::Success;
+        adapter_info info{};
+        info.vendorId = properties.vendorID;
+        info.adapterId = properties.deviceID;
+        info.adapterName = properties.deviceName;
+        info.adapterType = internal::mapPhysicalDeviceType(properties.deviceType);
+        return info;
     }
 
-    result Adapter::impl_queryFeatures(adapter_features* features) const
+    adapter_features Adapter::impl_queryFeatures() const
     {
         VkPhysicalDeviceFeatures physicalFeatures;
         vkGetPhysicalDeviceFeatures(static_cast<VkPhysicalDevice>(m_ptr), &physicalFeatures);
 
-        adapter_features result;
+        adapter_features features{};
 
         // Set all the information in a structured way here
 
-        *features = result;
-        return result::Success;
+        return features;
     }
 
     adapter_limits Adapter::impl_queryLimits() const
@@ -76,7 +74,7 @@ namespace llri
         return false;
     }
 
-    result Adapter::impl_queryQueueCount(queue_type type, uint8_t* count) const
+    uint8_t Adapter::impl_queryQueueCount(queue_type type) const
     {
         // Get queue family info
         uint32_t propertyCount;
@@ -93,10 +91,7 @@ namespace llri
                     // Only the graphics queue has the graphics bit set
                     // it usually also has compute & transfer set, because graphics queue tends to be general purpose
                     if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT)
-                    {
-                        *count = static_cast<uint8_t>(p.queueCount);
-                        return result::Success;
-                    }
+                        return static_cast<uint8_t>(p.queueCount);
                     break;
                 }
                 case queue_type::Compute:
@@ -104,10 +99,7 @@ namespace llri
                     // Dedicated compute family has no graphics bit but does have a compute bit
                     if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
                         (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == VK_QUEUE_COMPUTE_BIT)
-                    {
-                        *count = static_cast<uint8_t>(p.queueCount);
-                        return result::Success;
-                    }
+                        return static_cast<uint8_t>(p.queueCount);
                     break;
                 }
                 case queue_type::Transfer:
@@ -116,16 +108,13 @@ namespace llri
                     if ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0 &&
                         (p.queueFlags & VK_QUEUE_COMPUTE_BIT) == 0 &&
                         (p.queueFlags & VK_QUEUE_TRANSFER_BIT) == VK_QUEUE_TRANSFER_BIT)
-                    {
-                        *count = static_cast<uint8_t>(p.queueCount);
-                        return result::Success;
-                    }
+                        return static_cast<uint8_t>(p.queueCount);
                     break;
                 }
             }
         }
-
-        return result::Success;
+        
+        return 0;
     }
 
     std::unordered_map<format, format_properties> Adapter::impl_queryFormatProperties() const

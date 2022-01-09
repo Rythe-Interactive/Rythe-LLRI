@@ -83,7 +83,7 @@ namespace llri
     */
     struct adapter_features
     {
-
+        // reserved for future adapter features.
     };
 
     /**
@@ -91,7 +91,7 @@ namespace llri
     */
     struct adapter_limits
     {
-
+        // reserved for future adapter limits.
     };
 
     /**
@@ -132,23 +132,13 @@ namespace llri
     public:
         /**
          * @brief Query basic information about the Adapter.
-         * @param info A pointer to the adapter_info structure that needs to be filled.
-         *
-         * @return ErrorInvalidUsage if info is nullptr.
-         * @return ErrorDeviceLost if the adapter was removed or lost.
         */
-        result queryInfo(adapter_info* info) const;
+        [[nodiscard]] adapter_info queryInfo() const;
 
         /**
          * @brief Query a structure with all supported driver/hardware features.
-         * @param features A pointer to the adapter_features structure that needs to be filled.
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if features is nullptr.
-         * @return ErrorIncompatibleDriver if the Adapter doesn't support the implementation's requested graphics API.
-         * @return ErrorDeviceLost if the adapter was removed or lost.
         */
-        result queryFeatures(adapter_features* features) const;
+        [[nodiscard]] adapter_features queryFeatures() const;
 
         /**
          * @brief Query a structure with information about the Adapter's limits.
@@ -158,22 +148,18 @@ namespace llri
         /**
          * @brief Query the support of a given adapter extension.
          * @param ext The type of adapter extension to check against.
+         *
+         * @note Always returns false if ext > adapter_extension::MaxEnum.
          */
-        bool queryExtensionSupport(adapter_extension ext) const;
+        [[nodiscard]] bool queryExtensionSupport(adapter_extension ext) const;
 
         /**
          * @brief Query the maximum number of available queues for a given queue type.
-         * @param type The type of queue. This must be a valid queue_type value.
-         * @param count A pointer to the uint variable describing the number of available queues.
+         * @param type The type of queue. This must be a valid queue_type value, or the function returns 0.
          *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if type is not a valid queue_type value.
-         * @return ErrorInvalidUsage if count is nullptr.
-         * @return ErrorDeviceLost if the adapter was removed or lost.
-         *
-         * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
+         * @note (Device nodes) Queues are shared across device nodes. The Queue selects nodes (Adapters) to execute the commands on based on command list parameters.
         */
-        result queryQueueCount(queue_type type, uint8_t* count) const;
+        [[nodiscard]] uint8_t queryQueueCount(queue_type type) const;
 
         /**
          * @brief Query the properties of all formats.
@@ -208,12 +194,12 @@ namespace llri
         // cached value of queryFormatProperties()
         mutable std::unordered_map<format, format_properties> m_cachedFormatProperties {};
 
-        result impl_queryInfo(adapter_info* info) const;
-        result impl_queryFeatures(adapter_features* features) const;
+        [[nodiscard]] adapter_info impl_queryInfo() const;
+        [[nodiscard]] adapter_features impl_queryFeatures() const;
         [[nodiscard]] adapter_limits impl_queryLimits() const;
         [[nodiscard]] bool impl_queryExtensionSupport(adapter_extension ext) const;
 
-        result impl_queryQueueCount(queue_type type, uint8_t* count) const;
+        uint8_t impl_queryQueueCount(queue_type type) const;
 
         [[nodiscard]] std::unordered_map<format, format_properties> impl_queryFormatProperties() const;
     };

@@ -14,7 +14,6 @@ namespace llri
     enum struct queue_type : uint8_t;
     class Queue;
 
-    struct command_group_desc;
     class CommandGroup;
 
     enum struct fence_flag_bits : uint32_t;
@@ -33,30 +32,46 @@ namespace llri
     {
         /**
          * @brief The adapter to create the instance for.
+         *
+         * @note Valid usage (ErrorInvalidUsage): adapter **must** be a valid non-null pointer.
         */
         Adapter* adapter;
         /**
          * @brief The enabled adapter features.
          * It is **recommended** to only enable features that will be used because unused enabled features might disable driver optimizations.
+         *
+         * @note Valid usage (ErrorFeatureNotSupported): All enabled features **must** be enabled in Adapter::queryFeatures().
         */
         adapter_features features;
 
         /**
          * @brief The number of device extensions in the device_desc::extensions array.
+         *
+         * @note Valid usage (ErrorExceededLimit):  As device_desc::extensions can only hold unique values, numExtensions can not be more than adapter_extension::MaxEnum.
         */
         uint32_t numExtensions;
         /**
-         * @brief The adapter extensions, if device_desc::numExtensions > 0, then this **must** be a valid pointer to an array of adapter_extension.
-         * If device_desc::numExtensions == 0, then this pointer **may** be nullptr.
+         * @brief An array of adapter extensions, [extensions, extensions + numExtensions - 1].
+         *
+         * @note Valid usage (ErrorInvalidUsage):  if device_desc::numExtensions > 0, then this **must** be a valid pointer to an array of adapter_extension. If device_desc::numExtensions == 0, then this pointer **may** be nullptr.
+         * @note Valid usage (ErrorInvalidUsage): Each value in this array **must** be <= adapter_extension::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): Each value in this array **must** be unique. // TODO: Enforce this
+         * @note Valid usage (ErrorExtensionNotSupported): Adapter::queryExtensionSupport() must return true on each value in this array.
         */
         adapter_extension* extensions;
 
         /**
-         * @brief The number of queues that are in the device_desc::queues array. Device **can not** be created without queues, thus this value **must** be at least 1 or higher.
+         * @brief The number of queues that are in the device_desc::queues array.
+         *
+         * @note Valid usage (ErrorInvalidUsage): Device **can not** be created without queues, thus this value **must** be at least 1 or higher.
         */
         uint32_t numQueues;
         /**
-         * @brief An array of device queue descriptions, which is used to create the queues upon device creation. This value **must** be a valid pointer to an array of queue_desc structures, with a size of at least device_desc::numQueues.
+         * @brief An array of device queue descriptions, which is used to create the queues upon device creation, [queues, queues + numQueues - 1].
+         *
+         * @note Valid usage (ErrorInvalidUsage):This value **must** be a valid non-null pointer to an array of queue_desc structures, with a size of at least device_desc::numQueues.
+         * @note Valid usage (ErrorExceededLimit): The total number of elements with queue_desc::type as a given queue_type **must not** exceed Adapter::queryQueueCount() with that queue_type.
+         * @note All conditions in queue_desc must be met.
         */
         queue_desc* queues;
     };
@@ -77,64 +92,66 @@ namespace llri
         [[nodiscard]] device_desc getDesc() const;
 
         /**
-         * @brief Query a created Queue by type and index.
+         * @brief Get a created Queue by type and index.
          *
          * All queues are created upon device creation, and stored for quick access through getQueue(). Queues are thus owned by the Device, the user **may** query the created queues for use, but the user never obtains ownership over the queue.
          *
          * Queues are stored contiguously (but separated by type) in the order of device_desc::queues. Thus if device_desc::queues contained [Graphics, Compute, Graphics, Transfer, Graphics], the graphics queues for that array could be accessed with index 0, 1, 2, and not by their direct index in the array.
          *
-         * @param type The type of Queue. This value must be a valid queue_type value, and at least one of this queue type must have been requested during device creation.
-         * @param index The Queue array index. Queues are stored per type so this index must be from 0 to n-1 where n is the number of requested queues of this particular type.
-         * @param queue A pointer to the resulting queue variable.
-         *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if type is not a valid enum value
-         * @return ErrorExceededLimit if index is more than the number of queues created of the given type
-         * @return ErrorInvalidUsage if queue is nullptr.
-         *
          * @note (Device nodes) Queues are shared across device nodes. The API selects nodes (Adapters) to execute the commands on based on command list parameters.
+         *
+         * @param type The type of Queue. This value **must** be a valid queue_type value, and at least one of this queue type **must** have been requested during device creation.
+         * @param index The Queue array index. Queues are stored per type so this index **must** be from 0 to n-1 where n is the number of requested queues of this particular type.
+         *
+         * @return The requested Queue if all conditions were met, or nullptr otherwise.
         */
-        result getQueue(queue_type type, uint8_t index, Queue** queue);
+        Queue* getQueue(queue_type type, uint8_t index);
 
         /**
-        * @brief Get the number of created queues of a given type.
+         * @brief Get the number of created queues of a given type.
         */
         uint8_t queryQueueCount(queue_type type);
 
         /**
          * @brief Create a command group. Command groups are responsible for allocating and managing the necessary device memory for command queues.
          *
-         * @param desc The description of the command group.
+         * @param type The type of queue that this CommandGroup allocates for. A CommandList allocated through CommandGroup must only submit to queues of this type.
          * @param cmdGroup A pointer to the resulting command group variable.
          *
+         * @note Valid usage (ErrorInvalidUsage): cmdGroup **must** be a valid non-null pointer to a CommandGroup* variable.
+         * @note Valid usage (ErrorInvalidUsage): type **must** be less or equal to queue_type::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): Device::queryQueueCount(type) must return more than 0.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if cmdGroup is nullptr.
-         * @return ErrorInvalidUsage if desc.type is not a valid queue_type enum value.
-         * @return ErrorInvalidUsage if this device's Device::queryQueueCount(desc.type) returns 0.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
-        result createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
+        result createCommandGroup(queue_type type, CommandGroup** cmdGroup);
 
         /**
-         * @brief Destroy the command group.
+         * @brief Destroy the command group object.
+         *
+         * CommandLists allocated through the CommandGroup do **not** have to be be freed manually, but users should note that their handles willl become invalid after this, thus they may no longer be used and they should also not be in use by the GPU at the time of destruction.
+         *
          * @param cmdGroup A pointer to a valid CommandGroup, or nullptr.
         */
         void destroyCommandGroup(CommandGroup* cmdGroup);
 
         /**
          * @brief Create a Fence which can be used for cpu-gpu synchronization.
+         *
          * @param flags Flags to describe how the Fence should be created.
          * @param fence A pointer to the resulting fence variable.
          *
+         * @note Valid usage (ErrorInvalidUsage): fence **must** be a valid non-null pointer to a Fence* variable.
+         * @note Valid usage (ErrorInvalidUsage): flags **must** be a valid combination of fence_flag_bits enum values.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if fence is nullptr.
-         * @return ErrorInvalidUsage if flags is not a valid combination of fence_flags enum values.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result createFence(fence_flags flags, Fence** fence);
 
         /**
-         * @brief Destroy the Fence.
+         * @brief Destroy the Fence object.
          * @param fence A pointer to a valid Fence, or nullptr.
         */
         void destroyFence(Fence* fence);
@@ -152,12 +169,13 @@ namespace llri
          * @param fences An array of Fence pointers. Each fence must be a valid pointer to a Fence.
          * @param timeout Timeout is the time in milliseconds until the function **must** return. If timeout is more than 0, the function will block as described above. If timeout is 0, then no blocking occurs, but the function returns Success if all fences reach their signal, and returns Timeout if (some of) fences did not.
          *
+         * @note Valid usage (ErrorInvalidUsage): numFences **must** be more than 0.
+         * @note Valid usage (ErrorInvalidUsage): fences **must** be a valid non-null pointer to a Fence* array.
+         * @note Valid usage (ErrorInvalidUsage): each element in the fences array **must** be a valid non-null pointer to a Fence*.
+         * @note Valid usage (ErrorNotSignaled): each fence must have been signaled prior to this call.
+         *
          * @return Success upon correct execution of the operation, if all fences finish within the timeout.
          * @return Timeout if the wait time for the fences was longer than their wait time.
-         * @return ErrorInvalidUsage if numFences was 0.
-         * @return ErrorInvalidUsage if fences was nullptr.
-         * @return ErrorInvalidUsage if any of the Fence pointers in the fences array were nullptr.
-         * @return ErrorNotSignaled if any of the fences have not been signaled and thus can never reach their signal.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorDeviceLost.
         */
         result waitFences(uint32_t numFences, Fence** fences, uint64_t timeout);
@@ -172,14 +190,15 @@ namespace llri
          * @brief Create a Semaphore, which can be used for synchronization between GPU events.
          * @param semaphore A pointer to the resulting Semaphore variable.
          *
+         * @note Valid uage (ErrorInvalidUsage): semaphore **must** be a valid non-null pointer to a Semaphore* variable.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if semaphore was nullptr.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result createSemaphore(Semaphore** semaphore);
 
         /**
-         * @brief Destroy the given semaphore.
+         * @brief Destroy the given Semaphore object.
          * @param semaphore A pointer to a valid Semaphore, or nullptr.
         */
         void destroySemaphore(Semaphore* semaphore);
@@ -188,9 +207,11 @@ namespace llri
          * @brief Create a resource (a buffer or texture) and allocate the memory for it.
          * @param desc The description of the resource.
          * @param resource A pointer to the resulting resource variable.
+         *
+         * @note Valid usage (ErrorInvalidUsage): resource must be a valid non-null pointer to a Resource* variable.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if resource was nullptr.
-         * @return ErrorInvalidUsage if any of the conditions in resource_desc are not met.
+         * @return resource_desc defined result values: ErrorInvalidUsage, ErrorInvalidNodeMask.
          * @return ErrorOutOfDeviceMemory implementations may return this if the resource does not fit in the Device's memory.
         */
         result createResource(const resource_desc& desc, Resource** resource);
@@ -217,7 +238,7 @@ namespace llri
 
         device_desc m_desc;
 
-        result impl_createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup);
+        result impl_createCommandGroup(queue_type type, CommandGroup** cmdGroup);
         void impl_destroyCommandGroup(CommandGroup* cmdGroup);
 
         result impl_createFence(fence_flags flags, Fence** fence);

@@ -6,7 +6,6 @@
 
 #pragma once
 #include <cstdint>
-#include <algorithm>
 
 namespace llri
 {
@@ -63,6 +62,7 @@ namespace llri
 #define LLRI_DETAIL_VALIDATION_REQUIRE_IF(condition, param, ret) { \
         if (condition) \
         { \
+            /* make sure the expression is executed only once */ \
             bool requireParamResult = param; \
             if (!requireParamResult) \
             { \

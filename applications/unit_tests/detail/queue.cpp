@@ -27,9 +27,8 @@ TEST_CASE("Queue")
     {
         for (size_t i = 0; i < device->queryQueueCount(static_cast<llri::queue_type>(type)); i++)
         {
-            llri::Queue* queue;
-            REQUIRE_EQ(device->getQueue(static_cast<llri::queue_type>(type), i, &queue), llri::result::Success);
-
+            llri::Queue* queue = device->getQueue(static_cast<llri::queue_type>(type), i);
+            REQUIRE_NE(queue, nullptr);
             queues.push_back({ static_cast<llri::queue_type>(type), static_cast<uint8_t>(i), queue });
         }
     }

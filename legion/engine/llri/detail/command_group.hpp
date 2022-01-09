@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file command_group.hpp
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
@@ -15,18 +15,7 @@ namespace llri
     struct command_list_alloc_desc;
 
     /**
-     * @brief Describes how the CommandGroup should be created.
-    */
-    struct command_group_desc
-    {
-        /**
-         * @brief The type of queue that this CommandGroup allocates for. A CommandList allocated through CommandGroup must only submit to queues of this type.
-        */
-        queue_type type;
-    };
-
-    /**
-     * @brief CommandGroups are responsible for allocating the memory required to record CommandLists. They are used to allocate one or multiple CommandLists but never more than command_group_desc::count.
+     * @brief CommandGroups are responsible for allocating the memory required to record CommandLists. They are used to allocate one or multiple CommandLists.
      *
      * @note CommandGroups are not thread-safe. CommandLists allocated through the same CommandGroup **can not** be recorded from separate threads simultaneously. For multi-threaded recording, it is recommended to create at least one separate CommandGroup per thread to prevent this from becoming an issue.
     */
@@ -47,8 +36,9 @@ namespace llri
          *
          * @note The CommandLists in this CommandGroup **can not** be in use in Queue::submit() at this time.
          *
+         * @note Valid usage (ErrorInvalidState): None of the CommandLists created by the Group can be in the command_list_state::Recording state.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidState One of the CommandLists in the group is currently in the command_list_state::Recording state.
          * @return Implementation defined result values: ErrorOutOfDeviceMemory.
         */
         result reset();
@@ -61,11 +51,10 @@ namespace llri
          * @param desc The allocation description describes the command list's usage.
          * @param cmdList A pointer to the resulting command list variable;
          *
+         * @note Valid usage (ErrorInvalidUsage): cmdList **must** be a valid non-null pointer to a CommandList* variable.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if cmdList was nullptr.
-         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set which was not represented by a node in the Device. The node mask **must** always have its positive bit set at a position less than Adapter::queryNodeCount().
-         * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set.
-         * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
+         * @return command_list_alloc_desc defined result values: ErrorInvalidNodeMask, ErrorInvalidUsage.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result allocate(const command_list_alloc_desc& desc, CommandList** cmdList);
@@ -79,12 +68,11 @@ namespace llri
          * @param count The number of CommandLists to allocate.
          * @param cmdLists A pointer to the resulting command list vector.
          *
+         * @note Valid usage (ErrorInvalidUsage): cmdLists **must** be a valid non-null pointer to a std::vector<CommandList*> vector.
+         * @note Valid usage (ErrorInvalidUsage): count **must** be more than 0.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if cmdLists was nullptr.
-         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set to 1 which was not represented by a node in the Device. The node mask must always have its positive bit set at Adapter::queryNodeCount() or less.
-         * @return ErrorInvalidNodeMask if desc.nodeMask had multiple bits set to 1.
-         * @return ErrorInvalidUsage if desc.usage was not a valid command_list_usage enum value.
-         * @return ErrorInvalidUsage if count was 0.
+         * @return command_list_alloc_desc defined result values: ErrorInvalidNodeMask, ErrorInvalidUsage.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
         */
         result allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists);
@@ -94,23 +82,25 @@ namespace llri
          *
          * @param cmdList The CommandList to be free'd and destroyed.
          *
+         * @note Valid usage (ErrorInvalidUsage): The cmdList **must** be a valid non-null pointer to a CommandList.
+         * @note Valid usage (ErrorInvalidUsage): The cmdList **must** have been allocated through the CommandGroup.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if cmdList is nullptr.
-         * @return ErrorInvalidUsage if the cmdList didn't belong to the CommandGroup.
         */
         result free(CommandList* cmdList);
 
         /**
          * @brief Free an array of CommandLists, which allows the CommandGroup to release all of the device memory allocated for the CommandLists.
          *
-         * @param numCommandLists The number of CommandLists to be free'd, *should** match the size of the cmdLists array.
-         * @param cmdLists An array of CommandGroups, **must** not be nullptr and **must** at least contain numCommandLists amount of CommandLists.
+         * @param numCommandLists The number of CommandLists in the cmdLists array.
+         * @param cmdLists An array of CommandGroups that ought to be free'd.
+         *
+         * @note Valid usage (ErrorInvalidUsage): numCommandLists **must** be more than 0.
+         * @note Valid usage (ErrorInvalidUsage): cmdLists **must** be a valid non-null pointer to an array of CommandList*s.
+         * @note Valid usage (ErrorInvalidUsage): All of the elements in cmdLists **must** be valid non-null pointers.
+         * @note Valid usage (ErrorInvalidUsage): All of the elements in cmdLists **must** have been allocated through this CommandGroup.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if numCommandLists is 0.
-         * @return ErrorInvalidUsage if cmdLists is nullptr.
-         * @return ErrorInvalidUsage if any of the CommandLists in cmdLists is nullptr.
-         * @return ErrorInvalidUsage if any of the CommandLists in cmdLists doesn't belong to the CommandGroup.
         */
         result free(uint8_t numCommandLists, CommandList** cmdLists);
 

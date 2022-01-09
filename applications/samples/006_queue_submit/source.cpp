@@ -35,8 +35,7 @@ int main()
     // This sample expands upon 005_commands by showing how the recorded CommandLists can be submitted to the device's queue.
 
     // We start out by getting the queue from the previously created device
-    llri::Queue* queue = nullptr;
-    device->getQueue(llri::queue_type::Graphics, 0, &queue);
+    llri::Queue* queue = device->getQueue(llri::queue_type::Graphics, 0);
 
     // Commands must be recorded (in the "Ready" state) before being able to be submitted to a queue.
     const llri::command_list_begin_desc begin{};
@@ -85,16 +84,10 @@ llri::Adapter* selectAdapter(llri::Instance* instance)
     std::unordered_map<int, llri::Adapter*> sortedAdapters;
     for (auto* adapter : adapters)
     {
-        llri::adapter_info info;
-        r = adapter->queryInfo(&info);
-        if (r != llri::result::Success)
-            return nullptr;
+        llri::adapter_info info = adapter->queryInfo();
 
-        uint8_t graphicsQueueCount;
-        r = adapter->queryQueueCount(llri::queue_type::Graphics, &graphicsQueueCount);
-        if (r != llri::result::Success)
-            return nullptr;
-
+        uint8_t graphicsQueueCount = adapter->queryQueueCount(llri::queue_type::Graphics);
+        
         // Skip this Adapter if it has no graphics queue available.
         if (graphicsQueueCount == 0)
             continue;
@@ -140,11 +133,8 @@ llri::Device* createDevice(llri::Instance* instance, llri::Adapter* adapter)
 // see 005_commands
 llri::CommandGroup* createCommandGroup(llri::Device* device)
 {
-    llri::command_group_desc groupDesc{};
-    groupDesc.type = llri::queue_type::Graphics;
-
     llri::CommandGroup* group;
-    if (device->createCommandGroup(groupDesc, &group) != llri::result::Success)
+    if (device->createCommandGroup(llri::queue_type::Graphics, &group) != llri::result::Success)
         return nullptr;
 
     return group;

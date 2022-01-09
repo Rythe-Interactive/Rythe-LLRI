@@ -100,6 +100,7 @@ namespace llri
         // convenience callback functions
         inline void callUserCallback(message_severity severity, message_source source, const std::string& message) { if (m_messageCallback) m_messageCallback(severity, source, message.c_str(), m_userData); }
         inline void apiError(const std::string& func, result r, const std::string& message) { callUserCallback(message_severity::Error, message_source::API, func + " returned " + to_string(r) + " because " + message); }
+        inline void apiError(const std::string& func, void* dummy, const std::string& message) { callUserCallback(message_severity::Error, message_source::API, func + " returned " + std::to_string(reinterpret_cast<uint64_t>(dummy)) + " because " + message); }
         inline void apiWarning(const std::string& func, const std::string& message) { callUserCallback(message_severity::Warning, message_source::API, "in " + func + ": " + message); }
     }
 

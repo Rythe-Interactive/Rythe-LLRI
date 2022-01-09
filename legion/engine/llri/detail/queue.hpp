@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file queue.hpp
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
@@ -87,10 +87,14 @@ namespace llri
     {
         /**
          * @brief The type of queue. This determines the set of commands that the queue can support, and the optimizations it **may** enable for that set of commands.
+         *
+         * @note Valid usage (ErrorInvalidUsage):  type must not be more than queue_type::MaxEnum.
         */
         queue_type type;
         /**
          * @brief The priority of the queue. This **may** affect which queues receive more or less adapter computing resources.
+         *
+         * @note Valid usage (ErrorInvalidUsage):  priority must not be more than queue_priority::MaxEnum.
         */
         queue_priority priority;
     };
@@ -101,48 +105,59 @@ namespace llri
     struct submit_desc
     {
         /**
-         * @brief The nodeMask determines which adapter node the queues are submitted to. A single bit **must** be set.
+         * @brief The nodeMask determines which adapter node the queues are submitted to. If this value is 0, it is interpreted as 1.
          *
-         * All the CommandLists **must** be created for this nodemask.
+         * @note Valid usage (ErrorInvalidNodeMask): Exactly one bit **must** be set, and that bit **must** be less than 1 << Adapter::queryNodeCount().
+         * @note Valid usage (ErrorIncompatibleNodeMask):  All the CommandLists in this submit **must** have been allocated with this nodemask.
         */
         uint32_t nodeMask;
 
         /**
-         * @brief The number of CommandLists in submit_desc::commandLists. **Must** not be 0.
+         * @brief The number of CommandLists in the submit_desc::commandLists array.
+         *
+         * @note Valid usage (ErrorInvalidUsage): numCommandLists **must** be more than 0.
         */
         uint32_t numCommandLists;
         /**
-         * @brief An array of CommandList pointers that ought to be submitted to the queue.
-         * This array **must not** be nullptr, **must** be of at least size numCommandLists, and all pointers in the array **must** be valid CommandList pointers.
+         * @brief An array of CommandList pointers (of size numCommandLists) that ought to be submitted to the queue.
+         *
+         * @note Valid usage (ErrorInvalidUsage): commandLists **must** be a valid non-null pointer to a CommandList* array.
+         * @note Valid usage (ErrorInvalidUsage): Each element in commandLists **must** be a valid non-null CommandList.
+         * @note Valid usage (ErrorInvalidState): Each commandlist in the array **must** be in the command_list_state::Ready state.
         */
         CommandList** commandLists;
 
         /**
-         * @brief The number of Semaphores in submit_desc::waitSemaphores. **May** be 0.
+         * @brief The number of Semaphores in the submit_desc::waitSemaphores array.
         */
         uint32_t numWaitSemaphores;
         /**
          * @brief An array of Semaphores that the CommandLists must wait on prior to executing.
          *
-         * This array **may** be nullptr if numWaitSemaphores is 0.
-         * If not, then this array **must not** be nullptr, the array **must** be of at least size numWaitSemaphores, and all pointers in the array **must** be valid Semaphore pointers.
+         * @note Valid usage: if numWaitSemaphores == 0 then waitSemaphores **may** be nullptr.
+         * @note Valid usage (ErrorInvalidUsage): if numWaitSemaphores > 0 then waitSemaphores **must** be a valid non-null pointer to an array of size numWaitSemaphores (or more).
+         * @note Valid usage (ErrorInvalidUsage): if numWaitSemaphores > 0 then each element in waitSemaphores **must** be a valid non-null Semaphore pointer.
         */
         Semaphore** waitSemaphores;
 
         /**
-         * @brief The number of Semaphores in submit_desc::signalSemaphores. **May** be 0.
+         * @brief The number of Semaphores in the submit_desc::signalSemaphores array.
         */
         uint32_t numSignalSemaphores;
         /**
          * @brief An array of Semaphores that the CommandList signal after they are done executing.
          *
-         * This array **may** be nullptr if numSignalSemaphores is 0.
-         * If not, then this array **must not** be nullptr, the array **must** be of at least size numSignalSemaphores, and all pointers in the array **must** be valid Semaphore pointers.
+         * @note Valid usage: if numSignalSemaphores == 0 then signalSemaphores **may** be nullptr.
+         * @note Valid usage (ErrorInvalidUsage): if numSignalSemaphores > 0 then signalSemaphores **must** be a valid non-null pointer to an array of size numSignalSemaphores (or more).
+         * @note Valid usage (ErrorInvalidUsage): if numSignalSemaphores > 0 then each element in signalSemaphores **must** be a valid non-null Semaphore pointer.
         */
         Semaphore** signalSemaphores;
 
         /**
-         * @brief A fence to signal after the CommandLists are done executing. **Must** be a valid pointer to a Fence, or nullptr.
+         * @brief A fence to signal after the CommandLists are done executing.
+         *
+         * @note Valid usage: fence may be a valid pointer to a Fence, or nullptr.
+         * @Note Valid usage (ErrorAlreadySignaled): if fence is not nullptr, then the Fence **must not** have already been signaled.
         */
         Fence* fence;
     };
@@ -166,29 +181,14 @@ namespace llri
          * @param desc Describes the CommandLists that get executed, and what synchronization they signal or wait upon.
          *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidNodeMask if desc.nodeMask had a bit set to 1 which was not represented by a node in the Device. The nodeMask must always have its positive bit set at Adapter::queryNodeCount() or less.
-         * @return ErrorIncompatibleNodeMask if any of the CommandLists in desc.commandLists was not created with the same nodeMask as desc.nodeMask.
-         *
-         * @return ErrorInvalidUsage if desc.numCommandLists is 0.
-         * @return ErrorInvalidUsage if desc.commandLists is nullptr.
-         * @return ErrorInvalidUsage if any of the CommandLists in desc.commandLists is nullptr.
-         *
-         * @return ErrorInvalidState if any of the CommandLists in desc.commandLists was not in the command_list_state::Ready state.
-         *
-         * @return ErrorInvalidUsage if desc.numWaitSemaphores is more than 0 and desc.waitSemaphores is nullptr.
-         * @return ErrorInvalidUsage if desc.numWaitSemaphores is more than 0 and any of the pointers in desc.waitSemaphores is nullptr.
-         *
-         * @return ErrorInvalidUsage if desc.numSignalSemaphores is more than 0 and desc.signalSemaphores is nullptr.
-         * @return ErrorInvalidUsage if desc.numSignalSemaphores is more than 0 and any of the pointers in desc.signalSemaphores is nullptr.
-         *
-         * @return ErrorAlreadySignaled if desc.fence has already been signaled and has not yet been waited upon.
+         * @return submit_desc defined result values: ErrorInvalidUsage, ErrorInvalidNodeMask, ErrorIncompatibleNodeMask, ErrorInvalidState, ErrorAlreadySignaled.
         */
         result submit(const submit_desc& desc);
 
         /**
          * @brief Wait for the queue to go idle. This function blocks the CPU thread until all of the commands on the queue are done.
          *
-         * This is the equivalent of adding a fence to every submit and waiting for those fences.
+         * This is the equivalent of adding a fence to the last submit and waiting for the said fence.
          *
          * @return Success upon correct execution of the operation.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorDeviceLost.

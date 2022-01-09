@@ -14,42 +14,39 @@ namespace llri
         return m_desc;
     }
 
-    inline result Device::getQueue(queue_type type, uint8_t index, Queue** queue)
+    inline Queue* Device::getQueue(queue_type type, uint8_t index)
     {
-        LLRI_DETAIL_VALIDATION_REQUIRE(queue != nullptr, result::ErrorInvalidUsage)
-
-        *queue = nullptr;
-
-        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, nullptr)
 
         std::vector<Queue*>* queues = nullptr;
         switch(type)
         {
+            // code editor's note: validation is done per queue type here to make the message more clear about which queue type was exceeded
+            
             case queue_type::Graphics:
             {
                 queues = &m_graphicsQueues;
 
-                LLRI_DETAIL_VALIDATION_REQUIRE(index < static_cast<uint8_t>(m_graphicsQueues.size()), result::ErrorExceededLimit)
+                LLRI_DETAIL_VALIDATION_REQUIRE(index < static_cast<uint8_t>(m_graphicsQueues.size()), nullptr)
                 break;
             }
             case queue_type::Compute:
             {
                 queues = &m_computeQueues;
 
-                LLRI_DETAIL_VALIDATION_REQUIRE(index < static_cast<uint8_t>(m_computeQueues.size()), result::ErrorExceededLimit)
+                LLRI_DETAIL_VALIDATION_REQUIRE(index < static_cast<uint8_t>(m_computeQueues.size()), nullptr)
                 break;
             }
             case queue_type::Transfer:
             {
                 queues = &m_transferQueues;
 
-                LLRI_DETAIL_VALIDATION_REQUIRE(index < static_cast<uint8_t>(m_transferQueues.size()), result::ErrorExceededLimit)
+                LLRI_DETAIL_VALIDATION_REQUIRE(index < static_cast<uint8_t>(m_transferQueues.size()), nullptr)
                 break;
             }
         }
 
-        *queue = queues->at(index);
-        return result::Success;
+        return queues->at(index);
     }
 
     inline uint8_t Device::queryQueueCount(queue_type type)
@@ -67,16 +64,16 @@ namespace llri
         return 0;
     }
 
-    inline result Device::createCommandGroup(const command_group_desc& desc, CommandGroup** cmdGroup)
+    inline result Device::createCommandGroup(queue_type type, CommandGroup** cmdGroup)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(cmdGroup != nullptr, result::ErrorInvalidUsage)
 
         *cmdGroup = nullptr;
 
-        LLRI_DETAIL_VALIDATION_REQUIRE(desc.type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE(queryQueueCount(desc.type) > 0, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(queryQueueCount(type) > 0, result::ErrorInvalidUsage)
 
-        LLRI_DETAIL_CALL_IMPL(impl_createCommandGroup(desc, cmdGroup), m_validationCallbackMessenger)
+        LLRI_DETAIL_CALL_IMPL(impl_createCommandGroup(type, cmdGroup), m_validationCallbackMessenger)
     }
 
     inline void Device::destroyCommandGroup(CommandGroup* cmdGroup)

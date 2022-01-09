@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file command_list.hpp
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
@@ -49,12 +49,15 @@ namespace llri
          *
          * For convenience, 0 **may** be passed, which is interpreted as 1 and refers to the first/default node.
          *
-         * The node mask **must** not have a bit set if the bit is at a position more than or equals Adapter::queryNodeCount().
+         * @note Valid usage (ErrorInvalidNodeMask): The node mask **must not** have a bit set if the bit is at a position more than or equals Adapter::queryNodeCount().
+         * @note Valid usage (ErrorInvalidNodeMask): The node mask **must not** have more than one bit set to positive.
         */
         uint32_t nodeMask;
 
         /**
          * @brief Describes if the CommandList will be used to be submitted to Queues directly or if they will be submitted indirectly through other CommandLists.
+         *
+         * @note Valid usage (ErrorInvalidUsage): The usage must be less or equal to command_list_usage::MaxEnum.
         */
         command_list_usage usage;
     };
@@ -114,8 +117,10 @@ namespace llri
          *
          * @param desc Contains contextual information about how (and on what GPU) the CommandList will be submitted, and what kind of information was previously set if this is an indirect CommandList.
          *
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the command_list_state::Empty state.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidState if the CommandList was not in the command_list_state::Empty state.
+         * @return command_list_begin_desc defined return values: -
          *
          * @note The memory required for CommandList recording is allocated through its CommandGroup. Because of this, commandLists allocated through the same CommandGroup **can not** be recorded simultaneously and are thus not thread-safe. For multi-threaded recording, it is recommended to create at least one separate CommandGroup per thread to prevent this from becoming an issue.
         */
@@ -126,8 +131,9 @@ namespace llri
          *
          * The CommandList **must** be in the command_list_state::Recording state for it to transition into a command_list_state::Ready state.
          *
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the command_list_state::Recording state.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidState if the CommandList was not in the command_list_state::Recording state.
         */
         result end();
 
