@@ -1,5 +1,4 @@
-
-name: docs-action
+name: docs-deploy
 
 on:
   push:
@@ -60,5 +59,4 @@ jobs:
         key: ${{ secrets.DOCS_PRIVATE_KEY }}
         port: ${{ secrets.DOCS_PORT }}
         strip_components: 3
-
 

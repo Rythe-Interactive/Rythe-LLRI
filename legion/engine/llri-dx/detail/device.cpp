@@ -157,7 +157,7 @@ namespace llri
         dx12Desc.Height = isTexture ? desc.height : 1;
         dx12Desc.DepthOrArraySize = isTexture ? static_cast<UINT16>(desc.depthOrArrayLayers) : 1;
         dx12Desc.MipLevels = isTexture ? static_cast<UINT16>(desc.mipLevels) : 1;
-        dx12Desc.Format = isTexture ? directx::mapTextureFormat(desc.format) : DXGI_FORMAT_UNKNOWN;
+        dx12Desc.Format = isTexture ? directx::mapTextureFormat(desc.textureFormat) : DXGI_FORMAT_UNKNOWN;
         dx12Desc.SampleDesc = isTexture ? DXGI_SAMPLE_DESC{ static_cast<UINT>(desc.sampleCount), D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE } : DXGI_SAMPLE_DESC{ 1, 0 };
         dx12Desc.Layout = isTexture ? D3D12_TEXTURE_LAYOUT_UNKNOWN : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
         dx12Desc.Flags = directx::mapResourceUsage(desc.usage);

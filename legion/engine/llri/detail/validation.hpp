@@ -6,7 +6,7 @@
 
 #pragma once
 #include <cstdint>
-#include <xutility>
+#include <algorithm>
 
 namespace llri
 {

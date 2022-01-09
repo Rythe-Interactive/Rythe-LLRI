@@ -372,12 +372,12 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.usage.contains(resource_usage_flag_bits::ShaderWrite), desc.sampleCount != sample_count::Count1, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.sampleCount > sample_count::Count1, desc.usage.contains(resource_usage_flag_bits::ColorAttachment) || desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.mipLevels > 1, desc.sampleCount == sample_count::Count1, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.mipLevels > 1, desc.width >= pow(2, desc.mipLevels), result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.mipLevels > 1, desc.width >= std::pow(2, desc.mipLevels), result::ErrorInvalidUsage)
 
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, desc.format <= format::MaxEnum, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, desc.format != format::Undefined, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, desc.textureFormat <= format::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, desc.textureFormat != format::Undefined, result::ErrorInvalidUsage)
 
-        const format_properties formatProperties = m_adapter->queryFormatProperties(desc.format);
+        const format_properties formatProperties = m_adapter->queryFormatProperties(desc.textureFormat);
 
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, formatProperties.supported, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, formatProperties.sampleCounts.at(desc.sampleCount) != false, result::ErrorInvalidUsage)

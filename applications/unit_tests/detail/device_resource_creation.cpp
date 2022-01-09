@@ -100,7 +100,7 @@ TEST_CASE("Device::createResource()")
 
                                                 for (auto f : formats)
                                                 {
-                                                    desc.format = f;
+                                                    desc.textureFormat = f;
 
                                                     llri::Resource* resource = nullptr;
                                                     llri::result result = device->createResource(desc, &resource);

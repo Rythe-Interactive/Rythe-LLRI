@@ -437,12 +437,12 @@ namespace llri
          * @brief The format of the texture.
          *
          * @note Ignored if type is resource_type::Buffer.
-         * @note format **must** be a valid format enum value.
-         * @note format **must not** be Undefined.
-         * @note format **must** be supported. Query support through Adapter::queryFormatProperties().
-         * @note format **must** support type. Query support for resource types per format using Adapter::queryFormatProperties().
+         * @note textureFormat **must** be a valid format enum value.
+         * @note textureFormat **must not** be Undefined.
+         * @note textureFormat **must** be supported. Query support through Adapter::queryFormatProperties().
+         * @note textureFormat **must** support type. Query support for resource types per format using Adapter::queryFormatProperties().
         */
-        format format;
+        format textureFormat;
 
         /**
          * @brief Convenience function for creating a buffer resource_desc.

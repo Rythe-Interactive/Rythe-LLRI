@@ -1,0 +1,63 @@
+name: build
+
+on:
+  push:
+    branches: [ main, develop, develop/*, develop*, feature*, feature/*, task*, task/*, hotfix*, hotfix/*]
+  pull_request:
+    branches: [ main, develop, develop/*, develop*, feature*, feature/* ]
+    
+jobs:
+ build:
+    name: ${{matrix.platform}} ${{matrix.compiler}} ${{matrix.build}} ${{matrix.toolset}}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-20.04, windows-2019, macos-11]
+        compiler: [g++, clang++, msvc]
+        build: [Debug, Release]
+        
+        exclude: 
+          - platform: ubuntu-20.04
+            compiler: msvc
+
+          - platform: macos-11
+            compiler: msvc
+
+          - platform: windows-2019
+            compiler: g++
+            
+        include:
+          - platform: windows-2019
+            compiler: clang++
+            toolset: -T ClangCL
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download git submodules
+      run: git submodule update --init --recursive
+
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      if: matrix.platform == 'ubuntu-20.04'
+      run: sudo apt update && sudo apt-get install xorg-dev libglu1-mesa-dev
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+  
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12      
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build }} -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON -DLLRI_EXCLUDE_RYTHE_APPS=1
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --config ${{ matrix.build }}

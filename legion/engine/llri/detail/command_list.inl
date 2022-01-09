@@ -58,7 +58,9 @@ namespace llri
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(getState() == command_list_state::Recording, result::ErrorInvalidState)
 
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
         m_group->m_currentlyRecording = nullptr;
+#endif
 
         LLRI_DETAIL_CALL_IMPL(impl_end(), m_validationCallbackMessenger)
     }
