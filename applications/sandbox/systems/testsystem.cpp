@@ -123,8 +123,7 @@ void TestSystem::selectAdapter()
     for (llri::Adapter* adapter : adapters)
     {
         // Log adapter info
-        llri::adapter_info info;
-        THROW_IF_FAILED(adapter->queryInfo(&info));
+        llri::adapter_info info = adapter->queryInfo();
 
         log::info("Found adapter {}", info.adapterName);
         log::info("\tVendor ID: {}", info.vendorId);
@@ -134,10 +133,9 @@ void TestSystem::selectAdapter()
         uint8_t nodeCount = adapter->queryNodeCount();
         log::info("\tAdapter Nodes: {}", nodeCount);
 
-        uint8_t maxGraphicsQueueCount, maxComputeQueueCount, maxTransferQueueCount;
-        THROW_IF_FAILED(adapter->queryQueueCount(llri::queue_type::Graphics, &maxGraphicsQueueCount));
-        THROW_IF_FAILED(adapter->queryQueueCount(llri::queue_type::Compute, &maxComputeQueueCount));
-        THROW_IF_FAILED(adapter->queryQueueCount(llri::queue_type::Transfer, &maxTransferQueueCount));
+        uint8_t maxGraphicsQueueCount = adapter->queryQueueCount(llri::queue_type::Graphics);
+        uint8_t maxComputeQueueCount = adapter->queryQueueCount(llri::queue_type::Compute);
+        uint8_t maxTransferQueueCount = adapter->queryQueueCount(llri::queue_type::Transfer);
 
         log::info("\t Max number of queues: ");
         log::info("\t\t Graphics: {}", maxGraphicsQueueCount);
@@ -175,13 +173,12 @@ void TestSystem::createDevice()
 
     THROW_IF_FAILED(m_instance->createDevice(deviceDesc, &m_device));
 
-    THROW_IF_FAILED(m_device->getQueue(llri::queue_type::Graphics, 0, &m_graphicsQueue));
+    m_graphicsQueue = m_device->getQueue(llri::queue_type::Graphics, 0);
 }
 
 void TestSystem::createCommandLists()
 {
-    const llri::command_group_desc groupDesc { llri::queue_type::Graphics };
-    THROW_IF_FAILED(m_device->createCommandGroup(groupDesc, &m_commandGroup));
+    THROW_IF_FAILED(m_device->createCommandGroup(llri::queue_type::Graphics, &m_commandGroup));
 
     const llri::command_list_alloc_desc listDesc { 0, llri::command_list_usage::Direct };
     THROW_IF_FAILED(m_commandGroup->allocate(listDesc, &m_commandList));
@@ -211,7 +208,7 @@ void TestSystem::createResources()
     textureDesc.depthOrArrayLayers = 1;
     textureDesc.mipLevels = 1;
     textureDesc.sampleCount = llri::sample_count::Count1;
-    textureDesc.format = llri::format::RGBA8sRGB;
+    textureDesc.textureFormat = llri::format::RGBA8sRGB;
 
     THROW_IF_FAILED(m_device->createResource(textureDesc, &m_texture));
 }

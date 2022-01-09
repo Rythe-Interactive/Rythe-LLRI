@@ -214,6 +214,16 @@ namespace llri
                 continue;
             }
 
+            // Ignore adapters incompatible with DX12
+            HRESULT level12_0 = directx::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
+
+            if (level12_0 == E_FAIL)
+            {
+                dxgiAdapter->Release();
+                i++;
+                continue;
+            }
+
             if (m_cachedAdapters.find((void*)luid) != m_cachedAdapters.end())
             {
                 // Re-assign pointer to found adapters
