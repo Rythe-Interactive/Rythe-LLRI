@@ -47,7 +47,7 @@ namespace llri
         /**
          * @brief The number of device extensions in the device_desc::extensions array.
          *
-         * @note Valid usage (ErrorExceededLimit):  As device_desc::extensions can only hold unique values, numExtensions can not be more than adapter_extension::MaxEnum.
+         * @note Valid usage (ErrorExceededLimit):  As device_desc::extensions can only hold unique values, numExtensions can not be more than adapter_extension::MaxEnum + 1.
         */
         uint32_t numExtensions;
         /**
