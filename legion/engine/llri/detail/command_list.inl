@@ -76,4 +76,38 @@ namespace llri
 
         return end();
     }
+    
+    inline result CommandList::resourceBarrier(uint32_t numBarriers, const resource_barrier* barriers)
+    {
+        LLRI_DETAIL_VALIDATION_REQUIRE(numBarriers > 0, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(barriers != nullptr, result::ErrorInvalidUsage)
+        
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        for (size_t i = 0; i < numBarriers; i++)
+        {
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].type <= resource_barrier_type::MaxEnum, i, result::ErrorInvalidUsage)
+            
+            switch (barriers[i].type)
+            {
+                case resource_barrier_type::ReadWrite:
+                {
+                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].rw.resource != nullptr, i, result::ErrorInvalidUsage)
+                    break;
+                }
+                case resource_barrier_type::Transition:
+                {
+                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource != nullptr, i, result::ErrorInvalidUsage)
+                    break;
+                }
+            }
+        }
+#endif
+
+        LLRI_DETAIL_CALL_IMPL(impl_resourceBarrier(numBarriers, barriers), m_validationCallbackMessenger)
+    }
+    
+    inline result CommandList::resourceBarrier(const resource_barrier& barrier)
+    {
+        return resourceBarrier(1, &barrier);
+    }
 }

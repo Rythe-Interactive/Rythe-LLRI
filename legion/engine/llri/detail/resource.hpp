@@ -321,7 +321,7 @@ namespace llri
     };
 
     /**
-     * @brief Converts a resource_memory_type to a string.
+     * @brief Converts a memory_type to a string.
      * @return The enum value as a string, or "Invalid memory_type value" if the value was not recognized as an enum member.
     */
     std::string to_string(memory_type type);
