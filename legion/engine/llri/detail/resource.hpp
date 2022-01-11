@@ -22,20 +22,30 @@ namespace llri
         General,
         /**
          * @brief The resource can be mapped and data can be written to it from the CPU.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with memory_type::Upload.
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created without resource_usage_flag_bits::ShaderWrite.
         */
         Upload,
         /**
          * @brief The texture is used as a color attachment, meaning it can be written to by the fixed graphics pipeline.
-         * @note resource_type::Texture1D/2D/3D only.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to be of resource_type Texture1D, Texture2D, or Texture3D.
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with resource_usage_flag_bits::ColorAttachment.
         */
         ColorAttachment,
         /**
          * @brief The texture is used as a depth stencil attachment, allowing both read and write access from the fixed graphics pipeline.
-         * @note resource_type::Texture1D/2D/3D only.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to be of resource_type Texture1D, Texture2D, or Texture3D.
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with resource_usage_flag_bits::DepthStencilAttachment.
         */
         DepthStencilAttachment,
         /**
          * @brief The texture is used as a depth stencil attachment, but only allows read operations from the fixed graphics pipeline.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to be of resource_type Texture1D, Texture2D, or Texture3D.
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with resource_usage_flag_bits::DepthStencilAttachment.
         */
         DepthStencilAttachmentReadOnly,
         /**
@@ -46,29 +56,38 @@ namespace llri
          * @brief The resource is used as a read-write resource from shaders.
          *
          * Note that if a read-write resource is used in multiple consecutive passes/dispatches without transition then a resource barrier should be used to prevent simultaneous read/writes.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with resource_usage_flag_bits::ShaderWrite.
         */
         ShaderReadWrite,
         /**
          * @brief The resource is used as the source of a transfer operation.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with resource_usage_flag_bits::TransfersSrc.
         */
         TransferSrc,
         /**
          * @brief The resource is used as the destination of a transfer operation.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with resource_usage_flag_bits::TransferDst.
         */
         TransferDst,
         /**
          * @brief The resource is used as a vertex buffer.
-         * @note resource_type::Buffer only.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to be of resource_type Buffer.
         */
         VertexBuffer,
         /**
          * @brief The resource is used as an index buffer.
-         * @note resource_type::Buffer only.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to be of resource_type Buffer.
         */
         IndexBuffer,
         /**
          * @brief The resource is used as a constant buffer.
-         * @note resource_type::Buffer only.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to be of resource_type Buffer.
         */
         ConstantBuffer,
         /**
@@ -102,6 +121,8 @@ namespace llri
         Texture2D,
         /**
          * @brief A three-dimensional texture. 3D textures are described by a width, height, and depth, their size is equivalent to width * height * depth * texel size. The size of the texels may vary per texture, depending on the texture's format.
+         *
+         * 3D textures can not be arrays.
         */
         Texture3D,
         /**
@@ -367,7 +388,6 @@ namespace llri
          * @note memoryType **must** be a valid resource_memory_type enum value.
          * @note Valid usage (ErrorInvalidUsage): if type is not Buffer then memoryType **must** be set to Local.
          * @note Valid usage (ErrorInvalidUsage): if memoryType is set to Upload or Read then usage **must not** have the following bits set: ShaderWrite, ColorAttachment, DepthStencilAttachment, DenyShaderResource.
-         * @note Valid usage (ErrorInvalidUsage): if memoryType is set to local then initialState **must not** be Upload.
          * @note Valid usage (ErrorInvalidUsage): if memoryType is set to Upload then initialState **must** be Upload.
          * @note Valid usage (ErrorInvalidUsage): if memoryType is set to Read then initialState **must** be TransferDst.
         */
@@ -376,14 +396,7 @@ namespace llri
          * @brief The state in which the resource should be first after allocation.
          *
          * @note Valid usage (ErrorInvalidUsage): initialState must be a valid resource_state enum value.
-         * @note Valid usage (ErrorInvalidUsage): if type is Buffer then initialState **must** be one of the following states: General, Upload, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst, VertexBuffer, IndexBuffer, ConstantBuffer.
-         * @note Valid usage (ErrorInvalidUsage): if type is Texture1D, Texture2D or Texture3D then initialState **must** be one of the following states: Texture1D, Texture2D or Texture3D but desc.initialState wasn't one of the following states: General, Upload, ColorAttachment, DepthStencilAttachmentReadWrite, DepthStencilAttachmentReadOnly, ShaderReadOnly, ShaderReadWrite, TransferSrc, TransferDst.
-         * @note Valid usage (ErrorInvalidUsage): if usage has the ShaderWrite bit set then initialState **must not** be set to Upload.
-         * @note Valid usage (ErrorInvalidUsage): if initialState is ColorAttachment then usage **must** have the ColorAttachment bit set.
-         * @note Valid usage (ErrorInvalidUsage): if initialState is DepthStencilAttachment or DepthStencilAttachmentReadOnly, then usage **must** have the DepthStencilAttachment bit set.
-         * @note Valid usage (ErrorInvalidUsage): if initialState is ShaderReadWrite then usage **must** have the ShaderWrite bit set.
-         * @note Valid usage (ErrorInvalidUsage): if initialState is TransferSrc then usage **must** have the TransferSrc bit set.
-         * @note Valid usage (ErrorInvalidUsage): if initialState is TransferDst then usage **must** have the TransferDst bit set.
+         * @note Valid usage (ErrorInvalidState): the conditions in the selected resource_state **must** be met.
         */
         resource_state initialState;
 
@@ -453,6 +466,7 @@ namespace llri
     class Resource
     {
         friend class Device;
+        friend class CommandList;
 
         [[nodiscard]] resource_desc getDesc() const;
     private:

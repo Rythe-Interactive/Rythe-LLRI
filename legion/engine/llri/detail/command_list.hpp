@@ -174,7 +174,22 @@ namespace llri
          * @return Implementation defined result values: -
         */
         result resourceBarrier(uint32_t numBarriers, const resource_barrier* barriers);
-        
+
+        /**
+         * @brief Insert one or more resource memory dependencies.
+         *
+         * @note Utility function; the equivalent of calling resourceBarrier(count, arr);
+         *
+         * @return Success upon correct excution of the operation.
+         * @return resource_barrier defined result values: -
+         * @return Implementation defined result values: -
+         */
+        template<size_t count>
+	    result resourceBarrier(const resource_barrier(&arr)[count])
+	    {
+	        return resourceBarrier(count, arr);
+	    }
+
         /**
          * @brief Insert a resource memory dependency.
          *

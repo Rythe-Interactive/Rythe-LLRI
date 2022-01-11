@@ -34,7 +34,7 @@ namespace llri
      * @brief Converts a resource_barrier_type to a string.
      * @return The enum value as a string, or "Invalid resource_barrier_type value" if the value was not recognized as an enum member.
     */
-    std::string to_string(resource_barrier_type type)
+    inline std::string to_string(resource_barrier_type type)
     {
         switch(type)
         {
@@ -54,7 +54,19 @@ namespace llri
      */
     struct resource_barrier_transition
     {
+        /**
+         * @brief The resource that needs to be transitioned.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be a valid non-null pointer to a resource object.
+        */
         Resource* resource;
+        /**
+         * @brief The state to transition to.
+         *
+         * @note Valid usage (ErrorInvalidUsage): state **must not** be more than resource_state::MaxEnum.
+         * @note Valid usage (ErrorInvalidState): the conditions described in the resource_state **must** be met.
+        */
+        resource_state state;
     };
 
     /**
@@ -67,7 +79,7 @@ namespace llri
         /**
          * @brief The resource that the barrier applies to.
          *
-         * @note Valid usage (ErrorInvaliUsage): **Must** be a valid non-null pointer to a resource object.
+         * @note Valid usage (ErrorInvalidUsage): **Must** be a valid non-null pointer to a resource object.
          */
         Resource* resource;
     };
@@ -84,19 +96,19 @@ namespace llri
             resource_barrier_transition trans;
         };
         
-        resource_barrier read_write(Resource* resource)
+        static resource_barrier read_write(Resource* resource)
         {
-            resource_barrier barrier;
+            resource_barrier barrier {};
             barrier.type = resource_barrier_type::ReadWrite;
             barrier.rw = resource_barrier_read_write { resource };
             return barrier;
         }
         
-        resource_barrier transition(Resource* resource)
+        static resource_barrier transition(Resource* resource, resource_state state)
         {
             resource_barrier barrier {};
             barrier.type = resource_barrier_type::Transition;
-            barrier.trans = resource_barrier_transition { resource };
+            barrier.trans = resource_barrier_transition { resource, state };
             return barrier;
         }
     };
