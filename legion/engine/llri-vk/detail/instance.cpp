@@ -71,6 +71,12 @@ namespace llri
             if (availableExtensions.find(internal::nameHash("VK_KHR_device_group_creation")) != availableExtensions.end())
                 extensions.push_back("VK_KHR_device_group_creation");
 
+#ifdef __APPLE__
+            // if available, enable - necessary for MoltenVK
+            if (availableExtensions.find(internal::nameHash("VK_KHR_get_physical_device_properties2")) != availableExtensions.end())
+                extensions.push_back("VK_KHR_get_physical_device_properties2");
+#endif
+            
             void* pNext = nullptr;
 
             // Variables that need to be stored outside of scope
@@ -345,6 +351,11 @@ namespace llri
 
         if (desc.adapter->m_nodeCount > 1)
             extensions.push_back("VK_KHR_device_group");
+        
+#ifdef __APPLE__
+        // required for MoltenVK
+        extensions.push_back("VK_KHR_portability_subset");
+#endif
 
         // Features
         VkPhysicalDeviceFeatures features{};

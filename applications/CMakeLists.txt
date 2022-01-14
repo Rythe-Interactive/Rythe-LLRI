@@ -4,10 +4,8 @@
 add_subdirectory(unit_tests)
 set_target_properties(unit_tests PROPERTIES FOLDER "applications")
 
-if(NOT DEFINED LLRI_EXCLUDE_RYTHE_APPS)
-	add_subdirectory(sandbox)
-	set_target_properties(sandbox PROPERTIES FOLDER "applications")
-endif()
+add_subdirectory(sandbox)
+set_target_properties(sandbox PROPERTIES FOLDER "applications")
 
 add_subdirectory(samples/000_hello_llri)
 add_subdirectory(samples/001_validation)
