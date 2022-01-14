@@ -10,6 +10,54 @@
 namespace llri
 {
     /**
+     * @brief Describes a range of subresources of a texture.
+     */
+    struct texture_subresource_range
+    {
+        /**
+         * @brief The first mip level, 0-indexed.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be less than resource_desc::mipLevels.
+         */
+        uint32_t baseMipLevel;
+        /**
+         * @brief The number of mip levels.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be at least 1.
+         * @note Valid usage (ErrorInvalidUsage): (baseMipLevel + numMipLevels) **must not** be more than  resource_desc::mipLevels.
+         */
+        uint32_t numMipLevels;
+        /**
+         * @brief The first array layer, 0-indexed.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be less than resource_desc::depthOrArrayLayers.
+         * @note Valid usage (ErrorInvalidUsage): If resource_desc::type is Texture3D then this value **must** be 0.
+         */
+        uint32_t baseArrayLayer;
+        /**
+         * @brief The number of array layers.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be at least 1, unless if resource_desc::type is Texture3D, then it **must** be 1.
+         * @note Valid usage (ErrorInvalidUsage): (baseArrayLayer + numArrayLayers) **must not** be more than resource_desc::depthOrArrayLayers.
+         */
+        uint32_t numArrayLayers;
+        
+        /**
+         * @brief texture_subresource_range with a pre-set value that will be interpreted as "all subresources of the texture".
+         *
+         * @note The values returned aren't defined in the public API and **may** be subject to change. A user **must not** try to reconstruct the result themselves because there's no guarantee that it'll work in the future.
+         */
+        static texture_subresource_range all() { return texture_subresource_range { UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX }; }
+        
+        inline bool operator==(const texture_subresource_range& other) const {
+            return baseMipLevel == other.baseMipLevel &&
+                numMipLevels == other.numMipLevels &&
+                baseArrayLayer == other.baseArrayLayer &&
+                numArrayLayers == other.numArrayLayers;
+        }
+    };
+
+    /**
      * @brief Describes the current state of a Resource. Resources are assigned a state upon creation using the resource_desc::initialState field. Afterwards they can transition to other states using resource barriers.
     */
     enum struct resource_state : uint8_t
@@ -213,14 +261,48 @@ namespace llri
         RGBA32Float,
 
         D16UNorm,
-        D24UNormS8UInt,
         D32Float,
+        D24UNormS8UInt,
         D32FloatS8X24UInt,
+        
+        /**
+         * @brief The first color format (inclusive).
+         */
+        FirstColorFormat = R8UNorm,
+        /**
+         * @brief The last color format (inclusive).
+         */
+        LastColorFormat = RGBA32Float,
+        /**
+         * @brief The first depth format (inclusive).
+         */
+        FirstDepthFormat = D16UNorm,
+        /**
+         * @brief The first combined depth stencil format (inclusive).
+         */
+        FirstStencilFormat = D24UNormS8UInt,
+        /**
+         * @brief The last combined depth stencil format (inclusive).
+         */
+        LastDepthStencilFormat = D32FloatS8X24UInt,
+        
         /**
          * @brief The highest value in this enum.
         */
         MaxEnum = D32FloatS8X24UInt
     };
+
+    bool has_color_component(format f) {
+        return f >= format::FirstColorFormat && f <= format::LastColorFormat;
+    }
+
+    bool has_depth_component(format f) {
+        return f >= format::FirstDepthFormat && f <= format::LastDepthStencilFormat;
+    }
+
+    bool has_stencil_component(format f) {
+        return f >= format::FirstStencilFormat && f <= format::LastDepthStencilFormat;
+    }
 
     /**
      * @brief Converts a format to a string.

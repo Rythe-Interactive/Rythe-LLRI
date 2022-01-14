@@ -67,6 +67,14 @@ namespace llri
          * @note Valid usage (ErrorInvalidState): the conditions described in the resource_state **must** be met.
         */
         resource_state state;
+        
+        /**
+         * @brief The range of subresources to transition if the resource is a resource_type::Texture1D, Texture2D, or Texture3D.
+         *
+         * @note Ignored if resource is resource_type::Buffer.
+         * @note Valid usage (ErrorInvalidUsage): the conditions in texture_subresource **must** be met.
+         */
+        texture_subresource_range subresourceRange;
     };
 
     /**
