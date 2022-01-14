@@ -5,6 +5,7 @@
  */
 
 #include <cstdio>
+#include <cassert>
 #include <llri/llri.hpp>
 
 /**
