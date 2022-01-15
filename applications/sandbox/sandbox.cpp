@@ -91,6 +91,12 @@ int main()
         const llri::command_list_begin_desc beginDesc {};
         THROW_IF_FAILED(m_commandList->record(beginDesc, [](llri::CommandList* cmd)
         {
+            cmd->resourceBarrier({
+                llri::resource_barrier::read_write(m_buffer),
+                llri::resource_barrier::transition(m_texture, llri::resource_state::ShaderReadOnly)
+            });
+
+            cmd->resourceBarrier(llri::resource_barrier::transition(m_texture, llri::resource_state::TransferDst));
         }, m_commandList));
 
         // submit

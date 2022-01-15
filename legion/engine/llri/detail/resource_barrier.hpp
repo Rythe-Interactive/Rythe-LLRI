@@ -112,11 +112,11 @@ namespace llri
             return barrier;
         }
         
-        static resource_barrier transition(Resource* resource, resource_state state)
+        static resource_barrier transition(Resource* resource, resource_state state, texture_subresource_range range = texture_subresource_range::all())
         {
             resource_barrier barrier {};
             barrier.type = resource_barrier_type::Transition;
-            barrier.trans = resource_barrier_transition { resource, state };
+            barrier.trans = resource_barrier_transition { resource, state, range };
             return barrier;
         }
     };

@@ -292,15 +292,15 @@ namespace llri
         MaxEnum = D32FloatS8X24UInt
     };
 
-    bool has_color_component(format f) {
+    inline bool has_color_component(format f) {
         return f >= format::FirstColorFormat && f <= format::LastColorFormat;
     }
 
-    bool has_depth_component(format f) {
+    inline bool has_depth_component(format f) {
         return f >= format::FirstDepthFormat && f <= format::LastDepthStencilFormat;
     }
 
-    bool has_stencil_component(format f) {
+    inline bool has_stencil_component(format f) {
         return f >= format::FirstStencilFormat && f <= format::LastDepthStencilFormat;
     }
 
