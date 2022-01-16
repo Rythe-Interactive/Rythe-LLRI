@@ -166,12 +166,13 @@ namespace llri
         /**
          * @brief Insert one or more resource memory dependencies.
          *
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the Recording state.
+         *
          * @note Valid usage (ErrorInvalidUsage): numBarriers **must** be more than 0.
          * @note Valid usage (ErrorInvalidUsage): barriers **must** be a valid non-null pointer to a resource_barrier array of size numBarriers.
          *
          * @return Success upon correct excution of the operation.
-         * @return resource_barrier defined result values: -
-         * @return Implementation defined result values: -
+         * @return resource_barrier defined result values: ErrorInvalidUsage, ErrorInvalidState.
         */
         result resourceBarrier(uint32_t numBarriers, const resource_barrier* barriers);
 
@@ -179,10 +180,10 @@ namespace llri
          * @brief Insert one or more resource memory dependencies.
          *
          * @note Utility function; the equivalent of calling resourceBarrier(count, arr);
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the Recording state.
          *
          * @return Success upon correct excution of the operation.
-         * @return resource_barrier defined result values: -
-         * @return Implementation defined result values: -
+         * @return resource_barrier defined result values: ErrorInvalidUsage, ErrorInvalidState.
          */
         template<size_t count>
 	    result resourceBarrier(const resource_barrier(&arr)[count])
@@ -194,10 +195,10 @@ namespace llri
          * @brief Insert a resource memory dependency.
          *
          * @note Utility function; the equivalent of calling resourceBarrier(1, &barrier);
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the Recording state.
          *
          * @return Success upon correct excution of the operation.
-         * @return resource_barrier defined result values: -
-         * @return Implementation defined result values: -
+         * @return resource_barrier defined result values: ErrorInvalidUsage, ErrorInvalidState.
          */
         result resourceBarrier(const resource_barrier& barrier);
     private:

@@ -45,6 +45,7 @@ namespace llri
     inline result CommandList::begin(const command_list_begin_desc& desc)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(getState() == command_list_state::Empty, result::ErrorInvalidState)
+        
         LLRI_DETAIL_VALIDATION_REQUIRE(m_group->m_currentlyRecording == nullptr, result::ErrorOccupied)
 
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION
@@ -79,6 +80,8 @@ namespace llri
     
     inline result CommandList::resourceBarrier(uint32_t numBarriers, const resource_barrier* barriers)
     {
+        LLRI_DETAIL_VALIDATION_REQUIRE(getState() == command_list_state::Recording, llri::result::ErrorInvalidState)
+        
         LLRI_DETAIL_VALIDATION_REQUIRE(numBarriers > 0, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE(barriers != nullptr, result::ErrorInvalidUsage)
         
@@ -92,11 +95,90 @@ namespace llri
                 case resource_barrier_type::ReadWrite:
                 {
                     LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].rw.resource != nullptr, i, result::ErrorInvalidUsage)
+                    
+                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].rw.resource->m_state == resource_state::ShaderReadWrite, i, result::ErrorInvalidState)
                     break;
                 }
                 case resource_barrier_type::Transition:
                 {
                     LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource != nullptr, i, result::ErrorInvalidUsage)
+                    
+                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.state <= resource_state::MaxEnum, i, result::ErrorInvalidUsage)
+                    
+                    const auto resourceDesc = barriers[i].trans.resource->getDesc();
+                    
+                    switch(barriers[i].trans.state)
+                    {
+                        case resource_state::General:
+                        {
+							// no requirements
+                            break;
+                        }
+                        case resource_state::Upload:
+                        {
+                            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().memoryType == memory_type::Upload, i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::ColorAttachment:
+                        {
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								usage.contains(resource_usage_flag_bits::ColorAttachment), i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::DepthStencilAttachment:
+                        {
+                            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								usage.contains(resource_usage_flag_bits::DepthStencilAttachment), i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::DepthStencilAttachmentReadOnly:
+                        {
+                            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								usage.contains(resource_usage_flag_bits::DepthStencilAttachment), i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::ShaderReadOnly:
+                        {
+							// no requirements
+                            break;
+                        }
+                        case resource_state::ShaderReadWrite:
+                        {
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								usage.contains(resource_usage_flag_bits::ShaderWrite), i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::TransferSrc:
+                        {
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								usage.contains(resource_usage_flag_bits::TransferSrc), i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::TransferDst:
+                        {
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								usage.contains(resource_usage_flag_bits::TransferDst), i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::VertexBuffer:
+                        {
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								type == resource_type::Buffer, i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::IndexBuffer:
+                        {							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								type == resource_type::Buffer, i, result::ErrorInvalidState)
+                            break;
+                        }
+                        case resource_state::ConstantBuffer:
+                        {
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+								type == resource_type::Buffer, i, result::ErrorInvalidState)
+                            break;
+                        }
+                    }
+                    
                     break;
                 }
             }

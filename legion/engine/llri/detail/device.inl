@@ -366,7 +366,7 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, desc.sampleCount <= sample_count::MaxEnum, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.type != resource_type::Texture2D, desc.sampleCount == sample_count::Count1, result::ErrorInvalidUsage)
         
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.usage.contains(resource_usage_flag_bits::ShaderWrite), desc.sampleCount != sample_count::Count1, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.usage.contains(resource_usage_flag_bits::ShaderWrite), desc.sampleCount == sample_count::Count1, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.sampleCount > sample_count::Count1, desc.usage.contains(resource_usage_flag_bits::ColorAttachment) || desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.mipLevels > 1, desc.sampleCount == sample_count::Count1, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.mipLevels > 1, desc.width >= std::pow(2, desc.mipLevels), result::ErrorInvalidUsage)

@@ -14,7 +14,7 @@ namespace llri
     /**
      * @brief The type of resource_barrier - this type is used to determine which value to pick from the anonymous resource_barrier union.
      */
-    enum struct resource_barrier_type
+    enum struct resource_barrier_type : uint8_t
     {
         /**
          * @brief Use the resource_barrier_transition struct.
@@ -88,6 +88,7 @@ namespace llri
          * @brief The resource that the barrier applies to.
          *
          * @note Valid usage (ErrorInvalidUsage): **Must** be a valid non-null pointer to a resource object.
+         * @note Valid usage (ErrorInvalidState): **Must** be in the resource_state::ReadWrite state.
          */
         Resource* resource;
     };
