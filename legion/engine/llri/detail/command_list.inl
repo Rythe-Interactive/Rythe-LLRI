@@ -95,19 +95,43 @@ namespace llri
                 case resource_barrier_type::ReadWrite:
                 {
                     LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].rw.resource != nullptr, i, result::ErrorInvalidUsage)
-                    
-                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].rw.resource->m_state == resource_state::ShaderReadWrite, i, result::ErrorInvalidState)
                     break;
                 }
                 case resource_barrier_type::Transition:
                 {
                     LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource != nullptr, i, result::ErrorInvalidUsage)
                     
-                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.state <= resource_state::MaxEnum, i, result::ErrorInvalidUsage)
+					const auto resourceDesc = barriers[i].trans.resource->getDesc();
+					
+					// validate subresource range
+					if (resourceDesc.type != resource_type::Buffer && barriers[i].trans.subresourceRange != texture_subresource_range::all())
+					{
+						LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.subresourceRange.baseMipLevel < resourceDesc.mipLevels, i, result::ErrorInvalidUsage)
+						
+						LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.subresourceRange.numMipLevels > 0, i, result::ErrorInvalidUsage)
+						
+						LLRI_DETAIL_VALIDATION_REQUIRE_ITER((barriers[i].trans.subresourceRange.baseMipLevel + barriers[i].trans.subresourceRange.numMipLevels) <= resourceDesc.mipLevels, i, result::ErrorInvalidUsage)
+						
+						LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.subresourceRange.baseArrayLayer < resourceDesc.depthOrArrayLayers, i, result::ErrorInvalidUsage)
+						
+						LLRI_DETAIL_VALIDATION_REQUIRE_ITER((resourceDesc.type != resource_type::Texture3D) || (barriers[i].trans.subresourceRange.baseArrayLayer == 0), i, result::ErrorInvalidUsage)
+						
+						if (resourceDesc.type == resource_type::Texture3D)
+						{
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.subresourceRange.numArrayLayers == 1, i, result::ErrorInvalidUsage)
+						}
+						else
+						{
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.subresourceRange.numArrayLayers > 0, i, result::ErrorInvalidUsage)
+							
+							LLRI_DETAIL_VALIDATION_REQUIRE_ITER((barriers[i].trans.subresourceRange.baseArrayLayer + barriers[i].trans.subresourceRange.numArrayLayers) <= resourceDesc.depthOrArrayLayers, i, result::ErrorInvalidUsage)
+						}
+					}
+					
+					// validate new state correctness
+                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.newState <= resource_state::MaxEnum, i, result::ErrorInvalidUsage)
                     
-                    const auto resourceDesc = barriers[i].trans.resource->getDesc();
-                    
-                    switch(barriers[i].trans.state)
+                    switch(barriers[i].trans.newState)
                     {
                         case resource_state::General:
                         {

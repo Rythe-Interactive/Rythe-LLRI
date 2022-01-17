@@ -55,6 +55,10 @@ namespace llri
                 baseArrayLayer == other.baseArrayLayer &&
                 numArrayLayers == other.numArrayLayers;
         }
+        
+        inline bool operator!=(const texture_subresource_range& other) const {
+            return !((*this) == other);
+        }
     };
 
     /**
@@ -550,6 +554,10 @@ namespace llri
         friend class Device;
         friend class CommandList;
 
+    public:
+        /**
+         * @brief Get the desc that the Resource was created with.
+         */
         [[nodiscard]] resource_desc getDesc() const;
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
@@ -560,8 +568,5 @@ namespace llri
         
         void* m_memory = nullptr;
         void* m_resource = nullptr;
-
-        resource_state m_state;
-        uint32_t m_implementationState;
     };
 }

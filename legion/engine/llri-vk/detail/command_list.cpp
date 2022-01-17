@@ -71,8 +71,8 @@ namespace llri
                 {
                     case resource_barrier_type::Transition:
                     {
-                        bufferBarrier.srcAccessMask = internal::mapStateToAccess(resource->m_state);
-                        bufferBarrier.dstAccessMask = internal::mapStateToAccess(barrier.trans.state);
+                        bufferBarrier.srcAccessMask = internal::mapStateToAccess(barrier.trans.oldState);
+                        bufferBarrier.dstAccessMask = internal::mapStateToAccess(barrier.trans.newState);
                         break;
                     }
                     case resource_barrier_type::ReadWrite:
@@ -105,17 +105,17 @@ namespace llri
                 {
                     case resource_barrier_type::Transition:
                     {
-                        imgBarrier.oldLayout = static_cast<VkImageLayout>(resource->m_implementationState);
-                        imgBarrier.newLayout = internal::mapResourceState(barrier.trans.state);
+                        imgBarrier.oldLayout = internal::mapResourceState(barrier.trans.oldState);
+                        imgBarrier.newLayout = internal::mapResourceState(barrier.trans.newState);
                         
-                        imgBarrier.srcAccessMask = internal::mapStateToAccess(resource->m_state);
-                        imgBarrier.dstAccessMask = internal::mapStateToAccess(barrier.trans.state);
+                        imgBarrier.srcAccessMask = internal::mapStateToAccess(barrier.trans.oldState);
+                        imgBarrier.dstAccessMask = internal::mapStateToAccess(barrier.trans.newState);
                         break;
                     }
                     case resource_barrier_type::ReadWrite:
                     {
-                        imgBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                        imgBarrier.newLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+                        imgBarrier.oldLayout = internal::mapResourceState(resource_state::ShaderReadWrite);
+                        imgBarrier.newLayout = internal::mapResourceState(resource_state::ShaderReadWrite);
                         
                         imgBarrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
                         imgBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;

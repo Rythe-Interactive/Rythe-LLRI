@@ -61,18 +61,24 @@ namespace llri
         */
         Resource* resource;
         /**
+         * @brief The state that the resource is transitioning from.
+         *
+         * @note Valid usage: oldState **must** match the resource's current state or in the case of subresource_range transitions it **must** match with  the resource's current state for every subresource in the transition.
+         */
+        resource_state oldState;
+        /**
          * @brief The state to transition to.
          *
          * @note Valid usage (ErrorInvalidUsage): state **must not** be more than resource_state::MaxEnum.
          * @note Valid usage (ErrorInvalidState): the conditions described in the resource_state **must** be met.
         */
-        resource_state state;
+        resource_state newState;
         
         /**
          * @brief The range of subresources to transition if the resource is a resource_type::Texture1D, Texture2D, or Texture3D.
          *
          * @note Ignored if resource is resource_type::Buffer.
-         * @note Valid usage (ErrorInvalidUsage): the conditions in texture_subresource **must** be met.
+         * @note Valid usage (ErrorInvalidUsage): the conditions in texture_subresource_range **must** be met.
          */
         texture_subresource_range subresourceRange;
     };
@@ -113,11 +119,11 @@ namespace llri
             return barrier;
         }
         
-        static resource_barrier transition(Resource* resource, resource_state state, texture_subresource_range range = texture_subresource_range::all())
+        static resource_barrier transition(Resource* resource, resource_state oldState, resource_state newState, texture_subresource_range range = texture_subresource_range::all())
         {
             resource_barrier barrier {};
             barrier.type = resource_barrier_type::Transition;
-            barrier.trans = resource_barrier_transition { resource, state, range };
+            barrier.trans = resource_barrier_transition { resource, oldState, newState, range };
             return barrier;
         }
     };

@@ -270,10 +270,6 @@ namespace llri
         output->m_desc = desc;
         output->m_resource = isTexture ? static_cast<void*>(image) : static_cast<void*>(buffer);
         output->m_memory = memory;
-
-        output->m_state = desc.initialState;
-        output->m_implementationState = internalState; // only used for images
-
         *resource = output;
         return result::Success;
     }
