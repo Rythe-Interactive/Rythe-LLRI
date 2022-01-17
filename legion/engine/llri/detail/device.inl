@@ -351,8 +351,8 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::TransferDst, desc.usage.contains(resource_usage_flag_bits::TransferDst), result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Local, desc.initialState != resource_state::Upload, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Upload, desc.initialState != resource_state::Upload, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Read, desc.initialState != resource_state::TransferDst, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Upload, desc.initialState == resource_state::Upload, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Read, desc.initialState == resource_state::TransferDst, result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.width > 0, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.width <= 16348, result::ErrorInvalidUsage)

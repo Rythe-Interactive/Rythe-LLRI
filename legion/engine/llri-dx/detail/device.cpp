@@ -178,9 +178,6 @@ namespace llri
         auto* output = new Resource();
         output->m_desc = desc;
         output->m_resource = dx12Resource;
-        output->m_state = desc.initialState;
-        output->m_implementationState = initialState;
-
         *resource = output;
         return result::Success;
     }

@@ -75,8 +75,8 @@ namespace llri
         /**
          * @brief The resource can be mapped and data can be written to it from the CPU.
          *
-         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created with memory_type::Upload.
-         * @note Valid usage (ErrorInvalidState): Creating or transitioning a resource to this state **requires** the resource to have been created without resource_usage_flag_bits::ShaderWrite.
+         * @note Valid usage (ErrorInvalidState): Creating a resource in this state **requires** the resource to have been created with memory_type::Upload.
+         * @note Valid usage (ErrorInvalidState): Creating a resource in this state **requires** the resource to have been created without resource_usage_flag_bits::ShaderWrite.
         */
         Upload,
         /**

@@ -303,13 +303,6 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
         
         SUBCASE("[Correct usage] the resource has the right resource_usage_flags")
         {
-            // upload
-			current = &resources.emplace_back(nullptr);
-            bufferDesc.memoryType = llri::memory_type::Upload;
-            REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
-            CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::Upload)), llri::result::Success);
-            bufferDesc.memoryType = llri::memory_type::Local; // reset back to local
-            
             // colorattachment
 			// ignoring buffer type here since buffers cant be created with colorattachment
 			current = &resources.emplace_back(nullptr);
