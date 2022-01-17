@@ -69,8 +69,9 @@ namespace llri
         /**
          * @brief The state to transition to.
          *
-         * @note Valid usage (ErrorInvalidUsage): state **must not** be more than resource_state::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): newState **must not** be more than resource_state::MaxEnum.
          * @note Valid usage (ErrorInvalidState): the conditions described in the resource_state **must** be met.
+         * @note Valid usage (ErrorInvalidUsage): newState **must not** be the same as oldState.
         */
         resource_state newState;
         

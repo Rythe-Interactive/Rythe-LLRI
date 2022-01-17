@@ -225,6 +225,26 @@ namespace llri
             
             return map[static_cast<size_t>(state)];
         }
+    
+        constexpr VkPipelineStageFlags mapStateToPipelineStage(resource_state state)
+        {
+            constexpr std::array<VkPipelineStageFlags, static_cast<size_t>(resource_state::MaxEnum) + 1> map {
+                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                VK_PIPELINE_STAGE_HOST_BIT,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+                VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT
+            };
+            
+            return map[static_cast<size_t>(state)];
+        }
 
         constexpr VkImageUsageFlags mapTextureUsage(resource_usage_flags usage)
         {

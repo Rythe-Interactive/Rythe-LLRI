@@ -420,7 +420,36 @@ namespace llri
 
             queueCounts[queueDesc.type]++;
         }
-
+        
+        // create work resources
+        if (queueCounts[queue_type::Graphics] > 0)
+            output->m_workQueueType = queue_type::Graphics;
+        else if (queueCounts[queue_type::Compute] > 0)
+            output->m_workQueueType = queue_type::Compute;
+        else
+            output->m_workQueueType = queue_type::Transfer;
+        
+        VkCommandPoolCreateInfo createInfo {};
+        createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        createInfo.pNext = nullptr;
+        createInfo.flags = {};
+        createInfo.queueFamilyIndex = families[output->m_workQueueType];
+        table->vkCreateCommandPool(vkDevice, &createInfo, nullptr, reinterpret_cast<VkCommandPool*>(&output->m_workCmdGroup));
+        
+        VkCommandBufferAllocateInfo allocInfo {};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.pNext = nullptr;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = 1;
+        allocInfo.commandPool = static_cast<VkCommandPool>(output->m_workCmdGroup);
+        table->vkAllocateCommandBuffers(vkDevice, &allocInfo, reinterpret_cast<VkCommandBuffer*>(&output->m_workCmdList));
+        
+        VkFenceCreateInfo fenceInfo {};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.pNext = nullptr;
+        fenceInfo.flags = {};
+        table->vkCreateFence(vkDevice, &fenceInfo, nullptr, reinterpret_cast<VkFence*>(&output->m_workFence));
+        
         *device = output;
         return result::Success;
     }
@@ -436,6 +465,12 @@ namespace llri
         
         for (auto* transfer : device->m_transferQueues)
             delete transfer;
+        
+        // Cleanup work objects
+        if (device->m_workFence)
+            static_cast<VolkDeviceTable*>(device->m_functionTable)->vkDestroyFence(static_cast<VkDevice>(device->m_ptr), static_cast<VkFence>(device->m_workFence), nullptr);
+        if (device->m_workCmdGroup)
+            static_cast<VolkDeviceTable*>(device->m_functionTable)->vkDestroyCommandPool(static_cast<VkDevice>(device->m_ptr), static_cast<VkCommandPool>(device->m_workCmdGroup), nullptr);
 
         // Delete device
         if (device->m_ptr)

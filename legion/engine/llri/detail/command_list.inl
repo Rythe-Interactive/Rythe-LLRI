@@ -100,7 +100,8 @@ namespace llri
                 case resource_barrier_type::Transition:
                 {
                     LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource != nullptr, i, result::ErrorInvalidUsage)
-                    
+                    LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.oldState != barriers[i].trans.newState, i, result::ErrorInvalidUsage)
+					
 					const auto resourceDesc = barriers[i].trans.resource->getDesc();
 					
 					// validate subresource range

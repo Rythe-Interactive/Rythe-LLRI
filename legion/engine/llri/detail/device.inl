@@ -13,7 +13,12 @@ namespace llri
     {
         return m_desc;
     }
-
+    
+    inline Adapter* Device::getAdapter() const
+    {
+        return m_adapter;
+    }
+    
     inline Queue* Device::getQueue(queue_type type, uint8_t index)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, nullptr)
