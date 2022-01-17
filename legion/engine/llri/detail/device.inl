@@ -345,6 +345,7 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::ColorAttachment, desc.usage.contains(resource_usage_flag_bits::ColorAttachment), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::DepthStencilAttachment, desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::DepthStencilAttachmentReadOnly, desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.type != resource_type::Buffer && desc.initialState == resource_state::ShaderReadOnly, desc.usage.contains(resource_usage_flag_bits::Sampled), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::ShaderReadWrite, desc.usage.contains(resource_usage_flag_bits::ShaderWrite), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::TransferSrc, desc.usage.contains(resource_usage_flag_bits::TransferSrc), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::TransferDst, desc.usage.contains(resource_usage_flag_bits::TransferDst), result::ErrorInvalidUsage)

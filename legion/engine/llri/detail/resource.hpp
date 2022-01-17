@@ -102,6 +102,8 @@ namespace llri
         DepthStencilAttachmentReadOnly,
         /**
          * @brief The resource is used as a read-only resource from shaders.
+         *
+         * @note Valid usage (ErrorInvalidState): Creating or transitioning a texture to this state **requires** the texture to have been created with resource_usage_flag_bits::Sampled.
         */
         ShaderReadOnly,
         /**

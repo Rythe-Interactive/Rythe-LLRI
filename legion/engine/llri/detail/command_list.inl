@@ -164,7 +164,9 @@ namespace llri
                         }
                         case resource_state::ShaderReadOnly:
                         {
-							// no requirements
+							if (barriers[i].trans.resource->getDesc().type != resource_type::Buffer)
+								LLRI_DETAIL_VALIDATION_REQUIRE_ITER(barriers[i].trans.resource->getDesc().
+									usage.contains(resource_usage_flag_bits::Sampled), i, result::ErrorInvalidState)
                             break;
                         }
                         case resource_state::ShaderReadWrite:

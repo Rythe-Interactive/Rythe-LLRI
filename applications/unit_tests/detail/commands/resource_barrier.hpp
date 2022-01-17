@@ -192,6 +192,22 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::DepthStencilAttachmentReadOnly)), llri::result::ErrorInvalidState);
 			
+			// shaderreadonly
+			current = &resources.emplace_back(nullptr);
+			textureDesc.type = llri::resource_type::Texture1D;
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)), llri::result::ErrorInvalidState);
+			
+			current = &resources.emplace_back(nullptr);
+			textureDesc.type = llri::resource_type::Texture2D;
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)), llri::result::ErrorInvalidState);
+			
+			current = &resources.emplace_back(nullptr);
+			textureDesc.type = llri::resource_type::Texture3D;
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)), llri::result::ErrorInvalidState);
+			
 			// shaderreadwrite
 			current = &resources.emplace_back(nullptr);
 			REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
@@ -334,6 +350,32 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::DepthStencilAttachmentReadOnly)), llri::result::Success);
 			
+			// shaderreadonly
+			textureDesc.textureFormat = llri::format::RGBA8UNorm;
+
+			current = &resources.emplace_back(nullptr);
+			bufferDesc.usage = llri::resource_usage_flag_bits::TransferDst; // buffer shouldnt need sampled
+			REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)), llri::result::Success);
+			
+			current = &resources.emplace_back(nullptr);
+			textureDesc.type = llri::resource_type::Texture1D;
+			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::Sampled;
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)), llri::result::Success);
+			
+			current = &resources.emplace_back(nullptr);
+			textureDesc.type = llri::resource_type::Texture2D;
+			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::Sampled;
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)), llri::result::Success);
+			
+			current = &resources.emplace_back(nullptr);
+			textureDesc.type = llri::resource_type::Texture3D;
+			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::Sampled;
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)), llri::result::Success);
+			
 			// shaderreadwrite
 			textureDesc.textureFormat = llri::format::RGBA8UNorm;
 
@@ -342,16 +384,19 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 			REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadWrite)), llri::result::Success);
 			
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture1D;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::ShaderWrite;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadWrite)), llri::result::Success);
 			
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture2D;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::ShaderWrite;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadWrite)), llri::result::Success);
 			
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture3D;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::ShaderWrite;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
@@ -363,16 +408,19 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 			REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::TransferSrc)), llri::result::Success);
 			
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture1D;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::TransferSrc;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::TransferSrc)), llri::result::Success);
 			
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture2D;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::TransferSrc;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::TransferSrc)), llri::result::Success);
 
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture3D;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::TransferSrc;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
@@ -385,18 +433,21 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 			REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferSrc, llri::resource_state::TransferDst)), llri::result::Success);
 
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture1D;
 			textureDesc.initialState = llri::resource_state::TransferSrc;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::TransferSrc;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferSrc, llri::resource_state::TransferDst)), llri::result::Success);
 
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture2D;
 			textureDesc.initialState = llri::resource_state::TransferSrc;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::TransferSrc;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferSrc, llri::resource_state::TransferDst)), llri::result::Success);
 
+			current = &resources.emplace_back(nullptr);
 			textureDesc.type = llri::resource_type::Texture3D;
 			textureDesc.initialState = llri::resource_state::TransferSrc;
 			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::TransferSrc;
