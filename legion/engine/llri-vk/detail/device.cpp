@@ -272,6 +272,8 @@ namespace llri
         // so we must transition them to desc.initialState manually.
         if (isTexture)
         {
+            table->vkResetCommandPool(static_cast<VkDevice>(m_ptr), static_cast<VkCommandPool>(m_workCmdGroup), {});
+            
             // Record commandbuffer to transition texture from undefined
             VkCommandBufferBeginInfo beginInfo {};
             beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
