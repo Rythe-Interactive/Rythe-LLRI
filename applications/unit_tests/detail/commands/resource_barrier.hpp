@@ -476,6 +476,24 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ConstantBuffer)), llri::result::Success);
         }
 		
+		SUBCASE("[Correct usage] multiple transitions")
+		{
+			current = &resources.emplace_back(nullptr);
+			bufferDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::ShaderWrite;
+			REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
+			
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadWrite)), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::ShaderReadWrite, llri::resource_state::TransferDst)), llri::result::Success);
+
+			current = &resources.emplace_back(nullptr);
+			textureDesc.type = llri::resource_type::Texture1D;
+			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::ShaderWrite;
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, llri::resource_state::ShaderReadWrite)), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::ShaderReadWrite, llri::resource_state::TransferDst)), llri::result::Success);
+		}
+		
 		SUBCASE("[Incorrect usage] partial transitions")
 		{
 			current = &resources.emplace_back(nullptr);
@@ -484,8 +502,8 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 			textureDesc.height = 1024;
 			textureDesc.mipLevels = 10;
 			textureDesc.depthOrArrayLayers = 2;
-			textureDesc.initialState = llri::resource_state::TransferDst;
-			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst;
+			textureDesc.initialState = llri::resource_state::TransferSrc;
+			textureDesc.usage = llri::resource_usage_flag_bits::TransferSrc | llri::resource_usage_flag_bits::TransferDst;
 			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
 			
 			// baseMipLevel >= textureDesc.mipLevels
@@ -545,17 +563,100 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
 		
 		SUBCASE("[Correct usage] partial transitions")
 		{
+			textureDesc.type = llri::resource_type::Texture2D;
+			textureDesc.width = 1024;
+			textureDesc.height = 1024;
+			textureDesc.mipLevels = 10;
+			textureDesc.depthOrArrayLayers = 2;
+			textureDesc.initialState = llri::resource_state::TransferSrc;
+			textureDesc.usage = llri::resource_usage_flag_bits::TransferSrc | llri::resource_usage_flag_bits::TransferDst;
 			
-		}
-		
-		SUBCASE("[Correct usage] multiple transitions")
-		{
+			// one miplevel, one array layer
+			current = &resources.emplace_back(nullptr);
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(
+					llri::resource_barrier::transition(
+						*current,
+						llri::resource_state::TransferSrc, llri::resource_state::TransferDst,
+						llri::texture_subresource_range { 0, 1, 0, 1 }
+					)
+				), llri::result::Success);
 			
+			// multiple miplevels, one array layer
+			current = &resources.emplace_back(nullptr);
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(
+					llri::resource_barrier::transition(
+						*current,
+						llri::resource_state::TransferSrc, llri::resource_state::TransferDst,
+						llri::texture_subresource_range { 0, 5, 0, 1 }
+					)
+				), llri::result::Success);
+			
+			// one miplevel, multiple array layers
+			current = &resources.emplace_back(nullptr);
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(
+					llri::resource_barrier::transition(
+						*current,
+						llri::resource_state::TransferSrc, llri::resource_state::TransferDst,
+						llri::texture_subresource_range { 0, 1, 0, 2 }
+					)
+				), llri::result::Success);
+			
+			// multiple miplevels, multiple array layers
+			current = &resources.emplace_back(nullptr);
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(
+					llri::resource_barrier::transition(
+						*current,
+						llri::resource_state::TransferSrc, llri::resource_state::TransferDst,
+						llri::texture_subresource_range { 0, 5, 0, 2 }
+					)
+				), llri::result::Success);
+			
+			// miplevels at an offset, array levels at an offset
+			current = &resources.emplace_back(nullptr);
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			CHECK_EQ(list->resourceBarrier(
+					llri::resource_barrier::transition(
+						*current,
+						llri::resource_state::TransferSrc, llri::resource_state::TransferDst,
+						llri::texture_subresource_range { 3, 2, 1, 1 }
+					)
+				), llri::result::Success);
 		}
 		
 		SUBCASE("[Correct usage] multiple partial transitions")
 		{
+			textureDesc.type = llri::resource_type::Texture2D;
+			textureDesc.width = 1024;
+			textureDesc.height = 1024;
+			textureDesc.mipLevels = 10;
+			textureDesc.depthOrArrayLayers = 2;
+			textureDesc.initialState = llri::resource_state::TransferDst;
+			textureDesc.usage = llri::resource_usage_flag_bits::TransferDst | llri::resource_usage_flag_bits::Sampled | llri::resource_usage_flag_bits::ShaderWrite;
 			
+			current = &resources.emplace_back(nullptr);
+			REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
+			
+			// a common usage may be to transition one resource to shaderwrite
+			// and the others to shader read only
+			CHECK_EQ(list->resourceBarrier(
+					llri::resource_barrier::transition(
+						*current,
+						llri::resource_state::TransferDst, llri::resource_state::ShaderReadWrite,
+						llri::texture_subresource_range { 0, 1, 0, 1 }
+					)
+				), llri::result::Success);
+			
+			CHECK_EQ(list->resourceBarrier(
+					llri::resource_barrier::transition(
+						*current,
+						llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly,
+						llri::texture_subresource_range { 1, 9, 0, 1 }
+					)
+				), llri::result::Success);
 		}
     }
     
