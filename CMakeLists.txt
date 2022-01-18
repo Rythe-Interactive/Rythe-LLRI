@@ -56,4 +56,7 @@ elseif(UNIX) # elseif here guarantees that unix is not apple unix
 
 endif()
 
-add_subdirectory(applications)
+SET(LLRI_BUILD_APPLICATIONS ON CACHE BOOL "Add applications (samples, unit tests) to the project. Requires the submodules in applications/deps/ to be present.")
+if (${LLRI_BUILD_APPLICATIONS})
+	add_subdirectory(applications)
+endif()

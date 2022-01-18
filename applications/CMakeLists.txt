@@ -1,6 +1,28 @@
 # Copyright 2021-2021 Leon Brands. All rights served.
 # License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
 
+# update git submodules
+if( NOT EXISTS "${LLRI_DIR_APPLICATIONS_DEPS}/glfw/CMakeLists.txt" OR
+	NOT EXISTS "${LLRI_DIR_APPLICATIONS_DEPS}/doctest/CMakeLists.txt" OR
+	NOT EXISTS "${LLRI_DIR_APPLICATIONS_DEPS}/stb/README.md")
+
+	message(STATUS "The git submodules were not updated, attempting to do so now")
+	find_package(Git)
+	if (NOT GIT_FOUND)
+		message(FATAL_ERROR "Couldn't find Git executable, meaning the git submodules weren't updated. Install git into PATH and try again, or alternatively you may disable LLRI_BUILD_APPLICATIONS.")
+	else()
+		message(STATUS "Git found, updating submodules")
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+						WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+						RESULT_VARIABLE GIT_SUBMOD_RESULT)
+		if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+			message(FATAL_ERROR "git submodule update failed with ${GIT_SUBMOD_RESULT}")
+		else()
+			message(STATUS "Successfully updated submodules")
+		endif()
+	endif()
+endif()
+
 # add dependencies
 SET(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 SET(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
