@@ -1,0 +1,9 @@
+[submodule "applications/deps/glfw"]
+	path = applications/deps/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "applications/deps/doctest"]
+	path = applications/deps/doctest
+	url = https://github.com/doctest/doctest.git
+[submodule "applications/deps/stb"]
+	path = applications/deps/stb
+	url = https://github.com/nothings/stb.git
