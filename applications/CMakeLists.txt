@@ -36,11 +36,8 @@ set_target_properties(
 )
 
 SET(DOCTEST_WITH_TESTS OFF CACHE BOOL "" FORCE)
+SET(DOCTEST_WITH_MAIN_IN_STATIC_LIB OFF CACHE BOOL "" FORCE)
 add_subdirectory(deps/doctest)
-set_target_properties(
-	doctest
-	PROPERTIES FOLDER "applications/deps"
-)
 
 # add applications
 add_subdirectory(unit_tests)
