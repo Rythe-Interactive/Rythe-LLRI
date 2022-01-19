@@ -16,7 +16,7 @@ Implementation					A buildable implementation of the LLRI API. Implementations u
 
 Keywords
 ---------
-LLRI uses keywords that have binding implications. These keywords only take binding effect whenever they are **bolded**. They usually describe rules to which an implementation of the API must adhere to. 
+LLRI uses keywords that have binding implications. These keywords only take binding effect whenever they are **bolded**, and describe the correct usage of the API.
 
 The keywords loosely follow the https://www.ietf.org/rfc/rfc2119.txt convention, but their exact meaning within the API/documentation is described below:
 

@@ -1,11 +1,11 @@
-Legion-LLRI
+Rythe-LLRI
 ==================================
-Legion-LLRI, or "Legion Low Level Rendering Interface" is a rendering API that aims to provide a graphics API agnostic approach to graphics development.
+Rythe-LLRI, or "Rythe Low Level Rendering Interface" is a rendering interface that aims to provide a graphics API agnostic approach to graphics development.
 
 LLRI is designed as a low overhead API that helps developers write graphics API / platform agnostic code without the typical limitations of higher level abstractions.
 
 .. warning::
-    The API and its wiki pages are still under heavy development. If you find yourself stuck with a problem, do not hesitate to approach the legion graphics team!
+    The API and its wiki pages are still under heavy development. If you find yourself stuck with a problem, do not hesitate to approach the rythe graphics team!
 
 Overview
 --------

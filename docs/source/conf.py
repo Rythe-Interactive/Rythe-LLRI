@@ -17,8 +17,8 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Legion-LLRI'
-copyright = '2019, Raphael Baier, Legion-Engine Team'
+project = 'Rythe-LLRI'
+copyright = '2019, Raphael Baier, Rythe-Engine Team'
 author = 'Raphael Baier'
 
 # The full version, including alpha/beta/rc tags
@@ -36,7 +36,7 @@ extensions = [
 ]
 
 breathe_projects = {
-    "Legion-LLRI": "../xml/",
+    "Rythe-LLRI": "../xml/",
 }
 
 source_suffix = {
@@ -60,7 +60,7 @@ primary_domain = 'cpp'
 
 highlight_language = 'cpp'
 
-breathe_default_project = "Legion-LLRI"
+breathe_default_project = "Rythe-LLRI"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -84,6 +84,6 @@ sys.path.insert(0,here)
 html_theme = 'nameko'
 
 # now we can import our custom theme
-import legiontheme
+import rythetheme
 
-html_theme_path = [legiontheme.get_html_theme_path()]
+html_theme_path = [rythetheme.get_html_theme_path()]
