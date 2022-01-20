@@ -268,7 +268,7 @@ namespace llri
             return internal::mapVkResult(r);
         }
         
-        // this part is necessary because in vulkan images are created int he UNDEFINED layout
+        // this part is necessary because in vulkan images are created in the UNDEFINED layout
         // so we must transition them to desc.initialState manually.
         if (isTexture)
         {
