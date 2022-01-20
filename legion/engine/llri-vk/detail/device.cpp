@@ -150,6 +150,8 @@ namespace llri
 
     result Device::impl_createResource(const resource_desc& desc, Resource** resource)
     {
+        auto* table = static_cast<VolkDeviceTable*>(m_functionTable);
+        
         const bool isTexture = desc.type != resource_type::Buffer;
 
         // get all valid queue families
@@ -195,12 +197,12 @@ namespace llri
             imageCreate.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             internalState = imageCreate.initialLayout;
 
-            auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkCreateImage(static_cast<VkDevice>(m_ptr), &imageCreate, nullptr, &image);
+            auto r = table->vkCreateImage(static_cast<VkDevice>(m_ptr), &imageCreate, nullptr, &image);
             if (r != VK_SUCCESS)
                 return internal::mapVkResult(r);
 
             VkMemoryRequirements reqs;
-            static_cast<VolkDeviceTable*>(m_functionTable)->vkGetImageMemoryRequirements(static_cast<VkDevice>(m_ptr), image, &reqs);
+            table->vkGetImageMemoryRequirements(static_cast<VkDevice>(m_ptr), image, &reqs);
             dataSize = reqs.size;
             memoryTypeIndex = internal::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
         }
@@ -216,12 +218,12 @@ namespace llri
             bufferCreate.queueFamilyIndexCount = familyIndices.size();
             bufferCreate.pQueueFamilyIndices = familyIndices.data();
 
-            auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkCreateBuffer(static_cast<VkDevice>(m_ptr), &bufferCreate, nullptr, &buffer);
+            auto r = table->vkCreateBuffer(static_cast<VkDevice>(m_ptr), &bufferCreate, nullptr, &buffer);
             if (r != VK_SUCCESS)
                 return internal::mapVkResult(r);
 
             VkMemoryRequirements reqs;
-            static_cast<VolkDeviceTable*>(m_functionTable)->vkGetBufferMemoryRequirements(static_cast<VkDevice>(m_ptr), buffer, &reqs);
+            table->vkGetBufferMemoryRequirements(static_cast<VkDevice>(m_ptr), buffer, &reqs);
             dataSize = reqs.size;
             memoryTypeIndex = internal::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
         }
@@ -239,41 +241,94 @@ namespace llri
         allocInfo.memoryTypeIndex = memoryTypeIndex;
         
         VkDeviceMemory memory;
-        auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkAllocateMemory(static_cast<VkDevice>(m_ptr), &allocInfo, nullptr, &memory);
+        auto r = table->vkAllocateMemory(static_cast<VkDevice>(m_ptr), &allocInfo, nullptr, &memory);
         if (r != VK_SUCCESS)
         {
             if (isTexture)
-                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyImage(static_cast<VkDevice>(m_ptr), image, nullptr);
+                table->vkDestroyImage(static_cast<VkDevice>(m_ptr), image, nullptr);
             else
-                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), buffer, nullptr);
+                table->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), buffer, nullptr);
             return internal::mapVkResult(r);
         }
 
         if (isTexture)
-            r = static_cast<VolkDeviceTable*>(m_functionTable)->vkBindImageMemory(static_cast<VkDevice>(m_ptr), image, memory, 0);
+            r = table->vkBindImageMemory(static_cast<VkDevice>(m_ptr), image, memory, 0);
         else
-            r = static_cast<VolkDeviceTable*>(m_functionTable)->vkBindBufferMemory(static_cast<VkDevice>(m_ptr), buffer, memory, 0);
+            r = table->vkBindBufferMemory(static_cast<VkDevice>(m_ptr), buffer, memory, 0);
 
         if (r != VK_SUCCESS)
         {
             if (isTexture)
-                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyImage(static_cast<VkDevice>(m_ptr), image, nullptr);
+                table->vkDestroyImage(static_cast<VkDevice>(m_ptr), image, nullptr);
             else
-                static_cast<VolkDeviceTable*>(m_functionTable)->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), buffer, nullptr);
+                table->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), buffer, nullptr);
 
-            static_cast<VolkDeviceTable*>(m_functionTable)->vkFreeMemory(static_cast<VkDevice>(m_ptr), memory, nullptr);
+            table->vkFreeMemory(static_cast<VkDevice>(m_ptr), memory, nullptr);
 
             return internal::mapVkResult(r);
+        }
+        
+        // this part is necessary because in vulkan images are created in the UNDEFINED layout
+        // so we must transition them to desc.initialState manually.
+        if (isTexture)
+        {
+            table->vkResetCommandPool(static_cast<VkDevice>(m_ptr), static_cast<VkCommandPool>(m_workCmdGroup), {});
+            
+            // Record commandbuffer to transition texture from undefined
+            VkCommandBufferBeginInfo beginInfo {};
+            beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            beginInfo.pNext = nullptr;
+            beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+            beginInfo.pInheritanceInfo = nullptr;
+            table->vkBeginCommandBuffer(static_cast<VkCommandBuffer>(m_workCmdList), &beginInfo);
+            
+            // use the texture format to detect the aspect flags
+            VkImageAspectFlags aspectFlags = {};
+            if (has_color_component(desc.textureFormat))
+                aspectFlags |= VK_IMAGE_ASPECT_COLOR_BIT;
+            if (has_depth_component(desc.textureFormat))
+                aspectFlags |= VK_IMAGE_ASPECT_DEPTH_BIT;
+            if (has_stencil_component(desc.textureFormat))
+                aspectFlags |= VK_IMAGE_ASPECT_STENCIL_BIT;
+            
+            VkImageMemoryBarrier imageMemoryBarrier {};
+            imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+            imageMemoryBarrier.pNext = nullptr;
+            imageMemoryBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            imageMemoryBarrier.newLayout = internal::mapResourceState(desc.initialState);
+            imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+            imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+            imageMemoryBarrier.srcAccessMask = VK_ACCESS_NONE_KHR;
+            imageMemoryBarrier.dstAccessMask = internal::mapStateToAccess(desc.initialState);
+            imageMemoryBarrier.image = image;
+            imageMemoryBarrier.subresourceRange = VkImageSubresourceRange { aspectFlags, 0, desc.mipLevels, 0, desc.depthOrArrayLayers };
+            
+            table->vkCmdPipelineBarrier(static_cast<VkCommandBuffer>(m_workCmdList),
+                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, internal::mapStateToPipelineStage(desc.initialState), {},
+                0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
+            
+            table->vkEndCommandBuffer(static_cast<VkCommandBuffer>(m_workCmdList));
+            
+            VkSubmitInfo submit {};
+            submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+            submit.pNext = nullptr;
+            submit.commandBufferCount = 1;
+            submit.pCommandBuffers = reinterpret_cast<VkCommandBuffer*>(&m_workCmdList);
+            submit.signalSemaphoreCount = 0;
+            submit.pSignalSemaphores = nullptr;
+            submit.waitSemaphoreCount = 0;
+            submit.pWaitSemaphores = nullptr;
+            submit.pWaitDstStageMask = nullptr;
+            table->vkQueueSubmit(static_cast<VkQueue>(getQueue(m_workQueueType, 0)->m_ptrs[0]), 1, &submit, static_cast<VkFence>(m_workFence));
+            
+            table->vkWaitForFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence), VK_TRUE, UINT_MAX);
+            table->vkResetFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence));
         }
 
         auto* output = new Resource();
         output->m_desc = desc;
         output->m_resource = isTexture ? static_cast<void*>(image) : static_cast<void*>(buffer);
         output->m_memory = memory;
-
-        output->m_state = desc.initialState;
-        output->m_implementationState = internalState; // only used for images
-
         *resource = output;
         return result::Success;
     }

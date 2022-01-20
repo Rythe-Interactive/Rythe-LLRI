@@ -25,7 +25,7 @@ namespace llri
         /**
          * @brief The number of instance extensions in the instance_desc::extensions array.
          *
-         * @note Valid usage (ErrorExceededLimit): As instance_desc::extensions can only hold unique values, numExtensions can not be more than instance_extension::MaxEnum.
+         * @note Valid usage (ErrorExceededLimit): As instance_desc::extensions can only hold unique values, numExtensions can not be more than instance_extension::MaxEnum + 1.
         */
         uint32_t numExtensions;
         /**

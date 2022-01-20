@@ -205,6 +205,46 @@ namespace llri
 
             return VK_IMAGE_LAYOUT_GENERAL;
         }
+    
+        constexpr VkAccessFlags mapStateToAccess(resource_state state)
+        {
+            constexpr std::array<VkAccessFlags, static_cast<size_t>(resource_state::MaxEnum) + 1> map {
+                static_cast<VkAccessFlagBits>(0),
+                VK_ACCESS_HOST_WRITE_BIT,
+                VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT,
+                VK_ACCESS_SHADER_READ_BIT,
+                VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT,
+                VK_ACCESS_TRANSFER_READ_BIT,
+                VK_ACCESS_TRANSFER_WRITE_BIT,
+                VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT,
+                VK_ACCESS_INDEX_READ_BIT,
+                VK_ACCESS_UNIFORM_READ_BIT
+            };
+            
+            return map[static_cast<size_t>(state)];
+        }
+    
+        constexpr VkPipelineStageFlags mapStateToPipelineStage(resource_state state)
+        {
+            constexpr std::array<VkPipelineStageFlags, static_cast<size_t>(resource_state::MaxEnum) + 1> map {
+                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                VK_PIPELINE_STAGE_HOST_BIT,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+                VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
+                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT
+            };
+            
+            return map[static_cast<size_t>(state)];
+        }
 
         constexpr VkImageUsageFlags mapTextureUsage(resource_usage_flags usage)
         {

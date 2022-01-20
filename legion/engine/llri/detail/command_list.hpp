@@ -10,6 +10,7 @@
 namespace llri
 {
     class CommandGroup;
+    struct resource_barrier;
 
     /**
      * @brief Describes how the CommandList is going to be used. A CommandList's usage is exclusive and can not be changed after allocation.
@@ -161,6 +162,45 @@ namespace llri
          * After creation, CommandList will initially be in the command_list_state::Empty state. Once CommandList::begin() is called, the CommandList will be in the command_list_state::Recording state. After that, when CommandList::end() is called, CommandList will be put in the command_list_state::Ready state, in which it will stay until CommandGroup::reset() is called.
         */
         [[nodiscard]] command_list_state getState() const { return m_state; }
+        
+        /**
+         * @brief Insert one or more resource memory dependencies.
+         *
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the Recording state.
+         *
+         * @note Valid usage (ErrorInvalidUsage): numBarriers **must** be more than 0.
+         * @note Valid usage (ErrorInvalidUsage): barriers **must** be a valid non-null pointer to a resource_barrier array of size numBarriers.
+         *
+         * @return Success upon correct excution of the operation.
+         * @return resource_barrier defined result values: ErrorInvalidUsage, ErrorInvalidState.
+        */
+        result resourceBarrier(uint32_t numBarriers, const resource_barrier* barriers);
+
+        /**
+         * @brief Insert one or more resource memory dependencies.
+         *
+         * @note Utility function; the equivalent of calling resourceBarrier(count, arr);
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the Recording state.
+         *
+         * @return Success upon correct excution of the operation.
+         * @return resource_barrier defined result values: ErrorInvalidUsage, ErrorInvalidState.
+         */
+        template<size_t count>
+	    result resourceBarrier(const resource_barrier(&arr)[count])
+	    {
+	        return resourceBarrier(count, arr);
+	    }
+
+        /**
+         * @brief Insert a resource memory dependency.
+         *
+         * @note Utility function; the equivalent of calling resourceBarrier(1, &barrier);
+         * @note Valid usage (ErrorInvalidState): The CommandList **must** be in the Recording state.
+         *
+         * @return Success upon correct excution of the operation.
+         * @return resource_barrier defined result values: ErrorInvalidUsage, ErrorInvalidState.
+         */
+        result resourceBarrier(const resource_barrier& barrier);
     private:
         // Force private constructor/deconstructor so that only alloc/free can manage lifetime
         CommandList() = default;
@@ -179,5 +219,7 @@ namespace llri
 
         result impl_begin(const command_list_begin_desc& desc);
         result impl_end();
+        
+        result impl_resourceBarrier(uint32_t numBarriers, const resource_barrier* barriers);
     };
 }

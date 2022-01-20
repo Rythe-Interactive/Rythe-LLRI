@@ -13,7 +13,12 @@ namespace llri
     {
         return m_desc;
     }
-
+    
+    inline Adapter* Device::getAdapter() const
+    {
+        return m_adapter;
+    }
+    
     inline Queue* Device::getQueue(queue_type type, uint8_t index)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, nullptr)
@@ -340,13 +345,14 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::ColorAttachment, desc.usage.contains(resource_usage_flag_bits::ColorAttachment), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::DepthStencilAttachment, desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::DepthStencilAttachmentReadOnly, desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.type != resource_type::Buffer && desc.initialState == resource_state::ShaderReadOnly, desc.usage.contains(resource_usage_flag_bits::Sampled), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::ShaderReadWrite, desc.usage.contains(resource_usage_flag_bits::ShaderWrite), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::TransferSrc, desc.usage.contains(resource_usage_flag_bits::TransferSrc), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.initialState == resource_state::TransferDst, desc.usage.contains(resource_usage_flag_bits::TransferDst), result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Local, desc.initialState != resource_state::Upload, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Upload, desc.initialState != resource_state::Upload, result::ErrorInvalidUsage)
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Read, desc.initialState != resource_state::TransferDst, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Upload, desc.initialState == resource_state::Upload, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.memoryType == memory_type::Read, desc.initialState == resource_state::TransferDst, result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.width > 0, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.width <= 16348, result::ErrorInvalidUsage)
@@ -366,7 +372,7 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture, desc.sampleCount <= sample_count::MaxEnum, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.type != resource_type::Texture2D, desc.sampleCount == sample_count::Count1, result::ErrorInvalidUsage)
         
-        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.usage.contains(resource_usage_flag_bits::ShaderWrite), desc.sampleCount != sample_count::Count1, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.usage.contains(resource_usage_flag_bits::ShaderWrite), desc.sampleCount == sample_count::Count1, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.sampleCount > sample_count::Count1, desc.usage.contains(resource_usage_flag_bits::ColorAttachment) || desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.mipLevels > 1, desc.sampleCount == sample_count::Count1, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(isTexture && desc.mipLevels > 1, desc.width >= std::pow(2, desc.mipLevels), result::ErrorInvalidUsage)

@@ -47,7 +47,7 @@ namespace llri
         /**
          * @brief The number of device extensions in the device_desc::extensions array.
          *
-         * @note Valid usage (ErrorExceededLimit):  As device_desc::extensions can only hold unique values, numExtensions can not be more than adapter_extension::MaxEnum.
+         * @note Valid usage (ErrorExceededLimit):  As device_desc::extensions can only hold unique values, numExtensions can not be more than adapter_extension::MaxEnum + 1.
         */
         uint32_t numExtensions;
         /**
@@ -87,9 +87,14 @@ namespace llri
 
     public:
         /**
-         * Get the desc that the Device was created with.
+         * @brief Get the desc that the Device was created with.
          */
         [[nodiscard]] device_desc getDesc() const;
+        
+        /**
+         * @brief Get the adapter that the device represents.
+         */
+        [[nodiscard]] Adapter* getAdapter() const;
 
         /**
          * @brief Get a created Queue by type and index.
@@ -237,6 +242,12 @@ namespace llri
         std::vector<Queue*> m_transferQueues;
 
         device_desc m_desc;
+        
+        // used for internal commands/work (e.g. transitioning internal states)
+        void* m_workCmdGroup = nullptr;
+        void* m_workCmdList = nullptr;
+        void* m_workFence = nullptr;
+        queue_type m_workQueueType;
 
         result impl_createCommandGroup(queue_type type, CommandGroup** cmdGroup);
         void impl_destroyCommandGroup(CommandGroup* cmdGroup);

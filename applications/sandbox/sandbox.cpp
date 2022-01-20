@@ -91,6 +91,14 @@ int main()
         const llri::command_list_begin_desc beginDesc {};
         THROW_IF_FAILED(m_commandList->record(beginDesc, [](llri::CommandList* cmd)
         {
+            cmd->resourceBarrier({
+                llri::resource_barrier::read_write(m_buffer),
+                llri::resource_barrier::transition(m_texture, llri::resource_state::TransferDst, llri::resource_state::ShaderReadOnly)
+            });
+
+            cmd->resourceBarrier(
+                llri::resource_barrier::transition(m_texture, llri::resource_state::ShaderReadOnly, llri::resource_state::TransferDst)
+            );
         }, m_commandList));
 
         // submit
@@ -137,22 +145,22 @@ void selectAdapter()
         // Log adapter info
         llri::adapter_info info = adapter->queryInfo();
 
-        printf("Found adapter %s", info.adapterName.c_str());
-        printf("\tVendor ID: %u", info.vendorId);
-        printf("\tAdapter ID: %u", info.adapterId);
-        printf("\tAdapter Type: %s", to_string(info.adapterType).c_str());
+        printf("Found adapter %s\n", info.adapterName.c_str());
+        printf("\tVendor ID: %u\n", info.vendorId);
+        printf("\tAdapter ID: %u\n", info.adapterId);
+        printf("\tAdapter Type: %s\n", to_string(info.adapterType).c_str());
 
         uint8_t nodeCount = adapter->queryNodeCount();
-        printf("\tAdapter Nodes: %u", nodeCount);
+        printf("\tAdapter Nodes: %u\n", nodeCount);
 
         uint8_t maxGraphicsQueueCount = adapter->queryQueueCount(llri::queue_type::Graphics);
         uint8_t maxComputeQueueCount = adapter->queryQueueCount(llri::queue_type::Compute);
         uint8_t maxTransferQueueCount = adapter->queryQueueCount(llri::queue_type::Transfer);
 
-        printf("\t Max number of queues: ");
-        printf("\t\t Graphics: %u", maxGraphicsQueueCount);
-        printf("\t\t Compute: %u", maxComputeQueueCount);
-        printf("\t\t Transfer: %u", maxTransferQueueCount);
+        printf("\tMax number of queues: \n");
+        printf("\t\tGraphics: %u\n", maxGraphicsQueueCount);
+        printf("\t\tCompute: %u\n", maxComputeQueueCount);
+        printf("\t\tTransfer: %u\n", maxTransferQueueCount);
 
         uint32_t score = 0;
 
