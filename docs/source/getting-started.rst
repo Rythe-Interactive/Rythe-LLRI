@@ -7,9 +7,9 @@ Platforms
 LLRI is built with C++17, and supports the following configurations:
 
 ============================	==========	====================
-Operating System    			Compiler	Implementation(s)
+Operating system				Compiler	Implementation(s)
 ============================	==========	====================
-Windows 10 (x64)				MSVC        Vulkan / DirectX 12
+Windows 10 (x64)				MSVC		Vulkan / DirectX 12
 Windows 10 (x64)				LLVM Clang	Vulkan / DirectX 12
 MacOS 11 Big Sur				G++			Vulkan (MoltenVK)
 MacOS 11 Big Sur				Clang++		Vulkan (MoltenVK)
@@ -59,19 +59,19 @@ Mandatory
 ============================	==========
 DLL Name 						Description
 ============================	==========
-dxcompiler.dll			   		HLSL compiler
-dxil.dll				   		HLSL compiler (required for modern HLSL versions)
-============================  	==========
+dxcompiler.dll					HLSL compiler
+dxil.dll						HLSL compiler (required for modern HLSL versions)
+============================	==========
 
 Optional
 ########
 ============================	==========
-DLL Name 						Description
+DLL Name						Description
 ============================	==========
-WinPixEventRuntime.dll	   		[DirectX] Enables CommandList markers which are visible in debugging applications such as Microsoft PIX and NVIDIA's Nsight.
-D3D12/D3D12Core.dll		   		[DirectX] Upgrades the local DirectX version to the latest DirectX Agility SDK which provides access to the latest DX12 features. If included, this DLL **must** be in the D3D12/ folder next to the executable.
-D3D12/d3d12SDKLayers.dll   		[DirectX] Upgrades the local DirectX version to the latest DirectX Agility SDK which provides more robust debug features. If included, this DLL **must** be in the D3D12/ folder next to the executable.
-============================  	==========
+WinPixEventRuntime.dll			[DirectX] Enables CommandList markers which are visible in debugging applications such as Microsoft PIX and NVIDIA's Nsight.
+D3D12/D3D12Core.dll				[DirectX] Upgrades the local DirectX version to the latest DirectX Agility SDK which provides access to the latest DX12 features. If included, this DLL **must** be in the D3D12/ folder next to the executable.
+D3D12/d3d12SDKLayers.dll		[DirectX] Upgrades the local DirectX version to the latest DirectX Agility SDK which provides more robust debug features. If included, this DLL **must** be in the D3D12/ folder next to the executable.
+============================	==========
 
 Samples
 ----------
