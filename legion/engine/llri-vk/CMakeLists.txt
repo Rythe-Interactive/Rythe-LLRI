@@ -1,12 +1,16 @@
 # Copyright 2021-2021 Leon Brands. All rights served.
 # License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
 
-project(llri-vk LANGUAGES CXX)
+project(llri-vk LANGUAGES ${LLRI_SOURCE_LANGUAGES})
 
-file(GLOB_RECURSE source *.hpp *.inl *.cpp)
+file(GLOB_RECURSE source ${LLRI_SOURCE_FILETYPES})
 add_library(llri-vk ${source})
 
 target_compile_features(llri-vk PRIVATE cxx_std_17)
+
+if (APPLE)
+	target_link_libraries(llri-vk PRIVATE "-framework Cocoa")
+endif()
 
 include_directories(${LLRI_DIR_SRC})
 include_directories(${LLRI_DIR_DEPS}/include)
