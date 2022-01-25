@@ -19,8 +19,8 @@ namespace llri
                 return "GPUValidation";
             case instance_extension::SurfaceWin32:
                 return "SurfaceWin32";
-            case instance_extension::SurfaceMetal:
-                return "SurfaceMetal";
+            case instance_extension::SurfaceCocoa:
+                return "SurfaceCocoa";
         }
 
         return "Invalid instance_extension value";
@@ -176,11 +176,11 @@ namespace llri
         LLRI_DETAIL_CALL_IMPL(impl_createSurfaceEXT(desc, surface), m_validationCallbackMessenger)
     }
     
-    inline result Instance::createSurfaceEXT(const surface_metal_desc_ext& desc, SurfaceEXT** surface)
+    inline result Instance::createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(surface != nullptr, result::ErrorInvalidUsage)
         *surface = nullptr;
-        LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(instance_extension::SurfaceMetal) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(instance_extension::SurfaceCocoa) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
 
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.nsWindow != nullptr, result::ErrorInvalidUsage)
         

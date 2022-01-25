@@ -27,7 +27,7 @@ namespace llri
                 case instance_extension::SurfaceWin32:
                     return extensions.find(internal::nameHash("VK_KHR_win32_surface")) != extensions.end() &&
                            extensions.find(internal::nameHash("VK_KHR_surface")) != extensions.end();
-                case instance_extension::SurfaceMetal:
+                case instance_extension::SurfaceCocoa:
                     return extensions.find(internal::nameHash("VK_EXT_metal_surface")) != extensions.end() &&
                            extensions.find(internal::nameHash("VK_KHR_surface")) != extensions.end();
             }

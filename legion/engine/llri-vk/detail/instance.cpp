@@ -111,7 +111,7 @@ namespace llri
                         extensions.insert("VK_KHR_win32_surface");
                         break;
                     }
-                    case instance_extension::SurfaceMetal:
+                    case instance_extension::SurfaceCocoa:
                     {
                         extensions.insert("VK_KHR_surface");
                         extensions.insert("VK_EXT_metal_surface");
@@ -523,7 +523,7 @@ namespace llri
 #endif
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_metal_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_METAL_EXT
         return result::ErrorExtensionNotSupported;

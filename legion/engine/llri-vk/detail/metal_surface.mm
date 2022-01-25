@@ -19,12 +19,12 @@ namespace llri
                 if (!bundle)
                     return nullptr;
                 
+                id ns = static_cast<id>(nsWindow);
+                id view = [ns contentView];
+                
                 id layer = [[bundle classNamed:@"CAMetalLayer"] layer];
                 if (!layer)
                     return nullptr;
-                
-                id ns = static_cast<id>(nsWindow);
-                id view = [ns contentView];
 
                 if (false) // ns.retina
                     [layer setContentsScale:[ns backingScaleFactor]];

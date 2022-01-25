@@ -18,7 +18,7 @@ namespace llri
     class Device;
 
     struct surface_win32_desc_ext;
-    struct surface_metal_desc_ext;
+    struct surface_cocoa_desc_ext;
     class SurfaceEXT;
 
     /**
@@ -165,18 +165,18 @@ namespace llri
         result createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface);
 
         /**
-         * @brief Create a SurfaceEXT object for an NSWindow, using CAMetalLayer.
+         * @brief Create a SurfaceEXT object for a Cocoa window, using CAMetalLayer.
          * @param desc A description of how the surface should be created.
          * @param surface A pointer to the resulting surface variable.
          *
          * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT* variable.
-         * @note Valid usage (ErrorExtensionNotEnabled): instance_extension::SurfaceMetal **must** be enabled in the instance.
+         * @note Valid usage (ErrorExtensionNotEnabled): instance_extension::SurfaceCocoa **must** be enabled in the instance.
          *
          * @return Success upon correct execution of the operation.
-         * @return surface_metal_desc_ext defined result values: ErrorInvalidUsage.
+         * @return surface_cocoa_desc_ext defined result values: ErrorInvalidUsage.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory
         */
-        result createSurfaceEXT(const surface_metal_desc_ext& desc, SurfaceEXT** surface);
+        result createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface);
         
         /**
          * @brief Destroy the SurfaceEXT object.
@@ -207,7 +207,7 @@ namespace llri
         void impl_destroyDevice(Device* device);
 
         result impl_createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface);
-        result impl_createSurfaceEXT(const surface_metal_desc_ext& desc, SurfaceEXT** surface);
+        result impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface);
         void impl_destroySurfaceEXT(SurfaceEXT* surface);
     };
 }

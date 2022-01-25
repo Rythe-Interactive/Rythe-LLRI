@@ -29,13 +29,13 @@ namespace llri
         */
         SurfaceWin32,
         /**
-         * @brief Create a SurfaceEXT object from an NSWindow, using CAMetalLayer.
+         * @brief Create a SurfaceEXT object from a Cocoa window, using CAMetalLayer.
          */
-        SurfaceMetal,
+        SurfaceCocoa,
         /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = SurfaceMetal
+        MaxEnum = SurfaceCocoa
     };
 
     /**

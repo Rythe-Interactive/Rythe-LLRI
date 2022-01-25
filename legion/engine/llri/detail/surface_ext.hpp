@@ -29,12 +29,12 @@ namespace llri
     };
 
     /**
-     * @brief Describes how a SurfaceEXT object should be created with an NSWindow window.
+     * @brief Describes how a SurfaceEXT object should be created with a Cocoa window.
      */
-    struct surface_metal_desc_ext
+    struct surface_cocoa_desc_ext
     {
         /**
-         * @brief NSWindow, for which a CAMetalLayer will be created (or obtained if it already exists).
+         * @brief Cocoa NS window, for which a CAMetalLayer will be created (or obtained if it already exists).
          *
          * @note Valid usage (ErrorInvalidUsage): **Must** be a valid non-null pointer to a NSWindow.
          */

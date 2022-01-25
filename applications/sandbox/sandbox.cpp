@@ -157,10 +157,10 @@ void createInstance()
     
     instanceExtensions.push_back(llri::instance_extension::SurfaceWin32);
 #elif defined(__APPLE__)
-    if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceMetal) == false)
-        throw std::runtime_error("Win32 Surface support is required for this sample");
+    if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceCocoa) == false)
+        throw std::runtime_error("Cocoa Surface support is required for this sample");
     
-    instanceExtensions.push_back(llri::instance_extension::SurfaceMetal);
+    instanceExtensions.push_back(llri::instance_extension::SurfaceCocoa);
 #else
 #error platform not yet supported in this sample
 #endif
@@ -186,7 +186,7 @@ void createSurface()
     surfaceDesc.hinstance = GetModuleHandle(NULL);
     surfaceDesc.hwnd = glfwGetWin32Window(m_window);
 #elif defined(__APPLE__)
-    llri::surface_metal_desc_ext surfaceDesc{};
+    llri::surface_cocoa_desc_ext surfaceDesc{};
     surfaceDesc.nsWindow = glfwGetCocoaWindow(m_window);
 #else
 #error platform not yet supported in this sample
