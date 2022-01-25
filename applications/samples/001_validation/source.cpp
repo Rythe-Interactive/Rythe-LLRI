@@ -34,7 +34,7 @@ int main()
 
     const llri::instance_desc instanceDesc = { 0, nullptr, "validation" };
 
-    // We're intentionally misusing the API here to display the validation layer's effects
+    // We're intentionally misusing the API here to display the validation's effects
     // if LLRI_DISABLE_VALIDATION is defined, this usage will likely cause an internal crash.
     std::cout << "The next LLRI function call will output a validation error because we passed an incorrect parameter\n";
     const llri::result r = llri::createInstance(instanceDesc, nullptr); // passing nullptr to createInstance()

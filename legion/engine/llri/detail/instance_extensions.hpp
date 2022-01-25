@@ -25,9 +25,17 @@ namespace llri
         */
         GPUValidation,
         /**
+         * @brief Create a SurfaceEXT object from a Win32 HWND window.
+        */
+        SurfaceWin32,
+        /**
+         * @brief Create a SurfaceEXT object from an NSWindow, using CAMetalLayer.
+         */
+        SurfaceMetal,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = GPUValidation
+        MaxEnum = SurfaceMetal
     };
 
     /**

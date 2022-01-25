@@ -17,6 +17,10 @@ namespace llri
                 return "DriverValidation";
             case instance_extension::GPUValidation:
                 return "GPUValidation";
+            case instance_extension::SurfaceWin32:
+                return "SurfaceWin32";
+            case instance_extension::SurfaceMetal:
+                return "SurfaceMetal";
         }
 
         return "Invalid instance_extension value";
@@ -44,7 +48,30 @@ namespace llri
         }
 #endif
 
-        LLRI_DETAIL_CALL_IMPL(detail::impl_createInstance(desc, instance, true), (*instance)->m_validationCallbackMessenger)
+        // handle validation parameter
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        constexpr bool enableValidation = true;
+#else
+        constexpr bool enableValidation = false;
+#endif
+
+        // create instance
+        const auto r = detail::impl_createInstance(desc, instance, enableValidation);
+
+        // handle message polling
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        if (*instance)
+            detail::impl_pollAPIMessages((*instance)->m_validationCallbackMessenger);
+#endif
+
+        // handle validation data
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        if (*instance)
+            (*instance)->m_enabledExtensions = { desc.extensions, desc.extensions + desc.numExtensions };
+#endif
+
+        // finally return
+        return r;
     }
 
     inline void destroyInstance(Instance* instance)
@@ -134,6 +161,38 @@ namespace llri
 
         impl_destroyDevice(device);
 
+        LLRI_DETAIL_POLL_API_MESSAGES(m_validationCallbackMessenger)
+    }
+
+    inline result Instance::createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface)
+    {
+        LLRI_DETAIL_VALIDATION_REQUIRE(surface != nullptr, result::ErrorInvalidUsage)
+        *surface = nullptr;
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(instance_extension::SurfaceWin32) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
+
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.hinstance != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.hwnd != nullptr, result::ErrorInvalidUsage)
+
+        LLRI_DETAIL_CALL_IMPL(impl_createSurfaceEXT(desc, surface), m_validationCallbackMessenger)
+    }
+    
+    inline result Instance::createSurfaceEXT(const surface_metal_desc_ext& desc, SurfaceEXT** surface)
+    {
+        LLRI_DETAIL_VALIDATION_REQUIRE(surface != nullptr, result::ErrorInvalidUsage)
+        *surface = nullptr;
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(instance_extension::SurfaceMetal) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
+
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.nsWindow != nullptr, result::ErrorInvalidUsage)
+        
+        LLRI_DETAIL_CALL_IMPL(impl_createSurfaceEXT(desc, surface), m_validationCallbackMessenger)
+    }
+
+    inline void Instance::destroySurfaceEXT(SurfaceEXT* surface)
+    {
+        if (!surface)
+            return;
+
+        impl_destroySurfaceEXT(surface);
         LLRI_DETAIL_POLL_API_MESSAGES(m_validationCallbackMessenger)
     }
 }

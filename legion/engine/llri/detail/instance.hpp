@@ -17,6 +17,10 @@ namespace llri
     struct device_desc;
     class Device;
 
+    struct surface_win32_desc_ext;
+    struct surface_metal_desc_ext;
+    class SurfaceEXT;
+
     /**
      * @brief Instance description to be used in llri::createInstance().
     */
@@ -146,6 +150,40 @@ namespace llri
         */
         void destroyDevice(Device* device);
 
+        /**
+         * @brief Create a SurfaceEXT object for a Win32 HWND window.
+         * @param desc A description of how the surface should be created.
+         * @param surface A pointer to the resulting surface variable.
+         *
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT* variable.
+         * @note Valid usage (ErrorExtensionNotEnabled): instance_extension::SurfaceWin32 **must** be enabled in the instance.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return surface_win32_desc_ext defined result values: ErrorInvalidUsage.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
+        */
+        result createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface);
+
+        /**
+         * @brief Create a SurfaceEXT object for an NSWindow, using CAMetalLayer.
+         * @param desc A description of how the surface should be created.
+         * @param surface A pointer to the resulting surface variable.
+         *
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT* variable.
+         * @note Valid usage (ErrorExtensionNotEnabled): instance_extension::SurfaceMetal **must** be enabled in the instance.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return surface_metal_desc_ext defined result values: ErrorInvalidUsage.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory
+        */
+        result createSurfaceEXT(const surface_metal_desc_ext& desc, SurfaceEXT** surface);
+        
+        /**
+         * @brief Destroy the SurfaceEXT object.
+         * @param surface The SurfaceEXT to destroy, **must** be a valid SurfaceEXT pointer or nullptr.
+        */
+        void destroySurfaceEXT(SurfaceEXT* surface);
+
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Instance() = default;
@@ -156,12 +194,20 @@ namespace llri
         void* m_ptr = nullptr;
 
         bool m_shouldConstructValidationCallbackMessenger;
-        void* m_validationCallbackMessenger = nullptr; // Allows API to store their callback messenger if needed
+        detail::messenger_type* m_validationCallbackMessenger = nullptr; // Allows API to store their callback messenger if needed
 
         std::unordered_map<void*, Adapter*> m_cachedAdapters;
+
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        std::unordered_set<instance_extension> m_enabledExtensions;
+#endif
 
         result impl_enumerateAdapters(std::vector<Adapter*>* adapters);
         result impl_createDevice(const device_desc& desc, Device** device);
         void impl_destroyDevice(Device* device);
+
+        result impl_createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface);
+        result impl_createSurfaceEXT(const surface_metal_desc_ext& desc, SurfaceEXT** surface);
+        void impl_destroySurfaceEXT(SurfaceEXT* surface);
     };
 }

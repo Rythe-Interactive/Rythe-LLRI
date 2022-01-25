@@ -6,6 +6,21 @@
 
 #pragma once
 #include <llri/llri.hpp>
+
+#if defined(__ANDROID__)
+    #define VK_USE_PLATFORM_ANDROID_KHR
+#elif defined (__APPLE__)
+    #define VK_USE_PLATFORM_METAL_EXT
+#elif defined(__linux__)
+    #define VK_USE_PLATFORM_WAYLAND_KHR
+    #define VK_USE_PLATFORM_XCB_KHR
+    #define VK_USE_PLATFORM_XLIB_KHR
+    #define VK_USE_PLATFORM_DIRECTFB_EXT
+    #define VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#elif defined(_WIN32)
+    #define VK_USE_PLATFORM_WIN32_KHR
+#endif
+
 #include <graphics/vulkan/volk.h>
 
 namespace llri
@@ -22,6 +37,10 @@ namespace llri
                 isVolkInitialized = true;
             }
         }
+    
+#ifdef VK_USE_PLATFORM_METAL_EXT
+        void* getCAMetalLayer(void* nsWindow);
+#endif
 
         using layer_map = std::unordered_map<unsigned long long, VkLayerProperties>;
         using extension_map = std::unordered_map<unsigned long long, VkExtensionProperties>;

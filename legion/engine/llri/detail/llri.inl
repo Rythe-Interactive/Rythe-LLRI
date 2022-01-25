@@ -61,6 +61,8 @@ namespace llri
                 return "ErrorAlreadySignaled";
             case result::ErrorInvalidFormat:
                 return "ErrorInvalidFormat";
+            case result::ErrorSurfaceLostEXT:
+                return "ErrorSurfaceLostEXT";
         }
 
         return "Invalid result value";
@@ -94,3 +96,5 @@ namespace llri
 #include <llri/detail/command_list.inl>
 
 #include <llri/detail/fence.inl>
+
+#include <llri/detail/surface_ext.inl>

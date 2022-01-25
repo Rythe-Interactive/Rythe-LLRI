@@ -24,6 +24,12 @@ namespace llri
                     return layers.find(internal::nameHash("VK_LAYER_KHRONOS_validation")) != layers.end();
                 case instance_extension::GPUValidation:
                     return extensions.find(internal::nameHash("VK_EXT_validation_features")) != extensions.end();
+                case instance_extension::SurfaceWin32:
+                    return extensions.find(internal::nameHash("VK_KHR_win32_surface")) != extensions.end() &&
+                           extensions.find(internal::nameHash("VK_KHR_surface")) != extensions.end();
+                case instance_extension::SurfaceMetal:
+                    return extensions.find(internal::nameHash("VK_EXT_metal_surface")) != extensions.end() &&
+                           extensions.find(internal::nameHash("VK_KHR_surface")) != extensions.end();
             }
 
             return false;
