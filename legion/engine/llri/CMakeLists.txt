@@ -3,5 +3,5 @@
 
 project(llri LANGUAGES CXX)
 
-file(GLOB_RECURSE source *.hpp *.inl)
+file(GLOB_RECURSE source *.h *.hpp *.inl)
 add_custom_target(llri SOURCES ${source})

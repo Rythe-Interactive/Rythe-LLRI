@@ -1,9 +1,9 @@
 # Copyright 2021-2021 Leon Brands. All rights served.
 # License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
 
-project(llri-dx LANGUAGES CXX)
+project(llri-dx LANGUAGES ${LLRI_SOURCE_LANGUAGES})
 
-file(GLOB_RECURSE source *.hpp *.inl *.cpp)
+file(GLOB_RECURSE source ${LLRI_SOURCE_FILETYPES})
 add_library(llri-dx ${source})
 
 target_compile_features(llri-dx PRIVATE cxx_std_17)

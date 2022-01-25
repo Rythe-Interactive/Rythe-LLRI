@@ -12,6 +12,15 @@ set(CMAKE_FOLDER CMakePredefinedTargets)
 project(llri LANGUAGES CXX)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
+# Language
+if (APPLE)
+	set(LLRI_SOURCE_LANGUAGES OBJCXX)
+	set(LLRI_SOURCE_FILETYPES *.hpp *.h *.cpp *.c *.inl *.mm *.m)
+else()
+	set(LLRI_SOURCE_LANGUAGES CXX)
+	set(LLRI_SOURCE_FILETYPES *.hpp *.h *.cpp *.c *.inl)
+endif()
+
 # Easy folder references for subdirs
 set(LLRI_DIR_OUTPUT_INCLUDE "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE INTERNAL "")
 set(LLRI_DIR_OUTPUT_LIB "${CMAKE_CURRENT_SOURCE_DIR}/lib" CACHE INTERNAL "")
