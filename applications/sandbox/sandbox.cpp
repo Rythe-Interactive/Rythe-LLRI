@@ -176,8 +176,6 @@ void createSurface()
     glfwInit();
     // disable the default OpenGL context that GLFW creates
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    // this sample doesn't handle window resizing
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     m_window = glfwCreateWindow(960, 540, "sandbox", nullptr, nullptr);
 
     // LLRI surfaces
