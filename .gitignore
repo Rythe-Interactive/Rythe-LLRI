@@ -122,6 +122,7 @@ CMakeFiles/
 CMakeScripts/
 cmake_install.cmake
 CMakeCache.txt
+cmake-build-*/
 
 # Tests
 CTestTestfile.cmake
@@ -133,3 +134,6 @@ Testing/
 *.vcxproj
 *.vcxproj.filters
 *.sln
+
+# JetBrains
+.idea/
