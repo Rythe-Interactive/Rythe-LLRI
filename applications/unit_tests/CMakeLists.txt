@@ -8,7 +8,6 @@ add_executable(unit_tests ${source})
 
 target_compile_features(unit_tests PRIVATE cxx_std_17)
 
-include_directories(${LLRI_DIR_APPLICATIONS_DEPS}/include/)
 include_directories(${LLRI_DIR_SRC})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -17,3 +16,11 @@ target_link_libraries(unit_tests ${LLRI_SELECTED_APP_IMPLEMENTATION})
 if(CMAKE_DL_LIBS)
     target_link_libraries(unit_tests ${CMAKE_DL_LIBS})
 endif()
+
+# declare unit tests as runnable tests to cmake
+include(CTest)
+enable_testing()
+
+# doctest has a builtin module to detect & add tests
+include(${LLRI_DIR_APPLICATIONS_DEPS}/doctest/scripts/cmake/doctest.cmake)
+doctest_discover_tests(unit_tests)

@@ -123,6 +123,12 @@ CMakeScripts/
 cmake_install.cmake
 CMakeCache.txt
 
+# Tests
+CTestTestfile.cmake
+DartConfiguration.tcl
+unit_tests_*.cmake
+Testing/
+
 # Visual Studio project files
 *.vcxproj
 *.vcxproj.filters
