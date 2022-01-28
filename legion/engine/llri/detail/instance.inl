@@ -21,6 +21,10 @@ namespace llri
                 return "SurfaceWin32";
             case instance_extension::SurfaceCocoa:
                 return "SurfaceCocoa";
+            case instance_extension::SurfaceXlib:
+                return "SurfaceXlib";
+            case instance_extension::SurfaceXcb:
+                return "SurfaceXcb";
         }
 
         return "Invalid instance_extension value";
@@ -184,6 +188,30 @@ namespace llri
 
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.nsWindow != nullptr, result::ErrorInvalidUsage)
         
+        LLRI_DETAIL_CALL_IMPL(impl_createSurfaceEXT(desc, surface), m_validationCallbackMessenger)
+    }
+
+    inline result Instance::createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
+    {
+        LLRI_DETAIL_VALIDATION_REQUIRE(surface != nullptr, result::ErrorInvalidUsage)
+        *surface = nullptr;
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(instance_extension::SurfaceXlib) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
+
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.display != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.window != 0, result::ErrorInvalidUsage)
+
+        LLRI_DETAIL_CALL_IMPL(impl_createSurfaceEXT(desc, surface), m_validationCallbackMessenger)
+    }
+
+    inline result Instance::createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
+    {
+        LLRI_DETAIL_VALIDATION_REQUIRE(surface != nullptr, result::ErrorInvalidUsage)
+        *surface = nullptr;
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(instance_extension::SurfaceXcb) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
+
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.connection != nullptr, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.window != 0, result::ErrorInvalidUsage)
+
         LLRI_DETAIL_CALL_IMPL(impl_createSurfaceEXT(desc, surface), m_validationCallbackMessenger)
     }
 

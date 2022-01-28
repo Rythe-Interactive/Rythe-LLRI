@@ -116,6 +116,16 @@ namespace llri
                         extensions.insert("VK_KHR_surface");
                         extensions.insert("VK_EXT_metal_surface");
                     }
+                    case instance_extension::SurfaceXlib:
+                    {
+                        extensions.insert("VK_KHR_surface");
+                        extensions.insert("VK_KHR_xlib_surface");
+                    }
+                    case instance_extension::SurfaceXcb:
+                    {
+                        extensions.insert("VK_KHR_surface");
+                        extensions.insert("VK_KHR_xcb_surface");
+                    }
                 }
             }
 
@@ -543,6 +553,56 @@ namespace llri
         auto* output = new SurfaceEXT();
         output->m_ptr = vkSurface;
         
+        *surface = output;
+        return result::Success;
+#endif
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
+    {
+#ifndef VK_USE_PLATFORM_XLIB_KHR
+        return result::ErrorExtensionNotSupported;
+#else
+        VkXlibSurfaceCreateInfoKHR info {};
+        info.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+        info.pNext = nullptr;
+        info.flags = {};
+        info.dpy = static_cast<_XDisplay*>(desc.display);
+        info.window = desc.window;
+
+        VkSurfaceKHR vkSurface;
+        const auto r = vkCreateXlibSurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        auto* output = new SurfaceEXT();
+        output->m_ptr = vkSurface;
+
+        *surface = output;
+        return result::Success;
+#endif
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
+    {
+#ifndef VK_USE_PLATFORM_XCB_KHR
+        return result::ErrorExtensionNotSupported;
+#else
+        VkXcbSurfaceCreateInfoKHR info {};
+        info.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
+        info.pNext = nullptr;
+        info.flags = {};
+        info.connection = static_cast<xcb_connection_t*>(desc.connection);
+        info.window = desc.window;
+
+        VkSurfaceKHR vkSurface;
+        const auto r = vkCreateXcbSurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        auto* output = new SurfaceEXT();
+        output->m_ptr = vkSurface;
+
         *surface = output;
         return result::Success;
 #endif

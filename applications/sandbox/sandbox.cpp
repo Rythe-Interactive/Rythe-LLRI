@@ -14,6 +14,12 @@
     #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
     #define GLFW_EXPOSE_NATIVE_COCOA
+#elif defined(__linux__)
+    #define GLFW_EXPOSE_NATIVE_X11
+    #include <X11/Xlib.h>
+    #include <X11/Xlib-xcb.h>
+    #undef None
+    #undef Success
 #endif
 
 #include <GLFW/glfw3.h>
@@ -60,6 +66,7 @@ void callback(llri::message_severity severity, llri::message_source source, cons
 GLFWwindow* m_window = nullptr;
 llri::Instance* m_instance = nullptr;
 llri::SurfaceEXT* m_surface = nullptr;
+bool m_useXcb = false;
 
 llri::Adapter* m_adapter = nullptr;
 llri::Device* m_device = nullptr;
@@ -85,7 +92,7 @@ void createResources();
 
 int main()
 {
-    printf("LLRI linked Implementation: %s", llri::to_string(llri::getImplementation()).c_str());
+    printf("LLRI linked Implementation: %s\n", llri::to_string(llri::getImplementation()).c_str());
 
     llri::setMessageCallback(&callback);
 
@@ -161,6 +168,18 @@ void createInstance()
         throw std::runtime_error("Cocoa Surface support is required for this sample");
     
     instanceExtensions.push_back(llri::instance_extension::SurfaceCocoa);
+#elif defined(__linux__)
+    // prefer xcb
+    if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceXcb))
+    {
+        instanceExtensions.push_back(llri::instance_extension::SurfaceXcb);
+        m_useXcb = true;
+        printf("using Xcb instead of Xlib\n");
+    }
+    else if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceXlib))
+        instanceExtensions.push_back(llri::instance_extension::SurfaceXlib);
+    else
+        throw std::runtime_error("Xlib or Xcb Surface support is required for this sample");
 #else
 #error platform not yet supported in this sample
 #endif
@@ -176,6 +195,7 @@ void createSurface()
     glfwInit();
     // disable the default OpenGL context that GLFW creates
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, m_useXcb); // enable xcb if we can
     m_window = glfwCreateWindow(960, 540, "sandbox", nullptr, nullptr);
 
     // LLRI surfaces
@@ -183,16 +203,33 @@ void createSurface()
     llri::surface_win32_desc_ext surfaceDesc{};
     surfaceDesc.hinstance = GetModuleHandle(NULL);
     surfaceDesc.hwnd = glfwGetWin32Window(m_window);
+
+    THROW_IF_FAILED(m_instance->createSurfaceEXT(surfaceDesc, &m_surface));
 #elif defined(__APPLE__)
     llri::surface_cocoa_desc_ext surfaceDesc{};
     surfaceDesc.nsWindow = glfwGetCocoaWindow(m_window);
+
+    THROW_IF_FAILED(m_instance->createSurfaceEXT(surfaceDesc, &m_surface));
+#elif defined(__linux__)
+    if (m_useXcb)
+    {
+        llri::surface_xcb_desc_ext surfaceDesc{};
+        surfaceDesc.connection = XGetXCBConnection(glfwGetX11Display());
+        surfaceDesc.window = glfwGetX11Window(m_window);
+
+        THROW_IF_FAILED(m_instance->createSurfaceEXT(surfaceDesc, &m_surface));
+    }
+    else
+    {
+        llri::surface_xlib_desc_ext surfaceDesc{};
+        surfaceDesc.display = glfwGetX11Display();
+        surfaceDesc.window = glfwGetX11Window(m_window);
+
+        THROW_IF_FAILED(m_instance->createSurfaceEXT(surfaceDesc, &m_surface));
+    }
 #else
 #error platform not yet supported in this sample
 #endif
-
-    auto result = m_instance->createSurfaceEXT(surfaceDesc, &m_surface);
-    if (result != llri::result::Success)
-        throw std::runtime_error("Failed to create llri::SurfaceEXT");
 }
 
 void selectAdapter()

@@ -30,6 +30,12 @@ namespace llri
                 case instance_extension::SurfaceCocoa:
                     return extensions.find(internal::nameHash("VK_EXT_metal_surface")) != extensions.end() &&
                            extensions.find(internal::nameHash("VK_KHR_surface")) != extensions.end();
+                case instance_extension::SurfaceXlib:
+                    return extensions.find(internal::nameHash("VK_KHR_xlib_surface")) != extensions.end() &&
+                            extensions.find(internal::nameHash("VK_KHR_surface")) != extensions.end();
+                case instance_extension::SurfaceXcb:
+                    return extensions.find(internal::nameHash("VK_KHR_xcb_surface")) != extensions.end() &&
+                            extensions.find(internal::nameHash("VK_KHR_surface")) != extensions.end();
             }
 
             return false;

@@ -19,6 +19,8 @@ namespace llri
 
     struct surface_win32_desc_ext;
     struct surface_cocoa_desc_ext;
+    struct surface_xlib_desc_ext;
+    struct surface_xcb_desc_ext;
     class SurfaceEXT;
 
     /**
@@ -177,7 +179,35 @@ namespace llri
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory
         */
         result createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface);
-        
+
+        /**
+         * @brief Create a SurfaceEXT object for an Xlib window.
+         * @param desc A description of how the surface should be created.
+         * @param surface A pointer to the resulting surface variable.
+         *
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT* variable.
+         * @note Valid usage (ErrorExtensionNotEnabled): instance_extension::SurfaceXlib **must** be enabled in the instance.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return surface_xlib_desc_ext defined result values: ErrorInvalidUsage.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory
+         */
+        result createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface);
+
+        /**
+         * @brief Create a SurfaceEXT object for an XCB window.
+         * @param desc A description of how the surface should be created.
+         * @param surface A pointer to the resulting surface variable.
+         *
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT* variable.
+         * @note Valid usage (ErrorExtensionNotEnabled): instance_extension::SurfaceXcb **must** be enabled in the instance.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return surface_xcb_desc_ext defined result values: ErrorInvalidUsage.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory
+         */
+        result createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface);
+
         /**
          * @brief Destroy the SurfaceEXT object.
          * @param surface The SurfaceEXT to destroy, **must** be a valid SurfaceEXT pointer or nullptr.
@@ -208,6 +238,8 @@ namespace llri
 
         result impl_createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface);
         result impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface);
+        result impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface);
+        result impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface);
         void impl_destroySurfaceEXT(SurfaceEXT* surface);
     };
 }

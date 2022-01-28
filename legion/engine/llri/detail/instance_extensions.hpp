@@ -33,9 +33,17 @@ namespace llri
          */
         SurfaceCocoa,
         /**
+         * @brief Create a SurfaceEXT object from an Xlib display connection and window
+         */
+        SurfaceXlib,
+        /**
+         * @brief Create a SurfaceEXT object from an XCB connection & XCB window
+         */
+        SurfaceXcb,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = SurfaceCocoa
+        MaxEnum = SurfaceXcb
     };
 
     /**

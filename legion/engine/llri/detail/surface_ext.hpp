@@ -42,6 +42,44 @@ namespace llri
     };
 
     /**
+     * @brief Describes how a SurfaceEXT object should be created with an XLib Display connection and Window.
+     */
+    struct surface_xlib_desc_ext
+    {
+        /**
+         * @brief An Xlib display connection connecting to the X server.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be a valid non-null pointer to an Xlib Display connection.
+         */
+        void* display;
+        /**
+         * @brief An Xlib window handle.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be a valid Xlib window (not 0).
+         */
+        uint32_t window;
+    };
+
+    /**
+     * @brief Describes how a SurfaceEXT object should be created with an XCB connection and window ID.
+     */
+    struct surface_xcb_desc_ext
+    {
+        /**
+         * @brief A pointer to an XCB connection pointing to the X server.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be a valid non-null pointer to an XCB connection.
+         */
+        void* connection;
+        /**
+         * @brief An XCB window handle.
+         *
+         * @note Valid usage (ErrorInvalidUsage): **Must** be a valid XCB ID (not 0).
+         */
+        uint32_t window;
+    };
+
+    /**
      * @brief LLRI Surfaces are created from platform-dependent information.
      * They are the link between platforms and the abstract LLRI API.
      * A Surface represents a window or another platform-specific structure that (usually) supports drawing to a screen.
