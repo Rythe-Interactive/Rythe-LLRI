@@ -33,6 +33,14 @@ namespace llri
                         temp->Release();
                     return succeeded;
                 }
+                case instance_extension::SurfaceWin32:
+                    return true;
+                case instance_extension::SurfaceCocoa:
+                    return false;
+                case instance_extension::SurfaceXlib:
+                    return false;
+                case instance_extension::SurfaceXcb:
+                    return false;
             }
 
             return false;
