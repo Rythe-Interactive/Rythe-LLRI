@@ -1,5 +1,5 @@
 /**
- * @file surface_cocoa.hpp
+ * @file surface_xcb.hpp
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
  */
@@ -25,9 +25,9 @@
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
-inline void testInstanceSurfaceCocoa()
+inline void testInstanceSurfaceXcb()
 {
-    llri::surface_cocoa_desc_ext empty {};
+    llri::surface_xcb_desc_ext empty {};
     
     SUBCASE("Extension not enabled")
     {
@@ -41,14 +41,15 @@ inline void testInstanceSurfaceCocoa()
         llri::destroyInstance(instance);
     }
     
-    if (llri::queryInstanceExtensionSupport(llri::instance_extension::SurfaceCocoa))
+    if (llri::queryInstanceExtensionSupport(llri::instance_extension::SurfaceXcb))
     {
         glfwInit();
         // disable the default OpenGL context that GLFW creates
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, GLFW_TRUE);
         GLFWwindow* window = glfwCreateWindow(960, 540, "sandbox", nullptr, nullptr);
         
-        llri::instance_extension ext = llri::instance_extension::SurfaceCocoa;
+        llri::instance_extension ext = llri::instance_extension::SurfaceXcb;
         
         llri::instance_desc desc {};
         desc.numExtensions = 1;
@@ -64,10 +65,11 @@ inline void testInstanceSurfaceCocoa()
         llri::SurfaceEXT* surface;
         CHECK_EQ(instance->createSurfaceEXT(empty, &surface), llri::result::ErrorInvalidUsage);
         
-#ifdef __APPLE__
+#ifdef __linux__
         // valid
-        llri::surface_cocoa_desc_ext sd {};
-        sd.nsWindow = glfwGetCocoaWindow(window);
+        llri::surface_xcb_desc_ext sd {};
+        sd.connection = XGetXCBConnection(glfwGetX11Display());
+        sd.window = glfwGetX11Window(window);
         
         CHECK_EQ(instance->createSurfaceEXT(sd, &surface), llri::result::Success);
         

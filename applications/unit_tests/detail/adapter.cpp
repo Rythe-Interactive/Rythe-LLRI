@@ -22,7 +22,6 @@ TEST_CASE("Adapter")
             llri::adapter_info info = adapter->queryInfo();
             CHECK(info.adapterType <= llri::adapter_type::MaxEnum);
             CHECK_NE(info.vendorId, 0);
-            CHECK_NE(info.adapterId, 0);
             CHECK_NE(info.adapterName, "");
         }
 

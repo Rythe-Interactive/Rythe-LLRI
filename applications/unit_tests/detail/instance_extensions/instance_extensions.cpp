@@ -10,6 +10,8 @@
 
 #include <detail/instance_extensions/surface_win32.hpp>
 #include <detail/instance_extensions/surface_cocoa.hpp>
+#include <detail/instance_extensions/surface_xlib.hpp>
+#include <detail/instance_extensions/surface_xcb.hpp>
 
 TEST_SUITE("Instance Extensions")
 {
@@ -59,5 +61,11 @@ TEST_SUITE("Instance Extensions")
         
         SUBCASE("instance_extension::SurfaceCocoa")
             testInstanceSurfaceCocoa();
+
+        SUBCASE("instance_extension::SurfaceXlib")
+            testInstanceSurfaceXlib();
+
+        SUBCASE("instance_extension::SurfaceXcb")
+            testInstanceSurfaceXcb();
     }
 }
