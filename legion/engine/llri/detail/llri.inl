@@ -96,5 +96,3 @@ namespace llri
 #include <llri/detail/command_list.inl>
 
 #include <llri/detail/fence.inl>
-
-#include <llri/detail/surface_ext.inl>
