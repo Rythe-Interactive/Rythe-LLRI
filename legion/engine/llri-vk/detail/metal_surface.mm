@@ -26,8 +26,7 @@ namespace llri
                 if (!layer)
                     return nullptr;
 
-                if (false) // ns.retina
-                    [layer setContentsScale:[ns backingScaleFactor]];
+                [layer setContentsScale:[ns backingScaleFactor]];
                 
                 [view setLayer:layer];
                 [view setWantsLayer:YES];
@@ -35,6 +34,5 @@ namespace llri
                 return reinterpret_cast<void*>(layer);
             }
         }
-
     }
 }

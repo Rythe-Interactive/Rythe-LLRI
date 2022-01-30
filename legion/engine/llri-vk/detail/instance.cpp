@@ -115,16 +115,19 @@ namespace llri
                     {
                         extensions.insert("VK_KHR_surface");
                         extensions.insert("VK_EXT_metal_surface");
+                        break;
                     }
                     case instance_extension::SurfaceXlib:
                     {
                         extensions.insert("VK_KHR_surface");
                         extensions.insert("VK_KHR_xlib_surface");
+                        break;
                     }
                     case instance_extension::SurfaceXcb:
                     {
                         extensions.insert("VK_KHR_surface");
                         extensions.insert("VK_KHR_xcb_surface");
+                        break;
                     }
                 }
             }
