@@ -53,6 +53,16 @@ namespace llri
         return false;
     }
 
+    result Adapter::impl_querySurfaceSupportEXT(SurfaceEXT* surface, bool* support) const
+    {
+
+    }
+
+    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities* capabilities) const
+    {
+
+    }
+    
     uint8_t Adapter::impl_queryQueueCount(queue_type type) const
     {
         // DirectX doesn't have a limit on the number of created queues,
@@ -73,7 +83,7 @@ namespace llri
                 return 2;
             }
         }
-;
+
         return 0;
     }
 
