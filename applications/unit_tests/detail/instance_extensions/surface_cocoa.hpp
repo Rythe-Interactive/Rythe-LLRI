@@ -47,6 +47,11 @@ inline void testInstanceSurfaceCocoa()
         // disable the default OpenGL context that GLFW creates
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         GLFWwindow* window = glfwCreateWindow(960, 540, "sandbox", nullptr, nullptr);
+        if (!window)
+        {
+            glfwTerminate();
+            return;
+        }
         
         llri::instance_extension ext = llri::instance_extension::SurfaceCocoa;
         

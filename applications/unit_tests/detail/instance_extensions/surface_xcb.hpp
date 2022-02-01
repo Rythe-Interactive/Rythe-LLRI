@@ -48,6 +48,11 @@ inline void testInstanceSurfaceXcb()
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, GLFW_TRUE);
         GLFWwindow* window = glfwCreateWindow(960, 540, "sandbox", nullptr, nullptr);
+        if (!window)
+        {
+            glfwTerminate();
+            return;
+        }
         
         llri::instance_extension ext = llri::instance_extension::SurfaceXcb;
         
