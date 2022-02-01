@@ -46,16 +46,17 @@ namespace llri
         LLRI_DETAIL_CALL_IMPL(impl_queryExtensionSupport(ext), m_validationCallbackMessenger)
     }
 
-    inline result Adapter::querySurfaceSupportEXT(SurfaceEXT* surface, bool* support) const
+    inline result Adapter::querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(support != nullptr, result::ErrorInvalidUsage)
         *support = false;
         LLRI_DETAIL_VALIDATION_REQUIRE(surface != nullptr, result::ErrorInvalidUsage)
-
-        LLRI_DETAIL_CALL_IMPL(impl_querySurfaceSupportEXT(surface, support), m_validationCallbackMessenger)
+        LLRI_DETAIL_VALIDATION_REQUIRE(type <= queue_type::MaxEnum, result::ErrorInvalidUsage)
+        
+        LLRI_DETAIL_CALL_IMPL(impl_querySurfacePresentSupportEXT(surface, type, support), m_validationCallbackMessenger)
     }
 
-    inline result Adapter::querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities* capabilities) const
+    inline result Adapter::querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(capabilities != nullptr, result::ErrorInvalidUsage)
         *capabilities = {};

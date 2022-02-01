@@ -454,31 +454,31 @@ namespace llri
             return memFlags;
         }
 
-        constexpr VkPresentModeKHR mapPresentMode(present_mode presentMode)
+        constexpr VkPresentModeKHR mapPresentMode(present_mode_ext presentMode)
         {
             switch(presentMode)
             {
-                case present_mode::Immediate:
+                case present_mode_ext::Immediate:
                     return VK_PRESENT_MODE_IMMEDIATE_KHR;
-                case present_mode::Fifo:
+                case present_mode_ext::Fifo:
                     return VK_PRESENT_MODE_FIFO_KHR;
-                case present_mode::Mailbox:
+                case present_mode_ext::Mailbox:
                     return VK_PRESENT_MODE_MAILBOX_KHR;
             }
 
             throw;
         }
 
-        constexpr present_mode mapVkPresentMode(VkPresentModeKHR presentMode)
+        constexpr present_mode_ext mapVkPresentMode(VkPresentModeKHR presentMode)
         {
             switch(presentMode)
             {
                 case VK_PRESENT_MODE_IMMEDIATE_KHR:
-                    return present_mode::Immediate;
+                    return present_mode_ext::Immediate;
                 case VK_PRESENT_MODE_FIFO_KHR:
-                    return present_mode::Fifo;
+                    return present_mode_ext::Fifo;
                 case VK_PRESENT_MODE_MAILBOX_KHR:
-                    return present_mode::Mailbox;
+                    return present_mode_ext::Mailbox;
 
                 case VK_PRESENT_MODE_FIFO_RELAXED_KHR:
                 case VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR:
@@ -487,7 +487,7 @@ namespace llri
                     break;
             }
 
-            return static_cast<present_mode>(UINT_MAX);
+            return static_cast<present_mode_ext>(UINT_MAX);
         }
 
         uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t requiredMemoryBits, VkMemoryPropertyFlags requiredFlags);

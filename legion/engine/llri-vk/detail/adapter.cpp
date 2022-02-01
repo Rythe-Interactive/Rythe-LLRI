@@ -74,19 +74,19 @@ namespace llri
         return false;
     }
 
-    result Adapter::impl_querySurfaceSupportEXT(SurfaceEXT* surface, bool* support) const
+    result Adapter::impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
     {
         auto queueFamilies = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_ptr));
 
-        // if there are no graphics queue families then we can't use surfaces
-        if (queueFamilies.find(queue_type::Graphics) == queueFamilies.end())
+        if(queueFamilies[type] == UINT_MAX)
         {
             *support = false;
             return result::Success;
         }
-
+        
         VkBool32 supported;
-        const auto r = vkGetPhysicalDeviceSurfaceSupportKHR(static_cast<VkPhysicalDevice>(m_ptr), queueFamilies[queue_type::Graphics], static_cast<VkSurfaceKHR>(surface->m_ptr), &supported);
+        const auto r = vkGetPhysicalDeviceSurfaceSupportKHR(static_cast<VkPhysicalDevice>(m_ptr), queueFamilies[type], static_cast<VkSurfaceKHR>(surface->m_ptr), &supported);
+        
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
@@ -94,7 +94,7 @@ namespace llri
         return result::Success;
     }
 
-    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities* capabilities) const
+    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
     {
         VkResult r;
         uint32_t count;
@@ -108,9 +108,9 @@ namespace llri
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        capabilities->supportedFormats = std::vector<format>(count);
+        capabilities->formats = std::vector<format>(count);
         for (size_t i = 0; i < count; i++)
-            capabilities->supportedFormats[i] = internal::mapVkFormat(formats[i].format);
+            capabilities->formats[i] = internal::mapVkFormat(formats[i].format);
 
         // handle present modes
         r = vkGetPhysicalDeviceSurfacePresentModesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, nullptr);
@@ -121,12 +121,12 @@ namespace llri
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        capabilities->supportedPresentModes = std::vector<present_mode>{};
+        capabilities->presentModes = std::vector<present_mode_ext>{};
         for (size_t i = 0; i < count; i++)
         {
             const auto mode = internal::mapVkPresentMode(presentModes[i]);
             if (static_cast<uint32_t>(mode) != UINT_MAX)
-                capabilities->supportedPresentModes.emplace_back(internal::mapVkPresentMode(presentModes[i]));
+                capabilities->presentModes.emplace_back(internal::mapVkPresentMode(presentModes[i]));
         }
 
         // handle vk capabilities
@@ -141,7 +141,7 @@ namespace llri
         capabilities->minExtent = { vkCapabilities.minImageExtent.width, vkCapabilities.minImageExtent.height };
         capabilities->maxExtent = { vkCapabilities.maxImageExtent.width, vkCapabilities.maxImageExtent.height };
 
-        capabilities->supportedUsage = internal::mapVkImageUsage(vkCapabilities.supportedUsageFlags);
+        capabilities->usageBits = internal::mapVkImageUsage(vkCapabilities.supportedUsageFlags);
 
         return result::Success;
     }

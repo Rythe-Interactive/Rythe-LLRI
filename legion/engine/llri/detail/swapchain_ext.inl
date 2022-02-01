@@ -9,18 +9,18 @@
 
 namespace llri
 {
-    inline std::string to_string(present_mode mode)
+    inline std::string to_string(present_mode_ext mode)
     {
         switch(mode)
         {
-            case present_mode::Immediate:
+            case present_mode_ext::Immediate:
                 return "Immediate";
-            case present_mode::Fifo:
+            case present_mode_ext::Fifo:
                 return "Fifo";
-            case present_mode::Mailbox:
+            case present_mode_ext::Mailbox:
                 return "Mailbox";
         }
 
-        return "Invalid present_mode value";
+        return "Invalid present_mode_ext value";
     }
 }

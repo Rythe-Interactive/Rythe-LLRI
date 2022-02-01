@@ -14,51 +14,12 @@ namespace llri
     enum struct format : uint8_t;
     enum struct sample_count : uint8_t;
     enum struct resource_type : uint8_t;
-    enum struct present_mode : uint8_t;
+    enum struct present_mode_ext : uint8_t;
 
     enum struct resource_usage_flag_bits : uint16_t;
     using resource_usage_flags = flags<resource_usage_flag_bits>;
 
-    /**
-     * @brief Describes the SurfaceEXT's capabilities for SwapchainEXT creation.
-     *
-     * SwapchainEXT **must** be created with this structure in mind, usually only a limited set of capabilities are available (e.g. swapchain texture formats).
-    */
-    struct surface_capabilities
-    {
-        /**
-         * @brief The minimum number of textures (inclusive).
-        */
-        uint32_t minTextureCount;
-        /**
-         * @brief The maximum number of textures (inclusive).
-        */
-        uint32_t maxTextureCount;
-
-        /**
-         * @brief The minimum texture extent (inclusive).
-        */
-        extent_2d minExtent;
-        /**
-         * @brief The maximum texture extent (inclusive).
-        */
-        extent_2d maxExtent;
-
-        /**
-         * @brief The supported texture formats.
-        */
-        std::vector<format> supportedFormats;
-
-        /**
-         * @brief The supported swapchain present modes.
-        */
-        std::vector<present_mode> supportedPresentModes;
-
-        /**
-         * @brief The supported texture usage flags.
-        */
-        resource_usage_flags supportedUsage;
-    };
+    struct surface_capabilities_ext;
 
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
@@ -194,17 +155,20 @@ namespace llri
          * @note Always returns false if ext > adapter_extension::MaxEnum.
          */
         [[nodiscard]] bool queryExtensionSupport(adapter_extension ext) const;
-
+        
         /**
-         * @brief Queries if the Adapter is compatible with the Surface.
-         * This may return false if the surface represents a window on a monitor that isn't connected to this Adapter.
+         * @brief Queries if the queue type can present to the Surface.
          *
-         * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if surface == nullptr.
-         * @return ErrorInvalidUsage if support == nullptr.
+         * queue_type::Graphics is most commonly able to present, queue_type::Compute is sometimes able to present (never on DirectX12), and queue_type::Transfer can never present.
+         *
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT object.
+         * @note Valid usage (ErrorInvalidUsage): type **must** be less or equal to queue_type::MaxEnum.
+         * @note Valid usage (ErrorInvalidUssage): support **must** be a valid non-null pointer to a boolean variable.
+         *
+         * @return Success upon correct excecution of the operation.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorSurfaceLostEXT.
-        */
-        result querySurfaceSupportEXT(SurfaceEXT* surface, bool* support) const;
+         */
+        result querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const;
 
         /**
          * @brief Query the Surface's capabilities to determine what formats, present modes, etc. a swapchain with this surface could support.
@@ -214,7 +178,7 @@ namespace llri
          * @return ErrorInvalidUsage if capabilities == nullptr.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorSurfaceLostEXT.
         */
-        result querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities* capabilities) const;
+        result querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const;
 
         /**
          * @brief Query the maximum number of available queues for a given queue type.
@@ -265,7 +229,7 @@ namespace llri
         [[nodiscard]] uint8_t impl_queryQueueCount(queue_type type) const;
         [[nodiscard]] std::unordered_map<format, format_properties> impl_queryFormatProperties() const;
         
-        result impl_querySurfaceSupportEXT(SurfaceEXT* surface, bool* support) const;
-        result impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities* capabilities) const;
+        result impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const;
+        result impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const;
     };
 }
