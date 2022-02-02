@@ -61,6 +61,8 @@ namespace llri
                 return "ErrorAlreadySignaled";
             case result::ErrorInvalidFormat:
                 return "ErrorInvalidFormat";
+            case result::ErrorSurfaceLostEXT:
+                return "ErrorSurfaceLostEXT";
         }
 
         return "Invalid result value";

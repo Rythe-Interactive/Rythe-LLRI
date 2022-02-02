@@ -170,9 +170,13 @@ namespace llri
         */
         ErrorInvalidFormat,
         /**
+         * @brief The surface used is no longer available.
+        */
+        ErrorSurfaceLostEXT,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = ErrorInvalidFormat
+        MaxEnum = ErrorSurfaceLostEXT
     };
 
     /**
@@ -236,4 +240,5 @@ namespace llri
 #include <llri/detail/fence.hpp>
 #include <llri/detail/semaphore.hpp>
 
+#include <llri/detail/surface_ext.hpp>
 #include <llri/detail/llri.inl>

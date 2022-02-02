@@ -67,14 +67,14 @@ namespace llri
             const auto& availableExtensions = internal::queryAvailableExtensions();
 
             std::vector<const char*> layers;
-            std::vector<const char*> extensions;
+            std::unordered_set<const char*> extensions;
             if (availableExtensions.find(internal::nameHash("VK_KHR_device_group_creation")) != availableExtensions.end())
-                extensions.push_back("VK_KHR_device_group_creation");
+                extensions.insert("VK_KHR_device_group_creation");
 
 #ifdef __APPLE__
             // if available, enable - necessary for MoltenVK
             if (availableExtensions.find(internal::nameHash("VK_KHR_get_physical_device_properties2")) != availableExtensions.end())
-                extensions.push_back("VK_KHR_get_physical_device_properties2");
+                extensions.insert("VK_KHR_get_physical_device_properties2");
 #endif
             
             void* pNext = nullptr;
@@ -90,12 +90,12 @@ namespace llri
                 {
                     case instance_extension::DriverValidation:
                     {
-                        layers.push_back("VK_LAYER_KHRONOS_validation");
+                        layers.emplace_back("VK_LAYER_KHRONOS_validation");
                         break;
                     }
                     case instance_extension::GPUValidation:
                     {
-                        extensions.emplace_back("VK_EXT_validation_features");
+                        extensions.insert("VK_EXT_validation_features");
 
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
@@ -103,6 +103,30 @@ namespace llri
                         features = VkValidationFeaturesEXT{ VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT, nullptr, static_cast<uint32_t>(enables.size()), enables.data(), 0, nullptr };
                         features.pNext = pNext; // Always apply pNext backwards to simplify optional chaining
                         pNext = &features;
+                        break;
+                    }
+                    case instance_extension::SurfaceWin32:
+                    {
+                        extensions.insert("VK_KHR_surface");
+                        extensions.insert("VK_KHR_win32_surface");
+                        break;
+                    }
+                    case instance_extension::SurfaceCocoa:
+                    {
+                        extensions.insert("VK_KHR_surface");
+                        extensions.insert("VK_EXT_metal_surface");
+                        break;
+                    }
+                    case instance_extension::SurfaceXlib:
+                    {
+                        extensions.insert("VK_KHR_surface");
+                        extensions.insert("VK_KHR_xlib_surface");
+                        break;
+                    }
+                    case instance_extension::SurfaceXcb:
+                    {
+                        extensions.insert("VK_KHR_surface");
+                        extensions.insert("VK_KHR_xcb_surface");
                         break;
                     }
                 }
@@ -117,13 +141,16 @@ namespace llri
                 // so instead the check is implicit, implementation callbacks aren't guaranteed
                 if (availableExtensions.find(internal::nameHash("VK_EXT_debug_utils")) != availableExtensions.end())
                 {
-                    extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+                    extensions.insert(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                     output->m_shouldConstructValidationCallbackMessenger = true;
                 }
             }
 
+            std::vector<const char*> extensionVec(extensions.size());
+            std::copy(extensions.begin(), extensions.end(), extensionVec.begin());
+
             VkApplicationInfo appInfo{ VK_STRUCTURE_TYPE_APPLICATION_INFO, nullptr, desc.applicationName, VK_MAKE_VERSION(0, 0, 0), "Legion::LLRI", VK_MAKE_VERSION(0, 0, 1), VK_HEADER_VERSION_COMPLETE };
-            VkInstanceCreateInfo instanceCi{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, nullptr, {}, &appInfo, static_cast<uint32_t>(layers.size()), layers.data(), static_cast<uint32_t>(extensions.size()), extensions.data() };
+            VkInstanceCreateInfo instanceCi{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, nullptr, {}, &appInfo, static_cast<uint32_t>(layers.size()), layers.data(), static_cast<uint32_t>(extensionVec.size()), extensionVec.data() };
             instanceCi.pNext = pNext;
 
             VkInstance vulkanInstance = nullptr;
@@ -187,7 +214,8 @@ namespace llri
 
             // vk validation layers aren't tangible objects and don't need manual destruction
 
-            vkDestroyInstance(vkInstance, nullptr);
+            if (vkInstance)
+                vkDestroyInstance(vkInstance, nullptr);
 
             delete instance;
         }
@@ -481,5 +509,111 @@ namespace llri
 
         // Delete device wrapper
         delete device;
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface)
+    {
+#ifndef VK_USE_PLATFORM_WIN32_KHR
+        return result::ErrorExtensionNotSupported;
+#else
+        VkWin32SurfaceCreateInfoKHR info {};
+        info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+        info.pNext = nullptr;
+        info.flags = {};
+        info.hinstance = static_cast<HINSTANCE>(desc.hinstance);
+        info.hwnd = static_cast<HWND>(desc.hwnd);
+
+        VkSurfaceKHR vkSurface;
+        const auto r = vkCreateWin32SurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        auto* output = new SurfaceEXT();
+        output->m_ptr = vkSurface;
+
+        *surface = output;
+        return result::Success;
+#endif
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
+    {
+#ifndef VK_USE_PLATFORM_METAL_EXT
+        return result::ErrorExtensionNotSupported;
+#else
+        
+        VkMetalSurfaceCreateInfoEXT info {};
+        info.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
+        info.pNext = nullptr;
+        info.flags = {};
+        info.pLayer = internal::getCAMetalLayer(desc.nsWindow);
+        
+        VkSurfaceKHR vkSurface;
+        const auto r = vkCreateMetalSurfaceEXT(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+        
+        auto* output = new SurfaceEXT();
+        output->m_ptr = vkSurface;
+        
+        *surface = output;
+        return result::Success;
+#endif
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
+    {
+#ifndef VK_USE_PLATFORM_XLIB_KHR
+        return result::ErrorExtensionNotSupported;
+#else
+        VkXlibSurfaceCreateInfoKHR info {};
+        info.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+        info.pNext = nullptr;
+        info.flags = {};
+        info.dpy = static_cast<_XDisplay*>(desc.display);
+        info.window = desc.window;
+
+        VkSurfaceKHR vkSurface;
+        const auto r = vkCreateXlibSurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        auto* output = new SurfaceEXT();
+        output->m_ptr = vkSurface;
+
+        *surface = output;
+        return result::Success;
+#endif
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
+    {
+#ifndef VK_USE_PLATFORM_XCB_KHR
+        return result::ErrorExtensionNotSupported;
+#else
+        VkXcbSurfaceCreateInfoKHR info {};
+        info.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
+        info.pNext = nullptr;
+        info.flags = {};
+        info.connection = static_cast<xcb_connection_t*>(desc.connection);
+        info.window = desc.window;
+
+        VkSurfaceKHR vkSurface;
+        const auto r = vkCreateXcbSurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        auto* output = new SurfaceEXT();
+        output->m_ptr = vkSurface;
+
+        *surface = output;
+        return result::Success;
+#endif
+    }
+
+    void Instance::impl_destroySurfaceEXT(SurfaceEXT* surface)
+    {
+        vkDestroySurfaceKHR(static_cast<VkInstance>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), nullptr);
+        delete surface;
     }
 }

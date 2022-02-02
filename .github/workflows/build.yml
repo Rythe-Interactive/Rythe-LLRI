@@ -46,7 +46,7 @@ jobs:
       shell: bash
       working-directory: ${{runner.workspace}}/build
       if: matrix.platform == 'ubuntu-20.04'
-      run: sudo apt update && sudo apt-get install xorg-dev libglu1-mesa-dev
+      run: sudo apt update && sudo apt-get install xorg-dev libglu1-mesa-dev libx11-xcb-dev
 
     - name: Configure CMake
       shell: bash

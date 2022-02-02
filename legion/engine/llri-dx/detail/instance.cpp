@@ -91,6 +91,12 @@ namespace llri
                         extensionCreateResult = internal::enableGPUValidationEXT();
                         break;
                     }
+                    case instance_extension::SurfaceWin32:
+                    {
+                        // do nothing, enabled by default
+                        extensionCreateResult = result::Success;
+                        break;
+                    }
                     default:
                     {
                         extensionCreateResult = result::ErrorExtensionNotSupported;
@@ -407,5 +413,34 @@ namespace llri
         }
 
         delete device;
+    }
+
+        result Instance::impl_createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface)
+    {
+        // simply store the hwnd pointer for DX12
+        auto* output = new SurfaceEXT();
+        output->m_ptr = static_cast<void*>(desc.hwnd);
+        *surface = output;
+        return result::Success;
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
+    {
+        return result::ErrorExtensionNotSupported;
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
+    {
+        return result::ErrorExtensionNotSupported;
+    }
+
+    result Instance::impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
+    {
+        return result::ErrorExtensionNotSupported;
+    }
+
+    void Instance::impl_destroySurfaceEXT(SurfaceEXT* surface)
+    {
+        delete surface;
     }
 }

@@ -25,9 +25,25 @@ namespace llri
         */
         GPUValidation,
         /**
+         * @brief Create a SurfaceEXT object from a Win32 HWND window.
+        */
+        SurfaceWin32,
+        /**
+         * @brief Create a SurfaceEXT object from a Cocoa window, using CAMetalLayer.
+         */
+        SurfaceCocoa,
+        /**
+         * @brief Create a SurfaceEXT object from an Xlib display connection and window
+         */
+        SurfaceXlib,
+        /**
+         * @brief Create a SurfaceEXT object from an XCB connection & XCB window
+         */
+        SurfaceXcb,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = GPUValidation
+        MaxEnum = SurfaceXcb
     };
 
     /**

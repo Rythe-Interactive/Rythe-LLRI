@@ -43,7 +43,7 @@ namespace llri
 
     inline result Queue::submit(const submit_desc& desc)
     {
-#ifndef LLRI_DISABLE_VALIDATION
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
         LLRI_DETAIL_VALIDATION_REQUIRE(detail::hasSingleBit(desc.nodeMask), result::ErrorInvalidNodeMask)
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.nodeMask < (1 << m_device->m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
 
@@ -62,18 +62,12 @@ namespace llri
         }
 
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.numWaitSemaphores > 0, desc.waitSemaphores != nullptr, result::ErrorInvalidUsage)
-        if (desc.numWaitSemaphores > 0)
-        {
-            for (size_t i = 0; i < desc.numWaitSemaphores; i++)
-                LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.waitSemaphores[i] != nullptr, i, result::ErrorInvalidUsage)
-        }
+        for (size_t i = 0; i < desc.numWaitSemaphores; i++)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.waitSemaphores[i] != nullptr, i, result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.numSignalSemaphores > 0, desc.signalSemaphores != nullptr, result::ErrorInvalidUsage)
-        if (desc.numSignalSemaphores > 0)
-        {
-            for (size_t i = 0; i < desc.numSignalSemaphores; i++)
-                LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.signalSemaphores[i] != nullptr, i, result::ErrorInvalidUsage)
-        }
+        for (size_t i = 0; i < desc.numSignalSemaphores; i++)
+            LLRI_DETAIL_VALIDATION_REQUIRE_ITER(desc.signalSemaphores[i] != nullptr, i, result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.fence != nullptr, desc.fence->m_signaled == false, result::ErrorAlreadySignaled)
 #endif

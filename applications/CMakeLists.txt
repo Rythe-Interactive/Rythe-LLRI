@@ -44,6 +44,9 @@ add_subdirectory(unit_tests)
 set_target_properties(unit_tests PROPERTIES FOLDER "applications")
 target_include_directories(unit_tests PUBLIC deps/doctest)
 
+target_include_directories(unit_tests PUBLIC deps/glfw/include)
+target_link_libraries(unit_tests glfw ${GLFW_LIBRARIES})
+
 add_subdirectory(sandbox)
 set_target_properties(sandbox PROPERTIES FOLDER "applications")
 target_include_directories(sandbox PUBLIC deps/glfw/include)

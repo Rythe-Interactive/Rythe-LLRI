@@ -13,8 +13,12 @@ namespace helpers
     inline llri::Instance* defaultInstance()
     {
         llri::Instance* instance;
-        auto ext = llri::instance_extension::DriverValidation;
-        const llri::instance_desc desc{ 1, &ext, "unit test instance"};
+
+        std::vector<llri::instance_extension> extensions;
+        if (llri::queryInstanceExtensionSupport(llri::instance_extension::DriverValidation))
+            extensions.push_back(llri::instance_extension::DriverValidation);
+
+        const llri::instance_desc desc{ static_cast<uint32_t>(extensions.size()), extensions.data(), "unit test instance"};
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         return instance;
     }

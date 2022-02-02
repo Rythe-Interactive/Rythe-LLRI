@@ -16,3 +16,7 @@ target_link_libraries(sandbox ${LLRI_SELECTED_APP_IMPLEMENTATION})
 if(CMAKE_DL_LIBS)
     target_link_libraries(sandbox ${CMAKE_DL_LIBS})
 endif()
+
+if (UNIX AND NOT APPLE)
+	target_link_libraries(llri-vk PRIVATE X11-xcb)
+endif()
