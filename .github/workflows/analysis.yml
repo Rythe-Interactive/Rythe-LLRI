@@ -12,9 +12,7 @@ jobs:
     
     strategy:
       fail-fast: false
-      matrix:
-        language: [ 'cpp' ]
-    
+
     runs-on: windows-2019
     permissions:
       actions: read
@@ -36,7 +34,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: ${{ matrix.language }}
+        languages: cpp
 
     # Builds the project using CodeQL autobuild
     # Since this action only runs on Windows, it automatically
