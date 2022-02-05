@@ -51,7 +51,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build 
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build }} -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build }} -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON ${{ matrix.toolset }}
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
