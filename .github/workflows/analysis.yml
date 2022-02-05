@@ -27,13 +27,10 @@ jobs:
       
     - name: Download git submodules
       run: git submodule update --init --recursive
-
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
       
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build 
+      working-directory: ${{runner.workspace}}
       run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_COMPILER=msvc -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON -T ClangCL
     
     # Initializes the CodeQL tools for scanning.
