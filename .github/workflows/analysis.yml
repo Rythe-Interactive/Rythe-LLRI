@@ -9,9 +9,6 @@ on:
 jobs:
   analyze:
     name: analysis
-    
-    strategy:
-      fail-fast: false
 
     runs-on: windows-2019
     permissions:
