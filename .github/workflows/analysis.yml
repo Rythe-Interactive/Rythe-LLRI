@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: analysis
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     
 jobs:
   analyze:
-    name: Analyze
+    name: analysis
     
     strategy:
       fail-fast: false
@@ -42,7 +42,10 @@ jobs:
       with:
         languages: ${{ matrix.language }}
 
-    - name: Autobuild (vcxproj on Windows)
+    # Builds the project using CodeQL autobuild
+    # Since this action only runs on Windows, it automatically
+    # picks the vcxproj files that were generated using CMake
+    - name: Autobuild
       uses: github/codeql-action/autobuild@v1
 
     - name: Perform CodeQL Analysis
