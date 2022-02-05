@@ -21,7 +21,7 @@ TEST_CASE("Device::createResource()")
     {
         desc.createNodeMask = 1u << node;
 
-        for (uint8_t mask = 0; mask < (1 << adapter->queryNodeCount()); mask++)
+        for (uint8_t mask = 0; mask < (static_cast<uint8_t>(1) << adapter->queryNodeCount()); mask++)
         {
             desc.visibleNodeMask = mask;
 
