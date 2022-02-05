@@ -31,7 +31,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}
-      run: cmake . -G "Visual Studio 16 2019 Win64" -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON
+      run: cmake . -G "Visual Studio 16 2019" -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON
     
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
