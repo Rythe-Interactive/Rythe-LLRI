@@ -72,7 +72,7 @@ namespace llri
     {
         auto queueFamilies = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_ptr));
 
-        if(queueFamilies[type] == UINT_MAX)
+        if(queueFamilies[type] == std::numeric_limits<uint32_t>::max())
         {
             *support = false;
             return result::Success;

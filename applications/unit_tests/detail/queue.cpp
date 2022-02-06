@@ -68,7 +68,7 @@ TEST_CASE("Queue")
                         SUBCASE("[Incorrect usage] incorrect nodemask")
                         {
                             constexpr uint32_t multipleBits = 1 << 0 | 1 << 1; // more than 1 bit set
-                            constexpr uint32_t exceedsNodes = UINT_MAX;
+                            constexpr uint32_t exceedsNodes = std::numeric_limits<uint32_t>::max();
 
                             llri::submit_desc submitDesc{ 0, 1, &readyCmdList, 0, nullptr, 0, nullptr, nullptr };
 

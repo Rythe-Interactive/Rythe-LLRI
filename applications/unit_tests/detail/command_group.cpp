@@ -64,7 +64,7 @@ TEST_CASE("CommandGroup")
                 SUBCASE("[Incorrect usage] Invalid command_list_usage enum value")
                 {
                     llri::CommandList* cmdList;
-                    llri::command_list_alloc_desc desc { nodeMask, static_cast<llri::command_list_usage>(UINT_MAX) };
+                    llri::command_list_alloc_desc desc { nodeMask, static_cast<llri::command_list_usage>(std::numeric_limits<uint8_t>::max()) };
                     CHECK_EQ(group->allocate(desc, &cmdList), llri::result::ErrorInvalidUsage);
                 }
 
@@ -103,7 +103,7 @@ TEST_CASE("CommandGroup")
                 SUBCASE("[Incorrect usage] Invalid command_list_usage enum value")
                 {
                     std::vector<llri::CommandList*> cmdLists;
-                    llri::command_list_alloc_desc desc { nodeMask, static_cast<llri::command_list_usage>(UINT_MAX) };
+                    llri::command_list_alloc_desc desc { nodeMask, static_cast<llri::command_list_usage>(std::numeric_limits<uint8_t>::max()) };
                     CHECK_EQ(group->allocate(desc, 2, &cmdLists), llri::result::ErrorInvalidUsage);
                 }
             }

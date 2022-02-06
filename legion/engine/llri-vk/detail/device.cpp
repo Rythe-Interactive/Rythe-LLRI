@@ -159,7 +159,7 @@ namespace llri
         std::vector<uint32_t> familyIndices;
         for (const auto& [key, family] : families)
         {
-            if (family != UINT_MAX)
+            if (family != std::numeric_limits<uint32_t>::max())
                 familyIndices.push_back(family);
         }
 
@@ -317,7 +317,7 @@ namespace llri
             submit.pWaitDstStageMask = nullptr;
             table->vkQueueSubmit(static_cast<VkQueue>(getQueue(m_workQueueType, 0)->m_ptrs[0]), 1, &submit, static_cast<VkFence>(m_workFence));
             
-            table->vkWaitForFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence), VK_TRUE, UINT_MAX);
+            table->vkWaitForFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence), VK_TRUE, std::numeric_limits<uint64_t>::max());
             table->vkResetFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence));
         }
 

@@ -47,7 +47,15 @@ namespace llri
          *
          * @note The values returned aren't defined in the public API and **may** be subject to change. A user **must not** try to reconstruct the result themselves because there's no guarantee that it'll work in the future.
          */
-        static texture_subresource_range all() { return texture_subresource_range { UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX }; }
+        static texture_subresource_range all()
+        {
+            return texture_subresource_range {
+                std::numeric_limits<uint32_t>::max(),
+                std::numeric_limits<uint32_t>::max(),
+                std::numeric_limits<uint32_t>::max(),
+                std::numeric_limits<uint32_t>::max()                
+            };
+        }
         
         inline bool operator==(const texture_subresource_range& other) const {
             return baseMipLevel == other.baseMipLevel &&

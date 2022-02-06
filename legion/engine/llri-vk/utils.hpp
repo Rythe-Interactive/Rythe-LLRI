@@ -500,7 +500,7 @@ namespace llri
                     break;
             }
 
-            return static_cast<present_mode_ext>(UINT_MAX);
+            return static_cast<present_mode_ext>(std::numeric_limits<uint8_t>::max());
         }
 
         uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t requiredMemoryBits, VkMemoryPropertyFlags requiredFlags);

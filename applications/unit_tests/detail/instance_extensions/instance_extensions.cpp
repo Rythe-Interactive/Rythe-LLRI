@@ -20,7 +20,7 @@ TEST_SUITE("Instance Extensions")
     {
         SUBCASE("[Correct usage] invalid extension type")
         {
-            CHECK_EQ(llri::queryInstanceExtensionSupport(static_cast<llri::instance_extension>(UINT_MAX)), false);
+            CHECK_EQ(llri::queryInstanceExtensionSupport(static_cast<llri::instance_extension>(std::numeric_limits<uint8_t>::max())), false);
         }
     }
 
