@@ -14,9 +14,12 @@ namespace llri
     enum struct format : uint8_t;
     enum struct sample_count : uint8_t;
     enum struct resource_type : uint8_t;
+    enum struct present_mode_ext : uint8_t;
 
     enum struct resource_usage_flag_bits : uint16_t;
     using resource_usage_flags = flags<resource_usage_flag_bits>;
+
+    struct surface_capabilities_ext;
 
     /**
      * @brief An informational enum describing the type of Adapter. The type does not directly affect how the related adapter operates, but it **may** correlate with performance or the availability of various features.
@@ -152,6 +155,33 @@ namespace llri
          * @note Always returns false if ext > adapter_extension::MaxEnum.
          */
         [[nodiscard]] bool queryExtensionSupport(adapter_extension ext) const;
+        
+        /**
+         * @brief Queries if the queue type can present to the Surface.
+         *
+         * queue_type::Graphics is most commonly able to present, queue_type::Compute is sometimes able to present (never on DirectX12), and queue_type::Transfer can never present.
+         *
+         * @note Valid usage (ErrorExtensionNotEnabled): at least one instance_extension prefixed with Surface **must** be enabled.
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT object.
+         * @note Valid usage (ErrorInvalidUsage): type **must** be less or equal to queue_type::MaxEnum.
+         * @note Valid usage (ErrorInvalidUssage): support **must** be a valid non-null pointer to a boolean variable.
+         *
+         * @return Success upon correct excecution of the operation.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorSurfaceLostEXT.
+         */
+        result querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const;
+
+        /**
+         * @brief Query the Surface's capabilities to determine what formats, present modes, etc. a swapchain with this surface could support.
+         *
+         * @note Valid usage (ErrorExtensionNotEnabled): at least one instance_extension prefixed with Surface **must** be enabled.
+         * @note Valid usage (ErrorInvalidUsage): capabilities **must** be a valid non-null pointer to a surface_capabilities_ext variable
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT object.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorSurfaceLostEXT.
+        */
+        result querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const;
 
         /**
          * @brief Query the maximum number of available queues for a given queue type.
@@ -187,7 +217,7 @@ namespace llri
         void* m_ptr = nullptr;
         uint8_t m_nodeCount = 1;
 
-        void* m_instanceHandle = nullptr;
+        Instance* m_instance = nullptr;
 
         void* m_validationCallbackMessenger = nullptr;
 
@@ -199,8 +229,10 @@ namespace llri
         [[nodiscard]] adapter_limits impl_queryLimits() const;
         [[nodiscard]] bool impl_queryExtensionSupport(adapter_extension ext) const;
 
-        uint8_t impl_queryQueueCount(queue_type type) const;
-
+        [[nodiscard]] uint8_t impl_queryQueueCount(queue_type type) const;
         [[nodiscard]] std::unordered_map<format, format_properties> impl_queryFormatProperties() const;
+        
+        result impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const;
+        result impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const;
     };
 }

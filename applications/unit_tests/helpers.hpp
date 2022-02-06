@@ -23,6 +23,24 @@ namespace helpers
         return instance;
     }
 
+    inline llri::Instance* createInstanceWithExtension(llri::instance_extension ext)
+    {
+        if (llri::queryInstanceExtensionSupport(ext) == false)
+            return nullptr;
+        
+        llri::Instance* instance;
+
+        std::vector<llri::instance_extension> extensions;
+        extensions.push_back(ext);
+        
+        if (llri::queryInstanceExtensionSupport(llri::instance_extension::DriverValidation))
+            extensions.push_back(llri::instance_extension::DriverValidation);
+
+        const llri::instance_desc desc{ static_cast<uint32_t>(extensions.size()), extensions.data(), "unit test instance"};
+        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
+        return instance;
+    }
+
     inline llri::Adapter* selectAdapter(llri::Instance* instance)
     {
         std::vector<llri::Adapter*> adapters;

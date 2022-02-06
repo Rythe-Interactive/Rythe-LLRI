@@ -89,6 +89,7 @@ void createDevice();
 void createCommandLists();
 void createSynchronization();
 void createResources();
+void createSwapchain();
 
 int main()
 {
@@ -103,6 +104,7 @@ int main()
     createCommandLists();
     createSynchronization();
     createResources();
+    createSwapchain();
     
     while (!glfwWindowShouldClose(m_window))
     {
@@ -261,13 +263,23 @@ void selectAdapter()
         printf("\t\tGraphics: %u\n", maxGraphicsQueueCount);
         printf("\t\tCompute: %u\n", maxComputeQueueCount);
         printf("\t\tTransfer: %u\n", maxTransferQueueCount);
+        
+        // Require support for using/presenting with Graphics to our surface
+        bool support;
+        THROW_IF_FAILED(adapter->querySurfacePresentSupportEXT(m_surface, llri::queue_type::Graphics, &support));
+        printf("\tSurface graphics present support: %i\n", support);
+        if (!support)
+            continue;
+        
+        THROW_IF_FAILED(adapter->querySurfacePresentSupportEXT(m_surface, llri::queue_type::Compute, &support));
+        printf("\tSurface compute present support: %i\n", support);
 
         uint32_t score = 0;
 
         // Discrete adapters tend to be more powerful and have more resources so we can decide to pick them
         if (info.adapterType == llri::adapter_type::Discrete)
             score += 1000;
-
+        
         sortedAdapters[score] = adapter;
     }
 
@@ -331,4 +343,28 @@ void createResources()
     textureDesc.textureFormat = llri::format::RGBA8sRGB;
 
     THROW_IF_FAILED(m_device->createResource(textureDesc, &m_texture));
+}
+
+void createSwapchain()
+{
+    llri::surface_capabilities_ext capabilities;
+    THROW_IF_FAILED(m_adapter->querySurfaceCapabilitiesEXT(m_surface, &capabilities));
+    
+    printf("Surface capabilities:\n");
+    printf("\tMin texture count: %u\n", capabilities.minTextureCount);
+    printf("\tMax texture count: %u\n", capabilities.maxTextureCount);
+    printf("\tMin extent: %s\n", llri::to_string(capabilities.minExtent).c_str());
+    printf("\tMax extent: %s\n", llri::to_string(capabilities.maxExtent).c_str());
+    
+    printf("\tSupported formats: ");
+    for(auto f : capabilities.formats)
+        printf("%s, ", llri::to_string(f).c_str());
+    printf("\n");
+    
+    printf("\tSupported present modes: ");
+    for (auto p : capabilities.presentModes)
+        printf("%s, ", llri::to_string(p).c_str());
+    printf("\n");
+    
+    printf("\tSupported usage bits: %s\n", llri::to_string(capabilities.usageBits).c_str());
 }

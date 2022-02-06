@@ -206,6 +206,8 @@ namespace llri
                 return "DepthStencilAttachment";
             case resource_usage_flag_bits::DenyShaderResource:
                 return "DenyShaderResource";
+            case resource_usage_flag_bits::All:
+                return to_string(static_cast<resource_usage_flags>(bits));
         }
 
         return "Invalid resource_usage_flag_bits value";

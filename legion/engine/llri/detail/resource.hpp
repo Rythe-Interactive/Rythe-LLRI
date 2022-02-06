@@ -379,7 +379,11 @@ namespace llri
          *
          * @note This flag bit is only valid in combination with the DepthStencilAttachment bit.
         */
-        DenyShaderResource = 1 << 6
+        DenyShaderResource = 1 << 6,
+        /**
+         * @brief All flags combined. Not usually a supported usage set, but is occasionally used for validation and unit tests.
+         */
+        All = TransferSrc | TransferDst | Sampled | ShaderWrite | ColorAttachment | DepthStencilAttachment | DenyShaderResource
     };
     LLRI_DEFINE_FLAG_BIT_OPERATORS(resource_usage_flag_bits);
     

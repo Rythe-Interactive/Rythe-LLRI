@@ -74,6 +74,79 @@ namespace llri
         return false;
     }
 
+    result Adapter::impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
+    {
+        auto queueFamilies = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_ptr));
+
+        if(queueFamilies[type] == UINT_MAX)
+        {
+            *support = false;
+            return result::Success;
+        }
+        
+        VkBool32 supported;
+        const auto r = vkGetPhysicalDeviceSurfaceSupportKHR(static_cast<VkPhysicalDevice>(m_ptr), queueFamilies[type], static_cast<VkSurfaceKHR>(surface->m_ptr), &supported);
+        
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        *support = static_cast<bool>(supported);
+        return result::Success;
+    }
+
+    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
+    {
+        VkResult r;
+        uint32_t count;
+
+        // handle formats
+        r = vkGetPhysicalDeviceSurfaceFormatsKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, nullptr);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+        std::vector<VkSurfaceFormatKHR> formats(count);
+        r = vkGetPhysicalDeviceSurfaceFormatsKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, formats.data());
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        capabilities->formats.resize(count);
+        for (size_t i = 0; i < count; i++)
+            capabilities->formats[i] = internal::mapVkFormat(formats[i].format);
+
+        // handle present modes
+        r = vkGetPhysicalDeviceSurfacePresentModesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, nullptr);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+        std::vector<VkPresentModeKHR> presentModes(count);
+        r = vkGetPhysicalDeviceSurfacePresentModesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, presentModes.data());
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        capabilities->presentModes.clear();
+        capabilities->presentModes.reserve(count);
+        for (size_t i = 0; i < count; i++)
+        {
+            const auto mode = internal::mapVkPresentMode(presentModes[i]);
+            if (mode <= present_mode_ext::MaxEnum)
+                capabilities->presentModes.emplace_back(mode);
+        }
+
+        // handle vk capabilities
+        VkSurfaceCapabilitiesKHR vkCapabilities;
+        r = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &vkCapabilities);
+        if (r != VK_SUCCESS)
+            return internal::mapVkResult(r);
+
+        capabilities->minTextureCount = vkCapabilities.minImageCount;
+        capabilities->maxTextureCount = vkCapabilities.maxImageCount;
+
+        capabilities->minExtent = { vkCapabilities.minImageExtent.width, vkCapabilities.minImageExtent.height };
+        capabilities->maxExtent = { vkCapabilities.maxImageExtent.width, vkCapabilities.maxImageExtent.height };
+
+        capabilities->usageBits = internal::mapVkImageUsage(vkCapabilities.supportedUsageFlags);
+
+        return result::Success;
+    }
+
     uint8_t Adapter::impl_queryQueueCount(queue_type type) const
     {
         // Get queue family info

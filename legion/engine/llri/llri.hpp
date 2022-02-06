@@ -220,6 +220,8 @@ namespace llri
 
 #include <llri/detail/validation.hpp>
 #include <llri/detail/flags.hpp>
+#include <llri/detail/math.hpp>
+
 #include <llri/detail/callback.hpp>
 
 #include <llri/detail/instance.hpp>
@@ -241,4 +243,6 @@ namespace llri
 #include <llri/detail/semaphore.hpp>
 
 #include <llri/detail/surface_ext.hpp>
+#include <llri/detail/swapchain_ext.hpp>
+
 #include <llri/detail/llri.inl>

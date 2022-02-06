@@ -67,6 +67,8 @@ namespace llri
                     return VK_COMMAND_BUFFER_LEVEL_PRIMARY;
                 case command_list_usage::Indirect:
                     return VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+                default:
+                    break;
             }
 
             return {};
@@ -83,9 +85,120 @@ namespace llri
                     return VK_IMAGE_TYPE_2D;
                 case resource_type::Texture3D:
                     return VK_IMAGE_TYPE_3D;
+                default:
+                    break;
             }
 
             return {};
+        }
+
+        constexpr format mapVkFormat(VkFormat format)
+        {
+            switch (format)
+            {
+                case VK_FORMAT_UNDEFINED:
+                    return format::Undefined;
+                case VK_FORMAT_R8_UNORM:
+                    return format::R8UNorm;
+                case VK_FORMAT_R8_SNORM:
+                    return format::R8Norm;
+                case VK_FORMAT_R8_UINT:
+                    return format::R8UInt;
+                case VK_FORMAT_R8_SINT:
+                    return format::R8Int;
+                case VK_FORMAT_R8G8_UNORM:
+                    return format::RG8UNorm;
+                case VK_FORMAT_R8G8_SNORM:
+                    return format::RG8Norm;
+                case VK_FORMAT_R8G8_UINT:
+                    return format::RG8UInt;
+                case VK_FORMAT_R8G8_SINT:
+                    return format::RG8Int;
+                case VK_FORMAT_R8G8B8A8_UNORM:
+                    return format::RGBA8UNorm;
+                case VK_FORMAT_R8G8B8A8_SNORM:
+                    return format::RGBA8Norm;
+                case VK_FORMAT_R8G8B8A8_UINT:
+                    return format::RGBA8UInt;
+                case VK_FORMAT_R8G8B8A8_SINT:
+                    return format::RGBA8Int;
+                case VK_FORMAT_R8G8B8A8_SRGB:
+                    return format::RGBA8sRGB;
+                case VK_FORMAT_B8G8R8A8_UNORM:
+                    return format::BGRA8UNorm;
+                case VK_FORMAT_B8G8R8A8_SRGB:
+                    return format::BGRA8sRGB;
+                case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
+                    return format::RGB10A2UNorm;
+                case VK_FORMAT_A2R10G10B10_UINT_PACK32:
+                    return format::RGB10A2UInt;
+                case VK_FORMAT_R16_UNORM:
+                    return format::R16UNorm;
+                case VK_FORMAT_R16_SNORM:
+                    return format::R16Norm;
+                case VK_FORMAT_R16_UINT:
+                    return format::R16UInt;
+                case VK_FORMAT_R16_SINT:
+                    return format::R16Int;
+                case VK_FORMAT_R16_SFLOAT:
+                    return format::R16Float;
+                case VK_FORMAT_R16G16_UNORM:
+                    return format::RG16UNorm;
+                case VK_FORMAT_R16G16_SNORM:
+                    return format::RG16Norm;
+                case VK_FORMAT_R16G16_UINT:
+                    return format::RG16UInt;
+                case VK_FORMAT_R16G16_SINT:
+                    return format::RG16Int;
+                case VK_FORMAT_R16G16_SFLOAT:
+                    return format::RG16Float;
+                case VK_FORMAT_R16G16B16A16_UNORM:
+                    return format::RGBA16UNorm;
+                case VK_FORMAT_R16G16B16A16_SNORM:
+                    return format::RGBA16Norm;
+                case VK_FORMAT_R16G16B16A16_UINT:
+                    return format::RGBA16UInt;
+                case VK_FORMAT_R16G16B16A16_SINT:
+                    return format::RGBA16Int;
+                case VK_FORMAT_R16G16B16A16_SFLOAT:
+                    return format::RGBA16Float;
+                case VK_FORMAT_R32_UINT:
+                    return format::R32UInt;
+                case VK_FORMAT_R32_SINT:
+                    return format::R32Int;
+                case VK_FORMAT_R32_SFLOAT:
+                    return format::R32Float;
+                case VK_FORMAT_R32G32_UINT:
+                    return format::RG32UInt;
+                case VK_FORMAT_R32G32_SINT:
+                    return format::RG32Int;
+                case VK_FORMAT_R32G32_SFLOAT:
+                    return format::RG32Float;
+                case VK_FORMAT_R32G32B32_UINT:
+                    return format::RGB32UInt;
+                case VK_FORMAT_R32G32B32_SINT:
+                    return format::RGB32Int;
+                case VK_FORMAT_R32G32B32_SFLOAT:
+                    return format::RGB32Float;
+                case VK_FORMAT_R32G32B32A32_UINT:
+                    return format::RGBA32UInt;
+                case VK_FORMAT_R32G32B32A32_SINT:
+                    return format::RGBA32Int;
+                case VK_FORMAT_R32G32B32A32_SFLOAT:
+                    return format::RGBA32Float;
+                case VK_FORMAT_D16_UNORM:
+                    return format::D16UNorm;
+                case VK_FORMAT_D24_UNORM_S8_UINT:
+                    return format::D24UNormS8UInt;
+                case VK_FORMAT_D32_SFLOAT:
+                    return format::D32Float;
+                case VK_FORMAT_D32_SFLOAT_S8_UINT:
+                    return format::D32FloatS8X24UInt;
+                default:
+                    break;
+            }
+
+            return format::Undefined;
         }
 
         constexpr VkFormat mapTextureFormat(format format)
@@ -190,6 +303,8 @@ namespace llri
                     return VK_FORMAT_D32_SFLOAT;
                 case format::D32FloatS8X24UInt:
                     return VK_FORMAT_D32_SFLOAT_S8_UINT;
+                default:
+                    break;
             }
 
             return VK_FORMAT_UNDEFINED;
@@ -223,6 +338,8 @@ namespace llri
                     return VK_IMAGE_LAYOUT_GENERAL;
                 case resource_state::ConstantBuffer:
                     return VK_IMAGE_LAYOUT_GENERAL;
+                default:
+                    break;
             }
 
             return VK_IMAGE_LAYOUT_GENERAL;
@@ -288,6 +405,26 @@ namespace llri
             return output;
         }
 
+        constexpr resource_usage_flags mapVkImageUsage(const VkImageUsageFlags flags)
+        {
+            resource_usage_flags output;
+
+            if ((flags & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) == VK_IMAGE_USAGE_TRANSFER_SRC_BIT)
+                output |= resource_usage_flag_bits::TransferSrc;
+            if ((flags & VK_IMAGE_USAGE_TRANSFER_DST_BIT) == VK_IMAGE_USAGE_TRANSFER_DST_BIT)
+                output |= resource_usage_flag_bits::TransferDst;
+            if ((flags & VK_IMAGE_USAGE_SAMPLED_BIT) == VK_IMAGE_USAGE_SAMPLED_BIT)
+                output |= resource_usage_flag_bits::Sampled;
+            if ((flags & VK_IMAGE_USAGE_STORAGE_BIT) == VK_IMAGE_USAGE_STORAGE_BIT)
+                output |= resource_usage_flag_bits::ShaderWrite;
+            if ((flags & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) == VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+                output |= resource_usage_flag_bits::ColorAttachment;
+            if ((flags & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)
+                output |= resource_usage_flag_bits::DepthStencilAttachment;
+
+            return output;
+        }
+
         constexpr VkBufferUsageFlags mapBufferUsage(resource_usage_flags usage)
         {
             VkBufferUsageFlags output = 0;
@@ -325,6 +462,45 @@ namespace llri
                 }
             }
             return memFlags;
+        }
+
+        constexpr VkPresentModeKHR mapPresentMode(present_mode_ext presentMode)
+        {
+            switch(presentMode)
+            {
+                case present_mode_ext::Immediate:
+                    return VK_PRESENT_MODE_IMMEDIATE_KHR;
+                case present_mode_ext::Fifo:
+                    return VK_PRESENT_MODE_FIFO_KHR;
+                case present_mode_ext::Mailbox:
+                    return VK_PRESENT_MODE_MAILBOX_KHR;
+            }
+
+            throw;
+        }
+
+        constexpr present_mode_ext mapVkPresentMode(VkPresentModeKHR presentMode)
+        {
+            switch(presentMode)
+            {
+                case VK_PRESENT_MODE_IMMEDIATE_KHR:
+                    return present_mode_ext::Immediate;
+                case VK_PRESENT_MODE_FIFO_KHR:
+                    return present_mode_ext::Fifo;
+                case VK_PRESENT_MODE_MAILBOX_KHR:
+                    return present_mode_ext::Mailbox;
+
+                case VK_PRESENT_MODE_FIFO_RELAXED_KHR:
+                case VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR:
+                case VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR:
+                case VK_PRESENT_MODE_MAX_ENUM_KHR:
+                    break;
+                    
+                default:
+                    break;
+            }
+
+            return static_cast<present_mode_ext>(UINT_MAX);
         }
 
         uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t requiredMemoryBits, VkMemoryPropertyFlags requiredFlags);
