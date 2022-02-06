@@ -426,16 +426,25 @@ namespace llri
 
     result Instance::impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
     {
+        (void)desc;
+        (void)surface;
+
         return result::ErrorExtensionNotSupported;
     }
 
     result Instance::impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
     {
+        (void)desc;
+        (void)surface;
+
         return result::ErrorExtensionNotSupported;
     }
 
     result Instance::impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
     {
+        (void)desc;
+        (void)surface;
+
         return result::ErrorExtensionNotSupported;
     }
 

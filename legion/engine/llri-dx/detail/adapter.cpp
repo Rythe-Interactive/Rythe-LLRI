@@ -55,12 +55,15 @@ namespace llri
 
     result Adapter::impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
     {
+        (void)surface;
+
         switch(type)
         {
             case queue_type::Graphics:
                 *support = true;
                 break;
-            default:
+            case queue_type::Compute:
+            case queue_type::Transfer:
                 *support = false;
                 break;
         }
@@ -69,6 +72,8 @@ namespace llri
 
     result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
     {
+        (void)surface;
+
         capabilities->minTextureCount = 2;
         capabilities->maxTextureCount = 16;
 

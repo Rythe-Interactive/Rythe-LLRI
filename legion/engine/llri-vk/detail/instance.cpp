@@ -547,6 +547,9 @@ namespace llri
     result Instance::impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_METAL_EXT
+        (void)desc;
+        (void)surface;
+
         return result::ErrorExtensionNotSupported;
 #else
         
