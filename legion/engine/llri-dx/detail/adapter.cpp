@@ -42,17 +42,13 @@ namespace llri
         return output;
     }
 
-    bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
+    bool Adapter::impl_queryExtensionSupport([[maybe_unused]] adapter_extension ext) const
     {
-        (void)ext;
-
         return false;
     }
 
-    result Adapter::impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
+    result Adapter::impl_querySurfacePresentSupportEXT([[maybe_unused]] SurfaceEXT* surface, queue_type type, bool* support) const
     {
-        (void)surface;
-
         switch(type)
         {
             case queue_type::Graphics:
@@ -66,10 +62,8 @@ namespace llri
         return result::Success;
     }
 
-    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
+    result Adapter::impl_querySurfaceCapabilitiesEXT([[maybe_unused]] SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
     {
-        (void)surface;
-
         capabilities->minTextureCount = 2;
         capabilities->maxTextureCount = 16;
 

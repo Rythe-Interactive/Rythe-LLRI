@@ -424,27 +424,18 @@ namespace llri
         return result::Success;
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT([[maybe_unused]] const surface_cocoa_desc_ext& desc, [[maybe_unused]] SurfaceEXT** surface)
     {
-        (void)desc;
-        (void)surface;
-
         return result::ErrorExtensionNotSupported;
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT([[maybe_unused]] const surface_xlib_desc_ext& desc, [[maybe_unused]] SurfaceEXT** surface)
     {
-        (void)desc;
-        (void)surface;
-
         return result::ErrorExtensionNotSupported;
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT([[maybe_unused]] const surface_xcb_desc_ext& desc, [[maybe_unused]] SurfaceEXT** surface)
     {
-        (void)desc;
-        (void)surface;
-
         return result::ErrorExtensionNotSupported;
     }
 
