@@ -329,8 +329,28 @@ namespace llri
 
         uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t requiredMemoryBits, VkMemoryPropertyFlags requiredFlags);
 
-        unsigned long long nameHash(std::string name);
+        /**
+         * @brief Utility function for hashing strings  in compile time
+        */
+        template<size_t N>
+        constexpr uint64_t nameHash(const char(&name)[N]) noexcept
+        {
+            uint64_t hash = 0xcbf29ce484222325;
+            constexpr uint64_t prime = 0x00000100000001b3;
 
+            size_t size = N;
+            if (name[size - 1] == '\0')
+                size--;
+
+            for (int i = 0; i < size; i++)
+            {
+                hash = hash ^ static_cast<const uint8_t>(name[i]);
+                hash *= prime;
+            }
+
+            return hash;
+        }
+    
         /**
          * @brief Finds LLRI standard queue families (Graphics, Compute, Transfer)
         */
