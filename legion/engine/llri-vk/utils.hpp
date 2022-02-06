@@ -518,7 +518,7 @@ namespace llri
             if (name[size - 1] == '\0')
                 size--;
 
-            for (int i = 0; i < size; i++)
+            for (size_t i = 0; i < size; i++)
             {
                 hash = hash ^ static_cast<const uint8_t>(name[i]);
                 hash *= prime;
