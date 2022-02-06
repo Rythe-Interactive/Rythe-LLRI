@@ -192,13 +192,7 @@ namespace llri
         bool isTexture = desc.type == resource_type::Texture1D || desc.type == resource_type::Texture2D || desc.type == resource_type::Texture3D;
 
         // desc.usage
-        LLRI_DETAIL_VALIDATION_REQUIRE(desc.usage <= (resource_usage_flag_bits::TransferSrc |
-            resource_usage_flag_bits::TransferDst |
-            resource_usage_flag_bits::Sampled |
-            resource_usage_flag_bits::ShaderWrite |
-            resource_usage_flag_bits::ColorAttachment |
-            resource_usage_flag_bits::DepthStencilAttachment |
-            resource_usage_flag_bits::DenyShaderResource), result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.usage <= resource_usage_flag_bits::All, result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE_IF(desc.usage.contains(resource_usage_flag_bits::DenyShaderResource), desc.usage.contains(resource_usage_flag_bits::DepthStencilAttachment), result::ErrorInvalidUsage)
 

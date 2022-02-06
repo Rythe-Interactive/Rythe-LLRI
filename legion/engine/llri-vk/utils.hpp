@@ -67,6 +67,8 @@ namespace llri
                     return VK_COMMAND_BUFFER_LEVEL_PRIMARY;
                 case command_list_usage::Indirect:
                     return VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+                default:
+                    break;
             }
 
             return {};
@@ -83,6 +85,8 @@ namespace llri
                     return VK_IMAGE_TYPE_2D;
                 case resource_type::Texture3D:
                     return VK_IMAGE_TYPE_3D;
+                default:
+                    break;
             }
 
             return {};
@@ -190,6 +194,8 @@ namespace llri
                     return format::D32Float;
                 case VK_FORMAT_D32_SFLOAT_S8_UINT:
                     return format::D32FloatS8X24UInt;
+                default:
+                    break;
             }
 
             return format::Undefined;
@@ -297,6 +303,8 @@ namespace llri
                     return VK_FORMAT_D32_SFLOAT;
                 case format::D32FloatS8X24UInt:
                     return VK_FORMAT_D32_SFLOAT_S8_UINT;
+                default:
+                    break;
             }
 
             return VK_FORMAT_UNDEFINED;
@@ -330,6 +338,8 @@ namespace llri
                     return VK_IMAGE_LAYOUT_GENERAL;
                 case resource_state::ConstantBuffer:
                     return VK_IMAGE_LAYOUT_GENERAL;
+                default:
+                    break;
             }
 
             return VK_IMAGE_LAYOUT_GENERAL;
@@ -484,6 +494,9 @@ namespace llri
                 case VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR:
                 case VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR:
                 case VK_PRESENT_MODE_MAX_ENUM_KHR:
+                    break;
+                    
+                default:
                     break;
             }
 

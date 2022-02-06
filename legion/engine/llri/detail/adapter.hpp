@@ -161,6 +161,7 @@ namespace llri
          *
          * queue_type::Graphics is most commonly able to present, queue_type::Compute is sometimes able to present (never on DirectX12), and queue_type::Transfer can never present.
          *
+         * @note Valid usage (ErrorExtensionNotEnabled): at least one instance_extension prefixed with Surface **must** be enabled.
          * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT object.
          * @note Valid usage (ErrorInvalidUsage): type **must** be less or equal to queue_type::MaxEnum.
          * @note Valid usage (ErrorInvalidUssage): support **must** be a valid non-null pointer to a boolean variable.
@@ -173,9 +174,11 @@ namespace llri
         /**
          * @brief Query the Surface's capabilities to determine what formats, present modes, etc. a swapchain with this surface could support.
          *
+         * @note Valid usage (ErrorExtensionNotEnabled): at least one instance_extension prefixed with Surface **must** be enabled.
+         * @note Valid usage (ErrorInvalidUsage): capabilities **must** be a valid non-null pointer to a surface_capabilities_ext variable
+         * @note Valid usage (ErrorInvalidUsage): surface **must** be a valid non-null pointer to a SurfaceEXT object.
+         *
          * @return Success upon correct execution of the operation.
-         * @return ErrorInvalidUsage if surface == nullptr.
-         * @return ErrorInvalidUsage if capabilities == nullptr.
          * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory, ErrorSurfaceLostEXT.
         */
         result querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const;
@@ -214,7 +217,7 @@ namespace llri
         void* m_ptr = nullptr;
         uint8_t m_nodeCount = 1;
 
-        void* m_instanceHandle = nullptr;
+        Instance* m_instance = nullptr;
 
         void* m_validationCallbackMessenger = nullptr;
 

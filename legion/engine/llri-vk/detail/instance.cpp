@@ -270,7 +270,7 @@ namespace llri
                 {
                     Adapter* adapter = new Adapter();
                     adapter->m_ptr = group.physicalDevices[0];
-                    adapter->m_instanceHandle = m_ptr;
+                    adapter->m_instance = this;
                     adapter->m_nodeCount = static_cast<uint8_t>(group.physicalDeviceCount);
 
                     m_cachedAdapters[group.physicalDevices[0]] = adapter;
@@ -303,7 +303,7 @@ namespace llri
                 {
                     Adapter* adapter = new Adapter();
                     adapter->m_ptr = physicalDevice;
-                    adapter->m_instanceHandle = m_ptr;
+                    adapter->m_instance = this;
 
                     m_cachedAdapters[physicalDevice] = adapter;
                     adapters->push_back(adapter);

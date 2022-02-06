@@ -104,6 +104,7 @@ namespace llri
         friend result llri::createInstance(const instance_desc& desc, Instance** instance);
         friend void llri::destroyInstance(Instance* instance);
 
+        friend class Adapter;
     public:
         /**
          * @brief Get the desc that the Instance was created with.
