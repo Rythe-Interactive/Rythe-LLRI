@@ -6,6 +6,11 @@ project(sandbox LANGUAGES CXX)
 file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(sandbox ${source})
 
+target_compile_options(sandbox PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
 target_compile_features(sandbox PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})

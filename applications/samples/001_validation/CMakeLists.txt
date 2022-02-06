@@ -6,6 +6,11 @@ project(001_validation LANGUAGES CXX)
 file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(001_validation ${source})
 
+target_compile_options(001_validation PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
 target_compile_features(001_validation PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})

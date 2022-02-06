@@ -6,6 +6,11 @@ project(005_commands LANGUAGES CXX)
 file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(005_commands ${source})
 
+target_compile_options(005_commands PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
 target_compile_features(005_commands PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})

@@ -10,6 +10,8 @@
 // See 001_validation.
 void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
+    (void)userData;
+    
     if (severity <= llri::message_severity::Info)
         return;
 
@@ -78,6 +80,7 @@ int main()
     list->record(beginDesc2, [](llri::CommandList* cmd) {
         // Within the function passed, you may record commands.
         // record() simply calls begin(desc), function(args), end().
+        (void)cmd;
     }, list);
 
     // Make sure to clean up created resources.

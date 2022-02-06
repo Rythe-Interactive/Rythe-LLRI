@@ -10,6 +10,8 @@
 // See 001_validation.
 void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
+    (void)userData;
+    
     if (severity <= llri::message_severity::Info)
         return;
 
@@ -41,6 +43,7 @@ int main()
     const llri::command_list_begin_desc begin{};
     list->record(begin, [](llri::CommandList* cmd) {
         // Record commands
+        (void)cmd;
     }, list);
 
     // After recording, we can submit the CommandList(s) to the queue:

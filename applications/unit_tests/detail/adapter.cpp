@@ -30,6 +30,7 @@ TEST_CASE("Adapter")
             llri::adapter_features features = adapter->queryFeatures();
 
             // reserved for future use
+            (void)features;
         }
 
         SUBCASE("Adapter::queryExtensionSupport()")

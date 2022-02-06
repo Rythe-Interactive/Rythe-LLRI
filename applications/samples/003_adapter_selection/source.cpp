@@ -9,6 +9,8 @@
 
 void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
+    (void)userData;
+    
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
 }
 
@@ -64,7 +66,8 @@ llri::Adapter* selectAdapter(llri::Instance* instance)
 
         // An adapter's supported features can be queried through queryFeatures()
         llri::adapter_features features = adapter->queryFeatures();
-
+        (void)features;
+        
         // you may decide to rate the adapter higher for specific features, such as max texture size, vram, etc.
         int score = 0;
 

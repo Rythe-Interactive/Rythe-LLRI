@@ -9,6 +9,8 @@
 
 void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
 {
+    (void)userData;
+    
     std::cout << "LLRI " << to_string(source) << " " << to_string(severity) << ": " << message << "\n";
 }
 
