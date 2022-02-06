@@ -163,9 +163,6 @@ namespace llri
                 familyIndices.push_back(family);
         }
 
-        // get internal state
-        auto internalState = internal::mapResourceState(desc.initialState);
-
         // get memory flags
         const auto memFlags = internal::mapMemoryType(desc.memoryType);
 
@@ -195,7 +192,6 @@ namespace llri
             imageCreate.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
             imageCreate.pQueueFamilyIndices = familyIndices.data();
             imageCreate.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            internalState = imageCreate.initialLayout;
 
             auto r = table->vkCreateImage(static_cast<VkDevice>(m_ptr), &imageCreate, nullptr, &image);
             if (r != VK_SUCCESS)

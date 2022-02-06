@@ -385,7 +385,7 @@ namespace llri
          */
         All = TransferSrc | TransferDst | Sampled | ShaderWrite | ColorAttachment | DepthStencilAttachment | DenyShaderResource
     };
-    LLRI_DEFINE_FLAG_BIT_OPERATORS(resource_usage_flag_bits);
+    LLRI_DEFINE_FLAG_BIT_OPERATORS(resource_usage_flag_bits)
     
     /**
      * @brief Converts a resource_usage_flag_bits to a string.

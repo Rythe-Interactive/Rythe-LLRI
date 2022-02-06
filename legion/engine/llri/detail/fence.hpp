@@ -24,7 +24,7 @@ namespace llri
         */
         Signaled = 1 << 0,
     };
-    LLRI_DEFINE_FLAG_BIT_OPERATORS(fence_flag_bits);
+    LLRI_DEFINE_FLAG_BIT_OPERATORS(fence_flag_bits)
 
     /**
      * @brief Converts a fence_flag_bits to a string.
