@@ -6,6 +6,7 @@
 
 #include <llri/llri.hpp>
 #include <llri-vk/utils.hpp>
+#include <algorithm>
 
 namespace llri
 {
