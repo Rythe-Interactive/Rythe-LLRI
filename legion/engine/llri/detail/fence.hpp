@@ -54,6 +54,8 @@ namespace llri
         friend class Queue;
 
     public:
+        using native_fence = void;
+
         /**
          * Get the flags that the Fence was created with.
          */
@@ -65,7 +67,7 @@ namespace llri
          * DirectX12: ID3D12Fence*
          * Vulkan: VkFence
          */
-        [[nodiscard]] void* getNative() const;
+        [[nodiscard]] native_fence* getNative() const;
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Fence() = default;
@@ -73,7 +75,7 @@ namespace llri
 
         fence_flags m_flags;
 
-        void* m_ptr = nullptr;
+        native_fence* m_ptr = nullptr;
         void* m_event = nullptr;
         uint64_t m_counter = 0;
         bool m_signaled = false;

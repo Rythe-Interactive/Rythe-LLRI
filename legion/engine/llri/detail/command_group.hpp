@@ -25,6 +25,8 @@ namespace llri
         friend class CommandList;
 
     public:
+        using native_command_group = void;
+        
         /**
          * Get the type that CommandGroup was created for.
          */
@@ -36,7 +38,7 @@ namespace llri
          * DirectX12: ID3D12CommandAllocator*
          * Vulkan: VkCommandPool
          */
-        [[nodiscard]] void* getNative() const;
+        [[nodiscard]] native_command_group* getNative() const;
         
         /**
          * @brief Reset the CommandGroup and all of the allocated CommandLists.
@@ -117,8 +119,8 @@ namespace llri
         CommandGroup() = default;
         ~CommandGroup() = default;
 
-        void* m_ptr = nullptr;
-        void* m_indirectPtr = nullptr;
+        native_command_group* m_ptr = nullptr;
+        native_command_group* m_indirectPtr = nullptr;
 
         Device* m_device = nullptr;
         void* m_deviceFunctionTable = nullptr;

@@ -103,8 +103,10 @@ namespace llri
         friend class Device;
         friend class CommandGroup;
         friend class Queue;
-
+        
     public:
+        using native_command_list = void;
+
         /**
          * Get the desc that the CommandList was allocated with.
          */
@@ -116,7 +118,7 @@ namespace llri
          * DirectX12: ID3D12CommandList*
          * Vulkan: VkCommandBuffer
          */
-        [[nodiscard]] void* getNative() const;
+        [[nodiscard]] native_command_list* getNative() const;
         
         /**
          * @brief Set the CommandList in a command_list_state::Recording state.
@@ -214,7 +216,7 @@ namespace llri
         CommandList() = default;
         ~CommandList() = default;
 
-        void* m_ptr = nullptr;
+        native_command_list* m_ptr = nullptr;
         CommandGroup* m_group = nullptr;
 
         void* m_deviceHandle = nullptr;

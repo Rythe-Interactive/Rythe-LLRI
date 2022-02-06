@@ -26,7 +26,7 @@ namespace llri
         return "Invalid adapter_type value";
     }
 
-    inline void* Adapter::getNative() const
+    inline Adapter::native_adapter* Adapter::getNative() const
     {
         return m_ptr;
     }

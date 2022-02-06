@@ -432,7 +432,7 @@ namespace llri
             auto* queue = new Queue();
             queue->m_desc = queueDesc;
             queue->m_device = output;
-            queue->m_ptrs = std::vector<void*>(desc.adapter->m_nodeCount, vkQueue);
+            queue->m_ptrs = std::vector<Queue::native_queue*>(desc.adapter->m_nodeCount, vkQueue);
             queue->m_validationCallbackMessenger = output->m_validationCallbackMessenger;
 
             switch(queueDesc.type)

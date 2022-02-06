@@ -42,7 +42,7 @@ namespace llri
         return m_flags;
     }
 
-    inline void* Fence::getNative() const
+    inline Fence::native_fence* Fence::getNative() const
     {
         return m_ptr;
     }

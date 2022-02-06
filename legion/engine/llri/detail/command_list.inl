@@ -42,7 +42,7 @@ namespace llri
         return m_desc;
     }
 
-    inline void* CommandList::getNative() const
+    inline CommandList::native_command_list* CommandList::getNative() const
     {
         return m_ptr;
     }

@@ -41,7 +41,7 @@ namespace llri
         return m_desc;
     }
 
-    inline void* Queue::getNative(size_t index) const
+    inline Queue::native_queue* Queue::getNative(size_t index) const
     {
         if (index >= m_ptrs.size())
             return nullptr;

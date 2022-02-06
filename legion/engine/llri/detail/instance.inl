@@ -92,7 +92,7 @@ namespace llri
         return m_desc;
     }
 
-    inline void* Instance::getNative() const
+    inline Instance::native_instance* Instance::getNative() const
     {
         return m_ptr;
     }

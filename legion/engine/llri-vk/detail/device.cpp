@@ -327,7 +327,7 @@ namespace llri
 
         auto* output = new Resource();
         output->m_desc = desc;
-        output->m_resource = isTexture ? static_cast<void*>(image) : static_cast<void*>(buffer);
+        output->m_resource = isTexture ? static_cast<Resource::native_resource*>(image) : static_cast<Resource::native_resource*>(buffer);
         output->m_memory = memory;
         *resource = output;
         return result::Success;

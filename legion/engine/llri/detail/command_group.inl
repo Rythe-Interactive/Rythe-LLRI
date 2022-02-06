@@ -14,7 +14,7 @@ namespace llri
         return m_type;
     }
 
-    inline void* CommandGroup::getNative() const
+    inline CommandGroup::native_command_group* CommandGroup::getNative() const
     {
         return m_ptr;
     }

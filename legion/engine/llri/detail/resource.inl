@@ -267,12 +267,12 @@ namespace llri
         return m_desc;
     }
 
-    inline void* Resource::getNative() const
+    inline Resource::native_resource* Resource::getNative() const
     {
         return m_resource;
     }
 
-    inline void* Resource::getNativeMemory() const
+    inline Resource::native_memory* Resource::getNativeMemory() const
     {
         return m_memory;
     }

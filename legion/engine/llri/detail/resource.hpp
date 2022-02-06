@@ -561,6 +561,9 @@ namespace llri
         friend class CommandList;
 
     public:
+        using native_resource = void;
+        using native_memory = void;
+
         /**
          * @brief Get the desc that the Resource was created with.
          */
@@ -572,7 +575,7 @@ namespace llri
          * DirectX12: ID3D12Resource*
          * Vulkan: VkImage OR VkBuffer depending on getDesc()::type
          */
-        [[nodiscard]] void* getNative() const;
+        [[nodiscard]] native_resource* getNative() const;
         
         /**
          * @brief Gets the native memory pointer, which depending on the llri::getImplementation() is a pointer to the following:
@@ -580,7 +583,7 @@ namespace llri
          * DirectX12: nullptr
          * Vulkan: VkDeviceMemory
          */
-        [[nodiscard]] void* getNativeMemory() const;
+        [[nodiscard]] native_memory* getNativeMemory() const;
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Resource() = default;
@@ -588,7 +591,7 @@ namespace llri
 
         resource_desc m_desc;
         
-        void* m_memory = nullptr;
-        void* m_resource = nullptr;
+        native_memory* m_memory = nullptr;
+        native_resource* m_resource = nullptr;
     };
 }

@@ -91,13 +91,15 @@ namespace llri
         friend class Adapter;
 
     public:
+        using native_surface_ext = void;
+
         /**
          * @brief Gets the native SurfaceEXT  pointer, which depending on the llri::getImplementation() is a pointer to the following:
          *
          * DirectX12: HWND
          * Vulkan: VkSurfaceEXT
          */
-        [[nodiscard]] void* getNative() const
+        [[nodiscard]] native_surface_ext* getNative() const
         {
             return m_ptr;
         }
@@ -107,6 +109,6 @@ namespace llri
         SurfaceEXT() = default;
         ~SurfaceEXT() = default;
 
-        void* m_ptr = nullptr;
+        native_surface_ext* m_ptr = nullptr;
     };
 }

@@ -171,6 +171,8 @@ namespace llri
         friend class Device;
 
     public:
+        using native_queue = void;
+
         /**
          * Get the desc that the Queue has been created with (internally).
          */
@@ -184,7 +186,7 @@ namespace llri
          *
          * @param index The index of the device node to get the queue of. The function returns nullptr if the index exceeds the number of nodes in the device.
          */
-        [[nodiscard]] void* getNative(size_t index = 0) const;
+        [[nodiscard]] native_queue* getNative(size_t index = 0) const;
         
         /**
          * @brief Submit CommandLists to the queue, which means the commands they contain will be executed.
@@ -209,7 +211,7 @@ namespace llri
         Queue() = default;
         ~Queue() = default;
 
-        std::vector<void*> m_ptrs;
+        std::vector<native_queue*> m_ptrs;
         std::vector<Fence*> m_fences; // optional internal fences for waitIdle()
 
         queue_desc m_desc;
