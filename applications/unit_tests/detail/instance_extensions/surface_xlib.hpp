@@ -10,9 +10,9 @@
 
 #if defined(_WIN32)
     #define WIN32_LEAN_AND_MEAN
+    #define VC_EXTRALEAN
+    #define NOMINMAX
     #include <Windows.h>
-    #undef min
-    #undef max
     #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
     #define GLFW_EXPOSE_NATIVE_COCOA
