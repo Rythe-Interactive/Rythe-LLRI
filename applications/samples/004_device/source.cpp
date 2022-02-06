@@ -8,10 +8,8 @@
 #include <iostream>
 
 // See 001_validation.
-void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, [[maybe_unused]] void* userData)
 {
-    (void)userData;
-    
     if (severity <= llri::message_severity::Info)
         return;
 

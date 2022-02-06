@@ -27,10 +27,9 @@ TEST_CASE("Adapter")
 
         SUBCASE("Adapter::queryFeatures()")
         {
-            llri::adapter_features features = adapter->queryFeatures();
+            [[maybe_unused]] llri::adapter_features features = adapter->queryFeatures();
 
             // reserved for future use
-            (void)features;
         }
 
         SUBCASE("Adapter::queryExtensionSupport()")

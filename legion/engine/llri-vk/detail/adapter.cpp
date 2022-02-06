@@ -63,10 +63,8 @@ namespace llri
         return output;
     }
 
-    bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
+    bool Adapter::impl_queryExtensionSupport([[maybe_unused]] adapter_extension ext) const
     {
-        (void)ext;
-
         return false;
     }
 

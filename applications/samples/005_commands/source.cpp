@@ -8,10 +8,8 @@
 #include <iostream>
 
 // See 001_validation.
-void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, [[maybe_unused]] void* userData)
 {
-    (void)userData;
-    
     if (severity <= llri::message_severity::Info)
         return;
 
@@ -77,10 +75,9 @@ int main()
     // A convenient alternative to begin() and end() is CommandList::record():
     llri::command_list_begin_desc beginDesc2{};
     // record() takes a function and optionally the function's parameters.
-    list->record(beginDesc2, [](llri::CommandList* cmd) {
+    list->record(beginDesc2, []([[maybe_unused]] llri::CommandList* cmd) {
         // Within the function passed, you may record commands.
         // record() simply calls begin(desc), function(args), end().
-        (void)cmd;
     }, list);
 
     // Make sure to clean up created resources.

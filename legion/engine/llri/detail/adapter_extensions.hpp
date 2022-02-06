@@ -26,10 +26,8 @@ namespace llri
      * @brief Converts a adapter_extension to a string.
      * @return The enum value as a string, or "Invalid adapter_extension value" if the value was not recognized as an enum member.
     */
-    inline std::string to_string(adapter_extension ext)
+    inline std::string to_string([[maybe_unused]] adapter_extension ext)
     {
-        (void)ext;
-
         return "Invalid adapter_extension value";
     }
 }

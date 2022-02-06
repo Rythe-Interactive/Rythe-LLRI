@@ -10,10 +10,8 @@
 
 namespace llri
 {
-    result CommandList::impl_begin(const command_list_begin_desc& desc)
+    result CommandList::impl_begin([[maybe_unused]] const command_list_begin_desc& desc)
     {
-        (void)desc;
-        
         // TODO: Handle nodemask
         // TODO: Handle inheritance/indirect
         VkCommandBufferBeginInfo info { VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, nullptr, {}, nullptr };

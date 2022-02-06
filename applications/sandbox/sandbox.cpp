@@ -41,10 +41,8 @@
     } \
 } \
 
-void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, [[maybe_unused]] void* userData)
 {
-    (void)userData;
-    
     switch (severity)
     {
         case llri::message_severity::Verbose:
