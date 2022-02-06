@@ -108,7 +108,7 @@ namespace llri
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        capabilities->formats = std::vector<format>(count);
+        capabilities->formats.resize(count);
         for (size_t i = 0; i < count; i++)
             capabilities->formats[i] = internal::mapVkFormat(formats[i].format);
 
@@ -121,7 +121,7 @@ namespace llri
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        capabilities->presentModes = std::vector<present_mode_ext>{};
+        capabilities->presentModes.resize(count);
         for (size_t i = 0; i < count; i++)
         {
             const auto mode = internal::mapVkPresentMode(presentModes[i]);
