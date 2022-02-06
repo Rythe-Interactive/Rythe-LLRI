@@ -90,6 +90,18 @@ namespace llri
         friend class Device;
         friend class Adapter;
 
+    public:
+        /**
+         * @brief Gets the native SurfaceEXT  pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: HWND
+         * Vulkan: VkSurfaceEXT
+         */
+        [[nodiscard]] void* getNative() const
+        {
+            return m_ptr;
+        }
+        
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         SurfaceEXT() = default;

@@ -59,6 +59,13 @@ namespace llri
          */
         [[nodiscard]] fence_flags getFlags() const;
 
+        /**
+         * @brief Gets the native Fence pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: ID3D12Fence*
+         * Vulkan: VkFence
+         */
+        [[nodiscard]] void* getNative() const;
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Fence() = default;

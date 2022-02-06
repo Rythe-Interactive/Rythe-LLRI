@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file queue.inl
  * @copyright 2021-2021 Leon Brands. All rights served.
  * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
@@ -39,6 +39,14 @@ namespace llri
     inline queue_desc Queue::getDesc() const
     {
         return m_desc;
+    }
+
+    inline void* Queue::getNative(size_t index) const
+    {
+        if (index >= m_ptrs.size())
+            return nullptr;
+        
+        return m_ptrs[index];
     }
 
     inline result Queue::submit(const submit_desc& desc)

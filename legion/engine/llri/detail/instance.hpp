@@ -110,6 +110,14 @@ namespace llri
          * @brief Get the desc that the Instance was created with.
          */
         [[nodiscard]] instance_desc getDesc() const;
+        
+        /**
+         * @brief Gets the native Instance pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: IDXGIFactory*
+         * Vulkan: VkInstance
+         */
+        [[nodiscard]] void* getNative() const;
 
         /**
          * @brief Retrieve a vector of adapters available to this application. Adapters usually represent PCIe devices such as GPUs.

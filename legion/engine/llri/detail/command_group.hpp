@@ -31,6 +31,14 @@ namespace llri
         [[nodiscard]] queue_type getType() const;
 
         /**
+         * @brief Gets the native CommandGroup pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: ID3D12CommandAllocator*
+         * Vulkan: VkCommandPool
+         */
+        [[nodiscard]] void* getNative() const;
+        
+        /**
          * @brief Reset the CommandGroup and all of the allocated CommandLists.
          * After this, the CommandLists in this CommandGroup will be ready for recording again.
          *

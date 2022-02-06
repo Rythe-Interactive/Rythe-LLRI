@@ -92,6 +92,11 @@ namespace llri
         return m_desc;
     }
 
+    inline void* Instance::getNative() const
+    {
+        return m_ptr;
+    }
+
     inline result Instance::enumerateAdapters(std::vector<Adapter*>* adapters)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(adapters != nullptr, result::ErrorInvalidUsage)

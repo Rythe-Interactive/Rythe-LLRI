@@ -13,6 +13,11 @@ namespace llri
     {
         return m_desc;
     }
+
+    inline void* Device::getNative() const
+    {
+        return m_ptr;
+    }
     
     inline Adapter* Device::getAdapter() const
     {

@@ -18,6 +18,18 @@ namespace llri
         friend class Device;
         friend class Queue;
 
+    public:
+        /**
+         * @brief Gets the native Semaphore  pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: ID3D12Fence*
+         * Vulkan: VkSemaphore
+         */
+        [[nodiscard]] void* getNative() const
+        {
+            return m_ptr;
+        }
+        
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Semaphore() = default;

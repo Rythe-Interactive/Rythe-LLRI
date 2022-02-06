@@ -111,6 +111,14 @@ namespace llri
         [[nodiscard]] command_list_alloc_desc getDesc() const;
 
         /**
+         * @brief Gets the native CommandList pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: ID3D12CommandList*
+         * Vulkan: VkCommandBuffer
+         */
+        [[nodiscard]] void* getNative() const;
+        
+        /**
          * @brief Set the CommandList in a command_list_state::Recording state.
          *
          * The CommandList **must** be in the command_list_state::Empty state for it to transition into a command_list_state::Recording state.

@@ -134,6 +134,14 @@ namespace llri
 
     public:
         /**
+         * @brief Gets the native Adapter pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: IDXGIAdapter*
+         * Vulkan: VkPhysicalDevice
+         */
+        [[nodiscard]] void* getNative() const;
+        
+        /**
          * @brief Query basic information about the Adapter.
         */
         [[nodiscard]] adapter_info queryInfo() const;
