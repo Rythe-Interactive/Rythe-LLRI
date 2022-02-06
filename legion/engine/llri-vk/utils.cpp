@@ -149,7 +149,7 @@ namespace llri
         /**
          * @brief Utility function for hashing strings for layer/extension names
         */
-        unsigned long long nameHash(std::string name)
+        uint64_t nameHash(std::string name)
         {
             static std::hash<std::string> hasher{};
             if (!name.empty() && name[name.size() - 1] == '\0')

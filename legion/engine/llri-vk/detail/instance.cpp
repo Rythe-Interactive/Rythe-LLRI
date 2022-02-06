@@ -67,14 +67,14 @@ namespace llri
             const auto& availableExtensions = internal::queryAvailableExtensions();
 
             std::vector<const char*> layers;
-            std::unordered_set<const char*> extensions;
+            std::unordered_map<uint64_t, const char*> extensions;
             if (availableExtensions.find(internal::nameHash("VK_KHR_device_group_creation")) != availableExtensions.end())
-                extensions.insert("VK_KHR_device_group_creation");
+                extensions.emplace(internal::nameHash("VK_KHR_device_group_creation"), "VK_KHR_device_group_creation");
 
 #ifdef __APPLE__
             // if available, enable - necessary for MoltenVK
             if (availableExtensions.find(internal::nameHash("VK_KHR_get_physical_device_properties2")) != availableExtensions.end())
-                extensions.insert("VK_KHR_get_physical_device_properties2");
+                extensions.emplace(internal::nameHash("VK_KHR_get_physical_device_properties2"), "VK_KHR_get_physical_device_properties2");
 #endif
             
             void* pNext = nullptr;
@@ -95,7 +95,7 @@ namespace llri
                     }
                     case instance_extension::GPUValidation:
                     {
-                        extensions.insert("VK_EXT_validation_features");
+                        extensions.emplace(internal::nameHash("VK_EXT_validation_features"), "VK_EXT_validation_features");
 
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
@@ -107,26 +107,26 @@ namespace llri
                     }
                     case instance_extension::SurfaceWin32:
                     {
-                        extensions.insert("VK_KHR_surface");
-                        extensions.insert("VK_KHR_win32_surface");
+                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(internal::nameHash("VK_KHR_win32_surface"), "VK_KHR_win32_surface");
                         break;
                     }
                     case instance_extension::SurfaceCocoa:
                     {
-                        extensions.insert("VK_KHR_surface");
-                        extensions.insert("VK_EXT_metal_surface");
+                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(internal::nameHash("VK_EXT_metal_surface"), "VK_EXT_metal_surface");
                         break;
                     }
                     case instance_extension::SurfaceXlib:
                     {
-                        extensions.insert("VK_KHR_surface");
-                        extensions.insert("VK_KHR_xlib_surface");
+                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(internal::nameHash("VK_KHR_xlib_surface"), "VK_KHR_xlib_surface");
                         break;
                     }
                     case instance_extension::SurfaceXcb:
                     {
-                        extensions.insert("VK_KHR_surface");
-                        extensions.insert("VK_KHR_xcb_surface");
+                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(internal::nameHash("VK_KHR_xcb_surface"), "VK_KHR_xcb_surface");
                         break;
                     }
                 }
@@ -141,13 +141,16 @@ namespace llri
                 // so instead the check is implicit, implementation callbacks aren't guaranteed
                 if (availableExtensions.find(internal::nameHash("VK_EXT_debug_utils")) != availableExtensions.end())
                 {
-                    extensions.insert(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+                    extensions.emplace(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                     output->m_shouldConstructValidationCallbackMessenger = true;
                 }
             }
 
-            std::vector<const char*> extensionVec(extensions.size());
-            std::copy(extensions.begin(), extensions.end(), extensionVec.begin());
+            // transfer over to vector of strings
+            std::vector<const char*> extensionVec;
+            extensionVec.reserve(extensions.size());
+            for (auto& pair : extensions)
+                extensionVec.push_back(pair.second);
 
             VkApplicationInfo appInfo{ VK_STRUCTURE_TYPE_APPLICATION_INFO, nullptr, desc.applicationName, VK_MAKE_VERSION(0, 0, 0), "Legion::LLRI", VK_MAKE_VERSION(0, 0, 1), VK_HEADER_VERSION_COMPLETE };
             VkInstanceCreateInfo instanceCi{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, nullptr, {}, &appInfo, static_cast<uint32_t>(layers.size()), layers.data(), static_cast<uint32_t>(extensionVec.size()), extensionVec.data() };
