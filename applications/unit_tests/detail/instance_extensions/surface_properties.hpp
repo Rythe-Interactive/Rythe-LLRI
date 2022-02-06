@@ -28,6 +28,9 @@
 inline void impl_testSurfaceCapabilities(llri::Adapter* adapter, llri::SurfaceEXT* surface)
 {
     llri::surface_capabilities_ext capabilities;
+    CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(surface, nullptr), llri::result::ErrorInvalidUsage);
+    CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(nullptr, &capabilities), llri::result::ErrorInvalidUsage);
+    
     CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(surface, &capabilities), llri::result::Success);
     
     CHECK_UNARY(capabilities.minTextureCount > 0);
@@ -53,7 +56,21 @@ inline void impl_testSurfaceCapabilities(llri::Adapter* adapter, llri::SurfaceEX
     CHECK_UNARY(capabilities.usageBits <= llri::resource_usage_flag_bits::All);
 }
 
-void testSurfaceCapabilitiesWin32(){
+inline void impl_testSurfacePresentSupport(llri::Adapter* adapter, llri::SurfaceEXT* surface)
+{
+    bool support;
+    CHECK_EQ(adapter->querySurfacePresentSupportEXT(nullptr, llri::queue_type::Graphics, &support), llri::result::ErrorInvalidUsage);
+    CHECK_EQ(adapter->querySurfacePresentSupportEXT(surface, llri::queue_type::Graphics, nullptr), llri::result::ErrorInvalidUsage);
+    CHECK_EQ(adapter->querySurfacePresentSupportEXT(surface, static_cast<llri::queue_type>(UINT_MAX), &support), llri::result::ErrorInvalidUsage);
+    
+    for (uint8_t i = 0; i <= static_cast<uint8_t>(llri::queue_type::MaxEnum); i++)
+    {
+        CHECK_EQ(adapter->querySurfacePresentSupportEXT(surface, static_cast<llri::queue_type>(i), &support), llri::result::Success);
+        CHECK_UNARY(support == 0 || support == 1); // should always be true or false explicitly
+    }
+}
+
+void testSurfacePropertiesWin32(){
 #ifdef _WIN32
     llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
     if (!instance)
@@ -75,6 +92,7 @@ void testSurfaceCapabilitiesWin32(){
     
     // do tests
     impl_testSurfaceCapabilities(adapter, surface);
+    impl_testSurfacePresentSupport(adapter, surface);
     
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
@@ -82,7 +100,7 @@ void testSurfaceCapabilitiesWin32(){
 #endif
 }
 
-void testSurfaceCapabilitiesCocoa()
+void testSurfacePropertiesCocoa()
 {
 #ifdef __APPLE__
     llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
@@ -104,6 +122,7 @@ void testSurfaceCapabilitiesCocoa()
     
     // do tests
     impl_testSurfaceCapabilities(adapter, surface);
+    impl_testSurfacePresentSupport(adapter, surface);
     
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
@@ -111,7 +130,7 @@ void testSurfaceCapabilitiesCocoa()
 #endif
 }
 
-void testSurfaceCapabilitiesXlib()
+void testSurfacePropertiesXlib()
 {
 #ifdef __linux__
     llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
@@ -135,6 +154,7 @@ void testSurfaceCapabilitiesXlib()
     
     // do tests
     impl_testSurfaceCapabilities(adapter, surface);
+    impl_testSurfacePresentSupport(adapter, surface);
     
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
@@ -142,7 +162,7 @@ void testSurfaceCapabilitiesXlib()
 #endif
 }
 
-void testSurfaceCapabilitiesXcb()
+void testSurfacePropertiesXcb()
 {
 #ifdef __linux__
     llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXcb);
@@ -166,6 +186,7 @@ void testSurfaceCapabilitiesXcb()
     
     // do tests
     impl_testSurfaceCapabilities(adapter, surface);
+    impl_testSurfacePresentSupport(adapter, surface);
     
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
@@ -173,43 +194,30 @@ void testSurfaceCapabilitiesXcb()
 #endif
 }
 
-inline void testSurfaceCapabilities()
+inline void testSurfaceProperties()
 {
     if (!glfwInit())
         return;
     
-    SUBCASE("Simple parameter validation")
+    SUBCASE("extension not enabled")
     {
         llri::Instance* instance = helpers::defaultInstance();
         llri::Adapter* adapter = helpers::selectAdapter(instance);
                 
-        CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(nullptr, nullptr), llri::result::ErrorExtensionNotEnabled);
-
-        llri::destroyInstance(instance);
-        
-#if defined(_WIN32)
-        instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
-#elif defined(__APPLE__)
-        instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
-#elif defined(__linux__)
-        instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
-#endif
-        
-        adapter = helpers::selectAdapter(instance);
-        
-        CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(nullptr, nullptr), llri::result::ErrorInvalidUsage);
-        
         llri::surface_capabilities_ext capabilities;
-        CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(nullptr, &capabilities), llri::result::ErrorInvalidUsage);
+        bool support;
+        
+        CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(nullptr, &capabilities), llri::result::ErrorExtensionNotEnabled);
+        CHECK_EQ(adapter->querySurfacePresentSupportEXT(nullptr, llri::queue_type::Graphics, &support), llri::result::ErrorExtensionNotEnabled);
         
         llri::destroyInstance(instance);
     }
     
-    SUBCASE("Return values")
+    SUBCASE("extension enabled")
     {
-        testSurfaceCapabilitiesWin32();
-        testSurfaceCapabilitiesCocoa();
-        testSurfaceCapabilitiesXlib();
-        testSurfaceCapabilitiesXcb();
+        testSurfacePropertiesWin32();
+        testSurfacePropertiesCocoa();
+        testSurfacePropertiesXlib();
+        testSurfacePropertiesXcb();
     }
 }

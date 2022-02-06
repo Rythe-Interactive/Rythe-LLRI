@@ -8,7 +8,7 @@
 #include <string>
 #include <doctest/doctest.h>
 
-#include <detail/instance_extensions/surface_capabilities.hpp>
+#include <detail/instance_extensions/surface_properties.hpp>
 #include <detail/instance_extensions/surface_win32.hpp>
 #include <detail/instance_extensions/surface_cocoa.hpp>
 #include <detail/instance_extensions/surface_xlib.hpp>
@@ -58,7 +58,7 @@ TEST_SUITE("Instance Extensions")
     TEST_CASE("Using instance extensions")
     {
         SUBCASE("SurfaceEXT properties")
-            testSurfaceCapabilities();
+            testSurfaceProperties();
         
         SUBCASE("instance_extension::SurfaceWin32")
             testInstanceSurfaceWin32();
