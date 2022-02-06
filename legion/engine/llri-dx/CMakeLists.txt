@@ -7,6 +7,11 @@ file(GLOB_RECURSE source ${LLRI_SOURCE_FILETYPES})
 add_library(llri-dx ${source})
 add_library(llri::dx ALIAS llri-dx)
 
+target_compile_options(llri-dx PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
+
 target_compile_features(llri-dx PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})

@@ -52,6 +52,9 @@ namespace llri
 
         VkBool32 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT severity, VkDebugUtilsMessageTypeFlagsEXT type, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
         {
+            (void)type;
+            (void)userData;
+            
             detail::callUserCallback(mapSeverity(severity), message_source::Implementation, callbackData->pMessage);
             return VK_FALSE;
         }
@@ -516,6 +519,9 @@ namespace llri
     result Instance::impl_createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_WIN32_KHR
+        (void)desc;
+        (void)surface;
+        
         return result::ErrorExtensionNotSupported;
 #else
         VkWin32SurfaceCreateInfoKHR info {};
@@ -566,6 +572,9 @@ namespace llri
     result Instance::impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_XLIB_KHR
+        (void)desc;
+        (void)surface;
+        
         return result::ErrorExtensionNotSupported;
 #else
         VkXlibSurfaceCreateInfoKHR info {};
@@ -591,6 +600,9 @@ namespace llri
     result Instance::impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_XCB_KHR
+        (void)desc;
+        (void)surface;
+        
         return result::ErrorExtensionNotSupported;
 #else
         VkXcbSurfaceCreateInfoKHR info {};
