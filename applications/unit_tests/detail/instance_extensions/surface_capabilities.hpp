@@ -136,7 +136,7 @@ void testSurfaceCapabilitiesXlib()
     // do tests
     impl_testSurfaceCapabilities(adapter, surface);
     
-    instance->destroySurface(surface);
+    instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
     glfwDestroyWindow(window);
 #endif
@@ -167,7 +167,7 @@ void testSurfaceCapabilitiesXcb()
     // do tests
     impl_testSurfaceCapabilities(adapter, surface);
     
-    instance->destroySurface(surface);
+    instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
     glfwDestroyWindow(window);
 #endif
