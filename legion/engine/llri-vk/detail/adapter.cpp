@@ -121,12 +121,13 @@ namespace llri
         if (r != VK_SUCCESS)
             return internal::mapVkResult(r);
 
-        capabilities->presentModes.resize(count);
+        capabilities->presentModes.clear();
+        capabilities->presentModes.reserve(count);
         for (size_t i = 0; i < count; i++)
         {
             const auto mode = internal::mapVkPresentMode(presentModes[i]);
             if (mode <= present_mode_ext::MaxEnum)
-                capabilities->presentModes[i] = mode;
+                capabilities->presentModes.emplace_back(mode);
         }
 
         // handle vk capabilities
