@@ -135,7 +135,7 @@ namespace llri
         };
         
         // Validate all queue descs and their relation to max queue counts
-        std::unordered_map<queue_type, uint8_t> queueCounts {
+        std::unordered_map<queue_type, size_t> queueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }

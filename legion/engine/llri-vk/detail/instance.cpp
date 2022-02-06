@@ -419,7 +419,7 @@ namespace llri
         output->m_functionTable = table;
 
         // Get created queues
-        std::unordered_map<queue_type, uint8_t> queueCounts {
+        std::unordered_map<queue_type, uint32_t> queueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }

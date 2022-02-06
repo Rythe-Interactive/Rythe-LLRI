@@ -48,7 +48,7 @@ int main()
         adapter,
         enabledFeatures,
         0, nullptr, // Similar to Instance extensions, this may be a size and array.
-        queues.size(), queues.data()
+        static_cast<uint32_t>(queues.size()), queues.data()
     };
 
     // Finally, create the device through Instance::createDevice().

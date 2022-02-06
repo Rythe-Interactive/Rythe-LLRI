@@ -161,7 +161,7 @@ TEST_CASE("Device")
                     signaledFence,
                     nullptr
                 };
-                CHECK_EQ(device->waitFences(fences.size(), fences.data(), LLRI_TIMEOUT_MAX), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->waitFences(static_cast<uint32_t>(fences.size()), fences.data(), LLRI_TIMEOUT_MAX), llri::result::ErrorInvalidUsage);
             }
 
             SUBCASE("[Incorrect usage] attempting to wait on unsignaled fence(s)")

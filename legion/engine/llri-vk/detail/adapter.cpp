@@ -65,11 +65,7 @@ namespace llri
 
     bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
     {
-        switch (ext)
-        {
-            default:
-                break;
-        }
+        (void)ext;
 
         return false;
     }

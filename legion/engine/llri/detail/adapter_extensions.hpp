@@ -28,11 +28,7 @@ namespace llri
     */
     inline std::string to_string(adapter_extension ext)
     {
-        switch (ext)
-        {
-            default:
-                break;
-        }
+        (void)ext;
 
         return "Invalid adapter_extension value";
     }

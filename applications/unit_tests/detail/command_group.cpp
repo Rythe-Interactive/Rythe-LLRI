@@ -166,19 +166,19 @@ TEST_CASE("CommandGroup")
                     std::vector<llri::CommandList*> cmdLists;
                     REQUIRE_EQ(group->allocate({ nodeMask, llri::command_list_usage::Direct }, 2, &cmdLists), llri::result::Success);
 
-                    CHECK_EQ(group->free(cmdLists.size(), cmdLists.data()), llri::result::Success);
+                    CHECK_EQ(group->free(static_cast<uint8_t>(cmdLists.size()), cmdLists.data()), llri::result::Success);
                 }
 
                 SUBCASE("[Incorrect usage] Some of the CommandLists weren't created through the group")
                 {
-                    std::array<llri::CommandList*, 2> cmdLists;
+                    std::array<llri::CommandList*, 2> cmdLists { nullptr, nullptr };
 
                     auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
 
                     REQUIRE_EQ(group->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdLists[0]), llri::result::Success);
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdLists[1]), llri::result::Success);
 
-                    CHECK_EQ(group->free(cmdLists.size(), cmdLists.data()), llri::result::ErrorInvalidUsage);
+                    CHECK_EQ(group->free(static_cast<uint8_t>(cmdLists.size()), cmdLists.data()), llri::result::ErrorInvalidUsage);
 
                     device->destroyCommandGroup(group2);
                 }
@@ -190,7 +190,7 @@ TEST_CASE("CommandGroup")
                     auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, 2, &cmdLists), llri::result::Success);
 
-                    CHECK_EQ(group->free(cmdLists.size(), cmdLists.data()), llri::result::ErrorInvalidUsage);
+                    CHECK_EQ(group->free(static_cast<uint8_t>(cmdLists.size()), cmdLists.data()), llri::result::ErrorInvalidUsage);
 
                     device->destroyCommandGroup(group2);
                 }
@@ -204,7 +204,7 @@ TEST_CASE("CommandGroup")
                     llri::command_list_begin_desc beginDesc{ };
                     REQUIRE_EQ(cmdLists[0]->begin(beginDesc), llri::result::Success);
 
-                    CHECK_EQ(group->free(cmdLists.size(), cmdLists.data()), llri::result::ErrorInvalidState);
+                    CHECK_EQ(group->free(static_cast<uint8_t>(cmdLists.size()), cmdLists.data()), llri::result::ErrorInvalidState);
 
                     REQUIRE_EQ(cmdLists[0]->end(), llri::result::Success);
                 }

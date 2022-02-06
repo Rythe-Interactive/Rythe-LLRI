@@ -17,7 +17,7 @@ namespace llri
         adapter_info info;
         info.vendorId = desc.VendorId;
         info.adapterId = desc.DeviceId;
-        const auto description = std::string(desc.Description, desc.Description + 128);
+        const auto description = std::string(reinterpret_cast<char*>(desc.Description), reinterpret_cast<char*>(desc.Description + 128));
         info.adapterName = description.substr(0, description.find_last_not_of(' '));
 
         if (desc.Flags == DXGI_ADAPTER_FLAG_REMOTE)
@@ -44,11 +44,7 @@ namespace llri
 
     bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
     {
-        switch (ext)
-        {
-            default:
-                break;
-        }
+        (void)ext;
 
         return false;
     }

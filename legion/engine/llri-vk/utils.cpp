@@ -161,7 +161,7 @@ namespace llri
             std::vector<VkQueueFamilyProperties> properties(propertyCount);
             vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, properties.data());
 
-            for (size_t i = 0; i < propertyCount; i++)
+            for (uint32_t i = 0; i < propertyCount; i++)
             {
                 auto& p = properties[i];
 

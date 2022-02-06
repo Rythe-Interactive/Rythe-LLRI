@@ -29,22 +29,20 @@ inline void testInstanceSurfaceCocoa()
 {
     llri::surface_cocoa_desc_ext empty {};
     
-    SUBCASE("Extension not enabled")
-    {
-        llri::instance_desc desc {};
-        llri::Instance* instance;
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-        
-        llri::SurfaceEXT* surface;
-        CHECK_EQ(instance->createSurfaceEXT(empty, &surface), llri::result::ErrorExtensionNotEnabled);
-        
-        llri::destroyInstance(instance);
-    }
+    // check with extension not enabled
+    llri::instance_desc desc {};
+    llri::Instance* instance;
+    REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
     
+    llri::SurfaceEXT* surface;
+    CHECK_EQ(instance->createSurfaceEXT(empty, &surface), llri::result::ErrorExtensionNotEnabled);
+    
+    llri::destroyInstance(instance);
+
+    // check with extension enabled
     if (llri::queryInstanceExtensionSupport(llri::instance_extension::SurfaceCocoa))
     {
         glfwInit();
-        // disable the default OpenGL context that GLFW creates
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         GLFWwindow* window = glfwCreateWindow(960, 540, "sandbox", nullptr, nullptr);
         if (!window)
@@ -55,18 +53,16 @@ inline void testInstanceSurfaceCocoa()
         
         llri::instance_extension ext = llri::instance_extension::SurfaceCocoa;
         
-        llri::instance_desc desc {};
+        desc = {};
         desc.numExtensions = 1;
         desc.extensions = &ext;
         
-        llri::Instance* instance;
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         
         // surface cant be nullptr
         CHECK_EQ(instance->createSurfaceEXT(empty, nullptr), llri::result::ErrorInvalidUsage);
         
         // nsWindow can't be nullptr
-        llri::SurfaceEXT* surface;
         CHECK_EQ(instance->createSurfaceEXT(empty, &surface), llri::result::ErrorInvalidUsage);
         
 #ifdef __APPLE__

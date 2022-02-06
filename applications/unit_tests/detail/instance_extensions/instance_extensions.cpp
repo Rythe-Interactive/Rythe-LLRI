@@ -29,19 +29,18 @@ TEST_SUITE("Instance Extensions")
         llri::Instance* instance = nullptr;
         llri::instance_desc desc{ };
         
-        for (size_t ext = 0; ext <= static_cast<size_t>(llri::instance_extension::MaxEnum); ext++)
+        for (size_t e = 0; e <= static_cast<size_t>(llri::instance_extension::MaxEnum); e++)
         {
-            const auto extension = static_cast<llri::instance_extension>(ext);
+            auto extension = static_cast<llri::instance_extension>(e);
             const auto name = llri::to_string(extension);
             
             SUBCASE(name.c_str())
             {
-                auto ext = llri::instance_extension::DriverValidation;
                 desc.numExtensions = 1;
-                desc.extensions = &ext;
+                desc.extensions = &extension;
 
                 // By checking for support first, we can determine the required llri::createInstance result
-                const bool supported = llri::queryInstanceExtensionSupport(ext);
+                const bool supported = llri::queryInstanceExtensionSupport(extension);
                 std::string msg = name + std::string(" is ") + (supported ? std::string("supported") : std::string("not supported"));
                 INFO(msg.data());
 

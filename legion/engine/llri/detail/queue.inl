@@ -45,7 +45,7 @@ namespace llri
     {
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION
         LLRI_DETAIL_VALIDATION_REQUIRE(detail::hasSingleBit(desc.nodeMask), result::ErrorInvalidNodeMask)
-        LLRI_DETAIL_VALIDATION_REQUIRE(desc.nodeMask < (1 << m_device->m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.nodeMask < (1u << m_device->m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
 
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.numCommandLists != 0, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.commandLists != nullptr, result::ErrorInvalidUsage)

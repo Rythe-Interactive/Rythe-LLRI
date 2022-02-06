@@ -70,10 +70,10 @@ namespace llri
                     else
                     {
                         const auto desc = barrier.trans.resource->getDesc();
-                        const size_t arrayLayers = desc.type == resource_type::Texture3D ? 1 : desc.depthOrArrayLayers;
-                        for (size_t a = barrier.trans.subresourceRange.baseArrayLayer; a < barrier.trans.subresourceRange.baseArrayLayer + barrier.trans.subresourceRange.numArrayLayers; a++)
+                        const UINT arrayLayers = desc.type == resource_type::Texture3D ? 1u : desc.depthOrArrayLayers;
+                        for (UINT a = barrier.trans.subresourceRange.baseArrayLayer; a < barrier.trans.subresourceRange.baseArrayLayer + barrier.trans.subresourceRange.numArrayLayers; a++)
                         {
-                            for (size_t m = barrier.trans.subresourceRange.baseMipLevel; m < barrier.trans.subresourceRange.baseMipLevel + barrier.trans.subresourceRange.numMipLevels; m++)
+                            for (UINT m = barrier.trans.subresourceRange.baseMipLevel; m < barrier.trans.subresourceRange.baseMipLevel + barrier.trans.subresourceRange.numMipLevels; m++)
                             {
                                 D3D12_RESOURCE_BARRIER dx12Barrier{};
                                 dx12Barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;

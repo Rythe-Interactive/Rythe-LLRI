@@ -27,7 +27,7 @@ TEST_CASE("Queue")
     {
         for (size_t i = 0; i < device->queryQueueCount(static_cast<llri::queue_type>(type)); i++)
         {
-            llri::Queue* queue = device->getQueue(static_cast<llri::queue_type>(type), i);
+            llri::Queue* queue = device->getQueue(static_cast<llri::queue_type>(type), static_cast<uint8_t>(i));
             REQUIRE_NE(queue, nullptr);
             queues.push_back({ static_cast<llri::queue_type>(type), static_cast<uint8_t>(i), queue });
         }
@@ -121,7 +121,7 @@ TEST_CASE("Queue")
                                 nullptr
                             };
 
-                            llri::submit_desc submitDesc{ nodeMask, cmdLists.size(), cmdLists.data(), 0, nullptr, 0, nullptr, nullptr };
+                            llri::submit_desc submitDesc{ nodeMask, static_cast<uint32_t>(cmdLists.size()), cmdLists.data(), 0, nullptr, 0, nullptr, nullptr };
                             CHECK_EQ(queue->submit(submitDesc), llri::result::ErrorInvalidUsage);
                         }
 
@@ -136,7 +136,7 @@ TEST_CASE("Queue")
                             std::array<llri::Semaphore*, 1> semaphores {
                                 nullptr
                             };
-                            llri::submit_desc submitDesc{ nodeMask, 1, &readyCmdList, semaphores.size(), semaphores.data(), 0, nullptr, nullptr };
+                            llri::submit_desc submitDesc{ nodeMask, 1, &readyCmdList, static_cast<uint32_t>(semaphores.size()), semaphores.data(), 0, nullptr, nullptr };
                             CHECK_EQ(queue->submit(submitDesc), llri::result::ErrorInvalidUsage);
                         }
 
@@ -151,7 +151,7 @@ TEST_CASE("Queue")
                             std::array<llri::Semaphore*, 1> semaphores{
                                 nullptr
                             };
-                            llri::submit_desc submitDesc{ nodeMask, 1, &readyCmdList, 0, nullptr, semaphores.size(), semaphores.data(), nullptr };
+                            llri::submit_desc submitDesc{ nodeMask, 1, &readyCmdList, 0, nullptr, static_cast<uint32_t>(semaphores.size()), semaphores.data(), nullptr };
                             CHECK_EQ(queue->submit(submitDesc), llri::result::ErrorInvalidUsage);
                         }
 

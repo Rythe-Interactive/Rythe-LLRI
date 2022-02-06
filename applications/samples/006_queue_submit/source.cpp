@@ -122,7 +122,7 @@ llri::Device* createDevice(llri::Instance* instance, llri::Adapter* adapter)
         adapter,
         enabledFeatures,
         0, nullptr,
-        queues.size(), queues.data()
+        static_cast<uint32_t>(queues.size()), queues.data()
     };
 
     llri::Device* device;

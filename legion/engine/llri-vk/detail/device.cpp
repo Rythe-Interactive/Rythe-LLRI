@@ -192,7 +192,7 @@ namespace llri
             imageCreate.tiling = VK_IMAGE_TILING_OPTIMAL;
             imageCreate.usage = internal::mapTextureUsage(desc.usage);
             imageCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
-            imageCreate.queueFamilyIndexCount = familyIndices.size();
+            imageCreate.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
             imageCreate.pQueueFamilyIndices = familyIndices.data();
             imageCreate.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             internalState = imageCreate.initialLayout;
@@ -215,7 +215,7 @@ namespace llri
             bufferCreate.size = desc.width;
             bufferCreate.usage = internal::mapBufferUsage(desc.usage);
             bufferCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
-            bufferCreate.queueFamilyIndexCount = familyIndices.size();
+            bufferCreate.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
             bufferCreate.pQueueFamilyIndices = familyIndices.data();
 
             auto r = table->vkCreateBuffer(static_cast<VkDevice>(m_ptr), &bufferCreate, nullptr, &buffer);
