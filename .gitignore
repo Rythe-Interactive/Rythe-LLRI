@@ -37,6 +37,8 @@ ipch/
 # but keep track of directories ending in .cache
 !?*.[Cc]ache/
 
+enc_temp_folder/
+
 # Files built by Visual Studio
 *_i.c
 *_p.c

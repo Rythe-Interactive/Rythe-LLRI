@@ -53,14 +53,38 @@ namespace llri
         return false;
     }
 
-    result Adapter::impl_querySurfaceSupportEXT(SurfaceEXT* surface, bool* support) const
+    result Adapter::impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
     {
-
+        switch(type)
+        {
+            case queue_type::Graphics:
+                *support = true;
+                break;
+            default:
+                *support = false;
+                break;
+        }
+        return result::Success;
     }
 
-    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities* capabilities) const
+    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
     {
+        capabilities->minTextureCount = 2;
+        capabilities->maxTextureCount = 16;
 
+        capabilities->minExtent = { 1, 1 };
+        capabilities->maxExtent = { 16384, 16384 };
+
+        capabilities->formats = { format::RGBA8UNorm, format::BGRA8UNorm, format::RGBA16Float };
+
+        capabilities->presentModes = { present_mode_ext::Immediate, present_mode_ext::Fifo };
+
+        capabilities->usageBits = resource_usage_flag_bits::TransferSrc |
+            resource_usage_flag_bits::TransferDst |
+            resource_usage_flag_bits::ColorAttachment |
+            resource_usage_flag_bits::Sampled;
+
+        return result::Success;
     }
     
     uint8_t Adapter::impl_queryQueueCount(queue_type type) const
