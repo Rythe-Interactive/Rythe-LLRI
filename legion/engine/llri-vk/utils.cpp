@@ -145,22 +145,7 @@ namespace llri
 
             return static_cast<uint32_t>(-1);
         }
-
-        /**
-         * @brief Utility function for hashing strings for layer/extension names
-        */
-        unsigned long long nameHash(std::string name)
-        {
-            static std::hash<std::string> hasher{};
-            if (!name.empty() && name[name.size() - 1] == '\0')
-            {
-                std::string temp = name;
-                temp.resize(name.size() - 1);
-                return hasher(temp);
-            }
-            return hasher(name);
-        }
-
+    
         std::unordered_map<queue_type, uint32_t> findQueueFamilies(VkPhysicalDevice physicalDevice)
         {
             std::unordered_map<queue_type, uint32_t> output
