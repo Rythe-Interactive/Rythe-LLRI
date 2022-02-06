@@ -5,6 +5,7 @@ project(llri-vk LANGUAGES ${LLRI_SOURCE_LANGUAGES})
 
 file(GLOB_RECURSE source ${LLRI_SOURCE_FILETYPES})
 add_library(llri-vk ${source})
+add_library(llri::vk ALIAS llri-vk)
 
 target_compile_features(llri-vk PRIVATE cxx_std_17)
 

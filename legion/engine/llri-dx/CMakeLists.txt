@@ -5,6 +5,7 @@ project(llri-dx LANGUAGES ${LLRI_SOURCE_LANGUAGES})
 
 file(GLOB_RECURSE source ${LLRI_SOURCE_FILETYPES})
 add_library(llri-dx ${source})
+add_library(llri::dx ALIAS llri-dx)
 
 target_compile_features(llri-dx PRIVATE cxx_std_17)
 
