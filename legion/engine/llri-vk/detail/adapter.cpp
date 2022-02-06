@@ -125,7 +125,7 @@ namespace llri
         for (size_t i = 0; i < count; i++)
         {
             const auto mode = internal::mapVkPresentMode(presentModes[i]);
-            if (static_cast<uint32_t>(mode) != UINT_MAX)
+            if (mode <= present_mode_ext::MaxEnum)
                 capabilities->presentModes.emplace_back(internal::mapVkPresentMode(presentModes[i]));
         }
 
