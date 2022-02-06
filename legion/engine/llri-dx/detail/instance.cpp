@@ -240,7 +240,7 @@ namespace llri
             {
                 Adapter* adapter = new Adapter();
                 adapter->m_ptr = dxgiAdapter;
-                adapter->m_instanceHandle = m_ptr;
+                adapter->m_instance = this;
                 adapter->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
                 // Attempt to query node count
