@@ -32,7 +32,11 @@ set(LLRI_DIR_APPLICATIONS "${CMAKE_CURRENT_SOURCE_DIR}/applications" CACHE INTER
 set(LLRI_DIR_APPLICATIONS_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/applications/deps" CACHE INTERNAL "")
 
 if (NOT MSVC)
-	set(LLRI_COMPILER_FLAGS -Wall -Wextra -Wpedantic -Werror -Wno-c++98-compat -Wno-c++98-compat-pedantic)
+	set(LLRI_COMPILER_FLAGS -Wall -Wextra -Wpedantic -Werror 
+							-Wno-c++98-compat -Wno-c++98-compat-pedantic 
+							-Wno-c++0x-compat 
+							-Wno-c++11-compat -Wno-c++11-compat-pedantic
+							-Wno-c++14-compat -Wno-c++14-compat-pedantic)
 else()
 	set(LLRI_COMPILER_FLAGS /W4 /WX)
 endif()
