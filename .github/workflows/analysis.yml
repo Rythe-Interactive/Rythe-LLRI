@@ -1,0 +1,43 @@
+name: analysis
+
+on:
+  push:
+    branches: [ main, develop, develop/*, develop*, feature*, feature/*, task*, task/*, hotfix*, hotfix/*]
+  pull_request:
+    branches: [ main, develop, develop/*, develop*, feature*, feature/* ]
+    
+jobs:
+  analyze:
+    name: analysis
+
+    runs-on: windows-2019
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Download git submodules
+      run: git submodule update --init --recursive
+      
+    - name: Configure CMake
+      shell: bash
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -DCMAKE_DISABLE_FIND_PACKAGE_WindowsSDK=ON
+    
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
+
+    # Builds the project using CodeQL autobuild
+    # Since this action only runs on Windows, it automatically
+    # picks the vcxproj files that were generated using CMake
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v1
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
