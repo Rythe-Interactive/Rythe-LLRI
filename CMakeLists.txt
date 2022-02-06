@@ -31,6 +31,12 @@ set(LLRI_DIR_SRC "${CMAKE_CURRENT_SOURCE_DIR}/legion/engine" CACHE INTERNAL "")
 set(LLRI_DIR_APPLICATIONS "${CMAKE_CURRENT_SOURCE_DIR}/applications" CACHE INTERNAL "")
 set(LLRI_DIR_APPLICATIONS_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/applications/deps" CACHE INTERNAL "")
 
+if (NOT MSVC)
+	set(LLRI_COMPILER_FLAGS -Wall -Wextra -Wpedantic -Werror -Wno-c++98-compat -Wno-c++98-compat-pedantic)
+else()
+	set(LLRI_COMPILER_FLAGS /W4 /WX)
+endif()
+
 # Include threading
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)

@@ -7,11 +7,7 @@ file(GLOB_RECURSE source ${LLRI_SOURCE_FILETYPES})
 add_library(llri-vk ${source})
 add_library(llri::vk ALIAS llri-vk)
 
-target_compile_options(llri-vk PRIVATE
-  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
-)
-
+target_compile_options(llri-vk PRIVATE ${LLRI_COMPILER_FLAGS})
 target_compile_features(llri-vk PRIVATE cxx_std_17)
 
 if (APPLE)

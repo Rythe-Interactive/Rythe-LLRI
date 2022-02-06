@@ -6,11 +6,7 @@ project(006_queue_submit LANGUAGES CXX)
 file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(006_queue_submit ${source})
 
-target_compile_options(006_queue_submit PRIVATE
-  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
-)
-
+target_compile_options(006_queue_submit PRIVATE ${LLRI_COMPILER_FLAGS})
 target_compile_features(006_queue_submit PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})
