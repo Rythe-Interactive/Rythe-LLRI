@@ -1,6 +1,6 @@
 /**
  * @file adapter.hpp
- * Copyright (c) 2021 Leon Brands
+ * Copyright (c) 2021 Leon Brands, Rythe Interactive
  * SPDX-License-Identifier: MIT
  */
 

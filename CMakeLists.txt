@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Leon Brands
+# Copyright (c) 2021 Leon Brands, Rythe Interactive
 # SPDX-License-Identifier: MIT
 
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)

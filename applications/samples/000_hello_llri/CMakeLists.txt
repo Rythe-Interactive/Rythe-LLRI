@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Leon Brands
+# Copyright (c) 2021 Leon Brands, Rythe Interactive
 # SPDX-License-Identifier: MIT
 
 project(000_hello_llri LANGUAGES CXX)
