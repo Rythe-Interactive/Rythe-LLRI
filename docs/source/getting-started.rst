@@ -26,7 +26,7 @@ If you're on MacOS and wish to use the Vulkan (MoltenVK) implementation, downloa
 Build
 ----------
 * Install Git: https://git-scm.com/downloads
-* Clone the repo: `git clone https://github.com/Rythe-Interactive/Legion-LLRI.git`
+* Clone the repo: `git clone https://github.com/Rythe-Interactive/Rythe-LLRI.git`
 * Update the submodules: `git submodule update --init --recursive`
 * Install CMake 3.16 or higher: https://cmake.org
 * Generate the project: cmake -S path/to/llri -B path/to/llri -G "Visual Studio 16 2019"

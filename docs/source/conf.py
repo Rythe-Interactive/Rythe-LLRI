@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Rythe-LLRI'
-copyright = '2019, Raphael Baier, Rythe-Engine Team'
+copyright = '2019, Raphael Baier, Rythe-Interactive Team'
 author = 'Raphael Baier'
 
 # The full version, including alpha/beta/rc tags
