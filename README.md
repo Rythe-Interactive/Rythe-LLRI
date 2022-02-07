@@ -3,7 +3,7 @@
 [![build](https://github.com/Rythe-Interactive/Rythe-LLRI/workflows/build/badge.svg)](https://github.com/Rythe-Interactive/Rythe-LLRI/actions?query=workflow%3Abuild)
 [![analysis](https://github.com/Rythe-Interactive/Rythe-LLRI/workflows/analysis/badge.svg)](https://github.com/Rythe-Interactive/Rythe-LLRI/actions?query=workflow%3Aanalysis)
 [![docs-build](https://github.com/Rythe-Interactive/Rythe-LLRI/workflows/docs-build/badge.svg)](https://github.com/Rythe-Interactive/Rythe-LLRI/actions?query=workflow%3Adocs-build)
-[![License-MIT](https://img.shields.io/github/license/Rythe-Interactive/Rythe-LLRI)](https://github.com/Rythe-Interactive/Rythe-LLRI/blob/main/LICENSE)
+[![License-MIT](https://img.shields.io/github/license/rythe-interactive/rythe-llri)](https://github.com/Rythe-Interactive/Rythe-LLRI/blob/main/LICENSE)
 [![Discord](https://img.shields.io/discord/682321168610623707.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/unVNRbd)
 
 # Rythe-LLRI
