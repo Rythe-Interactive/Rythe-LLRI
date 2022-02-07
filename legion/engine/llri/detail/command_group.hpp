@@ -25,11 +25,21 @@ namespace llri
         friend class CommandList;
 
     public:
+        using native_command_group = void;
+        
         /**
          * Get the type that CommandGroup was created for.
          */
         [[nodiscard]] queue_type getType() const;
 
+        /**
+         * @brief Gets the native CommandGroup pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: ID3D12CommandAllocator*
+         * Vulkan: VkCommandPool
+         */
+        [[nodiscard]] native_command_group* getNative() const;
+        
         /**
          * @brief Reset the CommandGroup and all of the allocated CommandLists.
          * After this, the CommandLists in this CommandGroup will be ready for recording again.
@@ -109,8 +119,8 @@ namespace llri
         CommandGroup() = default;
         ~CommandGroup() = default;
 
-        void* m_ptr = nullptr;
-        void* m_indirectPtr = nullptr;
+        native_command_group* m_ptr = nullptr;
+        native_command_group* m_indirectPtr = nullptr;
 
         Device* m_device = nullptr;
         void* m_deviceFunctionTable = nullptr;

@@ -41,4 +41,9 @@ namespace llri
     {
         return m_flags;
     }
+
+    inline Fence::native_fence* Fence::getNative() const
+    {
+        return m_ptr;
+    }
 }

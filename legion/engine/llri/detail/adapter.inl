@@ -26,6 +26,11 @@ namespace llri
         return "Invalid adapter_type value";
     }
 
+    inline Adapter::native_adapter* Adapter::getNative() const
+    {
+        return m_ptr;
+    }
+
     inline adapter_info Adapter::queryInfo() const
     {
         LLRI_DETAIL_CALL_IMPL(impl_queryInfo(), m_validationCallbackMessenger)

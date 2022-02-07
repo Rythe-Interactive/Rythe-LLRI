@@ -42,6 +42,11 @@ namespace llri
         return m_desc;
     }
 
+    inline CommandList::native_command_list* CommandList::getNative() const
+    {
+        return m_ptr;
+    }
+
     inline result CommandList::begin(const command_list_begin_desc& desc)
     {
         LLRI_DETAIL_VALIDATION_REQUIRE(getState() == command_list_state::Empty, result::ErrorInvalidState)

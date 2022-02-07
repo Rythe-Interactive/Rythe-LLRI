@@ -84,12 +84,22 @@ namespace llri
         friend Instance;
         friend class CommandGroup;
         friend class Queue;
-
+  
     public:
+        using native_device = void;
+
         /**
          * @brief Get the desc that the Device was created with.
          */
         [[nodiscard]] device_desc getDesc() const;
+        
+        /**
+         * @brief Gets the native Device pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: ID3D12Device*
+         * Vulkan: VkDevice
+         */
+        [[nodiscard]] native_device* getNative() const;
         
         /**
          * @brief Get the adapter that the device represents.
@@ -231,7 +241,7 @@ namespace llri
         Device() = default;
         ~Device() = default;
 
-        void* m_ptr = nullptr;
+        native_device* m_ptr = nullptr;
         Adapter* m_adapter = nullptr;
         void* m_functionTable = nullptr;
 

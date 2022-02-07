@@ -267,6 +267,16 @@ namespace llri
         return m_desc;
     }
 
+    inline Resource::native_resource* Resource::getNative() const
+    {
+        return m_resource;
+    }
+
+    inline Resource::native_memory* Resource::getNativeMemory() const
+    {
+        return m_memory;
+    }
+
     constexpr resource_desc resource_desc::buffer(resource_usage_flags usage, memory_type memoryType, resource_state initialState, uint32_t sizeInBytes, uint32_t createNodeMask, uint32_t visibleNodeMask) noexcept
     {
         return {

@@ -105,11 +105,22 @@ namespace llri
         friend void llri::destroyInstance(Instance* instance);
 
         friend class Adapter;
+        
     public:
+        using native_instance = void;
+        
         /**
          * @brief Get the desc that the Instance was created with.
          */
         [[nodiscard]] instance_desc getDesc() const;
+        
+        /**
+         * @brief Gets the native Instance pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: IDXGIFactory*
+         * Vulkan: VkInstance
+         */
+        [[nodiscard]] native_instance* getNative() const;
 
         /**
          * @brief Retrieve a vector of adapters available to this application. Adapters usually represent PCIe devices such as GPUs.
@@ -222,7 +233,7 @@ namespace llri
 
         instance_desc m_desc;
 
-        void* m_ptr = nullptr;
+        native_instance* m_ptr = nullptr;
 
         bool m_shouldConstructValidationCallbackMessenger;
         detail::messenger_type* m_validationCallbackMessenger = nullptr; // Allows API to store their callback messenger if needed

@@ -14,6 +14,11 @@ namespace llri
         return m_type;
     }
 
+    inline CommandGroup::native_command_group* CommandGroup::getNative() const
+    {
+        return m_ptr;
+    }
+
     inline result CommandGroup::reset()
     {
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION

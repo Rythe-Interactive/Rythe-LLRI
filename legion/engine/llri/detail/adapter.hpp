@@ -131,8 +131,18 @@ namespace llri
         friend class Device;
         friend result detail::impl_createInstance(const instance_desc&, Instance**, bool);
         friend void detail::impl_destroyInstance(Instance*);
-
+        
     public:
+        using native_adapter = void;
+        
+        /**
+         * @brief Gets the native Adapter pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: IDXGIAdapter*
+         * Vulkan: VkPhysicalDevice
+         */
+        [[nodiscard]] native_adapter* getNative() const;
+        
         /**
          * @brief Query basic information about the Adapter.
         */
@@ -214,7 +224,7 @@ namespace llri
         Adapter() = default;
         ~Adapter() = default;
 
-        void* m_ptr = nullptr;
+        native_adapter* m_ptr = nullptr;
         uint8_t m_nodeCount = 1;
 
         Instance* m_instance = nullptr;
