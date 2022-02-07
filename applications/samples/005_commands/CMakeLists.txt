@@ -1,5 +1,5 @@
-# Copyright 2021-2021 Leon Brands. All rights served.
-# License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+# Copyright (c) 2021 Leon Brands
+# SPDX-License-Identifier: MIT
 
 project(005_commands LANGUAGES CXX)
 

@@ -1,5 +1,5 @@
-# Copyright 2021-2021 Leon Brands. All rights served.
-# License: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+# Copyright (c) 2021 Leon Brands
+# SPDX-License-Identifier: MIT
 
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 

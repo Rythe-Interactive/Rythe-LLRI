@@ -1,8 +1,9 @@
 /**
  * @file metal_surface.mm
- * @copyright 2021-2021 Leon Brands. All rights served.
- * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ * Copyright (c) 2021 Leon Brands
+ * SPDX-License-Identifier: MIT
  */
+
 #include <Cocoa/Cocoa.h>
 #include <MetalKit/MetalKit.h>
 #include <Carbon/Carbon.h>
