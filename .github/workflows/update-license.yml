@@ -1,11 +1,8 @@
 name: update-license
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: "0 3 1 1 *" # 03:00 AM on January 1
-  push:
-    branches: [ task/automate-license-year ]
     
 jobs:
   update-license-year:
