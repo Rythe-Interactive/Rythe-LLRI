@@ -186,8 +186,8 @@ namespace llri
 
         // desc.create/visibleNodeMask
         LLRI_DETAIL_VALIDATION_REQUIRE(detail::hasSingleBit(createNodeMask), result::ErrorInvalidNodeMask)
-        LLRI_DETAIL_VALIDATION_REQUIRE(createNodeMask < (1 << m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
-        LLRI_DETAIL_VALIDATION_REQUIRE(visibleNodeMask < (1 << m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
+        LLRI_DETAIL_VALIDATION_REQUIRE(createNodeMask < (1u << m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
+        LLRI_DETAIL_VALIDATION_REQUIRE(visibleNodeMask < (1u << m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
 
         LLRI_DETAIL_VALIDATION_REQUIRE((visibleNodeMask & createNodeMask) == createNodeMask, result::ErrorInvalidNodeMask)
 

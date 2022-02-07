@@ -10,6 +10,8 @@
 
 #if defined(_WIN32)
     #define WIN32_LEAN_AND_MEAN
+    #define VC_EXTRALEAN
+    #define NOMINMAX
     #include <Windows.h>
     #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
@@ -53,17 +55,15 @@ inline void testInstanceSurfaceWin32()
         
         llri::instance_extension ext = llri::instance_extension::SurfaceWin32;
         
-        llri::instance_desc desc {};
+        desc = {};
         desc.numExtensions = 1;
         desc.extensions = &ext;
-        
-        llri::Instance* instance;
+
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         
         // surface cant be nullptr
         CHECK_EQ(instance->createSurfaceEXT(empty, nullptr), llri::result::ErrorInvalidUsage);
-        
-        llri::SurfaceEXT* surface;
+
         llri::surface_win32_desc_ext sd {};
         
         // hwnd can't be nullptr

@@ -159,12 +159,9 @@ namespace llri
         std::vector<uint32_t> familyIndices;
         for (const auto& [key, family] : families)
         {
-            if (family != UINT_MAX)
+            if (family != std::numeric_limits<uint32_t>::max())
                 familyIndices.push_back(family);
         }
-
-        // get internal state
-        auto internalState = internal::mapResourceState(desc.initialState);
 
         // get memory flags
         const auto memFlags = internal::mapMemoryType(desc.memoryType);
@@ -192,10 +189,9 @@ namespace llri
             imageCreate.tiling = VK_IMAGE_TILING_OPTIMAL;
             imageCreate.usage = internal::mapTextureUsage(desc.usage);
             imageCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
-            imageCreate.queueFamilyIndexCount = familyIndices.size();
+            imageCreate.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
             imageCreate.pQueueFamilyIndices = familyIndices.data();
             imageCreate.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            internalState = imageCreate.initialLayout;
 
             auto r = table->vkCreateImage(static_cast<VkDevice>(m_ptr), &imageCreate, nullptr, &image);
             if (r != VK_SUCCESS)
@@ -215,7 +211,7 @@ namespace llri
             bufferCreate.size = desc.width;
             bufferCreate.usage = internal::mapBufferUsage(desc.usage);
             bufferCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
-            bufferCreate.queueFamilyIndexCount = familyIndices.size();
+            bufferCreate.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
             bufferCreate.pQueueFamilyIndices = familyIndices.data();
 
             auto r = table->vkCreateBuffer(static_cast<VkDevice>(m_ptr), &bufferCreate, nullptr, &buffer);
@@ -321,7 +317,7 @@ namespace llri
             submit.pWaitDstStageMask = nullptr;
             table->vkQueueSubmit(static_cast<VkQueue>(getQueue(m_workQueueType, 0)->m_ptrs[0]), 1, &submit, static_cast<VkFence>(m_workFence));
             
-            table->vkWaitForFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence), VK_TRUE, UINT_MAX);
+            table->vkWaitForFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence), VK_TRUE, std::numeric_limits<uint64_t>::max());
             table->vkResetFences(static_cast<VkDevice>(m_ptr), 1, reinterpret_cast<VkFence*>(&m_workFence));
         }
 

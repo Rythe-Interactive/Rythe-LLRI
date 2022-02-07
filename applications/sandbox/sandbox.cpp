@@ -10,6 +10,8 @@
 
 #if defined(_WIN32)
     #define WIN32_LEAN_AND_MEAN
+    #define VC_EXTRALEAN
+    #define NOMINMAX
     #include <Windows.h>
     #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
@@ -41,7 +43,7 @@
     } \
 } \
 
-void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, [[maybe_unused]] void* userData)
 {
     switch (severity)
     {

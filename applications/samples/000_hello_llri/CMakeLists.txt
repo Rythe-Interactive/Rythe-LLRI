@@ -6,6 +6,7 @@ project(000_hello_llri LANGUAGES CXX)
 file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(000_hello_llri ${source})
 
+target_compile_options(000_hello_llri PRIVATE ${LLRI_COMPILER_FLAGS})
 target_compile_features(000_hello_llri PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})

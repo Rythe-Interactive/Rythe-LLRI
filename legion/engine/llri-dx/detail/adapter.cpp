@@ -17,7 +17,7 @@ namespace llri
         adapter_info info;
         info.vendorId = desc.VendorId;
         info.adapterId = desc.DeviceId;
-        const auto description = std::string(desc.Description, desc.Description + 128);
+        const auto description = std::string(reinterpret_cast<char*>(desc.Description), reinterpret_cast<char*>(desc.Description + 128));
         info.adapterName = description.substr(0, description.find_last_not_of(' '));
 
         if (desc.Flags == DXGI_ADAPTER_FLAG_REMOTE)
@@ -42,32 +42,27 @@ namespace llri
         return output;
     }
 
-    bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
+    bool Adapter::impl_queryExtensionSupport([[maybe_unused]] adapter_extension ext) const
     {
-        switch (ext)
-        {
-            default:
-                break;
-        }
-
         return false;
     }
 
-    result Adapter::impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
+    result Adapter::impl_querySurfacePresentSupportEXT([[maybe_unused]] SurfaceEXT* surface, queue_type type, bool* support) const
     {
         switch(type)
         {
             case queue_type::Graphics:
                 *support = true;
                 break;
-            default:
+            case queue_type::Compute:
+            case queue_type::Transfer:
                 *support = false;
                 break;
         }
         return result::Success;
     }
 
-    result Adapter::impl_querySurfaceCapabilitiesEXT(SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
+    result Adapter::impl_querySurfaceCapabilitiesEXT([[maybe_unused]] SurfaceEXT* surface, surface_capabilities_ext* capabilities) const
     {
         capabilities->minTextureCount = 2;
         capabilities->maxTextureCount = 16;

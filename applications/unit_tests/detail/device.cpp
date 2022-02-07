@@ -20,7 +20,7 @@ TEST_CASE("Device")
         {
             SUBCASE("[Incorrect usage] Invalid queue_type value")
             {
-                CHECK_EQ(device->getQueue(static_cast<llri::queue_type>(UINT_MAX), 0), nullptr);
+                CHECK_EQ(device->getQueue(static_cast<llri::queue_type>(std::numeric_limits<uint8_t>::max()), 0), nullptr);
             }
 
             SUBCASE("[Incorrect usage] index > number of created queues of this type")
@@ -48,7 +48,7 @@ TEST_CASE("Device")
             SUBCASE("[Incorrect usage] type is an invalid enum value")
             {
                 llri::CommandGroup* cmdGroup;
-                CHECK_EQ(device->createCommandGroup(static_cast<llri::queue_type>(UINT_MAX), &cmdGroup), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->createCommandGroup(static_cast<llri::queue_type>(std::numeric_limits<uint8_t>::max()), &cmdGroup), llri::result::ErrorInvalidUsage);
             }
 
             for (size_t type = 0; type <= static_cast<uint8_t>(llri::queue_type::MaxEnum); type++)
@@ -161,7 +161,7 @@ TEST_CASE("Device")
                     signaledFence,
                     nullptr
                 };
-                CHECK_EQ(device->waitFences(fences.size(), fences.data(), LLRI_TIMEOUT_MAX), llri::result::ErrorInvalidUsage);
+                CHECK_EQ(device->waitFences(static_cast<uint32_t>(fences.size()), fences.data(), LLRI_TIMEOUT_MAX), llri::result::ErrorInvalidUsage);
             }
 
             SUBCASE("[Incorrect usage] attempting to wait on unsignaled fence(s)")

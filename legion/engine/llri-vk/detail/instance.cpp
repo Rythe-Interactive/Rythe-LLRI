@@ -50,7 +50,10 @@ namespace llri
             return message_severity::Info;
         }
 
-        VkBool32 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT severity, VkDebugUtilsMessageTypeFlagsEXT type, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
+        VkBool32 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT severity,
+                               [[maybe_unused]] VkDebugUtilsMessageTypeFlagsEXT type,
+                               const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+                               [[maybe_unused]] void* userData)
         {
             detail::callUserCallback(mapSeverity(severity), message_source::Implementation, callbackData->pMessage);
             return VK_FALSE;
@@ -222,11 +225,9 @@ namespace llri
             delete instance;
         }
 
-        void impl_pollAPIMessages(messenger_type* messenger)
+        void impl_pollAPIMessages([[maybe_unused]] messenger_type* messenger)
         {
             // Empty because vulkan uses a callback system
-            // suppress unused parameter warnings
-            (void)messenger;
         }
     }
 
@@ -416,7 +417,7 @@ namespace llri
         output->m_functionTable = table;
 
         // Get created queues
-        std::unordered_map<queue_type, uint8_t> queueCounts {
+        std::unordered_map<queue_type, uint32_t> queueCounts {
             { queue_type::Graphics, 0 },
             { queue_type::Compute, 0 },
             { queue_type::Transfer, 0 }
@@ -513,7 +514,7 @@ namespace llri
         delete device;
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_win32_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT([[maybe_unused]] const surface_win32_desc_ext& desc, [[maybe_unused]] SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_WIN32_KHR
         return result::ErrorExtensionNotSupported;
@@ -538,7 +539,7 @@ namespace llri
 #endif
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_cocoa_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT([[maybe_unused]] const surface_cocoa_desc_ext& desc, [[maybe_unused]] SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_METAL_EXT
         return result::ErrorExtensionNotSupported;
@@ -563,7 +564,7 @@ namespace llri
 #endif
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_xlib_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT([[maybe_unused]] const surface_xlib_desc_ext& desc, [[maybe_unused]] SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_XLIB_KHR
         return result::ErrorExtensionNotSupported;
@@ -588,7 +589,7 @@ namespace llri
 #endif
     }
 
-    result Instance::impl_createSurfaceEXT(const surface_xcb_desc_ext& desc, SurfaceEXT** surface)
+    result Instance::impl_createSurfaceEXT([[maybe_unused]] const surface_xcb_desc_ext& desc, [[maybe_unused]] SurfaceEXT** surface)
     {
 #ifndef VK_USE_PLATFORM_XCB_KHR
         return result::ErrorExtensionNotSupported;

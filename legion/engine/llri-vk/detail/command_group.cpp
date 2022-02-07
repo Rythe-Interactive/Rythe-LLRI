@@ -25,10 +25,13 @@ namespace llri
 
     result CommandGroup::impl_allocate(const command_list_alloc_desc& desc, CommandList** cmdList)
     {
-        VkCommandBufferAllocateInfo allocInfo { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO, nullptr };
-        allocInfo.commandPool = static_cast<VkCommandPool>(m_ptr);
-        allocInfo.commandBufferCount = 1;
-        allocInfo.level = internal::mapCommandListUsage(desc.usage);
+        VkCommandBufferAllocateInfo allocInfo {
+            VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+            nullptr,
+            static_cast<VkCommandPool>(m_ptr),
+            internal::mapCommandListUsage(desc.usage),
+            1
+        };
 
         VkCommandBuffer cmd;
         auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), &allocInfo, &cmd);
@@ -55,10 +58,13 @@ namespace llri
 
     result CommandGroup::impl_allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists)
     {
-        VkCommandBufferAllocateInfo allocInfo { VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO, nullptr };
-        allocInfo.commandPool = static_cast<VkCommandPool>(m_ptr);
-        allocInfo.commandBufferCount = count;
-        allocInfo.level = internal::mapCommandListUsage(desc.usage);
+        VkCommandBufferAllocateInfo allocInfo {
+            VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+            nullptr,
+            static_cast<VkCommandPool>(m_ptr),
+            internal::mapCommandListUsage(desc.usage),
+            count
+        };
 
         std::vector<VkCommandBuffer> cmdBuffers(count);
         auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), &allocInfo, cmdBuffers.data());

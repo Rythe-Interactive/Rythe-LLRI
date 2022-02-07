@@ -10,7 +10,7 @@
 
 namespace llri
 {
-    result CommandList::impl_begin(const command_list_begin_desc& desc)
+    result CommandList::impl_begin([[maybe_unused]] const command_list_begin_desc& desc)
     {
         // TODO: Handle nodemask
         // TODO: Handle inheritance/indirect

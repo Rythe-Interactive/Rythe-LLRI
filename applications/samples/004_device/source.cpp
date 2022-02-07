@@ -8,7 +8,7 @@
 #include <iostream>
 
 // See 001_validation.
-void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, [[maybe_unused]] void* userData)
 {
     if (severity <= llri::message_severity::Info)
         return;
@@ -46,7 +46,7 @@ int main()
         adapter,
         enabledFeatures,
         0, nullptr, // Similar to Instance extensions, this may be a size and array.
-        queues.size(), queues.data()
+        static_cast<uint32_t>(queues.size()), queues.data()
     };
 
     // Finally, create the device through Instance::createDevice().

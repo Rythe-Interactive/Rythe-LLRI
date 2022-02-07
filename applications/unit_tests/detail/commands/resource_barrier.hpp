@@ -24,22 +24,25 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
         REQUIRE_EQ(list->record(beginDesc, [=](llri::CommandList* cmd)
         {
             // numBarriers == 0
-            CHECK_EQ(list->resourceBarrier(0, &dummyBarrier), llri::result::ErrorInvalidUsage);
+            CHECK_EQ(cmd->resourceBarrier(0, &dummyBarrier), llri::result::ErrorInvalidUsage);
                      
             // barriers == nullptr
-            CHECK_EQ(list->resourceBarrier(1, nullptr), llri::result::ErrorInvalidUsage);
+            CHECK_EQ(cmd->resourceBarrier(1, nullptr), llri::result::ErrorInvalidUsage);
             
             // barriers[0].type is invalid
-            llri::resource_barrier invalidType { static_cast<llri::resource_barrier_type>(UINT_MAX) };
-            CHECK_EQ(list->resourceBarrier(1, &invalidType), llri::result::ErrorInvalidUsage);
+            llri::resource_barrier invalidType {
+                static_cast<llri::resource_barrier_type>(std::numeric_limits<uint8_t>::max()),
+                { llri::resource_barrier_read_write { nullptr } }
+            };
+            CHECK_EQ(cmd->resourceBarrier(1, &invalidType), llri::result::ErrorInvalidUsage);
             
             // barriers[0].rw.resource is nullptr
             llri::resource_barrier rwResourceNull = llri::resource_barrier::read_write(nullptr);
-            CHECK_EQ(list->resourceBarrier(1, &rwResourceNull), llri::result::ErrorInvalidUsage);
+            CHECK_EQ(cmd->resourceBarrier(1, &rwResourceNull), llri::result::ErrorInvalidUsage);
             
             // barriers[0].trans.resource is nullptr
             llri::resource_barrier transResourceNull = llri::resource_barrier::transition(nullptr, llri::resource_state::TransferDst, llri::resource_state::General);
-            CHECK_EQ(list->resourceBarrier(1, &transResourceNull), llri::result::ErrorInvalidUsage);
+            CHECK_EQ(cmd->resourceBarrier(1, &transResourceNull), llri::result::ErrorInvalidUsage);
             
         }, list), llri::result::Success);
     }
@@ -103,11 +106,11 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
         {
 			current = &resources.emplace_back(nullptr);
             REQUIRE_EQ(device->createResource(textureDesc, current), llri::result::Success);
-            CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, static_cast<llri::resource_state>(UINT_MAX))), llri::result::ErrorInvalidUsage);
+            CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, static_cast<llri::resource_state>(std::numeric_limits<uint8_t>::max()))), llri::result::ErrorInvalidUsage);
 			
 			current = &resources.emplace_back(nullptr);
             REQUIRE_EQ(device->createResource(bufferDesc, current), llri::result::Success);
-            CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, static_cast<llri::resource_state>(UINT_MAX))), llri::result::ErrorInvalidUsage);
+            CHECK_EQ(list->resourceBarrier(llri::resource_barrier::transition(*current, llri::resource_state::TransferDst, static_cast<llri::resource_state>(std::numeric_limits<uint8_t>::max()))), llri::result::ErrorInvalidUsage);
         }
         
         SUBCASE("[Incorrect usage] the resource doesn't have the necessary resource_usage_flags")

@@ -150,9 +150,9 @@ namespace llri
         {
             std::unordered_map<queue_type, uint32_t> output
             {
-                { queue_type::Graphics, UINT_MAX },
-                { queue_type::Compute, UINT_MAX },
-                { queue_type::Transfer, UINT_MAX }
+                { queue_type::Graphics, std::numeric_limits<uint32_t>::max() },
+                { queue_type::Compute, std::numeric_limits<uint32_t>::max() },
+                { queue_type::Transfer, std::numeric_limits<uint32_t>::max() }
             };
 
             // Get queue family info
@@ -161,7 +161,7 @@ namespace llri
             std::vector<VkQueueFamilyProperties> properties(propertyCount);
             vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &propertyCount, properties.data());
 
-            for (size_t i = 0; i < propertyCount; i++)
+            for (uint32_t i = 0; i < propertyCount; i++)
             {
                 auto& p = properties[i];
 

@@ -10,6 +10,8 @@
 
 #if defined(_WIN32)
     #define WIN32_LEAN_AND_MEAN
+    #define VC_EXTRALEAN
+    #define NOMINMAX
     #include <Windows.h>
     #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
@@ -61,7 +63,7 @@ inline void impl_testSurfacePresentSupport(llri::Adapter* adapter, llri::Surface
     bool support;
     CHECK_EQ(adapter->querySurfacePresentSupportEXT(nullptr, llri::queue_type::Graphics, &support), llri::result::ErrorInvalidUsage);
     CHECK_EQ(adapter->querySurfacePresentSupportEXT(surface, llri::queue_type::Graphics, nullptr), llri::result::ErrorInvalidUsage);
-    CHECK_EQ(adapter->querySurfacePresentSupportEXT(surface, static_cast<llri::queue_type>(UINT_MAX), &support), llri::result::ErrorInvalidUsage);
+    CHECK_EQ(adapter->querySurfacePresentSupportEXT(surface, static_cast<llri::queue_type>(std::numeric_limits<uint8_t>::max()), &support), llri::result::ErrorInvalidUsage);
     
     for (uint8_t i = 0; i <= static_cast<uint8_t>(llri::queue_type::MaxEnum); i++)
     {

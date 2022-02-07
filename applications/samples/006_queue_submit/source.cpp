@@ -8,7 +8,7 @@
 #include <iostream>
 
 // See 001_validation.
-void callback(llri::message_severity severity, llri::message_source source, const char* message, void* userData)
+void callback(llri::message_severity severity, llri::message_source source, const char* message, [[maybe_unused]] void* userData)
 {
     if (severity <= llri::message_severity::Info)
         return;
@@ -39,7 +39,7 @@ int main()
 
     // Commands must be recorded (in the "Ready" state) before being able to be submitted to a queue.
     const llri::command_list_begin_desc begin{};
-    list->record(begin, [](llri::CommandList* cmd) {
+    list->record(begin, []([[maybe_unused]] llri::CommandList* cmd) {
         // Record commands
     }, list);
 
@@ -119,7 +119,7 @@ llri::Device* createDevice(llri::Instance* instance, llri::Adapter* adapter)
         adapter,
         enabledFeatures,
         0, nullptr,
-        queues.size(), queues.data()
+        static_cast<uint32_t>(queues.size()), queues.data()
     };
 
     llri::Device* device;

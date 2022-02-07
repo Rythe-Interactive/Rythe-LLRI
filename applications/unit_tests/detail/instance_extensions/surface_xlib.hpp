@@ -10,6 +10,8 @@
 
 #if defined(_WIN32)
     #define WIN32_LEAN_AND_MEAN
+    #define VC_EXTRALEAN
+    #define NOMINMAX
     #include <Windows.h>
     #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
@@ -29,22 +31,20 @@ inline void testInstanceSurfaceXlib()
 {
     llri::surface_xlib_desc_ext empty {};
     
-    SUBCASE("Extension not enabled")
-    {
-        llri::instance_desc desc {};
-        llri::Instance* instance;
-        REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
-        
-        llri::SurfaceEXT* surface;
-        CHECK_EQ(instance->createSurfaceEXT(empty, &surface), llri::result::ErrorExtensionNotEnabled);
-        
-        llri::destroyInstance(instance);
-    }
+    // check with extension not enabled
+    llri::instance_desc desc {};
+    llri::Instance* instance;
+    REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
     
+    llri::SurfaceEXT* surface;
+    CHECK_EQ(instance->createSurfaceEXT(empty, &surface), llri::result::ErrorExtensionNotEnabled);
+    
+    llri::destroyInstance(instance);
+
+    // check with extension enabled
     if (llri::queryInstanceExtensionSupport(llri::instance_extension::SurfaceXlib))
     {
         glfwInit();
-        // disable the default OpenGL context that GLFW creates
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, GLFW_FALSE);
         GLFWwindow* window = glfwCreateWindow(960, 540, "sandbox", nullptr, nullptr);
@@ -56,18 +56,16 @@ inline void testInstanceSurfaceXlib()
         
         llri::instance_extension ext = llri::instance_extension::SurfaceXlib;
         
-        llri::instance_desc desc {};
+        desc = {};
         desc.numExtensions = 1;
         desc.extensions = &ext;
         
-        llri::Instance* instance;
         REQUIRE_EQ(llri::createInstance(desc, &instance), llri::result::Success);
         
         // surface cant be nullptr
         CHECK_EQ(instance->createSurfaceEXT(empty, nullptr), llri::result::ErrorInvalidUsage);
         
         // display can't be nullptr and window cant be 0
-        llri::SurfaceEXT* surface;
         CHECK_EQ(instance->createSurfaceEXT(empty, &surface), llri::result::ErrorInvalidUsage);
         
 #ifdef __linux__

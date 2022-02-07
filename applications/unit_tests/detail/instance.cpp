@@ -19,7 +19,7 @@ TEST_SUITE("Instance")
 
         SUBCASE("[Incorrect usage] numExtensions > instance_extensions::MaxEnum")
         {
-            desc.numExtensions = UINT_MAX;
+            desc.numExtensions = std::numeric_limits<uint32_t>::max();
             CHECK_EQ(llri::createInstance(desc, &instance), llri::result::ErrorExceededLimit);
         }
         
@@ -47,7 +47,7 @@ TEST_SUITE("Instance")
         
         SUBCASE("[Incorrect usage] invalid extension type")
         {
-            auto extension = static_cast<llri::instance_extension>(UINT_MAX);
+            auto extension = static_cast<llri::instance_extension>(std::numeric_limits<uint8_t>::max());
 
             desc.numExtensions = 1;
             desc.extensions = &extension;
@@ -197,7 +197,7 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Incorrect usage] invalid extension type")
             {
-                auto extension = static_cast<llri::adapter_extension>(UINT_MAX);
+                auto extension = static_cast<llri::adapter_extension>(std::numeric_limits<uint8_t>::max());
 
                 ddesc.numExtensions = 1;
                 ddesc.extensions = &extension;
@@ -235,7 +235,7 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Incorrect usage] invalid queue_type")
             {
-                llri::queue_desc queueDesc { static_cast<llri::queue_type>(UINT_MAX), llri::queue_priority::Normal };
+                llri::queue_desc queueDesc { static_cast<llri::queue_type>(std::numeric_limits<uint8_t>::max()), llri::queue_priority::Normal };
                 ddesc.numQueues = 1;
                 ddesc.queues = &queueDesc;
                 CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
@@ -243,7 +243,7 @@ TEST_SUITE("Instance")
 
             SUBCASE("[Incorrect usage] invalid queue_priority")
             {
-                llri::queue_desc queueDesc { llri::queue_type::Graphics, static_cast<llri::queue_priority>(UINT_MAX) };
+                llri::queue_desc queueDesc { llri::queue_type::Graphics, static_cast<llri::queue_priority>(std::numeric_limits<uint8_t>::max()) };
                 ddesc.numQueues = 1;
                 ddesc.queues = &queueDesc;
                 CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);

@@ -40,7 +40,7 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.usage <= command_list_usage::MaxEnum, result::ErrorInvalidUsage)
 
         LLRI_DETAIL_VALIDATION_REQUIRE(detail::hasSingleBit(desc.nodeMask), result::ErrorInvalidNodeMask)
-        LLRI_DETAIL_VALIDATION_REQUIRE(desc.nodeMask < (1 << m_device->m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.nodeMask < (1u << m_device->m_adapter->queryNodeCount()), result::ErrorInvalidNodeMask)
 
         LLRI_DETAIL_CALL_IMPL(impl_allocate(desc, cmdList), m_validationCallbackMessenger)
     }

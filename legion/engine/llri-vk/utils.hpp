@@ -500,7 +500,7 @@ namespace llri
                     break;
             }
 
-            return static_cast<present_mode_ext>(UINT_MAX);
+            return static_cast<present_mode_ext>(std::numeric_limits<uint8_t>::max());
         }
 
         uint32_t findMemoryTypeIndex(VkPhysicalDevice physicalDevice, uint32_t requiredMemoryBits, VkMemoryPropertyFlags requiredFlags);
@@ -518,7 +518,7 @@ namespace llri
             if (name[size - 1] == '\0')
                 size--;
 
-            for (int i = 0; i < size; i++)
+            for (size_t i = 0; i < size; i++)
             {
                 hash = hash ^ static_cast<const uint8_t>(name[i]);
                 hash *= prime;
