@@ -1,7 +1,7 @@
 /**
  * @file command_group.inl
- * @copyright 2021-2021 Leon Brands. All rights served.
- * @license: https://github.com/Legion-Engine/Legion-LLRI/blob/main/LICENSE
+ * Copyright (c) 2021 Leon Brands, Rythe Interactive
+ * SPDX-License-Identifier: MIT
  */
 
 #pragma once
