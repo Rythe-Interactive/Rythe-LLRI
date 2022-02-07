@@ -75,7 +75,7 @@ alone. for example:
   /** @brief Gets the size of the container.
    *  @return size_type The size of the container.
    */
-  L_NODISCARD auto size() const noexcept
+  auto size() const noexcept
   {
     return m_container.size();
   }
@@ -84,7 +84,7 @@ alone. for example:
   ```cpp
   /** @brief Gets the size of the container.
    */
-  L_NODISCARD auto size() const noexcept
+  auto size() const noexcept
   {
     return m_container.size();
   }
