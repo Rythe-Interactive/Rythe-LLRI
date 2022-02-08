@@ -24,7 +24,7 @@ namespace llri
         {
             r = static_cast<ID3D12CommandQueue*>(m_ptrs[index])->Wait(static_cast<ID3D12Fence*>(desc.waitSemaphores[i]->m_ptr), desc.waitSemaphores[i]->m_counter);
             if (FAILED(r))
-                return directx::mapHRESULT(r);
+                return detail::mapHRESULT(r);
         }
 
         // submit
@@ -40,7 +40,7 @@ namespace llri
             // NOTE: the convention is that we increase the counter upon signaling, all wait operations will use this counter without modifying it.
             r = static_cast<ID3D12CommandQueue*>(m_ptrs[index])->Signal(static_cast<ID3D12Fence*>(desc.signalSemaphores[i]->m_ptr), ++desc.signalSemaphores[i]->m_counter);
             if (FAILED(r))
-                return directx::mapHRESULT(r);
+                return detail::mapHRESULT(r);
         }
 
         // signal fence
@@ -48,7 +48,7 @@ namespace llri
         {
             r = static_cast<ID3D12CommandQueue*>(m_ptrs[index])->Signal(static_cast<ID3D12Fence*>(desc.fence->m_ptr), ++desc.fence->m_counter);
             if (FAILED(r))
-                return directx::mapHRESULT(r);
+                return detail::mapHRESULT(r);
 
             desc.fence->m_signaled = true;
         }

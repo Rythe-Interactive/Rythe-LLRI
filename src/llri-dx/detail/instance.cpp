@@ -9,7 +9,7 @@
 
 namespace llri
 {
-    namespace internal
+    namespace detail
     {
         result enableDriverValidationEXT();
         result enableGPUValidationEXT();
@@ -66,7 +66,7 @@ namespace llri
     {
         result impl_createInstance(const instance_desc& desc, Instance** instance, bool enableImplementationMessagePolling)
         {
-            directx::lazyInitializeDirectX();
+            detail::lazyInitializeDirectX();
 
             auto* output = new Instance();
             output->m_desc = desc;
@@ -81,14 +81,14 @@ namespace llri
                 {
                     case instance_extension::DriverValidation:
                     {
-                        extensionCreateResult = internal::enableDriverValidationEXT();
+                        extensionCreateResult = detail::enableDriverValidationEXT();
                         if (extensionCreateResult == result::Success)
                             factoryFlags = DXGI_CREATE_FACTORY_DEBUG;
                         break;
                     }
                     case instance_extension::GPUValidation:
                     {
-                        extensionCreateResult = internal::enableGPUValidationEXT();
+                        extensionCreateResult = detail::enableGPUValidationEXT();
                         break;
                     }
                     case instance_extension::SurfaceWin32:
@@ -117,18 +117,18 @@ namespace llri
 
             // Attempt to create factory
             IDXGIFactory* factory = nullptr;
-            HRESULT factoryCreateResult = directx::CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
+            HRESULT factoryCreateResult = detail::CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&factory));
 
             // DXGI_CREATE_FACTORY_DEBUG may not be a supported flag if the graphics tools aren't installed
             // so if this the previous call fails, use default factory flags
             if (FAILED(factoryCreateResult))
-                factoryCreateResult = directx::CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
+                factoryCreateResult = detail::CreateDXGIFactory2(0, IID_PPV_ARGS(&factory));
 
             // Check for failure
             if (FAILED(factoryCreateResult))
             {
                 llri::destroyInstance(output);
-                return directx::mapHRESULT(factoryCreateResult);
+                return detail::mapHRESULT(factoryCreateResult);
             }
 
             // Store factory and return result
@@ -147,7 +147,7 @@ namespace llri
             }
 
             ID3D12Debug1* debugGPU = nullptr;
-            if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
+            if (SUCCEEDED(detail::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
             {
                 debugGPU->SetEnableGPUBasedValidation(false);
                 debugGPU->Release();
@@ -159,7 +159,7 @@ namespace llri
 
 #ifndef NDEBUG
             IDXGIDebug* debug;
-            if (SUCCEEDED(directx::DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
+            if (SUCCEEDED(detail::DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug))))
             {
                 debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
                 debug->Release();
@@ -188,7 +188,7 @@ namespace llri
                         continue;
 
                     if (pMessage->pDescription != nullptr)
-                        detail::callUserCallback(internal::mapSeverity(pMessage->Severity), message_source::Implementation, pMessage->pDescription);
+                        detail::callUserCallback(detail::mapSeverity(pMessage->Severity), message_source::Implementation, pMessage->pDescription);
 
                     free(pMessage);
                 }
@@ -221,7 +221,7 @@ namespace llri
             }
 
             // Ignore adapters incompatible with DX12
-            HRESULT level12_0 = directx::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
+            HRESULT level12_0 = detail::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), nullptr);
 
             if (level12_0 == E_FAIL)
             {
@@ -245,7 +245,7 @@ namespace llri
 
                 // Attempt to query node count
                 ID3D12Device* device = nullptr;
-                if (SUCCEEDED(directx::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device))))
+                if (SUCCEEDED(detail::D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device))))
                 {
                     adapter->m_nodeCount = static_cast<uint8_t>(device->GetNodeCount());
                     device->Release();
@@ -266,9 +266,9 @@ namespace llri
         const D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_12_0; // 12.0 is the bare minimum
 
         ID3D12Device* dx12Device = nullptr;
-        HRESULT r = directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));
+        HRESULT r = detail::D3D12CreateDevice(static_cast<IDXGIAdapter*>(desc.adapter->m_ptr), featureLevel, IID_PPV_ARGS(&dx12Device));
         if (FAILED(r))
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
 
         auto* output = new Device();
         output->m_desc = desc;
@@ -292,8 +292,8 @@ namespace llri
 
             auto& queueDesc = desc.queues[i];
 
-            const INT priority = internal::mapQueuePriority(queueDesc.priority);
-            const D3D12_COMMAND_LIST_TYPE type = internal::mapQueueType(queueDesc.type);
+            const INT priority = detail::mapQueuePriority(queueDesc.priority);
+            const D3D12_COMMAND_LIST_TYPE type = detail::mapQueueType(queueDesc.type);
 
             for (size_t node = 0; node < desc.adapter->m_nodeCount; node++)
             {
@@ -307,7 +307,7 @@ namespace llri
                     for (Fence* f : fences) { if (f) output->destroyFence(f); }
 
                     destroyDevice(output);
-                    return directx::mapHRESULT(r);
+                    return detail::mapHRESULT(r);
                 }
 
                 queues[node] = dx12Queue;

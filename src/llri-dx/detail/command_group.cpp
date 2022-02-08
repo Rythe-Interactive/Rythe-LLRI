@@ -13,7 +13,7 @@ namespace llri
     {
         const auto r = static_cast<ID3D12CommandAllocator*>(m_ptr)->Reset();
         if (FAILED(r))
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
 
         for (auto* cmdList : m_cmdLists)
             cmdList->m_state = command_list_state::Empty;
@@ -26,7 +26,7 @@ namespace llri
         ID3D12GraphicsCommandList* dx12CommandList = nullptr;
 
         const auto type = (desc.usage == command_list_usage::Direct ?
-                      directx::mapCommandGroupType(m_type) :
+                      detail::mapCommandGroupType(m_type) :
                       D3D12_COMMAND_LIST_TYPE_BUNDLE);
 
         auto* allocator = (desc.usage == command_list_usage::Direct ?
@@ -40,7 +40,7 @@ namespace llri
                 IID_PPV_ARGS(&dx12CommandList));
 
         if (FAILED(r))
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
 
         // Dx12 command lists are opened by default, close to comply with our system
         dx12CommandList->Close();
@@ -66,7 +66,7 @@ namespace llri
     result CommandGroup::impl_allocate(const command_list_alloc_desc& desc, uint8_t count, std::vector<CommandList*>* cmdLists)
     {
         const auto type = (desc.usage == command_list_usage::Direct ?
-                              directx::mapCommandGroupType(m_type) :
+                              detail::mapCommandGroupType(m_type) :
                               D3D12_COMMAND_LIST_TYPE_BUNDLE);
 
         auto* allocator = (desc.usage == command_list_usage::Direct ?
@@ -91,7 +91,7 @@ namespace llri
                 // Free already allocated command lists
                 this->free(static_cast<uint8_t>(cmdLists->size()), cmdLists->data());
                 cmdLists->clear();
-                return directx::mapHRESULT(r);
+                return detail::mapHRESULT(r);
             }
 
             // Dx12 command lists are opened by default, close to comply with our system

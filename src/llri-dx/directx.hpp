@@ -14,7 +14,7 @@
 
 namespace llri
 {
-    namespace directx
+    namespace detail
     {
         using PFN_CREATE_DXGI_FACTORY2 = HRESULT(WINAPI*)(
             UINT Flags,

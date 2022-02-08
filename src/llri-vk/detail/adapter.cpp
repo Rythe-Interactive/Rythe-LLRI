@@ -10,7 +10,7 @@
 
 namespace llri
 {
-    namespace internal
+    namespace detail
     {
         constexpr adapter_type mapPhysicalDeviceType(VkPhysicalDeviceType type)
         {
@@ -41,7 +41,7 @@ namespace llri
         info.vendorId = properties.vendorID;
         info.adapterId = properties.deviceID;
         info.adapterName = properties.deviceName;
-        info.adapterType = internal::mapPhysicalDeviceType(properties.deviceType);
+        info.adapterType = detail::mapPhysicalDeviceType(properties.deviceType);
         return info;
     }
 
@@ -70,7 +70,7 @@ namespace llri
 
     result Adapter::impl_querySurfacePresentSupportEXT(SurfaceEXT* surface, queue_type type, bool* support) const
     {
-        auto queueFamilies = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_ptr));
+        auto queueFamilies = detail::findQueueFamilies(static_cast<VkPhysicalDevice>(m_ptr));
 
         if(queueFamilies[type] == std::numeric_limits<uint32_t>::max())
         {
@@ -82,7 +82,7 @@ namespace llri
         const auto r = vkGetPhysicalDeviceSurfaceSupportKHR(static_cast<VkPhysicalDevice>(m_ptr), queueFamilies[type], static_cast<VkSurfaceKHR>(surface->m_ptr), &supported);
         
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         *support = static_cast<bool>(supported);
         return result::Success;
@@ -96,30 +96,30 @@ namespace llri
         // handle formats
         r = vkGetPhysicalDeviceSurfaceFormatsKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, nullptr);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
         std::vector<VkSurfaceFormatKHR> formats(count);
         r = vkGetPhysicalDeviceSurfaceFormatsKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, formats.data());
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         capabilities->formats.resize(count);
         for (size_t i = 0; i < count; i++)
-            capabilities->formats[i] = internal::mapVkFormat(formats[i].format);
+            capabilities->formats[i] = detail::mapVkFormat(formats[i].format);
 
         // handle present modes
         r = vkGetPhysicalDeviceSurfacePresentModesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, nullptr);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
         std::vector<VkPresentModeKHR> presentModes(count);
         r = vkGetPhysicalDeviceSurfacePresentModesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, presentModes.data());
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         capabilities->presentModes.clear();
         capabilities->presentModes.reserve(count);
         for (size_t i = 0; i < count; i++)
         {
-            const auto mode = internal::mapVkPresentMode(presentModes[i]);
+            const auto mode = detail::mapVkPresentMode(presentModes[i]);
             if (mode <= present_mode_ext::MaxEnum)
                 capabilities->presentModes.emplace_back(mode);
         }
@@ -128,7 +128,7 @@ namespace llri
         VkSurfaceCapabilitiesKHR vkCapabilities;
         r = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &vkCapabilities);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         capabilities->minTextureCount = vkCapabilities.minImageCount;
         capabilities->maxTextureCount = vkCapabilities.maxImageCount;
@@ -136,7 +136,7 @@ namespace llri
         capabilities->minExtent = { vkCapabilities.minImageExtent.width, vkCapabilities.minImageExtent.height };
         capabilities->maxExtent = { vkCapabilities.maxImageExtent.width, vkCapabilities.maxImageExtent.height };
 
-        capabilities->usageBits = internal::mapVkImageUsage(vkCapabilities.supportedUsageFlags);
+        capabilities->usageBits = detail::mapVkImageUsage(vkCapabilities.supportedUsageFlags);
 
         return result::Success;
     }
@@ -191,7 +191,7 @@ namespace llri
         for (uint8_t f = 0; f <= static_cast<uint8_t>(format::MaxEnum); f++)
         {
             const auto form = static_cast<format>(f);
-            const auto vkFormat = internal::mapTextureFormat(form);
+            const auto vkFormat = detail::mapTextureFormat(form);
 
             VkFormatProperties formatProps;
             vkGetPhysicalDeviceFormatProperties(static_cast<VkPhysicalDevice>(m_ptr), vkFormat, &formatProps);

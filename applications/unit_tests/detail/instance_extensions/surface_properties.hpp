@@ -74,10 +74,10 @@ inline void impl_testSurfacePresentSupport(llri::Adapter* adapter, llri::Surface
 
 void testSurfacePropertiesWin32(){
 #ifdef _WIN32
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
     if (!instance)
         return;
-    llri::Adapter* adapter = helpers::selectAdapter(instance);
+    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GLFWwindow* window = glfwCreateWindow(960, 540, "unit_tests", nullptr, nullptr);
@@ -105,10 +105,10 @@ void testSurfacePropertiesWin32(){
 void testSurfacePropertiesCocoa()
 {
 #ifdef __APPLE__
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
     if (!instance)
         return;
-    llri::Adapter* adapter = helpers::selectAdapter(instance);
+    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GLFWwindow* window = glfwCreateWindow(960, 540, "unit_tests", nullptr, nullptr);
@@ -135,10 +135,10 @@ void testSurfacePropertiesCocoa()
 void testSurfacePropertiesXlib()
 {
 #ifdef __linux__
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
     if (!instance)
         return;
-    llri::Adapter* adapter = helpers::selectAdapter(instance);
+    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, GLFW_FALSE);
@@ -167,10 +167,10 @@ void testSurfacePropertiesXlib()
 void testSurfacePropertiesXcb()
 {
 #ifdef __linux__
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXcb);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceXcb);
     if (!instance)
         return;
-    llri::Adapter* adapter = helpers::selectAdapter(instance);
+    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, GLFW_TRUE);
@@ -203,8 +203,8 @@ inline void testSurfaceProperties()
     
     SUBCASE("extension not enabled")
     {
-        llri::Instance* instance = helpers::defaultInstance();
-        llri::Adapter* adapter = helpers::selectAdapter(instance);
+        llri::Instance* instance = detail::defaultInstance();
+        llri::Adapter* adapter = detail::selectAdapter(instance);
                 
         llri::surface_capabilities_ext capabilities;
         bool support;

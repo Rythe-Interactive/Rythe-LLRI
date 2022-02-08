@@ -28,7 +28,7 @@
 
 namespace llri
 {
-    namespace internal
+    namespace detail
     {
         static bool isVolkInitialized = false;
 

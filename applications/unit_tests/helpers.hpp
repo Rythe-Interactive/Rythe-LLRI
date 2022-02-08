@@ -8,7 +8,7 @@
 #include <doctest/doctest.h>
 #include <llri/llri.hpp>
 
-namespace helpers
+namespace detail
 {
     inline llri::Instance* defaultInstance()
     {

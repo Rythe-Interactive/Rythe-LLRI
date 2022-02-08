@@ -658,7 +658,7 @@ inline void testCommandListResourceBarrier(llri::Device* device, llri::CommandGr
     
     CHECK_EQ(list->end(), llri::result::Success);
 	
-	auto* queue = device->getQueue(helpers::availableQueueType(device->getAdapter()), 0);
+	auto* queue = device->getQueue(detail::availableQueueType(device->getAdapter()), 0);
 
 	llri::Fence* fence;
 	REQUIRE_EQ(device->createFence({}, &fence), llri::result::Success);

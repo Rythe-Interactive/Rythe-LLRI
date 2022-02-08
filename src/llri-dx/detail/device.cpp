@@ -18,11 +18,11 @@ namespace llri
         output->m_type = type;
 
         ID3D12CommandAllocator* allocator;
-        auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommandAllocator(directx::mapCommandGroupType(type), IID_PPV_ARGS(&allocator));
+        auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommandAllocator(detail::mapCommandGroupType(type), IID_PPV_ARGS(&allocator));
         if (FAILED(r))
         {
             destroyCommandGroup(output);
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
         }
         output->m_ptr = allocator;
 
@@ -31,7 +31,7 @@ namespace llri
         if (FAILED(r))
         {
             destroyCommandGroup(output);
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
         }
         output->m_indirectPtr = indirectAllocator;
 
@@ -58,7 +58,7 @@ namespace llri
         ID3D12Fence* dx12Fence;
         const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&dx12Fence));
         if (FAILED(r))
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
 
         auto* output = new Fence();
         output->m_flags = flags;
@@ -97,7 +97,7 @@ namespace llri
             {
                 const auto r = dx12Fence->SetEventOnCompletion(fence->m_counter, fence->m_event);
                 if (FAILED(r))
-                    return directx::mapHRESULT(r);
+                    return detail::mapHRESULT(r);
 
                 events.push_back(fence->m_event);
             }
@@ -129,7 +129,7 @@ namespace llri
         ID3D12Fence* dx12Fence;
         const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&dx12Fence));
         if (FAILED(r))
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
 
         auto* output = new Semaphore();
         output->m_ptr = dx12Fence;
@@ -151,20 +151,20 @@ namespace llri
         const bool isTexture = desc.type != resource_type::Buffer;
 
         D3D12_RESOURCE_DESC dx12Desc;
-        dx12Desc.Dimension = directx::mapResourceType(desc.type);
+        dx12Desc.Dimension = detail::mapResourceType(desc.type);
         dx12Desc.Alignment = 0;
         dx12Desc.Width = static_cast<UINT64>(desc.width);
         dx12Desc.Height = isTexture ? desc.height : 1;
         dx12Desc.DepthOrArraySize = isTexture ? static_cast<UINT16>(desc.depthOrArrayLayers) : 1;
         dx12Desc.MipLevels = isTexture ? static_cast<UINT16>(desc.mipLevels) : 1;
-        dx12Desc.Format = isTexture ? directx::mapTextureFormat(desc.textureFormat) : DXGI_FORMAT_UNKNOWN;
+        dx12Desc.Format = isTexture ? detail::mapTextureFormat(desc.textureFormat) : DXGI_FORMAT_UNKNOWN;
         dx12Desc.SampleDesc = isTexture ? DXGI_SAMPLE_DESC{ static_cast<UINT>(desc.sampleCount), D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE } : DXGI_SAMPLE_DESC{ 1, 0 };
         dx12Desc.Layout = isTexture ? D3D12_TEXTURE_LAYOUT_UNKNOWN : D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-        dx12Desc.Flags = directx::mapResourceUsage(desc.usage);
+        dx12Desc.Flags = detail::mapResourceUsage(desc.usage);
 
-        const D3D12_RESOURCE_STATES initialState = directx::mapResourceState(desc.initialState);
+        const D3D12_RESOURCE_STATES initialState = detail::mapResourceState(desc.initialState);
 
-        D3D12_HEAP_PROPERTIES heapProperties { directx::mapResourceMemoryType(desc.memoryType),
+        D3D12_HEAP_PROPERTIES heapProperties { detail::mapResourceMemoryType(desc.memoryType),
             D3D12_CPU_PAGE_PROPERTY_UNKNOWN, D3D12_MEMORY_POOL_UNKNOWN,
             desc.createNodeMask, desc.visibleNodeMask };
 
@@ -173,7 +173,7 @@ namespace llri
 
         const auto r = static_cast<ID3D12Device*>(m_ptr)->CreateCommittedResource(&heapProperties, flags, &dx12Desc, initialState, nullptr, IID_PPV_ARGS(&dx12Resource));
         if (FAILED(r))
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
 
         auto* output = new Resource();
         output->m_desc = desc;

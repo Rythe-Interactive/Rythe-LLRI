@@ -91,7 +91,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::enumerateAdapters")
     {
-        llri::Instance* instance = helpers::defaultInstance();
+        llri::Instance* instance = detail::defaultInstance();
 
         SUBCASE("[Incorrect usage] adapters == nullptr")
         {
@@ -142,7 +142,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::createDevice()")
     {
-        llri::Instance* instance = helpers::defaultInstance();
+        llri::Instance* instance = detail::defaultInstance();
 
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
@@ -299,7 +299,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::destroyDevice()")
     {
-        llri::Instance* instance = helpers::defaultInstance();
+        llri::Instance* instance = detail::defaultInstance();
 
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);

@@ -10,7 +10,7 @@
 
 namespace llri
 {
-    namespace internal
+    namespace detail
     {
         constexpr adapter_type mapPhysicalDeviceType(VkPhysicalDeviceType type)
         {
@@ -64,21 +64,21 @@ namespace llri
     {
         result impl_createInstance(const instance_desc& desc, Instance** instance, bool enableImplementationMessagePolling)
         {
-            internal::lazyInitializeVolk();
+            detail::lazyInitializeVolk();
 
             auto* output = new Instance();
             output->m_desc = desc;
-            const auto& availableExtensions = internal::queryAvailableExtensions();
+            const auto& availableExtensions = detail::queryAvailableExtensions();
 
             std::vector<const char*> layers;
             std::unordered_map<uint64_t, const char*> extensions;
-            if (availableExtensions.find(internal::nameHash("VK_KHR_device_group_creation")) != availableExtensions.end())
-                extensions.emplace(internal::nameHash("VK_KHR_device_group_creation"), "VK_KHR_device_group_creation");
+            if (availableExtensions.find(detail::nameHash("VK_KHR_device_group_creation")) != availableExtensions.end())
+                extensions.emplace(detail::nameHash("VK_KHR_device_group_creation"), "VK_KHR_device_group_creation");
 
 #ifdef __APPLE__
             // if available, enable - necessary for MoltenVK
-            if (availableExtensions.find(internal::nameHash("VK_KHR_get_physical_device_properties2")) != availableExtensions.end())
-                extensions.emplace(internal::nameHash("VK_KHR_get_physical_device_properties2"), "VK_KHR_get_physical_device_properties2");
+            if (availableExtensions.find(detail::nameHash("VK_KHR_get_physical_device_properties2")) != availableExtensions.end())
+                extensions.emplace(detail::nameHash("VK_KHR_get_physical_device_properties2"), "VK_KHR_get_physical_device_properties2");
 #endif
             
             void* pNext = nullptr;
@@ -99,7 +99,7 @@ namespace llri
                     }
                     case instance_extension::GPUValidation:
                     {
-                        extensions.emplace(internal::nameHash("VK_EXT_validation_features"), "VK_EXT_validation_features");
+                        extensions.emplace(detail::nameHash("VK_EXT_validation_features"), "VK_EXT_validation_features");
 
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_EXT);
                         enables.emplace_back(VK_VALIDATION_FEATURE_ENABLE_GPU_ASSISTED_RESERVE_BINDING_SLOT_EXT);
@@ -111,26 +111,26 @@ namespace llri
                     }
                     case instance_extension::SurfaceWin32:
                     {
-                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
-                        extensions.emplace(internal::nameHash("VK_KHR_win32_surface"), "VK_KHR_win32_surface");
+                        extensions.emplace(detail::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(detail::nameHash("VK_KHR_win32_surface"), "VK_KHR_win32_surface");
                         break;
                     }
                     case instance_extension::SurfaceCocoa:
                     {
-                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
-                        extensions.emplace(internal::nameHash("VK_EXT_metal_surface"), "VK_EXT_metal_surface");
+                        extensions.emplace(detail::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(detail::nameHash("VK_EXT_metal_surface"), "VK_EXT_metal_surface");
                         break;
                     }
                     case instance_extension::SurfaceXlib:
                     {
-                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
-                        extensions.emplace(internal::nameHash("VK_KHR_xlib_surface"), "VK_KHR_xlib_surface");
+                        extensions.emplace(detail::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(detail::nameHash("VK_KHR_xlib_surface"), "VK_KHR_xlib_surface");
                         break;
                     }
                     case instance_extension::SurfaceXcb:
                     {
-                        extensions.emplace(internal::nameHash("VK_KHR_surface"), "VK_KHR_surface");
-                        extensions.emplace(internal::nameHash("VK_KHR_xcb_surface"), "VK_KHR_xcb_surface");
+                        extensions.emplace(detail::nameHash("VK_KHR_surface"), "VK_KHR_surface");
+                        extensions.emplace(detail::nameHash("VK_KHR_xcb_surface"), "VK_KHR_xcb_surface");
                         break;
                     }
                 }
@@ -143,9 +143,9 @@ namespace llri
             {
                 // Availability of this extension can't be queried externally because API callbacks also include LLRI callbacks
                 // so instead the check is implicit, implementation callbacks aren't guaranteed
-                if (availableExtensions.find(internal::nameHash("VK_EXT_debug_utils")) != availableExtensions.end())
+                if (availableExtensions.find(detail::nameHash("VK_EXT_debug_utils")) != availableExtensions.end())
                 {
-                    extensions.emplace(internal::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+                    extensions.emplace(detail::nameHash(VK_EXT_DEBUG_UTILS_EXTENSION_NAME), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
                     output->m_shouldConstructValidationCallbackMessenger = true;
                 }
             }
@@ -164,7 +164,7 @@ namespace llri
             if (createResult != VK_SUCCESS)
             {
                 llri::destroyInstance(output);
-                return internal::mapVkResult(createResult);
+                return detail::mapVkResult(createResult);
             }
             output->m_ptr = vulkanInstance;
 
@@ -186,7 +186,7 @@ namespace llri
                         VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
                         VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
-                    const VkDebugUtilsMessengerCreateInfoEXT debugUtilsCi{ VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT, nullptr, {}, severity, types, &internal::debugCallback, nullptr };
+                    const VkDebugUtilsMessengerCreateInfoEXT debugUtilsCi{ VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT, nullptr, {}, severity, types, &detail::debugCallback, nullptr };
 
                     VkDebugUtilsMessengerEXT messenger;
                     vkCreateDebugUtilsMessengerEXT(vulkanInstance, &debugUtilsCi, nullptr, &messenger);
@@ -233,8 +233,8 @@ namespace llri
 
     result Instance::impl_enumerateAdapters(std::vector<Adapter*>* adapters)
     {
-        const auto& extensions = internal::queryAvailableExtensions();
-        const bool groupsSupported = extensions.find(internal::nameHash("VK_KHR_device_group_creation")) != extensions.end();
+        const auto& extensions = detail::queryAvailableExtensions();
+        const bool groupsSupported = extensions.find(detail::nameHash("VK_KHR_device_group_creation")) != extensions.end();
 
         std::vector<VkPhysicalDevice> physicalDevices;
 
@@ -245,12 +245,12 @@ namespace llri
             uint32_t groupCount;
             VkResult r = vkEnumeratePhysicalDeviceGroups(static_cast<VkInstance>(m_ptr), &groupCount, nullptr);
             if (r != VK_SUCCESS)
-                return internal::mapVkResult(r);
+                return detail::mapVkResult(r);
 
             std::vector<VkPhysicalDeviceGroupProperties> groups(groupCount);
             r = vkEnumeratePhysicalDeviceGroups(static_cast<VkInstance>(m_ptr), &groupCount, groups.data());
             if (r != VK_SUCCESS)
-                return internal::mapVkResult(r);
+                return detail::mapVkResult(r);
 
             for (const auto& group : groups)
             {
@@ -286,13 +286,13 @@ namespace llri
             uint32_t physicalDeviceCount = 0;
             VkResult r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, nullptr);
             if (r != VK_SUCCESS)
-                return internal::mapVkResult(r);
+                return detail::mapVkResult(r);
 
             // Get actual physical devices
             physicalDevices.resize(physicalDeviceCount);
             r = vkEnumeratePhysicalDevices(static_cast<VkInstance>(m_ptr), &physicalDeviceCount, physicalDevices.data());
             if (r != VK_SUCCESS)
-                return internal::mapVkResult(r);
+                return detail::mapVkResult(r);
            
             for (VkPhysicalDevice physicalDevice : physicalDevices)
             {
@@ -325,7 +325,7 @@ namespace llri
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
 
         // Queue creation
-        auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
+        auto families = detail::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
 
         std::vector<float> graphicsPriorities;
         std::vector<float> computePriorities;
@@ -407,7 +407,7 @@ namespace llri
         if (r != VK_SUCCESS)
         {
             destroyDevice(output);
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
         }
         output->m_ptr = vkDevice;
 
@@ -529,7 +529,7 @@ namespace llri
         VkSurfaceKHR vkSurface;
         const auto r = vkCreateWin32SurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         auto* output = new SurfaceEXT();
         output->m_ptr = vkSurface;
@@ -549,12 +549,12 @@ namespace llri
         info.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
         info.pNext = nullptr;
         info.flags = {};
-        info.pLayer = internal::getCAMetalLayer(desc.nsWindow);
+        info.pLayer = detail::getCAMetalLayer(desc.nsWindow);
         
         VkSurfaceKHR vkSurface;
         const auto r = vkCreateMetalSurfaceEXT(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
         
         auto* output = new SurfaceEXT();
         output->m_ptr = vkSurface;
@@ -579,7 +579,7 @@ namespace llri
         VkSurfaceKHR vkSurface;
         const auto r = vkCreateXlibSurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         auto* output = new SurfaceEXT();
         output->m_ptr = vkSurface;
@@ -604,7 +604,7 @@ namespace llri
         VkSurfaceKHR vkSurface;
         const auto r = vkCreateXcbSurfaceKHR(static_cast<VkInstance>(m_ptr), &info, nullptr, &vkSurface);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         auto* output = new SurfaceEXT();
         output->m_ptr = vkSurface;
