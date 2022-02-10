@@ -21,7 +21,7 @@ TEST_CASE("print info")
     std::vector<llri::Adapter*> adapters;
     instance->enumerateAdapters(&adapters);
     
-    printf("Available adapters: (%lu)\n", adapters.size());
+    printf("Available adapters: (%lu)\n", static_cast<uint32_t>(adapters.size()));
     for (auto* adapter : adapters)
     {
         llri::adapter_info info = adapter->queryInfo();
