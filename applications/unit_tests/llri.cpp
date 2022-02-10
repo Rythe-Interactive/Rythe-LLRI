@@ -21,7 +21,7 @@ TEST_CASE("print info")
     std::vector<llri::Adapter*> adapters;
     instance->enumerateAdapters(&adapters);
     
-    printf("Available adapters: (%lu)\n", static_cast<uint32_t>(adapters.size()));
+    printf("Available adapters: (%u)\n", static_cast<uint32_t>(adapters.size()));
     for (auto* adapter : adapters)
     {
         llri::adapter_info info = adapter->queryInfo();
@@ -52,7 +52,7 @@ TEST_CASE("print info")
             }
         }
         
-        printf("Number of selected adapters as defined in LLRI_TEST_ADAPTERS: %lu\n", selectedAdapterNames.size());
+        printf("Number of selected adapters as defined in LLRI_TEST_ADAPTERS: %u\n", static_cast<uint32_t>(selectedAdapterNames.size()));
         printf("Number of adapters that match LLRI_TEST_ADAPTERS names: %u\n", static_cast<uint32_t>(selectedAdapters.size()));
         printf("This configuration is: %s\n", selectedAdapters.size() == selectedAdapterNames.size() ? "valid" : "invalid");
     }
