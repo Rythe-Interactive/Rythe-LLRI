@@ -12,11 +12,7 @@ TEST_CASE("Adapter")
 {
     llri::Instance* instance = detail::defaultInstance();
 
-    std::vector<llri::Adapter*> adapters;
-    REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
-
-    for (llri::Adapter* adapter : adapters)
-    {
+    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
         SUBCASE("Adapter::queryInfo()")
         {
             llri::adapter_info info = adapter->queryInfo();
@@ -24,14 +20,14 @@ TEST_CASE("Adapter")
             CHECK_NE(info.vendorId, 0);
             CHECK_NE(info.adapterName, "");
         }
-
+        
         SUBCASE("Adapter::queryFeatures()")
         {
             [[maybe_unused]] llri::adapter_features features = adapter->queryFeatures();
 
             // reserved for future use
         }
-
+        
         SUBCASE("Adapter::queryExtensionSupport()")
         {
             SUBCASE("[Correct usage] invalid extension type")
@@ -64,7 +60,7 @@ TEST_CASE("Adapter")
                 CHECK_NE(props.find(static_cast<llri::format>(f)), props.end());
             }
         }
-    }
+    });
 
     llri::destroyInstance(instance);
 }

@@ -74,10 +74,9 @@ inline void impl_testSurfacePresentSupport(llri::Adapter* adapter, llri::Surface
 
 void testSurfacePropertiesWin32(){
 #ifdef _WIN32
-    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
+    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
     if (!instance)
         return;
-    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GLFWwindow* window = glfwCreateWindow(960, 540, "unit_tests", nullptr, nullptr);
@@ -93,8 +92,10 @@ void testSurfacePropertiesWin32(){
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    impl_testSurfaceCapabilities(adapter, surface);
-    impl_testSurfacePresentSupport(adapter, surface);
+    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        impl_testSurfaceCapabilities(adapter, surface);
+        impl_testSurfacePresentSupport(adapter, surface);
+    });
     
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
@@ -105,10 +106,9 @@ void testSurfacePropertiesWin32(){
 void testSurfacePropertiesCocoa()
 {
 #ifdef __APPLE__
-    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
+    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
     if (!instance)
         return;
-    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GLFWwindow* window = glfwCreateWindow(960, 540, "unit_tests", nullptr, nullptr);
@@ -123,9 +123,11 @@ void testSurfacePropertiesCocoa()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    impl_testSurfaceCapabilities(adapter, surface);
-    impl_testSurfacePresentSupport(adapter, surface);
-    
+    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        impl_testSurfaceCapabilities(adapter, surface);
+        impl_testSurfacePresentSupport(adapter, surface);
+    });
+        
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
     glfwDestroyWindow(window);
@@ -135,10 +137,9 @@ void testSurfacePropertiesCocoa()
 void testSurfacePropertiesXlib()
 {
 #ifdef __linux__
-    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
+    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
     if (!instance)
         return;
-    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, GLFW_FALSE);
@@ -155,8 +156,10 @@ void testSurfacePropertiesXlib()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    impl_testSurfaceCapabilities(adapter, surface);
-    impl_testSurfacePresentSupport(adapter, surface);
+    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        impl_testSurfaceCapabilities(adapter, surface);
+        impl_testSurfacePresentSupport(adapter, surface);
+    });
     
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
@@ -167,10 +170,9 @@ void testSurfacePropertiesXlib()
 void testSurfacePropertiesXcb()
 {
 #ifdef __linux__
-    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceXcb);
+    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXcb);
     if (!instance)
         return;
-    llri::Adapter* adapter = detail::selectAdapter(instance);
     
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, GLFW_TRUE);
@@ -187,8 +189,10 @@ void testSurfacePropertiesXcb()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    impl_testSurfaceCapabilities(adapter, surface);
-    impl_testSurfacePresentSupport(adapter, surface);
+    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        impl_testSurfaceCapabilities(adapter, surface);
+        impl_testSurfacePresentSupport(adapter, surface);
+    });
     
     instance->destroySurfaceEXT(surface);
     llri::destroyInstance(instance);
@@ -203,14 +207,15 @@ inline void testSurfaceProperties()
     
     SUBCASE("extension not enabled")
     {
-        llri::Instance* instance = detail::defaultInstance();
-        llri::Adapter* adapter = detail::selectAdapter(instance);
-                
-        llri::surface_capabilities_ext capabilities;
-        bool support;
+        llri::Instance* instance = helpers::defaultInstance();
         
-        CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(nullptr, &capabilities), llri::result::ErrorExtensionNotEnabled);
-        CHECK_EQ(adapter->querySurfacePresentSupportEXT(nullptr, llri::queue_type::Graphics, &support), llri::result::ErrorExtensionNotEnabled);
+        helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+            llri::surface_capabilities_ext capabilities;
+            bool support;
+            
+            CHECK_EQ(adapter->querySurfaceCapabilitiesEXT(nullptr, &capabilities), llri::result::ErrorExtensionNotEnabled);
+            CHECK_EQ(adapter->querySurfacePresentSupportEXT(nullptr, llri::queue_type::Graphics, &support), llri::result::ErrorExtensionNotEnabled);
+        });
         
         llri::destroyInstance(instance);
     }

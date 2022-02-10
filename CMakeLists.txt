@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
-# Folder structure
+# General CMake config
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY ON)
 set(CMAKE_FOLDER CMakePredefinedTargets)
@@ -11,6 +11,9 @@ set(CMAKE_FOLDER CMakePredefinedTargets)
 # Project
 project(llri LANGUAGES CXX)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 # Language
 if (APPLE)
@@ -41,10 +44,7 @@ else()
 	set(LLRI_COMPILER_FLAGS /W4 /WX)
 endif()
 
-# Include threading
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-
+# Add LLRI headers & source
 add_subdirectory(${LLRI_DIR_SRC}/llri)
 set_property(TARGET llri PROPERTY FOLDER "llri")
 
@@ -54,7 +54,7 @@ if(WIN32)
 	set_target_properties(llri-dx llri-vk PROPERTIES FOLDER "llri")
 	
 	set(LLRI_IMPLEMENTATION_OPTIONS "llri-dx;llri-vk")
-	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-dx" CACHE STRING "Implementation build for samples/unit tests chosen by the user at CMake configure time.")
+	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-dx" CACHE STRING "Implementation build for applications, selected by the user at CMake configure time.")
 	set_property(CACHE LLRI_SELECTED_APP_IMPLEMENTATION PROPERTY STRINGS ${LLRI_IMPLEMENTATION_OPTIONS})
 
 elseif(APPLE)
@@ -62,7 +62,7 @@ elseif(APPLE)
 	set_property(TARGET llri-vk PROPERTY FOLDER "llri")
 
 	set(LLRI_IMPLEMENTATION_OPTIONS "llri-vk")
-	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-vk" CACHE STRING "Implementation build for samples/unit tests chosen by the user at CMake configure time.")
+	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-vk" CACHE STRING "Implementation build for applications, selected by the user at CMake configure time.")
 	set_property(CACHE LLRI_SELECTED_APP_IMPLEMENTATION PROPERTY STRINGS ${LLRI_IMPLEMENTATION_OPTIONS})
 
 elseif(UNIX) # elseif here guarantees that unix is not apple unix
@@ -70,12 +70,27 @@ elseif(UNIX) # elseif here guarantees that unix is not apple unix
 	set_property(TARGET llri-vk PROPERTY FOLDER "llri")
 
 	set(LLRI_IMPLEMENTATION_OPTIONS "llri-vk")
-	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-vk" CACHE STRING "Implementation build for samples/unit tests chosen by the user at CMake configure time.")
+	set(LLRI_SELECTED_APP_IMPLEMENTATION "llri-vk" CACHE STRING "Implementation build for applications, selected by the user at CMake configure time.")
 	set_property(CACHE LLRI_SELECTED_APP_IMPLEMENTATION PROPERTY STRINGS ${LLRI_IMPLEMENTATION_OPTIONS})
 
 endif()
 
-SET(LLRI_BUILD_APPLICATIONS ON CACHE BOOL "Add applications (samples, unit tests) to the project. Requires the submodules in applications/deps/ to be present.")
-if (${LLRI_BUILD_APPLICATIONS})
+# Applications
+if (NOT DEFINED LLRI_BUILD_TESTS)
+	SET(LLRI_BUILD_TESTS ON CACHE BOOL "Add unit tests to the project. Requires the submodules in applications/deps/ to be present.")
+endif()
+
+if (NOT DEFINED LLRI_TEST_ADAPTERS)
+	set(LLRI_TEST_ADAPTERS "All" CACHE STRING 
+		"List of adapters used in the unit tests.
+		If set to \"All\", all compatible adapters are used for the same unit test session. In this case at least one compatible adapter must be available for the test to succeed.
+		If set to one or more adapter names, each selected adapter must be available for the test to succeed.")
+endif()
+
+if (NOT DEFINED LLRI_BUILD_APPLICATIONS)
+	SET(LLRI_BUILD_APPLICATIONS ON CACHE BOOL "Add applications (samples, sandbox) to the project. Requires the submodules in applications/deps/ to be present.")
+endif()
+
+if (${LLRI_BUILD_APPLICATIONS} OR ${LLRI_BUILD_TESTS})
 	add_subdirectory(applications)
 endif()

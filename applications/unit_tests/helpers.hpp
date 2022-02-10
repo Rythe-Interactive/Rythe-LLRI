@@ -7,9 +7,45 @@
 
 #include <doctest/doctest.h>
 #include <llri/llri.hpp>
+#include <sstream>
 
 namespace detail
 {
+    inline std::vector<std::string> split (const std::string &s, char delim)
+    {
+        std::vector<std::string> result;
+        std::stringstream ss (s);
+        std::string item;
+
+        while (getline (ss, item, delim)) {
+            result.push_back (item);
+        }
+
+        return result;
+    }
+
+    /**
+     * @brief Utility function for hashing strings  in compile time
+    */
+    template<size_t N>
+    inline constexpr uint64_t nameHash(const char(&name)[N]) noexcept
+    {
+        uint64_t hash = 0xcbf29ce484222325;
+        constexpr uint64_t prime = 0x00000100000001b3;
+
+        size_t size = N;
+        if (name[size - 1] == '\0')
+            size--;
+
+        for (size_t i = 0; i < size; i++)
+        {
+            hash = hash ^ static_cast<const uint8_t>(name[i]);
+            hash *= prime;
+        }
+
+        return hash;
+    }
+
     inline llri::Instance* defaultInstance()
     {
         llri::Instance* instance;
@@ -41,11 +77,43 @@ namespace detail
         return instance;
     }
 
-    inline llri::Adapter* selectAdapter(llri::Instance* instance)
+    template<typename Func, typename ...Args>
+    inline void iterateAdapters(llri::Instance* instance, Func&& function, Args&&... args)
     {
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
-        return adapters[0];
+        REQUIRE_UNARY(adapters.size() > 0);
+        
+        constexpr size_t adapterStr = nameHash(LLRI_TEST_ADAPTERS);
+        constexpr size_t all = nameHash("All");
+        
+        std::vector<llri::Adapter*> selectedAdapters;
+        
+        if constexpr (adapterStr == all)
+        {
+            selectedAdapters = adapters;
+        }
+        else
+        {
+            auto selectedAdapterNames = split(LLRI_TEST_ADAPTERS, ';');
+            
+            for (auto* adapter : adapters)
+            {
+                llri::adapter_info info = adapter->queryInfo();
+                
+                if (std::find(selectedAdapterNames.begin(), selectedAdapterNames.end(), info.adapterName) != selectedAdapterNames.end())
+                {
+                    selectedAdapters.push_back(adapter);
+                }
+            }
+            
+            REQUIRE_EQ(selectedAdapters.size(), selectedAdapterNames.size());
+        }
+        
+        for (auto* adapter : selectedAdapters)
+        {
+            std::invoke(std::forward<Func>(function), adapter, std::forward<Args>(args)...);
+        }
     }
 
     inline llri::Device* defaultDevice(llri::Instance* instance, llri::Adapter* adapter)
