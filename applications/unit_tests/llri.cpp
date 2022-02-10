@@ -53,7 +53,7 @@ TEST_CASE("print info")
         }
         
         printf("Number of selected adapters as defined in LLRI_TEST_ADAPTERS: %lu\n", selectedAdapterNames.size());
-        printf("Number of adapters that match LLRI_TEST_ADAPTERS names: %lu\n", selectedAdapters.size());
+        printf("Number of adapters that match LLRI_TEST_ADAPTERS names: %llu\n", selectedAdapters.size());
         printf("This configuration is: %s\n", selectedAdapters.size() == selectedAdapterNames.size() ? "valid" : "invalid");
     }
 }
