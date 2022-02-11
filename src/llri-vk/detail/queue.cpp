@@ -45,12 +45,12 @@ namespace llri
         const auto r = static_cast<VolkDeviceTable*>(m_device->m_functionTable)->
             vkQueueSubmit(static_cast<VkQueue>(m_ptrs[0]), 1, &info, fence);
 
-        return internal::mapVkResult(r);
+        return detail::mapVkResult(r);
     }
 
     result Queue::impl_waitIdle()
     {
         const auto r = static_cast<VolkDeviceTable*>(m_device->m_functionTable)->vkQueueWaitIdle(static_cast<VkQueue>(m_ptrs[0]));
-        return internal::mapVkResult(r);
+        return detail::mapVkResult(r);
     }
 }

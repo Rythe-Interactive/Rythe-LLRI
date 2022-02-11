@@ -10,10 +10,10 @@
 
 TEST_CASE("CommandList")
 {
-    auto* instance = helpers::defaultInstance();
-    auto* adapter = helpers::selectAdapter(instance);
-    auto* device = helpers::defaultDevice(instance, adapter);
-    auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
+    auto* instance = detail::defaultInstance();
+    auto* adapter = detail::selectAdapter(instance);
+    auto* device = detail::defaultDevice(instance, adapter);
+    auto* group = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
 
     for (uint8_t i = 0; i < adapter->queryNodeCount(); i++)
     {
@@ -21,7 +21,7 @@ TEST_CASE("CommandList")
         const std::string str = std::string("Device node ") + std::to_string(nodeMask);
         SUBCASE(str.c_str())
         {
-            auto* list = helpers::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
+            auto* list = detail::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
 
             SUBCASE("CommandList::begin()")
             {
@@ -53,7 +53,7 @@ TEST_CASE("CommandList")
 
                 SUBCASE("[Incorrect usage] The CommandGroup this CommandList belongs to was already recording a CommandList")
                 {
-                    auto* list2 = helpers::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
+                    auto* list2 = detail::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
 
                     REQUIRE_EQ(list->begin({}), llri::result::Success);
 

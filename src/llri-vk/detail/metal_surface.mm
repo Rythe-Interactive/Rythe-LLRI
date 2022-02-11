@@ -10,7 +10,7 @@
 
 namespace llri
 {
-    namespace internal
+    namespace detail
     {
         void* getCAMetalLayer(void* nsWindow)
         {

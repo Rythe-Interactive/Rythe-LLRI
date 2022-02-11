@@ -11,9 +11,9 @@
 
 TEST_CASE("Device::createResource()")
 {
-    auto* instance = helpers::defaultInstance();
-    auto* adapter = helpers::selectAdapter(instance);
-    auto* device = helpers::defaultDevice(instance, adapter);
+    auto* instance = detail::defaultInstance();
+    auto* adapter = detail::selectAdapter(instance);
+    auto* device = detail::defaultDevice(instance, adapter);
 
     llri::resource_desc desc {};
 

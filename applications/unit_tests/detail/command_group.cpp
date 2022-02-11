@@ -10,10 +10,10 @@
 
 TEST_CASE("CommandGroup")
 {
-    auto* instance = helpers::defaultInstance();
-    auto* adapter = helpers::selectAdapter(instance);
-    auto* device = helpers::defaultDevice(instance, adapter);
-    auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
+    auto* instance = detail::defaultInstance();
+    auto* adapter = detail::selectAdapter(instance);
+    auto* device = detail::defaultDevice(instance, adapter);
+    auto* group = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
 
     const auto nodeCount = adapter->queryNodeCount();
     for (uint8_t i = 0; i < nodeCount; i++)
@@ -138,7 +138,7 @@ TEST_CASE("CommandGroup")
 
                 SUBCASE("[Incorrect usage] CommandList wasn't created through group")
                 {
-                    llri::CommandGroup* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
+                    llri::CommandGroup* group2 = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
                     llri::CommandList* cmdList;
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdList), llri::result::Success);
 
@@ -173,7 +173,7 @@ TEST_CASE("CommandGroup")
                 {
                     std::array<llri::CommandList*, 2> cmdLists { nullptr, nullptr };
 
-                    auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
+                    auto* group2 = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
 
                     REQUIRE_EQ(group->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdLists[0]), llri::result::Success);
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, &cmdLists[1]), llri::result::Success);
@@ -187,7 +187,7 @@ TEST_CASE("CommandGroup")
                 {
                     std::vector<llri::CommandList*> cmdLists;
 
-                    auto* group2 = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
+                    auto* group2 = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
                     REQUIRE_EQ(group2->allocate({ nodeMask, llri::command_list_usage::Direct }, 2, &cmdLists), llri::result::Success);
 
                     CHECK_EQ(group->free(static_cast<uint8_t>(cmdLists.size()), cmdLists.data()), llri::result::ErrorInvalidUsage);

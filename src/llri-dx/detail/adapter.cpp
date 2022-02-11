@@ -111,7 +111,7 @@ namespace llri
         std::unordered_map<format, format_properties> result;
 
         ID3D12Device* device;
-        directx::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device));
+        detail::D3D12CreateDevice(static_cast<IDXGIAdapter*>(m_ptr), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device));
 
         CD3DX12FeatureSupport features;
         features.Init(device);
@@ -119,7 +119,7 @@ namespace llri
         for (uint8_t f = 0; f <= static_cast<uint8_t>(format::MaxEnum); f++)
         {
             const auto form = static_cast<format>(f);
-            const DXGI_FORMAT dxFormat = directx::mapTextureFormat(form);
+            const DXGI_FORMAT dxFormat = detail::mapTextureFormat(form);
 
             // query support from DX12
             D3D12_FORMAT_SUPPORT1 sup1;

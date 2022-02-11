@@ -13,14 +13,14 @@ namespace llri
     {
         bool queryInstanceExtensionSupport(instance_extension ext)
         {
-            directx::lazyInitializeDirectX();
+            detail::lazyInitializeDirectX();
 
             switch (ext)
             {
                 case instance_extension::DriverValidation:
                 {
                     ID3D12Debug* temp = nullptr;
-                    const bool succeeded = SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    const bool succeeded = SUCCEEDED(detail::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
                     if (succeeded)
                         temp->Release();
                     return succeeded;
@@ -28,7 +28,7 @@ namespace llri
                 case instance_extension::GPUValidation:
                 {
                     ID3D12Debug1* temp = nullptr;
-                    const bool succeeded = SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
+                    const bool succeeded = SUCCEEDED(detail::D3D12GetDebugInterface(IID_PPV_ARGS(&temp)));
                     if (succeeded)
                         temp->Release();
                     return succeeded;
@@ -47,7 +47,7 @@ namespace llri
         }
     }
 
-    namespace internal
+    namespace detail
     {
         /**
          * @brief Enables D3D12 validation layers.
@@ -56,7 +56,7 @@ namespace llri
         result enableDriverValidationEXT()
         {
             ID3D12Debug* debugAPI = nullptr;
-            if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugAPI))))
+            if (SUCCEEDED(detail::D3D12GetDebugInterface(IID_PPV_ARGS(&debugAPI))))
             {
                 debugAPI->EnableDebugLayer();
                 debugAPI->Release();
@@ -73,7 +73,7 @@ namespace llri
         result enableGPUValidationEXT()
         {
             ID3D12Debug1* debugGPU = nullptr;
-            if (SUCCEEDED(directx::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
+            if (SUCCEEDED(detail::D3D12GetDebugInterface(IID_PPV_ARGS(&debugGPU))))
             {
                 debugGPU->SetEnableGPUBasedValidation(true);
                 debugGPU->SetEnableSynchronizedCommandQueueValidation(true);

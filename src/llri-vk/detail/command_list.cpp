@@ -19,7 +19,7 @@ namespace llri
         const auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->
             vkBeginCommandBuffer(static_cast<VkCommandBuffer>(m_ptr), &info);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         m_state = command_list_state::Recording;
         return result::Success;
@@ -30,7 +30,7 @@ namespace llri
         const auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->
             vkEndCommandBuffer(static_cast<VkCommandBuffer>(m_ptr));
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         m_state = command_list_state::Ready;
         return result::Success;
@@ -71,8 +71,8 @@ namespace llri
                 {
                     case resource_barrier_type::Transition:
                     {
-                        bufferBarrier.srcAccessMask = internal::mapStateToAccess(barrier.trans.oldState);
-                        bufferBarrier.dstAccessMask = internal::mapStateToAccess(barrier.trans.newState);
+                        bufferBarrier.srcAccessMask = detail::mapStateToAccess(barrier.trans.oldState);
+                        bufferBarrier.dstAccessMask = detail::mapStateToAccess(barrier.trans.newState);
                         break;
                     }
                     case resource_barrier_type::ReadWrite:
@@ -105,17 +105,17 @@ namespace llri
                 {
                     case resource_barrier_type::Transition:
                     {
-                        imgBarrier.oldLayout = internal::mapResourceState(barrier.trans.oldState);
-                        imgBarrier.newLayout = internal::mapResourceState(barrier.trans.newState);
+                        imgBarrier.oldLayout = detail::mapResourceState(barrier.trans.oldState);
+                        imgBarrier.newLayout = detail::mapResourceState(barrier.trans.newState);
                         
-                        imgBarrier.srcAccessMask = internal::mapStateToAccess(barrier.trans.oldState);
-                        imgBarrier.dstAccessMask = internal::mapStateToAccess(barrier.trans.newState);
+                        imgBarrier.srcAccessMask = detail::mapStateToAccess(barrier.trans.oldState);
+                        imgBarrier.dstAccessMask = detail::mapStateToAccess(barrier.trans.newState);
                         break;
                     }
                     case resource_barrier_type::ReadWrite:
                     {
-                        imgBarrier.oldLayout = internal::mapResourceState(resource_state::ShaderReadWrite);
-                        imgBarrier.newLayout = internal::mapResourceState(resource_state::ShaderReadWrite);
+                        imgBarrier.oldLayout = detail::mapResourceState(resource_state::ShaderReadWrite);
+                        imgBarrier.newLayout = detail::mapResourceState(resource_state::ShaderReadWrite);
                         
                         imgBarrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
                         imgBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;

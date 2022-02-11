@@ -10,7 +10,7 @@
 
 TEST_CASE("Adapter")
 {
-    llri::Instance* instance = helpers::defaultInstance();
+    llri::Instance* instance = detail::defaultInstance();
 
     std::vector<llri::Adapter*> adapters;
     REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);

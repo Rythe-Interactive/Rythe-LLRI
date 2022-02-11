@@ -15,7 +15,7 @@ namespace llri
         // TODO: Handle inheritance/indirect
         const auto r = static_cast<ID3D12GraphicsCommandList*>(m_ptr)->Reset(static_cast<ID3D12CommandAllocator*>(m_group->m_ptr), nullptr);
         if (FAILED(r))
-            return directx::mapHRESULT(r);
+            return detail::mapHRESULT(r);
 
         m_state = command_list_state::Recording;
         return result::Success;
@@ -25,7 +25,7 @@ namespace llri
     {
         const auto r = static_cast<ID3D12GraphicsCommandList*>(m_ptr)->Close();
          if (FAILED(r))
-             return directx::mapHRESULT(r);
+             return detail::mapHRESULT(r);
 
         m_state = command_list_state::Ready;
         return result::Success;
@@ -60,8 +60,8 @@ namespace llri
                         dx12Barrier.Transition = D3D12_RESOURCE_TRANSITION_BARRIER {
                             static_cast<ID3D12Resource*>(barrier.rw.resource->m_resource),
                             D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES,
-                            directx::mapResourceState(barrier.trans.oldState),
-                            directx::mapResourceState(barrier.trans.newState)
+                            detail::mapResourceState(barrier.trans.oldState),
+                            detail::mapResourceState(barrier.trans.newState)
                         };
                         dx12Barriers.push_back(dx12Barrier);
                     }
@@ -79,8 +79,8 @@ namespace llri
                                 dx12Barrier.Transition = D3D12_RESOURCE_TRANSITION_BARRIER {
                                     static_cast<ID3D12Resource*>(barrier.rw.resource->m_resource),
                                     D3D12CalcSubresource(m, a, 0, desc.mipLevels, arrayLayers),
-                                    directx::mapResourceState(barrier.trans.oldState),
-                                    directx::mapResourceState(barrier.trans.newState)
+                                    detail::mapResourceState(barrier.trans.oldState),
+                                    detail::mapResourceState(barrier.trans.newState)
                                 };
                                 dx12Barriers.push_back(dx12Barrier);
                             }

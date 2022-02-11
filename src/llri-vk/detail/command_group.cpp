@@ -15,7 +15,7 @@ namespace llri
             vkResetCommandPool(static_cast<VkDevice>(m_device->m_ptr), static_cast<VkCommandPool>(m_ptr), VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
 
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         for (auto* cmdList : m_cmdLists)
             cmdList->m_state = command_list_state::Empty;
@@ -29,14 +29,14 @@ namespace llri
             VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
             nullptr,
             static_cast<VkCommandPool>(m_ptr),
-            internal::mapCommandListUsage(desc.usage),
+            detail::mapCommandListUsage(desc.usage),
             1
         };
 
         VkCommandBuffer cmd;
         auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), &allocInfo, &cmd);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         auto* output = new CommandList();
         output->m_ptr = cmd;
@@ -62,14 +62,14 @@ namespace llri
             VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
             nullptr,
             static_cast<VkCommandPool>(m_ptr),
-            internal::mapCommandListUsage(desc.usage),
+            detail::mapCommandListUsage(desc.usage),
             count
         };
 
         std::vector<VkCommandBuffer> cmdBuffers(count);
         auto r = static_cast<VolkDeviceTable*>(m_deviceFunctionTable)->vkAllocateCommandBuffers(static_cast<VkDevice>(m_device->m_ptr), &allocInfo, cmdBuffers.data());
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         for (size_t i = 0; i < count; i++)
         {

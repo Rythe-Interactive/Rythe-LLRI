@@ -17,7 +17,7 @@ namespace llri
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
         output->m_type = type;
 
-        auto families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
+        auto families = detail::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
 
         VkCommandPoolCreateInfo info;
         info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -31,7 +31,7 @@ namespace llri
         if (r != VK_SUCCESS)
         {
             destroyCommandGroup(output);
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
         }
 
         output->m_ptr = pool;
@@ -70,7 +70,7 @@ namespace llri
         const auto r = static_cast<VolkDeviceTable*>(m_functionTable)->
             vkCreateFence(static_cast<VkDevice>(m_ptr), &info, nullptr, &vkFence);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         auto* output = new Fence();
         output->m_flags = flags;
@@ -114,7 +114,7 @@ namespace llri
                 fences[i]->m_signaled = false;
         }
 
-        return internal::mapVkResult(r);
+        return detail::mapVkResult(r);
     }
 
     result Device::impl_createSemaphore(Semaphore** semaphore)
@@ -128,7 +128,7 @@ namespace llri
         const VkResult r = static_cast<VolkDeviceTable*>(m_functionTable)->
             vkCreateSemaphore(static_cast<VkDevice>(m_ptr), &info, nullptr, &vkSemaphore);
         if (r != VK_SUCCESS)
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
 
         auto* output = new Semaphore();
         output->m_ptr = vkSemaphore;
@@ -155,7 +155,7 @@ namespace llri
         const bool isTexture = desc.type != resource_type::Buffer;
 
         // get all valid queue families
-        const auto& families = internal::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
+        const auto& families = detail::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
         std::vector<uint32_t> familyIndices;
         for (const auto& [key, family] : families)
         {
@@ -164,7 +164,7 @@ namespace llri
         }
 
         // get memory flags
-        const auto memFlags = internal::mapMemoryType(desc.memoryType);
+        const auto memFlags = detail::mapMemoryType(desc.memoryType);
 
         uint64_t dataSize = 0;
         uint32_t memoryTypeIndex = 0;
@@ -180,14 +180,14 @@ namespace llri
             imageCreate.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageCreate.pNext = nullptr;
             imageCreate.flags = 0;
-            imageCreate.imageType = internal::mapTextureType(desc.type);
-            imageCreate.format = internal::mapTextureFormat(desc.textureFormat);
+            imageCreate.imageType = detail::mapTextureType(desc.type);
+            imageCreate.format = detail::mapTextureFormat(desc.textureFormat);
             imageCreate.extent = VkExtent3D{ desc.width, desc.height, depth };
             imageCreate.mipLevels = desc.mipLevels;
             imageCreate.arrayLayers = arrayLayers;
             imageCreate.samples = (VkSampleCountFlagBits)desc.sampleCount;
             imageCreate.tiling = VK_IMAGE_TILING_OPTIMAL;
-            imageCreate.usage = internal::mapTextureUsage(desc.usage);
+            imageCreate.usage = detail::mapTextureUsage(desc.usage);
             imageCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
             imageCreate.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
             imageCreate.pQueueFamilyIndices = familyIndices.data();
@@ -195,12 +195,12 @@ namespace llri
 
             auto r = table->vkCreateImage(static_cast<VkDevice>(m_ptr), &imageCreate, nullptr, &image);
             if (r != VK_SUCCESS)
-                return internal::mapVkResult(r);
+                return detail::mapVkResult(r);
 
             VkMemoryRequirements reqs;
             table->vkGetImageMemoryRequirements(static_cast<VkDevice>(m_ptr), image, &reqs);
             dataSize = reqs.size;
-            memoryTypeIndex = internal::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
+            memoryTypeIndex = detail::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
         }
         else
         {
@@ -209,19 +209,19 @@ namespace llri
             bufferCreate.pNext = nullptr;
             bufferCreate.flags = 0;
             bufferCreate.size = desc.width;
-            bufferCreate.usage = internal::mapBufferUsage(desc.usage);
+            bufferCreate.usage = detail::mapBufferUsage(desc.usage);
             bufferCreate.sharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
             bufferCreate.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
             bufferCreate.pQueueFamilyIndices = familyIndices.data();
 
             auto r = table->vkCreateBuffer(static_cast<VkDevice>(m_ptr), &bufferCreate, nullptr, &buffer);
             if (r != VK_SUCCESS)
-                return internal::mapVkResult(r);
+                return detail::mapVkResult(r);
 
             VkMemoryRequirements reqs;
             table->vkGetBufferMemoryRequirements(static_cast<VkDevice>(m_ptr), buffer, &reqs);
             dataSize = reqs.size;
-            memoryTypeIndex = internal::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
+            memoryTypeIndex = detail::findMemoryTypeIndex(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), reqs.memoryTypeBits, memFlags);
         }
 
         VkMemoryAllocateFlagsInfoKHR flagsInfo;
@@ -244,7 +244,7 @@ namespace llri
                 table->vkDestroyImage(static_cast<VkDevice>(m_ptr), image, nullptr);
             else
                 table->vkDestroyBuffer(static_cast<VkDevice>(m_ptr), buffer, nullptr);
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
         }
 
         if (isTexture)
@@ -261,7 +261,7 @@ namespace llri
 
             table->vkFreeMemory(static_cast<VkDevice>(m_ptr), memory, nullptr);
 
-            return internal::mapVkResult(r);
+            return detail::mapVkResult(r);
         }
         
         // this part is necessary because in vulkan images are created in the UNDEFINED layout
@@ -291,16 +291,16 @@ namespace llri
             imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
             imageMemoryBarrier.pNext = nullptr;
             imageMemoryBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            imageMemoryBarrier.newLayout = internal::mapResourceState(desc.initialState);
+            imageMemoryBarrier.newLayout = detail::mapResourceState(desc.initialState);
             imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
             imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
             imageMemoryBarrier.srcAccessMask = VK_ACCESS_NONE_KHR;
-            imageMemoryBarrier.dstAccessMask = internal::mapStateToAccess(desc.initialState);
+            imageMemoryBarrier.dstAccessMask = detail::mapStateToAccess(desc.initialState);
             imageMemoryBarrier.image = image;
             imageMemoryBarrier.subresourceRange = VkImageSubresourceRange { aspectFlags, 0, desc.mipLevels, 0, desc.depthOrArrayLayers };
             
             table->vkCmdPipelineBarrier(static_cast<VkCommandBuffer>(m_workCmdList),
-                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, internal::mapStateToPipelineStage(desc.initialState), {},
+                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, detail::mapStateToPipelineStage(desc.initialState), {},
                 0, nullptr, 0, nullptr, 1, &imageMemoryBarrier);
             
             table->vkEndCommandBuffer(static_cast<VkCommandBuffer>(m_workCmdList));

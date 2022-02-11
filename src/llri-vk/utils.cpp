@@ -9,7 +9,7 @@
 
 namespace llri
 {
-    namespace internal
+    namespace detail
     {
         /**
          * @brief Helper function that maps layers to their names
