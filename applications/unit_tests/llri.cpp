@@ -28,17 +28,17 @@ TEST_CASE("print info")
         printf("\t\"%s\"\n", info.adapterName.c_str());
     }
     
-    if (strcmp(LLRI_TEST_ADAPTERS, "All") == 0)
+    if (strcmp(LLRI_SELECTED_TEST_ADAPTERS, "All") == 0)
     {
-        printf("LLRI_TEST_ADAPTERS was set to \"All\", all adapters available are selected for unit test execution.\n");
+        printf("LLRI_SELECTED_TEST_ADAPTERS was set to \"All\", all adapters available are selected for unit test execution.\n");
         printf("This configuration is %s\n", adapters.size() > 0 ? "valid" : "invalid");
     }
     else
     {
-        printf("LLRI_TEST_ADAPTERS was set to %s\n", LLRI_TEST_ADAPTERS);
+        printf("LLRI_SELECTED_TEST_ADAPTERS was set to %s\n", LLRI_SELECTED_TEST_ADAPTERS);
         printf("Unit tests will attempt to run with the defined set of adapters. All adapters must be available for the unit tests to succeed.\n");
         
-        auto selectedAdapterNames = helpers::split(LLRI_TEST_ADAPTERS, ';');
+        auto selectedAdapterNames = helpers::split(LLRI_SELECTED_TEST_ADAPTERS, ';');
         std::vector<llri::Adapter*> selectedAdapters;
 
         for (auto* adapter : adapters)
@@ -48,12 +48,12 @@ TEST_CASE("print info")
             if (std::find(selectedAdapterNames.begin(), selectedAdapterNames.end(), info.adapterName) != selectedAdapterNames.end())
             {
                 selectedAdapters.push_back(adapter);
-                printf("Found a required adapter: %s", info.adapterName.c_str());
+                printf("Found a required adapter: %s\n", info.adapterName.c_str());
             }
         }
         
-        printf("Number of selected adapters as defined in LLRI_TEST_ADAPTERS: %u\n", static_cast<uint32_t>(selectedAdapterNames.size()));
-        printf("Number of adapters that match LLRI_TEST_ADAPTERS names: %u\n", static_cast<uint32_t>(selectedAdapters.size()));
+        printf("Number of selected adapters as defined in LLRI_SELECTED_TEST_ADAPTERS: %u\n", static_cast<uint32_t>(selectedAdapterNames.size()));
+        printf("Number of adapters that match LLRI_SELECTED_TEST_ADAPTERS names: %u\n", static_cast<uint32_t>(selectedAdapters.size()));
         printf("This configuration is: %s\n", selectedAdapters.size() == selectedAdapterNames.size() ? "valid" : "invalid");
     }
 }

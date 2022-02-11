@@ -84,7 +84,7 @@ namespace detail
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
         REQUIRE_UNARY(adapters.size() > 0);
         
-        constexpr size_t adapterStr = nameHash(LLRI_TEST_ADAPTERS);
+        constexpr size_t adapterStr = nameHash(LLRI_SELECTED_TEST_ADAPTERS);
         constexpr size_t all = nameHash("All");
         
         std::vector<llri::Adapter*> selectedAdapters;
@@ -95,7 +95,7 @@ namespace detail
         }
         else
         {
-            auto selectedAdapterNames = split(LLRI_TEST_ADAPTERS, ';');
+            auto selectedAdapterNames = split(LLRI_SELECTED_TEST_ADAPTERS, ';');
             
             for (auto* adapter : adapters)
             {

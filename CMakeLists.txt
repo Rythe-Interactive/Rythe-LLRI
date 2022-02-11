@@ -80,9 +80,9 @@ if (NOT DEFINED LLRI_BUILD_TESTS)
 	SET(LLRI_BUILD_TESTS ON CACHE BOOL "Add unit tests to the project. Requires the submodules in applications/deps/ to be present.")
 endif()
 
-if (NOT DEFINED LLRI_TEST_ADAPTERS)
-	set(LLRI_TEST_ADAPTERS "All" CACHE STRING 
-		"List of adapters used in the unit tests.
+if (NOT DEFINED LLRI_SELECTED_TEST_ADAPTERS)
+	set(LLRI_SELECTED_TEST_ADAPTERS "All" CACHE STRING 
+		"List of adapters used in the unit tests. Elements are case sensitive and must be separated by a semi-colon (;).
 		If set to \"All\", all compatible adapters are used for the same unit test session. In this case at least one compatible adapter must be available for the test to succeed.
 		If set to one or more adapter names, each selected adapter must be available for the test to succeed.")
 endif()
