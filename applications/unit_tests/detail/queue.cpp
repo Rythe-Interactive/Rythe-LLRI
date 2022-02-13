@@ -17,10 +17,10 @@ struct queue_wrapper
 
 TEST_CASE("Queue")
 {
-    auto* instance = helpers::defaultInstance();
+    auto* instance = detail::defaultInstance();
     
-    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
-        auto* device = helpers::defaultDevice(instance, adapter);
+    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        auto* device = detail::defaultDevice(instance, adapter);
 
         // gather all possible queues
         std::vector<queue_wrapper> queues;
@@ -45,21 +45,21 @@ TEST_CASE("Queue")
                 for (auto& wrapper : queues)
                 {
                     auto* queue = wrapper.queue;
-                    auto* group = helpers::defaultCommandGroup(device, wrapper.type);
+                    auto* group = detail::defaultCommandGroup(device, wrapper.type);
 
                     // premade cmd lists: ready for submit, empty, and recording
-                    auto* readyCmdList = helpers::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
+                    auto* readyCmdList = detail::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
                     llri::command_list_begin_desc beginDesc{ };
                     REQUIRE_EQ(readyCmdList->begin(beginDesc), llri::result::Success);
                     REQUIRE_EQ(readyCmdList->end(), llri::result::Success);
 
-                    auto* emptyCmdList = helpers::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
+                    auto* emptyCmdList = detail::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
 
-                    auto* recordingCmdList = helpers::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
+                    auto* recordingCmdList = detail::defaultCommandList(group, nodeMask, llri::command_list_usage::Direct);
                     REQUIRE_EQ(recordingCmdList->begin(beginDesc), llri::result::Success);
 
-                    llri::Fence* signaledFence = helpers::defaultFence(device, true);
-                    llri::Fence* defaultFence = helpers::defaultFence(device, false);
+                    llri::Fence* signaledFence = detail::defaultFence(device, true);
+                    llri::Fence* defaultFence = detail::defaultFence(device, false);
 
                     const std::string str = to_string(wrapper.type) + " Queue " + std::to_string(wrapper.index);
                     SUBCASE(str.c_str())

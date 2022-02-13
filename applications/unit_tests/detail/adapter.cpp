@@ -12,7 +12,7 @@ TEST_CASE("Adapter")
 {
     llri::Instance* instance = detail::defaultInstance();
 
-    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
         SUBCASE("Adapter::queryInfo()")
         {
             llri::adapter_info info = adapter->queryInfo();

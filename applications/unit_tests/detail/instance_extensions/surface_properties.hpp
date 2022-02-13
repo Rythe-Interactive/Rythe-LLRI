@@ -74,7 +74,7 @@ inline void impl_testSurfacePresentSupport(llri::Adapter* adapter, llri::Surface
 
 void testSurfacePropertiesWin32(){
 #ifdef _WIN32
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceWin32);
     if (!instance)
         return;
     
@@ -92,7 +92,7 @@ void testSurfacePropertiesWin32(){
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
         impl_testSurfaceCapabilities(adapter, surface);
         impl_testSurfacePresentSupport(adapter, surface);
     });
@@ -106,7 +106,7 @@ void testSurfacePropertiesWin32(){
 void testSurfacePropertiesCocoa()
 {
 #ifdef __APPLE__
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceCocoa);
     if (!instance)
         return;
     
@@ -123,7 +123,7 @@ void testSurfacePropertiesCocoa()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
         impl_testSurfaceCapabilities(adapter, surface);
         impl_testSurfacePresentSupport(adapter, surface);
     });
@@ -137,7 +137,7 @@ void testSurfacePropertiesCocoa()
 void testSurfacePropertiesXlib()
 {
 #ifdef __linux__
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceXlib);
     if (!instance)
         return;
     
@@ -156,7 +156,7 @@ void testSurfacePropertiesXlib()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
         impl_testSurfaceCapabilities(adapter, surface);
         impl_testSurfacePresentSupport(adapter, surface);
     });
@@ -170,7 +170,7 @@ void testSurfacePropertiesXlib()
 void testSurfacePropertiesXcb()
 {
 #ifdef __linux__
-    llri::Instance* instance = helpers::createInstanceWithExtension(llri::instance_extension::SurfaceXcb);
+    llri::Instance* instance = detail::createInstanceWithExtension(llri::instance_extension::SurfaceXcb);
     if (!instance)
         return;
     
@@ -189,7 +189,7 @@ void testSurfacePropertiesXcb()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
         impl_testSurfaceCapabilities(adapter, surface);
         impl_testSurfacePresentSupport(adapter, surface);
     });
@@ -207,9 +207,9 @@ inline void testSurfaceProperties()
     
     SUBCASE("extension not enabled")
     {
-        llri::Instance* instance = helpers::defaultInstance();
+        llri::Instance* instance = detail::defaultInstance();
         
-        helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
             llri::surface_capabilities_ext capabilities;
             bool support;
             

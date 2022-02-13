@@ -91,7 +91,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::enumerateAdapters")
     {
-        llri::Instance* instance = helpers::defaultInstance();
+        llri::Instance* instance = detail::defaultInstance();
 
         SUBCASE("[Incorrect usage] adapters == nullptr")
         {
@@ -142,7 +142,7 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::createDevice()")
     {
-        llri::Instance* instance = helpers::defaultInstance();
+        llri::Instance* instance = detail::defaultInstance();
 
         SUBCASE("[Incorrect usage] device == nullptr")
         {
@@ -157,7 +157,7 @@ TEST_SUITE("Instance")
             CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
         }
         
-        helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
             llri::Device* device = nullptr;
             llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 0, nullptr };
 
@@ -295,9 +295,9 @@ TEST_SUITE("Instance")
 
     TEST_CASE("Instance::destroyDevice()")
     {
-        llri::Instance* instance = helpers::defaultInstance();
+        llri::Instance* instance = detail::defaultInstance();
             
-        helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
             SUBCASE("[Correct usage] device != nullptr")
             {
                 llri::Device* device = nullptr;

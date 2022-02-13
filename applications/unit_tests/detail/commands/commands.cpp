@@ -12,12 +12,12 @@
 
 TEST_CASE("CommandList:: commands")
 {
-    auto* instance = helpers::defaultInstance();
+    auto* instance = detail::defaultInstance();
     
-    helpers::iterateAdapters(instance, [=](llri::Adapter* adapter) {
-        auto* device = helpers::defaultDevice(instance, adapter);
-        auto* group = helpers::defaultCommandGroup(device, helpers::availableQueueType(adapter));
-        auto* list = helpers::defaultCommandList(group, 0, llri::command_list_usage::Direct);
+    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        auto* device = detail::defaultDevice(instance, adapter);
+        auto* group = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
+        auto* list = detail::defaultCommandList(group, 0, llri::command_list_usage::Direct);
 
         SUBCASE("resourceBarrier()")
             testCommandListResourceBarrier(device, group, list);
