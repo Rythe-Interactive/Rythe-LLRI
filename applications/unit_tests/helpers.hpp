@@ -28,17 +28,16 @@ namespace detail
      * @brief Utility function for hashing strings  in compile time
     */
     template<size_t N>
-    inline constexpr uint64_t nameHash(const char(&name)[N]) noexcept
+    constexpr uint64_t nameHash(const char(&name)[N]) noexcept
     {
         uint64_t hash = 0xcbf29ce484222325;
         constexpr uint64_t prime = 0x00000100000001b3;
 
-        size_t size = N;
-        if (name[size - 1] == '\0')
-            size--;
-
-        for (size_t i = 0; i < size; i++)
+        for (size_t i = 0; i < N; i++)
         {
+            if (name[i] == '\0')
+                break;
+            
             hash = hash ^ static_cast<const uint8_t>(name[i]);
             hash *= prime;
         }
