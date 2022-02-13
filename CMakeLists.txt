@@ -50,6 +50,10 @@ if (NOT MSVC)
 else()
 	set(LLRI_COMPILER_FLAGS /W4 /WX)
 	set(LLRI_LINKER_FLAGS "")
+
+	if ($LLRI_ENABLE_ASAN})
+		set(LLRI_COMPILER_FLAGS /fsanitize=address ${LLRI_COMPILER_FLAGS})
+	endif()
 endif()
 
 # Include threading
