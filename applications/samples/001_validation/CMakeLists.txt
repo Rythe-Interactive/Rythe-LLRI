@@ -7,6 +7,7 @@ file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(001_validation ${source})
 
 target_compile_options(001_validation PRIVATE ${LLRI_COMPILER_FLAGS})
+target_link_options(001_validation PRIVATE ${LLRI_LINKER_FLAGS})
 target_compile_features(001_validation PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})

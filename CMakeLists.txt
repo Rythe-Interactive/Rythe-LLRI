@@ -31,14 +31,25 @@ set(LLRI_DIR_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src" CACHE INTERNAL "")
 set(LLRI_DIR_APPLICATIONS "${CMAKE_CURRENT_SOURCE_DIR}/applications" CACHE INTERNAL "")
 set(LLRI_DIR_APPLICATIONS_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/applications/deps" CACHE INTERNAL "")
 
+if (NOT DEFINED LLRI_ENABLE_ASAN)
+ 	SET(LLRI_ENABLE_ASAN OFF CACHE BOOL "Enable address sanitizer.")
+ endif()
+
 if (NOT MSVC)
 	set(LLRI_COMPILER_FLAGS -Wall -Wextra -Wpedantic -Werror 
 							-Wno-c++98-compat -Wno-c++98-compat-pedantic 
 							-Wno-c++0x-compat 
 							-Wno-c++11-compat -Wno-c++11-compat-pedantic
 							-Wno-c++14-compat -Wno-c++14-compat-pedantic)
+	set(LLRI_LINKER_FLAGS "")
+
+	if (${LLRI_ENABLE_ASAN})
+		set(LLRI_COMPILER_FLAGS -fsanitize=address ${LLRI_COMPILER_FLAGS})
+		set(LLRI_LINKER_FLAGS -fsanitize=address ${LLRI_LINKER_FLAGS})
+	endif()
 else()
 	set(LLRI_COMPILER_FLAGS /W4 /WX)
+	set(LLRI_LINKER_FLAGS "")
 endif()
 
 # Include threading
