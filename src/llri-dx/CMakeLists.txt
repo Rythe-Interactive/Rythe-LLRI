@@ -8,6 +8,7 @@ add_library(llri-dx ${source})
 add_library(llri::dx ALIAS llri-dx)
 
 target_compile_options(llri-dx PRIVATE ${LLRI_COMPILER_FLAGS})
+target_link_options(llri-dx PRIVATE ${LLRI_LINKER_FLAGS})
 target_compile_features(llri-dx PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})

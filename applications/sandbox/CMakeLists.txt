@@ -7,6 +7,7 @@ file(GLOB_RECURSE source *.hpp *.inl *.cpp)
 add_executable(sandbox ${source})
 
 target_compile_options(sandbox PRIVATE ${LLRI_COMPILER_FLAGS})
+target_link_options(sandbox PRIVATE ${LLRI_LINKER_FLAGS})
 target_compile_features(sandbox PRIVATE cxx_std_17)
 
 include_directories(${LLRI_DIR_SRC})
