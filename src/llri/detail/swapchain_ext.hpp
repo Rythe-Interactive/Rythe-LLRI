@@ -78,4 +78,99 @@ namespace llri
         */
         resource_usage_flags usageBits;
     };
+
+    /**
+     * @brief Describes how a swapchain should be created.
+     * Swapchain creation should adhere to the limits of the SurfaceEXT that it is created for.
+     * These limits are described in a surface_capabilites structure, queryable through Adapter::querySurfaceCapabilities().
+    */
+    struct swapchain_desc_ext
+    {
+        /**
+         * @brief The surface to create a swapchain for.
+         *
+         * @note Valid usage (ErrorInvalidUsage): surface **must not** be nullptr.
+        */
+        SurfaceEXT* surface;
+
+        /**
+         * @brief The minimum number of textures in the swapchain.
+         *
+         * Implementations **may** decide to create more textures than requested.
+         *
+         * @note Valid usage (ErrorInvalidUsage): textureCount **must** be more than 0.
+         * @note Valid usage (ErrorInvalidUsage): textureCount **must** be more than or equals to surface_capabilities::minTextureCount.
+         * @note Valid usage (ErrorInvalidUsage): textureCount **must** be less than or equals to surface_capabilities::maxTextureCount.
+        */
+        uint32_t textureCount;
+
+        /**
+         * @brief The extent of the Swapchain's textures.
+         *
+         * @note Valid usage (ErrorInvalidUsage): extent.width **must not** be less than surface_capabilities::minExtent::width
+         * @note Valid usage (ErrorInvalidUsage): extent.height **must not** be less than surface_capabilities::minExtent::height
+         *
+         * @note Valid usage (ErrorInvalidUsage): extent.width **must not** be more than surface_capabilities::maxExtent::width
+         * @note Valid usage (ErrorInvalidUsage): extent.height **must not** be more than surface_capabilities::maxExtent.height
+        */
+        extent_2d extent;
+
+        /**
+         * @brief The format of the Swapchain's textures.
+         *
+         * @note Valid usage (ErrorInvalidUsage): format **must** be less than or equal to format::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): format **must** be an element of  surface_capabilities::formats.
+        */
+        format format;
+
+        /**
+         * @brief Describes how the presentation engine handles swapping buffers.
+         *
+         * @note Valid usage (ErrorInvalidUsage): presentMode **must** be less than or equal to present_mode_ext::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): presentMode **must** be an element of surface_capabilities::presentModes.
+        */
+        present_mode_ext presentMode;
+        
+        /**
+         * @brief Describes how the Swapchain's textures will be used.
+         *
+         * @note Valid usage (ErrorInvalidUsage): usage **must** be a valid combination of resource_usage_flag_bits.
+         * @note Valid usage (ErrorInvalidUsage): usage **must not** be resource_usage_flag_bits::None.
+         * @note Valid usage (ErrorInvalidUsage): each enabled bit in usage **must** also be enabled in surface_capabilities::usageBits.
+        */
+        resource_usage_flags usage;
+    };
+
+    /**
+     * @brief Swapchains provide the ability to swap or loop textures between the application and the surface.
+    */
+    class SwapchainEXT
+    {
+        friend class Device;
+
+    public:
+        using native_swapchain_ext = void;
+        
+        /**
+         * @brief Get the desc that the SwapchainEXT was created with.
+         */
+        [[nodiscard]] swapchain_desc_ext getDesc() const;
+
+        /**
+         * @brief Gets the native SwapchainEXT pointer, which depending on the llri::getImplementation() is a pointer to the following:
+         *
+         * DirectX12: IDXGISwapchain*
+         * Vulkan: VkSwapchainKHR
+         */
+        [[nodiscard]] native_swapchain_ext* getNative() const;
+        
+    private:
+        // Force private constructor/deconstructor so that only create/destroy can manage lifetime
+        SwapchainEXT() = default;
+        ~SwapchainEXT() = default;
+
+        void* m_ptr = nullptr;
+        Device* m_device = nullptr;
+        swapchain_desc_ext m_desc;
+    };
 }

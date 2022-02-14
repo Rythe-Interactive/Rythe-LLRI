@@ -64,6 +64,10 @@ if (${LLRI_BUILD_APPLICATIONS})
 	add_subdirectory(samples/005_commands)
 	add_subdirectory(samples/006_queue_submit)
 
+	add_subdirectory(samples/007_swapchain)
+	target_include_directories(007_swapchain PUBLIC deps/glfw/include)
+	target_link_libraries(007_swapchain glfw ${GLFW_LIBRARIES})
+
 	set_target_properties(
 		000_hello_llri
 		001_validation
@@ -72,6 +76,7 @@ if (${LLRI_BUILD_APPLICATIONS})
 		004_device
 		005_commands
 		006_queue_submit
+		007_swapchain
 		PROPERTIES FOLDER "applications/samples"
 	)
 endif()

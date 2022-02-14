@@ -324,4 +324,51 @@ namespace llri
         impl_destroyResource(resource);
         LLRI_DETAIL_POLL_API_MESSAGES(m_validationCallbackMessenger)
     }
+
+    inline result Device::createSwapchainEXT(const swapchain_desc_ext& desc, SwapchainEXT** swapchain)
+    {
+        LLRI_DETAIL_VALIDATION_REQUIRE(swapchain != nullptr, result::ErrorInvalidUsage)
+        *swapchain = nullptr;
+        
+        
+        LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(adapter_extension::Swapchain) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
+
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.surface != nullptr, result::ErrorInvalidUsage)
+        
+        llri::surface_capabilities_ext surfaceCapabilities;
+        m_adapter->querySurfaceCapabilitiesEXT(desc.surface, &surfaceCapabilities);
+
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.textureCount >= surfaceCapabilities.minTextureCount, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.textureCount <= surfaceCapabilities.maxTextureCount, result::ErrorInvalidUsage)
+
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.extent.width >= surfaceCapabilities.minExtent.width, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.extent.height >= surfaceCapabilities.minExtent.height, result::ErrorInvalidUsage)
+        
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.extent.width <= surfaceCapabilities.maxExtent.width, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.extent.height <= surfaceCapabilities.maxExtent.height, result::ErrorInvalidUsage)
+        
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.format <= format::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(detail::contains(surfaceCapabilities.formats, desc.format), result::ErrorInvalidUsage)
+        
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.presentMode <= present_mode_ext::MaxEnum, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(detail::contains(surfaceCapabilities.presentModes, desc.presentMode), result::ErrorInvalidUsage)
+        
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.usage <= resource_usage_flag_bits::All, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.usage != resource_usage_flag_bits::None, result::ErrorInvalidUsage)
+        LLRI_DETAIL_VALIDATION_REQUIRE(surfaceCapabilities.usageBits.all(desc.usage), result::ErrorInvalidUsage)
+#endif
+
+        LLRI_DETAIL_CALL_IMPL(impl_createSwapchainEXT(desc, swapchain), m_validationCallbackMessenger)
+    }
+
+
+    inline void Device::destroySwapchainEXT(SwapchainEXT* swapchain)
+    {
+        if (!swapchain)
+            return;
+
+        impl_destroySwapchainEXT(swapchain);
+        LLRI_DETAIL_POLL_API_MESSAGES(m_validationCallbackMessenger)
+    }
 }

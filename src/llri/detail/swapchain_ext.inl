@@ -23,4 +23,14 @@ namespace llri
 
         return "Invalid present_mode_ext value";
     }
+
+    inline swapchain_desc_ext SwapchainEXT::getDesc() const
+    {
+        return m_desc;
+    }
+
+    inline SwapchainEXT::native_swapchain_ext* SwapchainEXT::getNative() const
+    {
+        return m_ptr;
+    }
 }

@@ -160,7 +160,23 @@ namespace llri
         }
 #endif
 
-        LLRI_DETAIL_CALL_IMPL(impl_createDevice(desc, device), (*device)->m_validationCallbackMessenger)
+        // create device
+        const auto r = impl_createDevice(desc, device);
+
+        // handle message polling
+#ifndef LLRI_DISABLE_IMPLEMENTATION_MESSAGE_POLLING
+        if (*device)
+            detail::impl_pollAPIMessages((*device)->m_validationCallbackMessenger);
+#endif
+
+        // handle validation data
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        if (*device)
+            (*device)->m_enabledExtensions = { desc.extensions, desc.extensions + desc.numExtensions };
+#endif
+
+        // finally return
+        return r;
     }
 
     inline void Instance::destroyDevice(Device* device)

@@ -17,17 +17,29 @@ namespace llri
     enum struct adapter_extension : uint8_t
     {
         /**
+         * @brief Swapchains enable you to create multiple frames for a surface (often a window or screen) and render to them frame by frame by swapping the frame textures that are currently being rendered or presented.
+        */
+        Swapchain,
+        /**
          * @brief The highest value in this enum.
         */
-        MaxEnum = 0
+        MaxEnum = Swapchain
     };
 
     /**
      * @brief Converts a adapter_extension to a string.
      * @return The enum value as a string, or "Invalid adapter_extension value" if the value was not recognized as an enum member.
     */
-    inline std::string to_string([[maybe_unused]] adapter_extension ext)
+    inline std::string to_string(adapter_extension ext)
     {
+        switch(ext)
+        {
+            case adapter_extension::Swapchain:
+                return "Swapchain";
+            default:
+                break;
+        }
+        
         return "Invalid adapter_extension value";
     }
 }

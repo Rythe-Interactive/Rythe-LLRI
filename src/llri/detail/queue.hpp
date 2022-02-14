@@ -169,6 +169,7 @@ namespace llri
     {
         friend class Instance;
         friend class Device;
+        friend class SwapchainEXT;
 
     public:
         using native_queue = void;

@@ -17,6 +17,7 @@ namespace llri
     {
         friend class Device;
         friend class Queue;
+        friend class SwapchainEXT;
 
     public:
         using native_semaphore = void;

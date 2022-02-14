@@ -25,6 +25,9 @@ namespace llri
     class Resource;
     struct resource_desc;
 
+    struct swapchain_desc_ext;
+    class SwapchainEXT;
+
     /**
      * @brief Device description to be used in Instance::createDevice().
     */
@@ -84,6 +87,7 @@ namespace llri
         friend Instance;
         friend class CommandGroup;
         friend class Queue;
+        friend class SwapchainEXT;
   
     public:
         using native_device = void;
@@ -236,6 +240,26 @@ namespace llri
          * @param resource A pointer to a valid Resource, or nullptr.
         */
         void destroyResource(Resource* resource);
+        
+        /**
+         * @brief Create a swapchain.
+         * @param desc The description of the swapchain.
+         * @param swapchain A pointer to the resulting Swapchain variable.
+         *
+         * @note Valid usage (ErrorExtensionNotEnabled): adapter_extension::Swapchain **must** be enabled in the device.
+         * @note Valid usage (ErrorInvalidUsage): swapchain **must** be a non-null pointer to a SwapchainEXT*.
+         *
+         * @return Success upon correct execution of the operation.
+         * @return ErrorInvalidUsage if any of the conditions in swapchain_desc_ext are not met.
+         * @return Implementation defined result values: ErrorOutOfHostMemory, ErrorOutOfDeviceMemory.
+        */
+        result createSwapchainEXT(const swapchain_desc_ext& desc, SwapchainEXT** swapchain);
+
+        /**
+         * @brief Destroy the given swapchain.
+         * @param swapchain A pointer to a valid SwapchainEXT, or nullptr.
+        */
+        void destroySwapchainEXT(SwapchainEXT* swapchain);
     private:
         // Force private constructor/deconstructor so that only create/destroy can manage lifetime
         Device() = default;
@@ -259,6 +283,10 @@ namespace llri
         void* m_workFence = nullptr;
         queue_type m_workQueueType;
 
+#ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        std::unordered_set<adapter_extension> m_enabledExtensions;
+#endif
+        
         result impl_createCommandGroup(queue_type type, CommandGroup** cmdGroup);
         void impl_destroyCommandGroup(CommandGroup* cmdGroup);
 
@@ -271,5 +299,8 @@ namespace llri
 
         result impl_createResource(const resource_desc& desc, Resource** resource);
         void impl_destroyResource(Resource* resource);
+        
+        result impl_createSwapchainEXT(const swapchain_desc_ext& desc, SwapchainEXT** swapchain);
+        void impl_destroySwapchainEXT(SwapchainEXT* swapchain);
     };
 }

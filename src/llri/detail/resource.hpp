@@ -567,6 +567,7 @@ namespace llri
     {
         friend class Device;
         friend class CommandList;
+        friend class SwapchainEXT;
 
     public:
         using native_resource = void;
