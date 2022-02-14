@@ -44,27 +44,59 @@ int main()
     // This sample displays how you can use a SurfaceEXT and a SwapchainEXT to render output to a window
     // (in this case GLFW but any other library may be used as long as it can provide native window pointers)
 
+    // simple glfw initialization
     glfwInit();
-    // disable the default OpenGL context that GLFW creates
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    // this sample doesn't handle window resizing
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // disable the default OpenGL context that GLFW creates
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // this sample doesn't handle window resizing
+    
+    bool useXcb = queryInstanceExtensionSupport(llri::instance_extension::SurfaceXcb);
+    glfwWindowHint(GLFW_X11_XCB_VULKAN_SURFACE, useXcb); // prefer xcb on linux
+    
     GLFWwindow* window = glfwCreateWindow(960, 540, "007_swapchain", nullptr, nullptr);
 
-    // LLRI surfaces
+    // LLRI surfaces are one of the very few features that are platform-dependent
+    // surfaces cross the bridge between the platform-agnostic API and the
+    // platform-dependent windowing systems.
+    // This is usually the ony platform-dependent code that needs to be written for LLRI.
+    llri::SurfaceEXT* surface;
+    
+    // most platform-dependent constructors just pass a native window pointer
+    // on to internal LLRI functions.
+    // in some cases extra data specific to the platform must be provided.
+    
 #if defined(_WIN32)
     llri::surface_win32_desc_ext surfaceDesc{};
     surfaceDesc.hinstance = GetModuleHandle(NULL);
     surfaceDesc.hwnd = glfwGetWin32Window(window);
+
+    llri::result result = instance->createSurfaceEXT(surfaceDesc, &surface);
 #elif defined(__APPLE__)
     llri::surface_cocoa_desc_ext surfaceDesc{};
     surfaceDesc.nsWindow = glfwGetCocoaWindow(window);
+
+    llri::result result = instance->createSurfaceEXT(surfaceDesc, &surface);
+#elif defined(__linux__)
+    llri::result result;
+    if (useXcb) // prefer xcb on linux when possible
+    {
+        llri::surface_xcb_desc_ext surfaceDesc{};
+        surfaceDesc.connection = XGetXCBConnection(glfwGetX11Display());
+        surfaceDesc.window = glfwGetX11Window(window);
+
+        result = instance->createSurfaceEXT(surfaceDesc, &surface);
+    }
+    else
+    {
+        llri::surface_xlib_desc_ext surfaceDesc{};
+        surfaceDesc.display = glfwGetX11Display();
+        surfaceDesc.window = glfwGetX11Window(window);
+
+        result = instance->createSurfaceEXT(surfaceDesc, &surface);
+    }
 #else
 #error platform not yet supported in this sample
 #endif
 
-    llri::SurfaceEXT* surface = nullptr;
-    auto result = instance->createSurfaceEXT(surfaceDesc, &surface);
     if (result != llri::result::Success)
         throw std::runtime_error("Failed to create llri::SurfaceEXT");
 
@@ -87,15 +119,8 @@ int main()
     else
         selectedSurfaceFormat = surfaceCapabilities.textureFormats[0];
 
-    // GPU operations need to wait before swapchain textures are ready
-    // this can be synchronized with a fence or semaphore, but semaphores are preferred since the operations tend to be
-    // gpu-based (e.g. command list submission).
-    llri::Semaphore* semaphore;
-    if (device->createSemaphore(&semaphore) != llri::result::Success)
-        throw std::runtime_error("Failed to create semaphore");
-
     // describe how the swapchain should be created -
-    // with the surface, and the various properties limited by the surface's queried properties.
+    // with the surface, and the various properties limited by the surface's queried capabilities.
     llri::swapchain_desc_ext swapchainDesc{};
     swapchainDesc.surface = surface;
     swapchainDesc.textureFormat = selectedSurfaceFormat;
@@ -119,8 +144,6 @@ int main()
 
     // wait till the gpu is done with its submitted operations prior to destroying
     queue->waitIdle();
-
-    device->destroySemaphore(semaphore);
     
     device->destroySwapchainEXT(swapchain);
     device->destroyCommandGroup(group);
@@ -133,22 +156,33 @@ int main()
 // See 000_hello_llri.
 llri::Instance* createInstance()
 {
+    std::vector<llri::instance_extension> extensions;
+    if (queryInstanceExtensionSupport(llri::instance_extension::DriverValidation))
+        extensions.emplace_back(llri::instance_extension::DriverValidation);
+    if (queryInstanceExtensionSupport(llri::instance_extension::GPUValidation))
+        extensions.emplace_back(llri::instance_extension::GPUValidation);
+    
 #if defined(_WIN32)
     if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceWin32) == false)
         throw std::runtime_error("Win32 Surface support is required for this sample");
     
-    std::array<llri::instance_extension, 2> extensions {
-        llri::instance_extension::SurfaceWin32,
-        llri::instance_extension::DriverValidation,
-    };
+    extensions.push_back(llri::instance_extension::SurfaceWin32);
 #elif defined(__APPLE__)
     if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceCocoa) == false)
-        throw std::runtime_error("Win32 Surface support is required for this sample");
+        throw std::runtime_error("Cocoa Surface support is required for this sample");
     
-    std::array<llri::instance_extension, 2> extensions {
-        llri::instance_extension::SurfaceCocoa,
-        llri::instance_extension::DriverValidation,
-    };
+    extensions.push_back(llri::instance_extension::SurfaceCocoa);
+#elif defined(__linux__)
+    // prefer xcb
+    if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceXcb))
+    {
+        extensions.push_back(llri::instance_extension::SurfaceXcb);
+        printf("using Xcb instead of Xlib\n");
+    }
+    else if (queryInstanceExtensionSupport(llri::instance_extension::SurfaceXlib))
+        extensions.push_back(llri::instance_extension::SurfaceXlib);
+    else
+        throw std::runtime_error("Xlib or Xcb Surface support is required for this sample");
 #else
 #error platform not yet supported in this sample
 #endif
