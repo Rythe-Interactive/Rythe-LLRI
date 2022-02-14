@@ -108,7 +108,7 @@ int main()
     if (result != llri::result::Success)
         throw std::runtime_error("Failed to create llri::SurfaceEXT");
 
-    auto* adapter = selectAdapter(instance, surface);
+    auto* adapter = selectAdapter(instance, surface); // note the extra feature checks
     auto* device = createDevice(instance, adapter); // note the extra extension added in device
     auto* group = createCommandGroup(device);
     [[maybe_unused]] auto* list = allocateCommandList(group);
