@@ -71,8 +71,8 @@ int main()
     auto* adapter = selectAdapter(instance, surface);
     auto* device = createDevice(instance, adapter); // note the extra extension added in device
     auto* group = createCommandGroup(device);
-    auto* list = allocateCommandList(group);
-    auto* queue = getQueue(device);
+    [[maybe_unused]] auto* list = allocateCommandList(group);
+    [[maybe_unused]] auto* queue = getQueue(device);
 
     // pick valid swapchain settings based on the surface's capabilities
     llri::surface_capabilities_ext surfaceCapabilities;
@@ -90,12 +90,8 @@ int main()
     // GPU operations need to wait before swapchain textures are ready
     // this can be synchronized with a fence or semaphore, but semaphores are preferred since the operations tend to be
     // gpu-based (e.g. command list submission).
-    llri::Semaphore* indexSemaphore;
-    if (device->createSemaphore(&indexSemaphore) != llri::result::Success)
-        throw std::runtime_error("Failed to create semaphore");
-
-    llri::Semaphore* submitSemaphore;
-    if (device->createSemaphore(&submitSemaphore) != llri::result::Success)
+    llri::Semaphore* semaphore;
+    if (device->createSemaphore(&semaphore) != llri::result::Success)
         throw std::runtime_error("Failed to create semaphore");
 
     // describe how the swapchain should be created -
@@ -116,53 +112,16 @@ int main()
     if (result != llri::result::Success)
         throw std::runtime_error("Failed to create llri::SwapchainEXT");
 
-    // get the swapchain's textures so we can use them for rendering
-    //std::vector<llri::Resource*> swapchainTextures;
-    //swapchain->queryTextures(&swapchainTextures);
-
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-
-        // query the next available texture - this texture might not be immediately available,
-        // so any operation that uses the texture must wait on the passed fence or semaphore
-        //uint32_t index;
-        //if (swapchain->queryNextIndex(indexSemaphore, nullptr, &index) != llri::result::Success)
-        //    throw;
-
-        group->reset();
-        llri::command_list_begin_desc beginDesc {};
-        list->begin(beginDesc);
-        // TODO: clear operation and transition swapchain texture state
-        list->end();
-
-        // submit command list and make it wait on indexSemaphore
-        llri::submit_desc submitDesc {};
-        submitDesc.nodeMask = 0;
-        submitDesc.numCommandLists = 1;
-        submitDesc.commandLists = &list;
-        submitDesc.numWaitSemaphores = 1;
-        submitDesc.waitSemaphores = &indexSemaphore;
-        submitDesc.numSignalSemaphores = 1;
-        submitDesc.signalSemaphores = &submitSemaphore;
-        submitDesc.fence = nullptr;
-        queue->submit(submitDesc);
-
-        // present our resulting texture to the surface
-        // make present wait on submitSemaphore
-        //llri::present_desc present {};
-        //present.numWaitSemaphores = 1;
-        //present.waitSemaphores = &submitSemaphore;
-        //present.textureIndex = index;
-        //swapchain->present(present);
     }
 
     // wait till the gpu is done with its submitted operations prior to destroying
     queue->waitIdle();
 
-    device->destroySemaphore(indexSemaphore);
-    device->destroySemaphore(submitSemaphore);
-
+    device->destroySemaphore(semaphore);
+    
     device->destroySwapchainEXT(swapchain);
     device->destroyCommandGroup(group);
     instance->destroyDevice(device);
