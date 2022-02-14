@@ -68,6 +68,7 @@ void callback(llri::message_severity severity, llri::message_source source, cons
 GLFWwindow* m_window = nullptr;
 llri::Instance* m_instance = nullptr;
 llri::SurfaceEXT* m_surface = nullptr;
+llri::SwapchainEXT* m_swapchain = nullptr;
 bool m_useXcb = false;
 
 llri::Adapter* m_adapter = nullptr;
@@ -266,6 +267,10 @@ void selectAdapter()
         printf("\t\tCompute: %u\n", maxComputeQueueCount);
         printf("\t\tTransfer: %u\n", maxTransferQueueCount);
         
+        // rendering to a surface requires the swapchain adapter extension.
+        if (adapter->queryExtensionSupport(llri::adapter_extension::Swapchain) == false)
+            continue;
+        
         // Require support for using/presenting with Graphics to our surface
         bool support;
         THROW_IF_FAILED(adapter->querySurfacePresentSupportEXT(m_surface, llri::queue_type::Graphics, &support));
@@ -292,7 +297,9 @@ void createDevice()
 {
     llri::adapter_features selectedFeatures {};
 
-    std::vector<llri::adapter_extension> adapterExtensions;
+    std::vector<llri::adapter_extension> adapterExtensions {
+        llri::adapter_extension::Swapchain
+    };
 
     std::array<llri::queue_desc, 1> adapterQueues {
         llri::queue_desc { llri::queue_type::Graphics, llri::queue_priority::High } // We can give one or more queues a higher priority
@@ -369,4 +376,26 @@ void createSwapchain()
     printf("\n");
     
     printf("\tSupported usage bits: %s\n", llri::to_string(capabilities.textureUsage).c_str());
+    
+    // sRGB gives better color accuracy so we'll prefer that but if that's not an option we'll simply default to the first surface format
+    llri::format selectedSurfaceFormat;
+    if (std::find(capabilities.textureFormats.begin(), capabilities.textureFormats.end(), llri::format::BGRA8sRGB) != capabilities.textureFormats.end())
+        selectedSurfaceFormat = llri::format::BGRA8sRGB;
+    else
+        selectedSurfaceFormat = capabilities.textureFormats[0];
+
+    // describe how the swapchain should be created -
+    // with the surface, and the various properties limited by the surface's queried capabilities.
+    llri::swapchain_desc_ext swapchainDesc{};
+    swapchainDesc.surface = m_surface;
+    swapchainDesc.textureFormat = selectedSurfaceFormat;
+    swapchainDesc.textureExtent = {
+        std::clamp(960u, capabilities.minTextureExtent.width, capabilities.maxTextureExtent.width),
+        std::clamp(540u, capabilities.minTextureExtent.height, capabilities.maxTextureExtent.height)
+    };
+    swapchainDesc.textureCount = std::clamp(3u, capabilities.minTextureCount, capabilities.maxTextureCount);
+    swapchainDesc.textureUsage = llri::resource_usage_flag_bits::TransferDst;
+    swapchainDesc.presentMode = llri::present_mode_ext::Fifo;
+
+    THROW_IF_FAILED(m_device->createSwapchainEXT(swapchainDesc, &m_swapchain));
 }

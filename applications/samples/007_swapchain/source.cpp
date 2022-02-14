@@ -9,11 +9,19 @@
 #include <algorithm>
 
 #if defined(_WIN32)
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
+    #define WIN32_LEAN_AND_MEAN
+    #define VC_EXTRALEAN
+    #define NOMINMAX
+    #include <Windows.h>
+    #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
-#define GLFW_EXPOSE_NATIVE_COCOA
+    #define GLFW_EXPOSE_NATIVE_COCOA
+#elif defined(__linux__)
+    #define GLFW_EXPOSE_NATIVE_X11
+    #include <X11/Xlib.h>
+    #include <X11/Xlib-xcb.h>
+    #undef None
+    #undef Success
 #endif
 
 #include <GLFW/glfw3.h>
