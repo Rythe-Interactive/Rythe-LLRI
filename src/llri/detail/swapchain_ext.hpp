@@ -57,16 +57,16 @@ namespace llri
         /**
          * @brief The minimum texture extent (inclusive).
         */
-        extent_2d minExtent;
+        extent_2d minTextureExtent;
         /**
          * @brief The maximum texture extent (inclusive).
         */
-        extent_2d maxExtent;
+        extent_2d maxTextureExtent;
 
         /**
          * @brief The supported texture formats.
         */
-        std::vector<format> formats;
+        std::vector<format> textureFormats;
 
         /**
          * @brief The supported swapchain present modes.
@@ -76,7 +76,7 @@ namespace llri
         /**
          * @brief The supported texture usage flags bits
         */
-        resource_usage_flags usageBits;
+        resource_usage_flags textureUsage;
     };
 
     /**
@@ -92,6 +92,14 @@ namespace llri
          * @note Valid usage (ErrorInvalidUsage): surface **must not** be nullptr.
         */
         SurfaceEXT* surface;
+        
+        /**
+         * @brief Describes how the presentation engine handles swapping buffers.
+         *
+         * @note Valid usage (ErrorInvalidUsage): presentMode **must** be less than or equal to present_mode_ext::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): presentMode **must** be an element of surface_capabilities::presentModes.
+        */
+        present_mode_ext presentMode;
 
         /**
          * @brief The minimum number of textures in the swapchain.
@@ -107,38 +115,30 @@ namespace llri
         /**
          * @brief The extent of the Swapchain's textures.
          *
-         * @note Valid usage (ErrorInvalidUsage): extent.width **must not** be less than surface_capabilities::minExtent::width
-         * @note Valid usage (ErrorInvalidUsage): extent.height **must not** be less than surface_capabilities::minExtent::height
+         * @note Valid usage (ErrorInvalidUsage): textureExtent.width **must not** be less than surface_capabilities::minExtent::width
+         * @note Valid usage (ErrorInvalidUsage): textureExtent.height **must not** be less than surface_capabilities::minExtent::height
          *
-         * @note Valid usage (ErrorInvalidUsage): extent.width **must not** be more than surface_capabilities::maxExtent::width
-         * @note Valid usage (ErrorInvalidUsage): extent.height **must not** be more than surface_capabilities::maxExtent.height
+         * @note Valid usage (ErrorInvalidUsage): textureExtent.width **must not** be more than surface_capabilities::maxExtent::width
+         * @note Valid usage (ErrorInvalidUsage): textureExtent.height **must not** be more than surface_capabilities::maxExtent.height
         */
-        extent_2d extent;
+        extent_2d textureExtent;
 
         /**
          * @brief The format of the Swapchain's textures.
          *
-         * @note Valid usage (ErrorInvalidUsage): format **must** be less than or equal to format::MaxEnum.
-         * @note Valid usage (ErrorInvalidUsage): format **must** be an element of  surface_capabilities::formats.
+         * @note Valid usage (ErrorInvalidUsage): textureFormat **must** be less than or equal to format::MaxEnum.
+         * @note Valid usage (ErrorInvalidUsage): textureFormat **must** be an element of  surface_capabilities::formats.
         */
-        format format;
-
-        /**
-         * @brief Describes how the presentation engine handles swapping buffers.
-         *
-         * @note Valid usage (ErrorInvalidUsage): presentMode **must** be less than or equal to present_mode_ext::MaxEnum.
-         * @note Valid usage (ErrorInvalidUsage): presentMode **must** be an element of surface_capabilities::presentModes.
-        */
-        present_mode_ext presentMode;
+        format textureFormat;
         
         /**
          * @brief Describes how the Swapchain's textures will be used.
          *
-         * @note Valid usage (ErrorInvalidUsage): usage **must** be a valid combination of resource_usage_flag_bits.
-         * @note Valid usage (ErrorInvalidUsage): usage **must not** be resource_usage_flag_bits::None.
-         * @note Valid usage (ErrorInvalidUsage): each enabled bit in usage **must** also be enabled in surface_capabilities::usageBits.
+         * @note Valid usage (ErrorInvalidUsage): textureUsage **must** be a valid combination of resource_usage_flag_bits.
+         * @note Valid usage (ErrorInvalidUsage): textureUsage **must not** be resource_usage_flag_bits::None.
+         * @note Valid usage (ErrorInvalidUsage): each enabled bit in textureUsage **must** also be enabled in surface_capabilities::usageBits.
         */
-        resource_usage_flags usage;
+        resource_usage_flags textureUsage;
     };
 
     /**

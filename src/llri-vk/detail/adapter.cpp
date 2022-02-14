@@ -120,9 +120,9 @@ namespace llri
         if (r != VK_SUCCESS)
             return detail::mapVkResult(r);
 
-        capabilities->formats.resize(count);
+        capabilities->textureFormats.resize(count);
         for (size_t i = 0; i < count; i++)
-            capabilities->formats[i] = detail::mapVkFormat(formats[i].format);
+            capabilities->textureFormats[i] = detail::mapVkFormat(formats[i].format);
 
         // handle present modes
         r = vkGetPhysicalDeviceSurfacePresentModesKHR(static_cast<VkPhysicalDevice>(m_ptr), static_cast<VkSurfaceKHR>(surface->m_ptr), &count, nullptr);
@@ -151,10 +151,10 @@ namespace llri
         capabilities->minTextureCount = vkCapabilities.minImageCount;
         capabilities->maxTextureCount = vkCapabilities.maxImageCount;
 
-        capabilities->minExtent = { vkCapabilities.minImageExtent.width, vkCapabilities.minImageExtent.height };
-        capabilities->maxExtent = { vkCapabilities.maxImageExtent.width, vkCapabilities.maxImageExtent.height };
+        capabilities->minTextureExtent = { vkCapabilities.minImageExtent.width, vkCapabilities.minImageExtent.height };
+        capabilities->maxTextureExtent = { vkCapabilities.maxImageExtent.width, vkCapabilities.maxImageExtent.height };
 
-        capabilities->usageBits = detail::mapVkImageUsage(vkCapabilities.supportedUsageFlags);
+        capabilities->textureUsage = detail::mapVkImageUsage(vkCapabilities.supportedUsageFlags);
 
         return result::Success;
     }

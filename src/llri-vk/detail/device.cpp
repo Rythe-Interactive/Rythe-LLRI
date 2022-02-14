@@ -362,7 +362,7 @@ namespace llri
         std::vector<VkSurfaceFormatKHR> formats(count);
         vkGetPhysicalDeviceSurfaceFormatsKHR(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), static_cast<VkSurfaceKHR>(desc.surface->m_ptr), &count, formats.data());
 
-        const VkFormat requestedFormat = detail::mapTextureFormat(desc.format);
+        const VkFormat requestedFormat = detail::mapTextureFormat(desc.textureFormat);
         VkColorSpaceKHR colorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
         for (auto& format : formats)
         {
@@ -379,11 +379,11 @@ namespace llri
         createInfo.flags = 0;
         createInfo.surface = static_cast<VkSurfaceKHR>(desc.surface->m_ptr);
         createInfo.minImageCount = desc.textureCount;
-        createInfo.imageFormat = detail::mapTextureFormat(desc.format);
+        createInfo.imageFormat = detail::mapTextureFormat(desc.textureFormat);
         createInfo.imageColorSpace = colorSpace;
-        createInfo.imageExtent = VkExtent2D { desc.extent.width, desc.extent.height };
+        createInfo.imageExtent = VkExtent2D { desc.textureExtent.width, desc.textureExtent.height };
         createInfo.imageArrayLayers = 1;
-        createInfo.imageUsage = detail::mapTextureUsage(desc.usage);
+        createInfo.imageUsage = detail::mapTextureUsage(desc.textureUsage);
         createInfo.imageSharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
         createInfo.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
         createInfo.pQueueFamilyIndices = familyIndices.data();

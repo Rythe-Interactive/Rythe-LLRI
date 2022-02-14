@@ -82,10 +82,10 @@ int main()
 
     // sRGB gives better color accuracy so we'll prefer that but if that's not an option we'll simply default to the first surface format
     llri::format selectedSurfaceFormat;
-    if (std::find(surfaceCapabilities.formats.begin(), surfaceCapabilities.formats.end(), llri::format::BGRA8sRGB) != surfaceCapabilities.formats.end())
+    if (std::find(surfaceCapabilities.textureFormats.begin(), surfaceCapabilities.textureFormats.end(), llri::format::BGRA8sRGB) != surfaceCapabilities.textureFormats.end())
         selectedSurfaceFormat = llri::format::BGRA8sRGB;
     else
-        selectedSurfaceFormat = surfaceCapabilities.formats[0];
+        selectedSurfaceFormat = surfaceCapabilities.textureFormats[0];
 
     // GPU operations need to wait before swapchain textures are ready
     // this can be synchronized with a fence or semaphore, but semaphores are preferred since the operations tend to be
@@ -98,13 +98,13 @@ int main()
     // with the surface, and the various properties limited by the surface's queried properties.
     llri::swapchain_desc_ext swapchainDesc{};
     swapchainDesc.surface = surface;
-    swapchainDesc.format = selectedSurfaceFormat;
-    swapchainDesc.extent = {
-        std::clamp(960u, surfaceCapabilities.minExtent.width, surfaceCapabilities.maxExtent.width),
-        std::clamp(540u, surfaceCapabilities.minExtent.height, surfaceCapabilities.maxExtent.height)
+    swapchainDesc.textureFormat = selectedSurfaceFormat;
+    swapchainDesc.textureExtent = {
+        std::clamp(960u, surfaceCapabilities.minTextureExtent.width, surfaceCapabilities.maxTextureExtent.width),
+        std::clamp(540u, surfaceCapabilities.minTextureExtent.height, surfaceCapabilities.maxTextureExtent.height)
     };
     swapchainDesc.textureCount = std::clamp(3u, surfaceCapabilities.minTextureCount, surfaceCapabilities.maxTextureCount);
-    swapchainDesc.usage = llri::resource_usage_flag_bits::TransferDst; // transferDst is required for clear operations
+    swapchainDesc.textureUsage = llri::resource_usage_flag_bits::TransferDst;
     swapchainDesc.presentMode = llri::present_mode_ext::Fifo;
 
     llri::SwapchainEXT* swapchain = nullptr;
