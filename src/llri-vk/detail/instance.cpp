@@ -380,6 +380,18 @@ namespace llri
         // Extensions
         std::vector<const char*> extensions;
 
+        for (size_t i = 0; i < desc.numExtensions; i++)
+        {
+            switch(desc.extensions[i])
+            {
+                case adapter_extension::Swapchain:
+                {
+                    extensions.push_back("VK_KHR_swapchain");
+                    break;
+                }
+            }
+        }
+        
         if (desc.adapter->m_nodeCount > 1)
             extensions.push_back("VK_KHR_device_group");
         

@@ -63,8 +63,26 @@ namespace llri
         return output;
     }
 
-    bool Adapter::impl_queryExtensionSupport([[maybe_unused]] adapter_extension ext) const
+    bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
     {
+        uint32_t count;
+        vkEnumerateDeviceExtensionProperties(static_cast<VkPhysicalDevice>(m_ptr), nullptr, &count, nullptr);
+        std::vector<VkExtensionProperties> extensions(count);
+        vkEnumerateDeviceExtensionProperties(static_cast<VkPhysicalDevice>(m_ptr), nullptr, &count, extensions.data());
+
+        for (auto prop : extensions)
+        {
+            switch(ext)
+            {
+                case adapter_extension::Swapchain:
+                    if (strcmp(prop.extensionName, "VK_KHR_swapchain") == 0)
+                        return true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         return false;
     }
 

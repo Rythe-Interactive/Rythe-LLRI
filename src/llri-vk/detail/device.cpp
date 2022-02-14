@@ -340,4 +340,81 @@ namespace llri
         
         static_cast<VolkDeviceTable*>(m_functionTable)->vkFreeMemory(static_cast<VkDevice>(m_ptr), static_cast<VkDeviceMemory>(resource->m_memory), nullptr);
     }
+
+    result Device::impl_createSwapchainEXT(const swapchain_desc_ext& desc, SwapchainEXT** swapchain)
+    {
+        // get all valid queue families
+        const auto& families = detail::findQueueFamilies(static_cast<VkPhysicalDevice>(m_adapter->m_ptr));
+        std::vector<uint32_t> familyIndices;
+        for (const auto& [key, family] : families)
+        {
+            if (family != UINT_MAX)
+                familyIndices.push_back(family);
+        }
+
+        // find the current transform
+        VkSurfaceCapabilitiesKHR capabilities;
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), static_cast<VkSurfaceKHR>(desc.surface->m_ptr), &capabilities);
+
+        // find the matching colorspace to our requested format
+        uint32_t count = 0;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), static_cast<VkSurfaceKHR>(desc.surface->m_ptr), &count, nullptr);
+        std::vector<VkSurfaceFormatKHR> formats(count);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(static_cast<VkPhysicalDevice>(m_adapter->m_ptr), static_cast<VkSurfaceKHR>(desc.surface->m_ptr), &count, formats.data());
+
+        const VkFormat requestedFormat = detail::mapTextureFormat(desc.format);
+        VkColorSpaceKHR colorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+        for (auto& format : formats)
+        {
+            if (format.format == requestedFormat)
+            {
+                colorSpace = format.colorSpace;
+                break;
+            }
+        }
+
+        VkSwapchainCreateInfoKHR createInfo;
+        createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+        createInfo.pNext = nullptr;
+        createInfo.flags = 0;
+        createInfo.surface = static_cast<VkSurfaceKHR>(desc.surface->m_ptr);
+        createInfo.minImageCount = desc.textureCount;
+        createInfo.imageFormat = detail::mapTextureFormat(desc.format);
+        createInfo.imageColorSpace = colorSpace;
+        createInfo.imageExtent = VkExtent2D { desc.extent.width, desc.extent.height };
+        createInfo.imageArrayLayers = 1;
+        createInfo.imageUsage = detail::mapTextureUsage(desc.usage);
+        createInfo.imageSharingMode = familyIndices.size() > 1 ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE;
+        createInfo.queueFamilyIndexCount = static_cast<uint32_t>(familyIndices.size());
+        createInfo.pQueueFamilyIndices = familyIndices.data();
+        createInfo.preTransform = capabilities.currentTransform;
+        createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+        createInfo.presentMode = detail::mapPresentMode(desc.presentMode);
+        createInfo.clipped = true;
+        createInfo.oldSwapchain = nullptr;
+
+        VkSwapchainKHR vkSwapchain;
+        const auto r = static_cast<VolkDeviceTable*>(m_functionTable)->vkCreateSwapchainKHR(static_cast<VkDevice>(m_ptr), &createInfo, nullptr, &vkSwapchain);
+        if (r != VK_SUCCESS)
+            return detail::mapVkResult(r);
+
+        auto* output = new SwapchainEXT();
+        output->m_desc = desc;
+        output->m_ptr = vkSwapchain;
+        output->m_device = this;
+
+        *swapchain = output;
+        return result::Success;
+    }
+
+    void Device::impl_destroySwapchainEXT(SwapchainEXT* swapchain)
+    {
+        if (swapchain->m_ptr)
+        {
+             static_cast<VolkDeviceTable*>(m_functionTable)->
+                vkDestroySwapchainKHR(static_cast<VkDevice>(m_ptr), static_cast<VkSwapchainKHR>(swapchain->m_ptr), nullptr);
+        }
+
+        delete swapchain;
+    }
 }
