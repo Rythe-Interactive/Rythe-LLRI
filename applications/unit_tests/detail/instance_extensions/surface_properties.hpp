@@ -39,23 +39,23 @@ inline void impl_testSurfaceCapabilities(llri::Adapter* adapter, llri::SurfaceEX
     CHECK_UNARY(capabilities.maxTextureCount > 0);
     CHECK_UNARY(capabilities.maxTextureCount >= capabilities.minTextureCount);
     
-    CHECK_UNARY(capabilities.minExtent.width > 0);
-    CHECK_UNARY(capabilities.minExtent.height > 0);
-    CHECK_UNARY(capabilities.maxExtent.width > 0);
-    CHECK_UNARY(capabilities.maxExtent.height > 0);
-    CHECK_UNARY(capabilities.maxExtent.width >= capabilities.minExtent.width);
-    CHECK_UNARY(capabilities.maxExtent.height >= capabilities.minExtent.height);
+    CHECK_UNARY(capabilities.minTextureExtent.width > 0);
+    CHECK_UNARY(capabilities.minTextureExtent.height > 0);
+    CHECK_UNARY(capabilities.maxTextureExtent.width > 0);
+    CHECK_UNARY(capabilities.maxTextureExtent.height > 0);
+    CHECK_UNARY(capabilities.maxTextureExtent.width >= capabilities.minTextureExtent.width);
+    CHECK_UNARY(capabilities.maxTextureExtent.height >= capabilities.minTextureExtent.height);
     
-    CHECK_UNARY(capabilities.formats.size() > 0);
-    for (auto f : capabilities.formats)
+    CHECK_UNARY(capabilities.textureFormats.size() > 0);
+    for (auto f : capabilities.textureFormats)
         CHECK_UNARY(f <= llri::format::MaxEnum);
     
     CHECK_UNARY(capabilities.presentModes.size() > 0);
     for (auto p : capabilities.presentModes)
         CHECK_UNARY(p <= llri::present_mode_ext::MaxEnum);
     
-    CHECK_UNARY(capabilities.usageBits != llri::resource_usage_flag_bits::None);
-    CHECK_UNARY(capabilities.usageBits <= llri::resource_usage_flag_bits::All);
+    CHECK_UNARY(capabilities.textureUsage != llri::resource_usage_flag_bits::None);
+    CHECK_UNARY(capabilities.textureUsage <= llri::resource_usage_flag_bits::All);
 }
 
 inline void impl_testSurfacePresentSupport(llri::Adapter* adapter, llri::SurfaceEXT* surface)

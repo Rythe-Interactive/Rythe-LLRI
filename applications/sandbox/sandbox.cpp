@@ -355,11 +355,11 @@ void createSwapchain()
     printf("Surface capabilities:\n");
     printf("\tMin texture count: %u\n", capabilities.minTextureCount);
     printf("\tMax texture count: %u\n", capabilities.maxTextureCount);
-    printf("\tMin extent: %s\n", llri::to_string(capabilities.minExtent).c_str());
-    printf("\tMax extent: %s\n", llri::to_string(capabilities.maxExtent).c_str());
+    printf("\tMin extent: %s\n", llri::to_string(capabilities.minTextureExtent).c_str());
+    printf("\tMax extent: %s\n", llri::to_string(capabilities.maxTextureExtent).c_str());
     
     printf("\tSupported formats: ");
-    for(auto f : capabilities.formats)
+    for(auto f : capabilities.textureFormats)
         printf("%s, ", llri::to_string(f).c_str());
     printf("\n");
     
@@ -368,5 +368,5 @@ void createSwapchain()
         printf("%s, ", llri::to_string(p).c_str());
     printf("\n");
     
-    printf("\tSupported usage bits: %s\n", llri::to_string(capabilities.usageBits).c_str());
+    printf("\tSupported usage bits: %s\n", llri::to_string(capabilities.textureUsage).c_str());
 }
