@@ -25,7 +25,7 @@ namespace detail
             if (name[i] == '\0')
                 break;
             
-            hash = hash ^ static_cast<const uint8_t>(name[i]);
+            hash = hash ^ static_cast<uint8_t>(name[i]);
             hash *= prime;
         }
 
@@ -45,7 +45,7 @@ namespace detail
             if (name[i] == '\0')
                 break;
             
-            hash = hash ^ static_cast<const uint8_t>(name[i]);
+            hash = hash ^ static_cast<uint8_t>(name[i]);
             hash *= prime;
         }
 
