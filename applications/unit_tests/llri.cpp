@@ -45,7 +45,7 @@ TEST_CASE("print info")
         {
             llri::adapter_info info = adapter->queryInfo();
             
-            if (std::find(selectedAdapterNames.begin(), selectedAdapterNames.end(), info.adapterName) != selectedAdapterNames.end())
+            if (selectedAdapterNames.count(detail::nameHash(info.adapterName)))
             {
                 selectedAdapters.push_back(adapter);
                 printf("Found a required adapter: %s\n", info.adapterName.c_str());

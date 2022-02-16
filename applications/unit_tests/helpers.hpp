@@ -11,24 +11,11 @@
 
 namespace detail
 {
-    inline std::vector<std::string> split (const std::string &s, char delim)
-    {
-        std::vector<std::string> result;
-        std::stringstream ss (s);
-        std::string item;
-
-        while (getline (ss, item, delim)) {
-            result.push_back (item);
-        }
-
-        return result;
-    }
-
     /**
      * @brief Utility function for hashing strings  in compile time
     */
     template<size_t N>
-    constexpr uint64_t nameHash(const char(&name)[N]) noexcept
+    inline constexpr uint64_t nameHash(const char(&name)[N]) noexcept
     {
         uint64_t hash = 0xcbf29ce484222325;
         constexpr uint64_t prime = 0x00000100000001b3;
@@ -43,6 +30,39 @@ namespace detail
         }
 
         return hash;
+    }
+
+    /**
+     * @brief Utility function for hashing std::strings in runtime
+    */
+    inline uint64_t nameHash(const std::string& name)
+    {
+        uint64_t hash = 0xcbf29ce484222325;
+        constexpr uint64_t prime = 0x00000100000001b3;
+
+        for (size_t i = 0; i < name.size(); i++)
+        {
+            if (name[i] == '\0')
+                break;
+            
+            hash = hash ^ static_cast<const uint8_t>(name[i]);
+            hash *= prime;
+        }
+
+        return hash;
+    }
+
+    inline std::unordered_map<uint64_t, std::string> split (const std::string &s, char delim)
+    {
+        std::unordered_map<uint64_t, std::string> result;
+        std::stringstream ss (s);
+        std::string item;
+
+        while (getline (ss, item, delim)) {
+            result.insert(std::make_pair(nameHash(item), item));
+        }
+
+        return result;
     }
 
     inline llri::Instance* defaultInstance()
@@ -100,7 +120,7 @@ namespace detail
             {
                 llri::adapter_info info = adapter->queryInfo();
                 
-                if (std::find(selectedAdapterNames.begin(), selectedAdapterNames.end(), info.adapterName) != selectedAdapterNames.end())
+                if (selectedAdapterNames.count(nameHash(info.adapterName)))
                 {
                     selectedAdapters.push_back(adapter);
                 }
