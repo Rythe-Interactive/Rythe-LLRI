@@ -92,7 +92,7 @@ void testSurfacePropertiesWin32(){
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [surface](llri::Adapter* adapter) {
         impl_testSurfaceCapabilities(adapter, surface);
         impl_testSurfacePresentSupport(adapter, surface);
     });
@@ -156,7 +156,7 @@ void testSurfacePropertiesXlib()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [surface](llri::Adapter* adapter) {
         impl_testSurfaceCapabilities(adapter, surface);
         impl_testSurfacePresentSupport(adapter, surface);
     });
@@ -189,7 +189,7 @@ void testSurfacePropertiesXcb()
     REQUIRE_EQ(instance->createSurfaceEXT(surfaceDesc, &surface), llri::result::Success);
     
     // do tests
-    detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [surface](llri::Adapter* adapter) {
         impl_testSurfaceCapabilities(adapter, surface);
         impl_testSurfacePresentSupport(adapter, surface);
     });
