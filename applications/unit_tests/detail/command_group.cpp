@@ -12,7 +12,7 @@ TEST_CASE("CommandGroup")
 {
     auto* instance = detail::defaultInstance();
     
-    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
         auto* device = detail::defaultDevice(instance, adapter);
         auto* group = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
         

@@ -157,7 +157,7 @@ TEST_SUITE("Instance")
             CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
         }
         
-        detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
             llri::Device* device = nullptr;
             llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 0, nullptr };
 
@@ -297,7 +297,7 @@ TEST_SUITE("Instance")
     {
         llri::Instance* instance = detail::defaultInstance();
             
-        detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
             SUBCASE("[Correct usage] device != nullptr")
             {
                 llri::Device* device = nullptr;

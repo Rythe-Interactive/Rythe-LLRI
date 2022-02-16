@@ -19,7 +19,7 @@ TEST_CASE("Queue")
 {
     auto* instance = detail::defaultInstance();
     
-    detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+    detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
         auto* device = detail::defaultDevice(instance, adapter);
 
         // gather all possible queues

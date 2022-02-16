@@ -14,7 +14,7 @@ TEST_CASE("Device")
     {
         auto* instance = detail::defaultInstance();
         
-        detail::iterateAdapters(instance, [=](llri::Adapter* adapter) {
+        detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
             auto* device = detail::defaultDevice(instance, adapter);
             
             SUBCASE("Device::getQueue()")
