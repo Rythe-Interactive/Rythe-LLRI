@@ -16,10 +16,10 @@
 #include <vector>
 #include <iostream> // including iostream fixes std::string issues on osx
 #include <functional>
+#include <algorithm>
 
 #include <unordered_set>
 #include <unordered_map>
-
 #include <type_traits>
 
 #if defined(DOXY_EXCLUDE)

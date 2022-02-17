@@ -105,7 +105,8 @@ namespace llri
         friend void llri::destroyInstance(Instance* instance);
 
         friend class Adapter;
-        
+        friend class Device;
+
     public:
         using native_instance = void;
         

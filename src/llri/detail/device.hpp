@@ -266,6 +266,7 @@ namespace llri
         ~Device() = default;
 
         native_device* m_ptr = nullptr;
+        Instance* m_instance = nullptr;
         Adapter* m_adapter = nullptr;
         void* m_functionTable = nullptr;
 

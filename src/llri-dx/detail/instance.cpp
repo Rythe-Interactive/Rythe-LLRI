@@ -273,6 +273,7 @@ namespace llri
         auto* output = new Device();
         output->m_desc = desc;
         output->m_adapter = desc.adapter;
+        output->m_instance = this;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
         output->m_ptr = dx12Device;
 

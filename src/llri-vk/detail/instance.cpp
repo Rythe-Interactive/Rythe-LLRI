@@ -323,6 +323,7 @@ namespace llri
         output->m_desc = desc;
         output->m_adapter = desc.adapter;
         output->m_validationCallbackMessenger = m_validationCallbackMessenger;
+        output->m_instance = this;
 
         // Queue creation
         auto families = detail::findQueueFamilies(static_cast<VkPhysicalDevice>(desc.adapter->m_ptr));
