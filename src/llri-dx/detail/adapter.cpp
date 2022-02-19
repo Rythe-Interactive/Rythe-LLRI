@@ -17,8 +17,9 @@ namespace llri
         adapter_info info;
         info.vendorId = desc.VendorId;
         info.adapterId = desc.DeviceId;
-        const auto description = std::string(reinterpret_cast<char*>(desc.Description), reinterpret_cast<char*>(desc.Description + 128));
-        info.adapterName = description.substr(0, description.find_last_not_of(' '));
+        const auto wdescription = std::wstring(desc.Description);
+        const auto description = std::string(wdescription.begin(), wdescription.end());
+        info.adapterName = description;
 
         if (desc.Flags == DXGI_ADAPTER_FLAG_REMOTE)
             info.adapterType = adapter_type::Virtual;
