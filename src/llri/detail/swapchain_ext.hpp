@@ -82,10 +82,17 @@ namespace llri
     /**
      * @brief Describes how a swapchain should be created.
      * Swapchain creation should adhere to the limits of the SurfaceEXT that it is created for.
-     * These limits are described in a surface_capabilites structure, queryable through Adapter::querySurfaceCapabilities().
+     * These limits are described in a surface_capabilities structure, queryable through Adapter::querySurfaceCapabilities().
     */
     struct swapchain_desc_ext
     {
+        /**
+         * @brief The queue on which the swapchain will present.
+         *
+         * @note Valid usage (ErrorInvalidUsage): queue **must not** be nullptr.
+         * @note Valid usage (ErrorInvalidUsage): queue->getDesc().type **must** be supported in Adapter::querySurfacePresentSupportEXT()
+        */
+        Queue* queue;
         /**
          * @brief The surface to create a swapchain for.
          *

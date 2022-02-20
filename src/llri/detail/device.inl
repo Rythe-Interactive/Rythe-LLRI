@@ -333,8 +333,13 @@ namespace llri
         LLRI_DETAIL_VALIDATION_REQUIRE(m_enabledExtensions.find(adapter_extension::Swapchain) != m_enabledExtensions.end(), result::ErrorExtensionNotEnabled)
 
 #ifdef LLRI_DETAIL_ENABLE_VALIDATION
+        LLRI_DETAIL_VALIDATION_REQUIRE(desc.queue != nullptr, result::ErrorInvalidUsage)
         LLRI_DETAIL_VALIDATION_REQUIRE(desc.surface != nullptr, result::ErrorInvalidUsage)
-        
+
+        bool queuePresentSupport;
+        getAdapter()->querySurfacePresentSupportEXT(desc.surface, desc.queue->getDesc().type, &queuePresentSupport);
+        LLRI_DETAIL_VALIDATION_REQUIRE(queuePresentSupport, result::ErrorInvalidUsage)
+
         llri::surface_capabilities_ext surfaceCapabilities;
         m_adapter->querySurfaceCapabilitiesEXT(desc.surface, &surfaceCapabilities);
 
@@ -360,7 +365,6 @@ namespace llri
 
         LLRI_DETAIL_CALL_IMPL(impl_createSwapchainEXT(desc, swapchain), m_validationCallbackMessenger)
     }
-
 
     inline void Device::destroySwapchainEXT(SwapchainEXT* swapchain)
     {

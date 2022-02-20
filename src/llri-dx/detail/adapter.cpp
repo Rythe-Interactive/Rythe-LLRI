@@ -43,8 +43,16 @@ namespace llri
         return output;
     }
 
-    bool Adapter::impl_queryExtensionSupport([[maybe_unused]] adapter_extension ext) const
+    bool Adapter::impl_queryExtensionSupport(adapter_extension ext) const
     {
+        switch(ext)
+        {
+            case adapter_extension::Swapchain:
+                return true;
+            default:
+                break;
+        }
+    
         return false;
     }
 
@@ -68,14 +76,14 @@ namespace llri
         capabilities->minTextureCount = 2;
         capabilities->maxTextureCount = 16;
 
-        capabilities->minExtent = { 1, 1 };
-        capabilities->maxExtent = { 16384, 16384 };
+        capabilities->minTextureExtent = { 1, 1 };
+        capabilities->maxTextureExtent = { 16384, 16384 };
 
-        capabilities->formats = { format::RGBA8UNorm, format::BGRA8UNorm, format::RGBA16Float };
+        capabilities->textureFormats = { format::RGBA8UNorm, format::BGRA8UNorm, format::RGBA16Float };
 
         capabilities->presentModes = { present_mode_ext::Immediate, present_mode_ext::Fifo };
 
-        capabilities->usageBits = resource_usage_flag_bits::TransferSrc |
+        capabilities->textureUsage = resource_usage_flag_bits::TransferSrc |
             resource_usage_flag_bits::TransferDst |
             resource_usage_flag_bits::ColorAttachment |
             resource_usage_flag_bits::Sampled;

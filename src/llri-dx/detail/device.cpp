@@ -187,4 +187,46 @@ namespace llri
         static_cast<ID3D12Resource*>(resource->m_resource)->Release();
         delete resource;
     }
+
+    result Device::impl_createSwapchainEXT(const swapchain_desc_ext& desc, SwapchainEXT** swapchain)
+    {
+        DXGI_SWAP_CHAIN_DESC1 swapDesc{};
+        swapDesc.Width = desc.textureExtent.width;
+        swapDesc.Height = desc.textureExtent.height;
+        swapDesc.Format = detail::mapTextureFormat(desc.textureFormat);
+        swapDesc.SampleDesc = DXGI_SAMPLE_DESC { 1, 0 };
+        swapDesc.BufferUsage = detail::mapResourceUsage(desc.textureUsage);
+        swapDesc.BufferCount = desc.textureCount;
+        swapDesc.Scaling = DXGI_SCALING_STRETCH;
+        swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        swapDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+        swapDesc.Flags = 0;
+
+        IDXGISwapChain1* dxSwapchain;
+        const auto r = static_cast<IDXGIFactory2*>(m_instance->m_ptr)->CreateSwapChainForHwnd(
+            static_cast<ID3D12CommandQueue*>(desc.queue->m_ptrs[0]), // todo nodemask?
+            static_cast<HWND>(desc.surface->m_ptr),
+            &swapDesc,
+            nullptr,
+            nullptr,
+            &dxSwapchain);
+
+        if (FAILED(r))
+            return detail::mapHRESULT(r);
+
+        SwapchainEXT* output = new SwapchainEXT();
+        output->m_desc = desc;
+        output->m_ptr = dxSwapchain;
+        output->m_device = this;
+        *swapchain = output;
+
+        return result::Success;
+    }
+
+    void Device::impl_destroySwapchainEXT(SwapchainEXT* swapchain)
+    {
+        if (swapchain->m_ptr)
+            static_cast<IDXGISwapChain1*>(swapchain->m_ptr)->Release();
+        delete swapchain;
+    }
 }
