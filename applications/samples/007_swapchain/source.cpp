@@ -269,7 +269,7 @@ llri::Device* createDevice(llri::Instance* instance, llri::Adapter* adapter)
     llri::device_desc desc{
         adapter,
         enabledFeatures,
-        extensions.size(), extensions.data(),
+        static_cast<uint32_t>(extensions.size()), extensions.data(),
         static_cast<uint32_t>(queues.size()), queues.data()
     };
 
