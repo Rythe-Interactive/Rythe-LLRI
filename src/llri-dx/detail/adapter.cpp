@@ -18,7 +18,12 @@ namespace llri
         info.vendorId = desc.VendorId;
         info.adapterId = desc.DeviceId;
         const auto wdescription = std::wstring(desc.Description);
+
+#pragma warning(push)
+        // disable warning C4244 temporarily for the wstring to string conversion below
+#pragma warning(disable:C4244)
         const auto description = std::string(wdescription.begin(), wdescription.end());
+#pragma warning(pop)
         info.adapterName = description;
 
         if (desc.Flags == DXGI_ADAPTER_FLAG_REMOTE)
