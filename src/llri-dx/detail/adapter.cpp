@@ -21,7 +21,7 @@ namespace llri
 
 #pragma warning(push)
         // disable warning C4244 temporarily for the wstring to string conversion below
-#pragma warning(disable:C4244)
+#pragma warning(disable:4244)
         const auto description = std::string(wdescription.begin(), wdescription.end());
 #pragma warning(pop)
         info.adapterName = description;
