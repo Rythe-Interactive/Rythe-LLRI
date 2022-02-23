@@ -38,7 +38,7 @@ TEST_CASE("print info")
         printf("LLRI_SELECTED_TEST_ADAPTERS was set to %s\n", LLRI_SELECTED_TEST_ADAPTERS);
         printf("Unit tests will attempt to run with the defined set of adapters. All adapters must be available for the unit tests to succeed.\n");
         
-        auto selectedAdapterNames = detail::split(LLRI_SELECTED_TEST_ADAPTERS, ';');
+        auto selectedAdapterNames = detail::splitAndHash(LLRI_SELECTED_TEST_ADAPTERS, ';');
         std::vector<llri::Adapter*> selectedAdapters;
 
         for (auto* adapter : adapters)

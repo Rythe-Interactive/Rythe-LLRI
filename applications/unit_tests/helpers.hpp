@@ -52,14 +52,14 @@ namespace detail
         return hash;
     }
 
-    inline std::unordered_map<uint64_t, std::string> split (const std::string &s, char delim)
+    inline std::unordered_set<uint64_t> splitAndHash (const std::string &s, char delim)
     {
-        std::unordered_map<uint64_t, std::string> result;
+        std::unordered_set<uint64_t> result;
         std::stringstream ss (s);
         std::string item;
 
         while (getline (ss, item, delim)) {
-            result.insert(std::make_pair(nameHash(item), item));
+            result.insert(nameHash(s));
         }
 
         return result;
@@ -114,7 +114,7 @@ namespace detail
         }
         else
         {
-            auto selectedAdapterNames = split(LLRI_SELECTED_TEST_ADAPTERS, ';');
+            auto selectedAdapterNames = splitAndHash(LLRI_SELECTED_TEST_ADAPTERS, ';');
             
             for (auto* adapter : adapters)
             {
