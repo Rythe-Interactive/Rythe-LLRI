@@ -39,34 +39,39 @@ SET(DOCTEST_WITH_TESTS OFF CACHE BOOL "" FORCE)
 SET(DOCTEST_WITH_MAIN_IN_STATIC_LIB OFF CACHE BOOL "" FORCE)
 add_subdirectory(deps/doctest)
 
+# add unit tests
+if (${LLRI_BUILD_TESTS})
+	add_subdirectory(unit_tests)
+	set_target_properties(unit_tests PROPERTIES FOLDER "applications")
+	target_include_directories(unit_tests PUBLIC deps/doctest)
+
+	target_include_directories(unit_tests PUBLIC deps/glfw/include)
+	target_link_libraries(unit_tests glfw ${GLFW_LIBRARIES})
+endif()
+
 # add applications
-add_subdirectory(unit_tests)
-set_target_properties(unit_tests PROPERTIES FOLDER "applications")
-target_include_directories(unit_tests PUBLIC deps/doctest)
+if (${LLRI_BUILD_APPLICATIONS})
+	add_subdirectory(sandbox)
+	set_target_properties(sandbox PROPERTIES FOLDER "applications")
+	target_include_directories(sandbox PUBLIC deps/glfw/include)
+	target_link_libraries(sandbox glfw ${GLFW_LIBRARIES})
 
-target_include_directories(unit_tests PUBLIC deps/glfw/include)
-target_link_libraries(unit_tests glfw ${GLFW_LIBRARIES})
+	add_subdirectory(samples/000_hello_llri)
+	add_subdirectory(samples/001_validation)
+	add_subdirectory(samples/002_validation_extensions)
+	add_subdirectory(samples/003_adapter_selection)
+	add_subdirectory(samples/004_device)
+	add_subdirectory(samples/005_commands)
+	add_subdirectory(samples/006_queue_submit)
 
-add_subdirectory(sandbox)
-set_target_properties(sandbox PROPERTIES FOLDER "applications")
-target_include_directories(sandbox PUBLIC deps/glfw/include)
-target_link_libraries(sandbox glfw ${GLFW_LIBRARIES})
-
-add_subdirectory(samples/000_hello_llri)
-add_subdirectory(samples/001_validation)
-add_subdirectory(samples/002_validation_extensions)
-add_subdirectory(samples/003_adapter_selection)
-add_subdirectory(samples/004_device)
-add_subdirectory(samples/005_commands)
-add_subdirectory(samples/006_queue_submit)
-
-set_target_properties(
-	000_hello_llri
-	001_validation
-	002_validation_extensions
-	003_adapter_selection
-	004_device
-	005_commands
-	006_queue_submit
-	PROPERTIES FOLDER "applications/samples"
-)
+	set_target_properties(
+		000_hello_llri
+		001_validation
+		002_validation_extensions
+		003_adapter_selection
+		004_device
+		005_commands
+		006_queue_submit
+		PROPERTIES FOLDER "applications/samples"
+	)
+endif()

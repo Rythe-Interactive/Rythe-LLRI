@@ -7,9 +7,64 @@
 
 #include <doctest/doctest.h>
 #include <llri/llri.hpp>
+#include <sstream>
 
 namespace detail
 {
+    /**
+     * @brief Utility function for hashing strings  in compile time
+    */
+    template<size_t N>
+    inline constexpr uint64_t nameHash(const char(&name)[N]) noexcept
+    {
+        uint64_t hash = 0xcbf29ce484222325;
+        constexpr uint64_t prime = 0x00000100000001b3;
+
+        for (size_t i = 0; i < N; i++)
+        {
+            if (name[i] == '\0')
+                break;
+            
+            hash = hash ^ static_cast<uint8_t>(name[i]);
+            hash *= prime;
+        }
+
+        return hash;
+    }
+
+    /**
+     * @brief Utility function for hashing std::strings in runtime
+    */
+    inline uint64_t nameHash(const std::string& name)
+    {
+        uint64_t hash = 0xcbf29ce484222325;
+        constexpr uint64_t prime = 0x00000100000001b3;
+
+        for (size_t i = 0; i < name.size(); i++)
+        {
+            if (name[i] == '\0')
+                break;
+            
+            hash = hash ^ static_cast<uint8_t>(name[i]);
+            hash *= prime;
+        }
+
+        return hash;
+    }
+
+    inline std::unordered_set<uint64_t> splitAndHash (const std::string &s, char delim)
+    {
+        std::unordered_set<uint64_t> result;
+        std::stringstream ss (s);
+        std::string item;
+
+        while (getline (ss, item, delim)) {
+            result.insert(nameHash(s));
+        }
+
+        return result;
+    }
+
     inline llri::Instance* defaultInstance()
     {
         llri::Instance* instance;
@@ -41,11 +96,43 @@ namespace detail
         return instance;
     }
 
-    inline llri::Adapter* selectAdapter(llri::Instance* instance)
+    template<typename Func, typename ...Args>
+    inline void iterateAdapters(llri::Instance* instance, Func&& function, Args&&... args)
     {
         std::vector<llri::Adapter*> adapters;
         REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
-        return adapters[0];
+        REQUIRE_UNARY(adapters.size() > 0);
+        
+        constexpr size_t adapterStr = nameHash(LLRI_SELECTED_TEST_ADAPTERS);
+        constexpr size_t all = nameHash("All");
+        
+        std::vector<llri::Adapter*> selectedAdapters;
+        
+        if constexpr (adapterStr == all)
+        {
+            selectedAdapters = adapters;
+        }
+        else
+        {
+            auto selectedAdapterNames = splitAndHash(LLRI_SELECTED_TEST_ADAPTERS, ';');
+            
+            for (auto* adapter : adapters)
+            {
+                llri::adapter_info info = adapter->queryInfo();
+                
+                if (selectedAdapterNames.count(nameHash(info.adapterName)))
+                {
+                    selectedAdapters.push_back(adapter);
+                }
+            }
+            
+            REQUIRE_EQ(selectedAdapters.size(), selectedAdapterNames.size());
+        }
+        
+        for (auto* adapter : selectedAdapters)
+        {
+            std::invoke(std::forward<Func>(function), adapter, std::forward<Args>(args)...);
+        }
     }
 
     inline llri::Device* defaultDevice(llri::Instance* instance, llri::Adapter* adapter)

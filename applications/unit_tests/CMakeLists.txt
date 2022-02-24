@@ -9,6 +9,7 @@ add_executable(unit_tests ${source})
 target_compile_options(unit_tests PRIVATE ${LLRI_COMPILER_FLAGS})
 target_link_options(unit_tests PRIVATE ${LLRI_LINKER_FLAGS})
 target_compile_features(unit_tests PRIVATE cxx_std_17)
+target_compile_definitions(unit_tests PRIVATE "LLRI_SELECTED_TEST_ADAPTERS=\"${LLRI_SELECTED_TEST_ADAPTERS}\"")
 
 include_directories(${LLRI_DIR_SRC})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

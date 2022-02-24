@@ -144,9 +144,6 @@ TEST_SUITE("Instance")
     {
         llri::Instance* instance = detail::defaultInstance();
 
-        std::vector<llri::Adapter*> adapters;
-        REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
-
         SUBCASE("[Incorrect usage] device == nullptr")
         {
             llri::device_desc ddesc{};
@@ -159,9 +156,8 @@ TEST_SUITE("Instance")
             llri::device_desc ddesc{};
             CHECK_EQ(instance->createDevice(ddesc, &device), llri::result::ErrorInvalidUsage);
         }
-
-        for (auto* adapter : adapters)
-        {
+        
+        detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
             llri::Device* device = nullptr;
             llri::device_desc ddesc{ adapter, llri::adapter_features{}, 0, nullptr, 0, nullptr };
 
@@ -292,7 +288,7 @@ TEST_SUITE("Instance")
             INFO("Extension specific tests are done in \"Device Extensions\"");
 
             instance->destroyDevice(device);
-        }
+        });
 
         llri::destroyInstance(instance);
     }
@@ -300,12 +296,8 @@ TEST_SUITE("Instance")
     TEST_CASE("Instance::destroyDevice()")
     {
         llri::Instance* instance = detail::defaultInstance();
-
-        std::vector<llri::Adapter*> adapters;
-        REQUIRE_EQ(instance->enumerateAdapters(&adapters), llri::result::Success);
-
-        for (auto* adapter : adapters)
-        {
+            
+        detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
             SUBCASE("[Correct usage] device != nullptr")
             {
                 llri::Device* device = nullptr;
@@ -320,6 +312,6 @@ TEST_SUITE("Instance")
             {
                 CHECK_NOTHROW(instance->destroyDevice(nullptr));
             }
-        }
+        });
     }
 }

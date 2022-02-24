@@ -13,15 +13,18 @@
 TEST_CASE("CommandList:: commands")
 {
     auto* instance = detail::defaultInstance();
-    auto* adapter = detail::selectAdapter(instance);
-    auto* device = detail::defaultDevice(instance, adapter);
-    auto* group = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
-    auto* list = detail::defaultCommandList(group, 0, llri::command_list_usage::Direct);
-
-    SUBCASE("resourceBarrier()")
-        testCommandListResourceBarrier(device, group, list);
     
-    device->destroyCommandGroup(group);
-    instance->destroyDevice(device);
+    detail::iterateAdapters(instance, [instance](llri::Adapter* adapter) {
+        auto* device = detail::defaultDevice(instance, adapter);
+        auto* group = detail::defaultCommandGroup(device, detail::availableQueueType(adapter));
+        auto* list = detail::defaultCommandList(group, 0, llri::command_list_usage::Direct);
+
+        SUBCASE("resourceBarrier()")
+            testCommandListResourceBarrier(device, group, list);
+        
+        device->destroyCommandGroup(group);
+        instance->destroyDevice(device);
+    });
+
     llri::destroyInstance(instance);
 }
