@@ -130,6 +130,7 @@ int main()
     // describe how the swapchain should be created -
     // with the surface, and the various properties limited by the surface's queried capabilities.
     llri::swapchain_desc_ext swapchainDesc{};
+    swapchainDesc.queue = queue;
     swapchainDesc.surface = surface;
     swapchainDesc.textureFormat = selectedSurfaceFormat;
     swapchainDesc.textureExtent = {
