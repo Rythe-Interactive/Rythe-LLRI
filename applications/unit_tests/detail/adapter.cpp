@@ -34,11 +34,6 @@ TEST_CASE("Adapter")
             {
                 CHECK_EQ(adapter->queryExtensionSupport(static_cast<llri::adapter_extension>(std::numeric_limits<uint8_t>::max())), false);
             }
-
-            SUBCASE("[Correct usage] supported != nullptr and extension type is valid")
-            {
-                // Reserved for future use
-            }
         }
 
         SUBCASE("Adapter::queryQueueCount()")
